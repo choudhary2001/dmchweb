@@ -1,0 +1,118 @@
+{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+
+  {% endfor %} {% endif %}
+  <!-- <div>Total Amount : Rs {{total_amount}} /-</div> -->
+  <!-- <div style="display: flex">
+    <div class="card" style="width: 15%; padding: 15px">Red Card - {{redcard}}</div>
+    <div class="card" style="width: 15%; padding: 15px">RB Case - {{rbcase}}</div>
+    {% for v in visittype_counts %}
+    <div class="card" style="width: 15%; padding: 15px">{{v.visittype}} - {{v.total_count}}</div>
+    {% endfor %}
+  </div> -->
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <form action="{% url 'c_test_report_view_print' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+        <div style="flex: 1">
+          <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+        </div>
+        <div style="">
+          <span>-</span>
+        </div>
+        <div style="flex: 1">
+          <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+        </div>
+       
+        <div style="flex: 1">
+          <button class="btn btn-primary w-100" type="submit">Filter</button>
+        </div>
+        <div style="flex: 1">
+            <button class="btn btn-primary w-100" onclick="printTable()">Print Table</button>
+        </div>
+      </form>
+    </div>
+    <div class="card-body" id="printablecontent">
+      <div class="table-responsive">
+        <table class="table table-bordered"  width="100%" cellspacing="0">
+          <thead>
+            <tr>
+                <th>Reg No.</th>
+                <th>Name</th>
+                <th>Bill No.</th>
+                <th>Lab No.</th>
+                <th>Department</th>
+                <th>Refer By</th>
+                <th>Volume</th>
+                <th>Consistency</th>
+                <th>Colour</th>
+                <th>Abestinenece</th>
+                <th>Time Exam</th>
+                <th>Method Collection</th>
+                <th>Date</th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr>
+                <th>Reg No.</th>
+                <th>Name</th>
+                <th>Bill No.</th>
+                <th>Lab No.</th>
+                <th>Department</th>
+                <th>Refer By</th>
+                <th>Volume</th>
+                <th>Consistency</th>
+                <th>Colour</th>
+                <th>Abestinenece</th>
+                <th>Time Exam</th>
+                <th>Method Collection</th>
+                <th>Date</th>
+            </tr>
+          </tfoot>
+          <tbody>
+            {% for d in patients %}
+            <tr>
+              <td>{{d.reg_no.regno}}</td>
+              <td>{{d.reg_no.name}}</td>
+              <td>{{d.patient.bill_no}}</td>
+              <td>{{d.patient.lab_no}}</td>
+              <td>{{d.patient.department.name}}</td>
+              <td>{{d.patient.referby.name}}</td>
+              <td>{{d.volume}}</td>
+              <td>{{d.consistency}}</td>
+              <td>{{d.colour}}</td>
+              <td>{{d.abestinenece}}</td>
+              <td>{{d.time_exam}}</td>
+              <td>{{d.method_collection}}</td>
+              <td>{{d.created_at}}</td>
+              
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block script %}
+<script>
+  // Function to print the table
+  function printTable() {
+    // Show the hidden print content
+    // Print only the content inside the printContent div
+    var printContents = $("#printablecontent").html();
+    var originalContents = $("body").html();
+    $("body").empty().html(printContents);
+
+    // Trigger the print dialog
+    window.print();
+    $("body").html(originalContents);
+  }
+</script>
+{% endblock %}

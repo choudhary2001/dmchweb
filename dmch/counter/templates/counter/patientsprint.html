@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Print Patient Details</title>
+    <style>
+      /* Hide URL, page number, and date in printed page */
+      @media print {
+        .no-print {
+          display: none !important;
+        }
+      }
+    </style>
+    <style>
+      strong {
+        font-family: sans-serif;
+        color: black;
+        font-size: 1rem;
+        margin-bottom: 0.4rem !important;
+      }
+      p {
+        font-family: sans-serif !important;
+        color: black !important;
+        font-size: 1rem !important;
+        margin-bottom: 0.4rem !important;
+      }
+      h1 {
+        font-family: sans-serif;
+        color: black;
+        font-size: 1rem;
+      }
+      @media print {
+        label, p, h1 {
+          font-family: sans-serif !important;
+          color: black !important;
+          font-size: 1rem !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="" id="printContent" style="width: 100%; margin-top: -10px;">
+      <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.8rem">
+        <strong>वाह्य विभाग (Outdoor)</strong>
+        <strong>दरभंगा चिकित्सा महाविद्यालय अस्पताल</strong>
+        <strong>DARBHANGA MEDICAL COLLEGE HOSPITAL</strong>
+        <strong>लहेरियासराय, दरभंगा</strong>
+        <strong>LAHERIASARAI, DARBHANGA</strong>
+        <strong>पंजीकरण पर्ची (Registration Ticket)</strong>
+      </div>
+      <hr />
+      <div style="display: flex; justify-content: space-between">
+        <div style="display: flex">
+          <div style="flex: 2; font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+            <p>DEPARTMENT :</p>
+            <p>REG NO. :</p>
+            <p>PATIENT NAME :</p>
+            <p>GUARDIAN NAME :</p>
+            <p>ADDRESS :</p>
+            <p>PS :</p>
+            {% if patient.redcard == True %}
+            <p>{{patient.redcardtype}} </p>
+            {% endif %}
+          </div>
+          <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+            <p><strong>{% if patient.department %}{{patient.department}}{% endif %} {% if patient.department.room_no %}(ROOM NO. {{patient.department.room_no}}){% endif %}</strong></p>
+            <p><strong>{% if patient.regno %}{{patient.regno}}{% endif %}</strong></p>
+            <p><strong>{% if patient.name %}{{patient.name}}{% endif %}</strong></p>
+            <p><strong>{% if patient.guardiannametitle %}{{patient.guardiannametitle}}{% endif %} {% if patient.guardianname %}{{patient.guardianname}}{% endif %}</strong></p>
+            <p><strong>{% if patient.address %}{{patient.address}}{% endif %}</strong></p>
+            <p><strong>{% if patient.policest %}{{patient.policest}}{% endif %} {% if patient.pincode %}{{patient.pincode}}{% endif %}</strong></p>
+            <p><strong>{% if patient.redcardid %}{{patient.redcardid}}{% endif %}</strong></p>
+          </div>
+        </div>
+
+        <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+          <p>REG. DATE : <strong>{% if patient.appointment_date %}{{patient.appointment_date}}{% endif %}</strong></p>
+          <p>REG. FEES : <strong>RS {% if patient.visittype == 'Unknown' %}0{% else %}{% if patient.redcard == True %}0{% else %}5{% endif %}{% endif %} /-</strong></p>
+          <p>AGE/GENDER : <strong>{% if patient.year %}{{patient.year}}Y{% endif %} {% if patient.month %}{{patient.month}}M{% endif %} {% if patient.days %}{{patient.days}}D{% endif %} /{{patient.gender}}</strong></p>
+          <p>MOBILE NO : <strong>{% if patient.mobno %}{{patient.mobno}}{% endif %}</strong></p>
+          <p>DISTRICT : <strong>{% if patient.district %}{{patient.district}}{% endif %}</strong></p>
+          <p>PATIENT TYPE : <strong>{% if patient.visittype %}{{patient.visittype}}{% endif %}</strong></p>
+        </div>
+      </div>
+      <hr />
+
+      <div style="height: 38vh"></div>
+      <!-- <hr /> -->
+      <div style="display: flex; align-items: center; justify-content: center; font-family: sans-serif; color: black; font-size: 1.2rem; ">
+        <img src="{% static 'img/chunav.JPG' %}" style="height: 110px;" /> &nbsp; &nbsp;
+        <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1rem;">
+          <strong>लोकसभा आम निर्वाचन 2024</strong>
+          <strong>13 मई एवम 20 मई को अवश्य करे मतदान।</strong>
+          <strong>हमर मतदान दरभंगाक सम्मान।</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- <script>
+      // Trigger print dialog when the page is loaded
+      window.onload = function () {
+        window.print();
+        // window.location.href = "/add-patients/";
+      };
+    </script> -->
+    <script>
+      // Function to print the patient details
+      function printPatientDetails() {
+        window.print();
+
+        // Check if the browser supports the `onafterprint` event
+        if (window.onafterprint !== undefined) {
+          // Wait for the print job to complete
+          window.onafterprint = function () {
+            // Redirect to the next URL
+            window.location.href = "/add-patients/"; // Replace '/your-next-url' with the URL you want to redirect to
+          };
+        } else {
+          // If the browser does not support `onafterprint`, redirect after a delay
+          setTimeout(function () {
+            window.location.href = "/add-patients/"; // Replace '/your-next-url' with the URL you want to redirect to
+          }, 5000); // Redirect after 5 seconds
+        }
+      }
+
+      // Trigger print dialog when the page is loaded
+      window.onload = function () {
+        printPatientDetails();
+      };
+    </script>
+  </body>
+</html>

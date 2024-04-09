@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Print Patient Details</title>
+    <style>
+      /* Hide URL, page number, and date in printed page */
+      @media print {
+        .no-print {
+          display: none !important;
+        }
+      }
+    </style>
+    <style>
+      strong {
+        font-family: sans-serif;
+        color: black;
+        font-size: 1rem;
+        margin-bottom: 0.4rem !important;
+      }
+      p {
+        font-family: sans-serif !important;
+        color: black !important;
+        font-size: 1rem !important;
+        margin-bottom: 0.4rem !important;
+      }
+      h1 {
+        font-family: sans-serif;
+        color: black;
+        font-size: 1rem;
+      }
+      @media print {
+        label, p, h1 {
+          font-family: sans-serif !important;
+          color: black !important;
+          font-size: 1rem !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="" id="printContent" style="width: 100%; margin-top: -10px; height: 1110px;">
+      <div style="height: 555px;">
+        <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.8rem">
+          <h2>DEPARTMENT OF CLINICAL PATHOLOGY</h2>
+          <h4>DARBHANGA MEDIAL COLLEGE & HOSPITAL</h4>
+          <h6>LAHERIASARAI, DARBHANGA (BIHAR)</h6>
+        </div>
+        <hr />
+        <div style="display: flex; justify-content: space-between">
+          <div style="display: flex">
+            <div style="flex: 2; font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+              <p>Date :</p>
+              <p>Lab NO. :</p>
+              <p>Bill No. :</p>
+              <p>Reg No. :</p>
+              <p>Patient Name :</p>
+              <p>Age :</p>
+              <p>Gender :</p>
+              <p>Dept :</p>
+              <p>Refd by :</p>
+              <p>Test Name :</p>
+            </div>
+            <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+              <p><strong>{% if patient.created_at %}{{patient.created_at}}{% endif %} </strong></p>
+              <p><strong>{% if patient.lab_no %}{{patient.lab_no}}{% endif %}</strong></p>
+              <p><strong>{% if patient.bill_no %}{{patient.bill_no}}{% endif %}</strong></p>
+              <p><strong>{% if patient.reg_no %}{{patient.reg_no.name}}{% endif %}</strong></p>
+              <p><strong>{% if patient.reg_no.year %}{{patient.reg_no.year}}Y{% endif %} {% if patient.reg_no.month %}{{patient.reg_no.month}}M{% endif %} {% if patient.reg_no.days %}{{patient.reg_no.days}}D{% endif %} /{{patient.gender}}</strong></p>
+              <p><strong>{% if patient.reg_no.gender %}{{patient.reg_no.gender}}{% endif %}</strong></p>
+              <p><strong>{% if patient.department %}{{patient.department.name}}{% endif %} {% if patient.pincode %}{{patient.pincode}}{% endif %}</strong></p>
+              <p><strong>{% if patient.referby %}{{patient.referby.name}}{% endif %}</strong></p>
+              <p><strong>{% if patient.testName %}{{patient.testName}}{% endif %}</strong></p>
+            </div>
+          </div>
+  
+        </div>
+      </div>
+      <hr />
+      <div style="height: 555px;">
+        <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.2rem">
+          <h2>DEPARTMENT OF CLINICAL PATHOLOGY</h2>
+          <h4>DARBHANGA MEDIAL COLLEGE & HOSPITAL</h4>
+          <h6>LAHERIASARAI, DARBHANGA (BIHAR)</h6>
+        </div>
+        <hr />
+        <div style="display: flex; justify-content: space-between">
+          <div style="display: flex">
+            <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+              <p>Date : <strong>{% if patient.created_at %}{{patient.created_at}}{% endif %} </strong></p>
+              <p>Lab NO. : <strong>{% if patient.lab_no %}{{patient.lab_no}}{% endif %}</strong></p>
+              <p>Bill No. : <strong>{% if patient.bill_no %}{{patient.bill_no}}{% endif %}</strong></p>
+              <p>Reg No. : <strong>{% if patient.reg_no %}{{patient.reg_no.name}}{% endif %}</strong></p>
+              <p>Patient Name : <strong>{% if patient.reg_no %}{{patient.reg_no.name}}{% endif %}</strong></p>
+              <p>Age : <strong>{% if patient.reg_no.year %}{{patient.reg_no.year}}Y{% endif %} {% if patient.reg_no.month %}{{patient.reg_no.month}}M{% endif %} {% if patient.reg_no.days %}{{patient.reg_no.days}}D{% endif %} /{{patient.gender}}</strong></p>
+              <p>Gender : <strong>{% if patient.reg_no.gender %}{{patient.reg_no.gender}}{% endif %}</strong></p>
+              <p>Dept : <strong>{% if patient.department %}{{patient.department.name}}{% endif %} {% if patient.pincode %}{{patient.pincode}}{% endif %}</strong></p>
+              <p>Doctor : <strong>{% if patient.referby %}{{patient.referby.name}}{% endif %}</strong></p>
+              <p>Test Name : <strong>{% if patient.testName %}{{patient.testName}}{% endif %}</strong></p>
+            </div>
+          </div>
+  
+        </div>
+      </div>
+
+    </div>
+
+    <!-- <script>
+      // Trigger print dialog when the page is loaded
+      window.onload = function () {
+        window.print();
+        // window.location.href = "/add-patients/";
+      };
+    </script> -->
+    <script>
+      // Function to print the patient details
+      function printPatientDetails() {
+        window.print();
+
+        // Check if the browser supports the `onafterprint` event
+        if (window.onafterprint !== undefined) {
+          // Wait for the print job to complete
+          window.onafterprint = function () {
+            // Redirect to the next URL
+            window.location.href = "/pathology/create_patient_registration/"; // Replace '/your-next-url' with the URL you want to redirect to
+          };
+        } else {
+          // If the browser does not support `onafterprint`, redirect after a delay
+          setTimeout(function () {
+            window.location.href = "/pathology/create_patient_registration/"; // Replace '/your-next-url' with the URL you want to redirect to
+          }, 5000); // Redirect after 5 seconds
+        }
+      }
+
+      // Trigger print dialog when the page is loaded
+      window.onload = function () {
+        printPatientDetails();
+      };
+    </script>
+  </body>
+</html>

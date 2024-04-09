@@ -1,0 +1,914 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- <base href="./" /> -->
+    <meta charset="UTF-8" />
+    <!-- <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src 'self' https://maxcdn.bootstrapcdn.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com; img-src 'self' data:; style-src 'self' 'unsafe-inline'; style-src-elem 'self' file: unsafe-inline; font-src 'self' https://fonts.gstatic.com; script-src 'self' https://code.jquery.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net"
+    /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>DMCH Darbhanga</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" />
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <style>
+      body {
+        background-color: #f8f9fa !important;
+      }
+      .p-4 {
+        padding: 1.5rem !important;
+      }
+      .mb-0,
+      .my-0 {
+        margin-bottom: 0 !important;
+      }
+      .shadow-sm {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+      }
+      /* user-dashboard-info-box */
+      .user-dashboard-info-box .candidates-list .thumb {
+        margin-right: 20px;
+      }
+      .user-dashboard-info-box .candidates-list .thumb img {
+        width: 80px;
+        height: 80px;
+        -o-object-fit: cover;
+        object-fit: cover;
+        overflow: hidden;
+        border-radius: 50%;
+      }
+
+      .user-dashboard-info-box .title {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        padding: 30px 0;
+      }
+
+      .user-dashboard-info-box .candidates-list td {
+        vertical-align: middle;
+      }
+
+      .user-dashboard-info-box td li {
+        margin: 0 4px;
+      }
+
+      .user-dashboard-info-box .table thead th {
+        border-bottom: none;
+      }
+
+      .table.manage-candidates-top th {
+        border: 0;
+      }
+
+      .user-dashboard-info-box .candidate-list-favourite-time .candidate-list-favourite {
+        margin-bottom: 10px;
+      }
+
+      .table.manage-candidates-top {
+        min-width: 650px;
+      }
+
+      .user-dashboard-info-box .candidate-list-details ul {
+        color: #969696;
+      }
+
+      /* Candidate List */
+      .candidate-list {
+        background: #ffffff;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        border-bottom: 1px solid #eeeeee;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        padding: 20px;
+        -webkit-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+      }
+      .candidate-list:hover {
+        -webkit-box-shadow: 0px 0px 34px 4px rgba(33, 37, 41, 0.06);
+        box-shadow: 0px 0px 34px 4px rgba(33, 37, 41, 0.06);
+        position: relative;
+        z-index: 99;
+      }
+      .candidate-list:hover a.candidate-list-favourite {
+        color: #e74c3c;
+        -webkit-box-shadow: -1px 4px 10px 1px rgba(24, 111, 201, 0.1);
+        box-shadow: -1px 4px 10px 1px rgba(24, 111, 201, 0.1);
+      }
+
+      .candidate-list .candidate-list-image {
+        margin-right: 25px;
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 80px;
+        flex: 0 0 80px;
+        border: none;
+      }
+      .candidate-list .candidate-list-image img {
+        width: 80px;
+        height: 80px;
+        -o-object-fit: cover;
+        object-fit: cover;
+      }
+
+      .candidate-list-title {
+        margin-bottom: 5px;
+      }
+
+      .candidate-list-details ul {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        margin-bottom: 0px;
+      }
+      .candidate-list-details ul li {
+        margin: 5px 10px 5px 0px;
+        font-size: 13px;
+      }
+
+      .candidate-list .candidate-list-favourite-time {
+        margin-left: auto;
+        text-align: center;
+        font-size: 13px;
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 90px;
+        flex: 0 0 90px;
+      }
+      .candidate-list .candidate-list-favourite-time span {
+        display: block;
+        margin: 0 auto;
+      }
+      .candidate-list .candidate-list-favourite-time .candidate-list-favourite {
+        display: inline-block;
+        position: relative;
+        height: 40px;
+        width: 40px;
+        line-height: 40px;
+        border: 1px solid #eeeeee;
+        border-radius: 100%;
+        text-align: center;
+        -webkit-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+        margin-bottom: 20px;
+        font-size: 16px;
+        color: #646f79;
+      }
+      .candidate-list .candidate-list-favourite-time .candidate-list-favourite:hover {
+        background: #ffffff;
+        color: #e74c3c;
+      }
+
+      .candidate-banner .candidate-list:hover {
+        position: inherit;
+        -webkit-box-shadow: inherit;
+        box-shadow: inherit;
+        z-index: inherit;
+      }
+
+      .bg-white {
+        background-color: #ffffff !important;
+      }
+      .p-4 {
+        padding: 1.5rem !important;
+      }
+      .mb-0,
+      .my-0 {
+        margin-bottom: 0 !important;
+      }
+      .shadow-sm {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+      }
+
+      .user-dashboard-info-box .candidates-list .thumb {
+        margin-right: 20px;
+      }
+    </style>
+    <style>
+      .model-container {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+
+      .model-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+      }
+
+      .close-btn {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close-btn:hover,
+      .close-btn:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      form {
+        display: grid;
+        /* grid-template-columns: 1fr 1fr; */
+        gap: 20px;
+      }
+
+      label {
+        font-size: 16px;
+        margin-bottom: 6px;
+        color: #333;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+      p {
+        margin-bottom: 0 !important;
+      }
+    </style>
+    <script>
+      // localStorage.clear();
+
+      function formatDate(date) {
+        const day = padZero(date.getDate());
+        const month = padZero(date.getMonth() + 1); // Month is zero-indexed
+        const year = date.getFullYear().toString().slice(-2);
+        const hours = padZero(date.getHours());
+        const minutes = padZero(date.getMinutes());
+
+        return `${day}/${month}/${year} ${hours}:${minutes}`;
+      }
+
+      function padZero(num) {
+        return num < 10 ? "0" + num : num;
+      }
+      function saveFormData() {
+        // Get form data
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear().toString().slice(-2);
+        const currentDateTime = formatDate(currentDate);
+        // Get form data
+        const regnoid = "DH" + currentYear;
+        const regno = document.getElementById("regno").value;
+        const uhidno = document.getElementById("uhidno").value;
+        const uhidnoincre = document.getElementById("uhidnoincre").value;
+        const name = document.getElementById("name").value;
+        const guardiannametitle = document.getElementById("guardiannametitle").value;
+        const guardianname = document.getElementById("guardianname").value;
+        const age = document.getElementById("age").value;
+        const gender = document.getElementById("gender").value;
+        const mobno = document.getElementById("mobno").value;
+        const address = document.getElementById("address").value;
+        const district = document.getElementById("district").value;
+        const state = document.getElementById("state").value;
+        const pincode = document.getElementById("pincode").value;
+        const symptoms = document.getElementById("symptoms").value;
+        const doctor = document.getElementById("doctor").value;
+        const department = document.getElementById("department").value;
+        const visittype = document.getElementById("visittype").value;
+
+        // Get access_token from local storage
+        let patients = JSON.parse(localStorage.getItem("patients")) || [];
+
+        // Prepare data object
+        const formData = {
+          regno,
+          regnoid,
+          uhidno,
+          uhidnoincre,
+          name,
+          guardiannametitle,
+          guardianname,
+          age,
+          gender,
+          mobno,
+          address,
+          district,
+          state,
+          pincode,
+          symptoms,
+          doctor,
+          department,
+          visittype,
+          appointment_date: currentDate,
+        };
+
+        // Add new data to the existing array
+        patients.push(formData);
+
+        // Store the updated array in local storage
+        localStorage.setItem("patients", JSON.stringify(patients));
+
+        // Call function to fetch and display data
+        fetchAndDisplayData();
+
+        // Clear form fields
+        clearForm();
+
+        // Close the modal
+        closeModel();
+        window.location.reload();
+      }
+
+      function clearForm() {
+        // Clear form fields
+        document.getElementById("name").value = "";
+        document.getElementById("guardiannametitle").value = "Self";
+        document.getElementById("guardianname").value = "";
+        document.getElementById("age").value = "";
+        document.getElementById("gender").value = "Male";
+        document.getElementById("mobno").value = "";
+        document.getElementById("address").value = "";
+        document.getElementById("district").value = "";
+        document.getElementById("state").value = "";
+        document.getElementById("pincode").value = "";
+        document.getElementById("symptoms").value = "";
+        document.getElementById("doctor").value = "";
+        document.getElementById("department").value = "";
+        document.getElementById("visittype").value = "Regular";
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="container mt-3 mb-4">
+      <div class="col-lg-12 mt-4 mt-lg-0">
+        <div class="row" style="margin-bottom: 15px">
+          <div class="user-dashboard-info-box table-responsive mb-0 bg-white p-4 shadow-sm" style="display: flex; justify-content: center; margin-bottom: 5px; align-items: center">
+            <div>
+              <a href="index.html" style="text-decoration: none" class="text-center">DMCH Darbhanga</a>
+            </div>
+            <div id="loginStatus">
+              <!-- Display login status dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-12 mt-4 mt-lg-0">
+        <div class="model-container" id="modelContainer">
+          <div class="model-content">
+            <span class="close-btn" onclick="closeModel()">&times;</span>
+            <h2>Add Patient</h2>
+            <form method="post" action="{% url 'add_patient' %}" style="gap: 5px !important">
+              {% csrf_token %}
+              <label for="regno">Reg No. :</label>
+              <input type="number" id="" name="regno" value="{{regno}}" required />
+
+              <label for="uhidno">UHID No. :</label>
+              <div style="display: flex"><input type="number" id="" value="{{uhidno}}" name="uhidno" required /><input type="number" id="" value="{{uhidnoincre}}" name="uhidnoincre" /></div>
+
+              <label for="name">Name:</label>
+              <input type="text" id="name" name="name" required />
+
+              <label for="guardianname">Guardian Name:</label>
+              <select id="guardiannametitle" name="guardiannametitle" style="border-radius: 4px; padding: 10px">
+                <option value="Self">Self</option>
+                <option value="S/O (Son of)">S/O (Son of)</option>
+                <option value="D/O (Daughter of)">D/O (Daughter of)</option>
+                <option value="W/O (Wife of)">W/O (Wife of)</option>
+                <option value="H/O (Husband of)">H/O (Husband of)</option>
+                <option value="F/O (Father of)">F/O (Father of)</option>
+                <option value="M/O (Mother of)">M/O (Mother of)</option>
+                <option value="G/O (Guardian of)">G/O (Guardian of)</option>
+              </select>
+              <input type="text" id="guardianname" name="guardianname" required />
+
+              <label for="age">Age:</label>
+              <div style="display: flex; align-content: center; align-items: center; border: none; border-bottom: 1px solid black; border-radius: 0px"><input type="number" id="age" name="age" style="border: none" required placeholder="Age" /> Year</div>
+
+              <label for="gender">gender:</label>
+              <select type="text" id="gender" name="gender" required style="border-radius: 4px; padding: 10px">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+                <option value="Non-binary">Non-binary</option>
+                <option value="Transgender">Transgender</option>
+                <option value="Genderqueer">Genderqueer</option>
+                <option value="Agender">Agender</option>
+              </select>
+
+              <label for="mobno">Mobile No.:</label>
+              <input type="tel" id="mobno" name="mobno" required />
+
+              <label for="address">address:</label>
+              <textarea type="text" id="address" name="address" required style="border-radius: 4px"></textarea>
+
+              <label for="district">District:</label>
+              <input type="text" id="district" name="district" required />
+
+              <label for="state">State:</label>
+              <input type="text" id="state" name="state" required />
+
+              <label for="pincode">Pin Code:</label>
+              <input type="number" id="pincode" name="pincode" required />
+
+              <label for="department">Department:</label>
+              <select type="text" id="department" name="department" required style="border-radius: 4px; padding: 10px">
+                {% for d in departments %}
+                <option value="{{de.department_id}}">{{de.name}}</option>
+                {% endfor %}
+              </select>
+
+              <label for="doctor">Doctor:</label>
+              <select type="text" id="doctor" name="doctor" required style="border-radius: 4px; padding: 10px">
+                <option value="Dr. Div">Dr. Div</option>
+                <option value="Dr. Meta">Dr. Meta</option>
+                <option value="Other">Other</option>
+              </select>
+
+              <label for="visittype">Visit Type:</label>
+              <select type="text" id="visittype" name="visittype" required style="border-radius: 4px; padding: 10px">
+                <option value="Regular">Regular</option>
+                <option value="Emergency">Emergency</option>
+              </select>
+
+              <label for="symptoms">Remarks:</label>
+              <input type="text" id="symptoms" name="symptoms" required />
+
+              <button type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+
+        <button id="addUserBtn" onclick="openModel()">Add Patient</button>
+
+        <div class="row" style="margin-bottom: 15px">
+          <div class="col-md-6">
+            <input type="number" id="regNoFilter" placeholder="Search by Reg. No." />
+          </div>
+          <div class="col-md-6">
+            <input type="text" id="nameFilter" placeholder="Search by Name" />
+          </div>
+          <div class="col-md-6">
+            <label for="startTime">Start Time:</label>
+            <input type="date" id="startTime" />
+          </div>
+
+          <div class="col-md-6">
+            <label for="endTime">End Time:</label>
+            <input type="date" id="endTime" />
+          </div>
+
+          <div class="col-md-6 mt-2">
+            <button id="searchBtn">Search</button>
+          </div>
+        </div>
+
+        <div>Total No. of Pataient : <span id="totalPatients"></span></div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="user-dashboard-info-box table-responsive mb-0 bg-white p-4 shadow-sm">
+              <table class="table manage-candidates-top mb-0">
+                <thead>
+                  <tr>
+                    <th>Reg. No.</th>
+                    <th>Patient</th>
+                    <th class="text-center">Doctor</th>
+                    <th class="text-center">Remarks</th>
+                    <th class="text-center">Appointment Date</th>
+                    <th class="action text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Include Popper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script>
+      // Check if the user is already logged in
+      const storedToken = localStorage.getItem("token");
+      const loginStatusDiv = document.getElementById("loginStatus");
+      const addUserBtn = document.getElementById("addUserBtn");
+
+      // if (storedToken) {
+      //   loginStatusDiv.innerHTML = '<a href="#" onclick="logout()" style="text-decoration: none">Logout</a>';
+      //   // Show Add Patient button and model if the user is logged in
+      //   addUserBtn.classList.remove("hidden");
+      //   document.getElementById("modelContainer").classList.remove("hidden");
+      // } else {
+      //   loginStatusDiv.innerHTML = '<a href="sign_in.html" style="text-decoration: none">Log In</a>';
+      // }
+
+      function logout() {
+        // Clear the token from local storage
+        localStorage.removeItem("token");
+        // Redirect to the logout page or any other desired destination
+        window.location.href = "index.html";
+      }
+      // Function to fetch and display OPD patient data
+
+      function fetchAndDisplayData() {
+        // Get data from local storage
+        const patients = JSON.parse(localStorage.getItem("patients")) || [];
+
+        patients.sort((a, b) => b.regno - a.regno);
+
+        // Reference to the table body
+        const tableBody = document.getElementById("tableBody");
+
+        // Clear existing rows from the table
+        tableBody.innerHTML = "";
+
+        // Iterate over the fetched data and create table rows
+        patients.forEach((patient, index) => {
+          const row = document.createElement("tr");
+          // Create table cells for each patient property
+          // Adjust the following lines based on your actual data structure
+          row.innerHTML = `
+            <td>${patient.regno}</td>
+            <td>${patient.name}</td>
+            <td class="text-center">${patient.doctor}</td>
+            <td class="text-center">${patient.symptoms}</td>
+            <td class="text-center">${patient.appointment_date}</td>
+            <td class="action text-right">
+              <button onclick="openModelDetails(${patient.regno})">View</button>
+            </td>
+            <div class="model-container" id="modelContainer_${patient.regno}">
+              <div class="model-content">
+                <button onclick="printPatientDetails('patient_details')">Print</button>
+                  <span class="close-btn" onclick="closeModelDetails('${patient.regno}')">&times;</span>
+                  <div id="patient_details">
+                    <div class="imgcontainer" style="display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      flex-direction: column;">
+                      
+                        <strong>वाह्य विभाग (Outdoor)</strong>
+                        <strong>दरभंगा चिकित्सा महाविद्यालय अस्पताल</strong> 
+                        <strong>DARBHANGA MEDICAL COLLEGE HOSPITAL</strong>
+                        <strong>लहेरियासराय, दरभंगा</strong>
+                        <strong>LAHERIASARAI, DARBHANGA</strong>
+                        <strong>पंजीकरण पर्ची (Registration Ticket)</strong>
+                      
+                    </div>
+                    <hr/>
+                    <div style="display:flex;justify-content: space-between;">
+                      <div style="display:flex;">
+                          <div style="flex: 2;">
+                              <p>DEPARTMENT :</p>
+                              <p>UHID NO. :</p>
+                              <p>PATIENT NAME :</p>
+                              <p>GUARDIAN NAME :</p>
+                              <p>ADDRESS :</p>
+                              <p>DISTRICT :</p>
+                              <p>STATE :</p>
+                              <p>PATIENT TYPE :</p>
+                          </div>
+                          <div style="">
+                              <p><strong>${patient.department}</strong></p>
+                              <p><strong>${patient.regnoid} ${patient.regno}</strong></p>
+                              <p><strong>${patient.name}</strong></p>
+                              <p><strong>${patient.guardiannametitle} ${patient.guardianname}</strong></p>
+                              <p><strong>${patient.address}</strong></p>
+                              <p><strong>${patient.district}</strong></p>
+                              <p><strong>${patient.state} ${patient.pincode}</strong></p>
+                              <p><strong>${patient.visittype ? patient.visittype : ""}</strong></p>
+                          </div>
+                      </div>
+
+                      <div>
+                        <p> REG. DATE : <strong>${patient.appointment_date}</strong></p>
+                        <p> REG. FEES : <strong>RS 5 /-</strong></p>
+                        <p> AGE/GENDER : <strong>${patient.age}Y/${patient.gender}</strong></p>
+                        <p> MOBILE NO : <strong>${patient.mobno}</strong></p>
+                      </div>
+
+                    </div>
+
+                    <hr/>
+
+
+                    <div style="height: 70vh;">
+
+                    </div>
+                  </div>
+              </div>
+          </div>
+        `;
+          // Append the row to the table body
+          tableBody.appendChild(row);
+        });
+      }
+
+      // Call the fetchAndDisplayData function initially
+      fetchAndDisplayData();
+
+      function openModalDetails(id) {
+        // Populate modal with patient data based on id
+        const patients = JSON.parse(localStorage.getItem("patients")) || [];
+        const patient = patients[id];
+
+        const patientDetails = `
+          <p><strong>Name:</strong> ${patient.name}</p>
+          <p><strong>DOB:</strong> ${patient.dob}</p>
+          <p><strong>Gender:</strong> ${patient.gender}</p>
+          <p><strong>Address:</strong> ${patient.address}</p>
+          <p><strong>District:</strong> ${patient.district}</p>
+          <p><strong>State:</strong> ${patient.state}</p>
+          <p><strong>Pin Code:</strong> ${patient.pincode}</p>
+          <p><strong>Symptoms:</strong> ${patient.symptoms}</p>
+          <p><strong>Doctor:</strong> ${patient.doctor}</p>
+          <p><strong>Department:</strong> ${patient.department}</p>
+          <p><strong>Amount:</strong> ${patient.amount}</p>
+        `;
+
+        document.getElementById("patientDetails").innerHTML = patientDetails;
+        openModal();
+      }
+
+      function openModel() {
+        document.getElementById("modelContainer").style.display = "block";
+      }
+
+      function closeModel() {
+        document.getElementById("modelContainer").style.display = "none";
+      }
+
+      function openModelDetails(id) {
+        document.getElementById(`modelContainer_${id}`).style.display = "block";
+      }
+
+      function closeModelDetails(id) {
+        document.getElementById(`modelContainer_${id}`).style.display = "none";
+      }
+
+      function printPatientDetails(elementId) {
+        var printContents = document.getElementById(elementId).innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+      }
+
+      // Function to filter patient data based on regno and name
+      function filterData(regNoFilter, nameFilter, startDate, endDate) {
+        // Get data from local storage
+        const patients = JSON.parse(localStorage.getItem("patients")) || [];
+
+        // Filter the patients based on regno, name, and appointment date
+        const filteredPatients = patients.filter(patient => {
+          // Convert appointment_date to Date objects for comparison
+          const appointmentDate = new Date(patient.appointment_date);
+          console.log(startDate, endDate, appointmentDate);
+          // Perform filtering based on regno, name, and appointment date
+          return patient.regno.toString().includes(regNoFilter) && patient.name.toLowerCase().includes(nameFilter.toLowerCase()) && (!startDate || appointmentDate >= startDate) && (!endDate || appointmentDate <= endDate);
+        });
+
+        return filteredPatients;
+      }
+
+      // Function to update the table with filtered data
+      function updateTable(regNoFilter, nameFilter, startTime, endTime) {
+        // Get the filtered patient data
+        const filteredPatients = filterData(regNoFilter, nameFilter, startTime, endTime);
+
+        // Reference to the table body
+        const tableBody = document.getElementById("tableBody");
+
+        // Clear existing rows from the table
+        tableBody.innerHTML = "";
+
+        // Iterate over the filtered data and create table rows
+        filteredPatients.forEach(patient => {
+          const row = document.createElement("tr");
+          // Create table cells for each patient property
+          // Adjust the following lines based on your actual data structure
+          row.innerHTML = `
+            <td>${patient.regno}</td>
+            <td>${patient.name}</td>
+            <td class="text-center">${patient.doctor}</td>
+            <td class="text-center">${patient.symptoms}</td>
+            <td class="text-center">${patient.appointment_date}</td>
+            <td class="action text-right">
+                <button onclick="openModelDetails(${patient.regno})">View</button>
+            </td>
+        `;
+          // Append the row to the table body
+          tableBody.appendChild(row);
+        });
+        document.getElementById("totalPatients").textContent = filteredPatients.length;
+      }
+
+      function parseDate(dateString) {
+        const parts = dateString.split("T");
+        if (parts.length !== 2) {
+          console.error("Invalid date format: " + dateString);
+          return null;
+        }
+        const dateParts = parts[0].split("-");
+        const timeParts = parts[1].split(":");
+        if (dateParts.length !== 3 || timeParts.length !== 2) {
+          console.error("Invalid date format: " + dateString);
+          return null;
+        }
+        const year = parseInt(dateParts[0]);
+        const month = parseInt(dateParts[1]) - 1; // Months are zero-based
+        const day = parseInt(dateParts[2]);
+        const hours = parseInt(timeParts[0]);
+        const minutes = parseInt(timeParts[1]);
+        return new Date(year, month, day, hours, minutes);
+      }
+
+      // Function to handle search button click
+      function handleSearch() {
+        // Get the values of regno, name, start date, and end date input fields
+        const regNoFilter = document.getElementById("regNoFilter").value.trim();
+        const nameFilter = document.getElementById("nameFilter").value.trim();
+        const startDateInput = document.getElementById("startTime").value;
+        const endDateInput = document.getElementById("endTime").value;
+
+        // Convert input values to Date objects
+        const startDate = startDateInput ? new Date(startDateInput) : null;
+        const endDate = endDateInput ? new Date(endDateInput) : null;
+        console.log(startDate, endDate);
+        // Update the table with filtered data
+        updateTable(regNoFilter, nameFilter, startDate, endDate);
+      }
+
+      // Attach an event listener to the search button
+      document.getElementById("searchBtn").addEventListener("click", handleSearch);
+
+      // Function to calculate the total number of patients
+      function calculateTotalPatients() {
+        // Get data from local storage
+        const patients = JSON.parse(localStorage.getItem("patients")) || [];
+
+        // Return the length of the patients array
+        return patients.length;
+      }
+
+      // Function to display the total number of patients
+      function displayTotalPatients() {
+        // Get the total number of patients
+        const totalPatients = calculateTotalPatients();
+
+        // Display the total number of patients in the UI
+        document.getElementById("totalPatients").textContent = totalPatients;
+      }
+
+      // Call the displayTotalPatients function to initially display the total
+      displayTotalPatients();
+    </script>
+
+    <script>
+      //   // Function to calculate the next registration number
+      //   function getNextRegNo() {
+      //     // Get existing registrations from local storage
+      //     const patients = JSON.parse(localStorage.getItem("patients")) || [];
+
+      //     // Find the maximum registration number
+      //     const maxRegNo = patients.reduce((max, patient) => {
+      //       return Math.max(max, patient.regno || 28000);
+      //     }, 28000);
+
+      //     // Return the next available registration number
+      //     return maxRegNo + 1;
+      //   }
+
+      //   function getNextuhidnoincreNo() {
+      //     // Get existing registrations from local storage
+      //     const patients = JSON.parse(localStorage.getItem("patients")) || [];
+
+      //     // Find the maximum registration number
+      //     const maxuhidnoincreNo = patients.reduce((max, patient) => {
+      //       return Math.max(max, patient.uhidnoincre || 0);
+      //     }, 0);
+
+      //     // Return the next available registration number
+      //     return maxuhidnoincreNo + 1;
+      //   }
+
+      //   // Function to set the next registration number in the input field
+      //   // and set the default value for the uhidno field
+      //   function setNextRegNoAndDefaultUHIDNo() {
+      //     // Get the registration number input field
+      //     const regNoInput = document.getElementById("regno");
+      //     const uhidnoincreInput = document.getElementById("uhidnoincre");
+
+      //     // Set the value of the input field to the next registration number
+      //     regNoInput.value = getNextRegNo();
+      //     uhidnoincreInput.value = getNextuhidnoincreNo();
+
+      //     // Get the UHID number input field
+      //     const uhidnoInput = document.getElementById("uhidno");
+
+      //     // Set the default value for the UHID number field
+      //     uhidnoInput.value = getCurrentDateFormatted();
+      //   }
+
+      //   // Call setNextRegNoAndDefaultUHIDNo function when the page loads
+      //   window.onload = setNextRegNoAndDefaultUHIDNo;
+
+      // Function to get the current date and format it as "daymonthyear"
+      function getCurrentDateFormatted() {
+        const currentDate = new Date();
+        const day = String(currentDate.getDate()).padStart(2, "0");
+        const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // January is 0!
+        const year = String(currentDate.getFullYear()).slice(-2);
+        return day + month + year;
+      }
+
+      // Define a JavaScript object mapping departments to arrays of doctors
+      const doctorsByDepartment = {
+        ANC: ["Dr. Renu Jha", "Dr. Seema Jha", "Dr. Saroj Verma", "Dr. Raj Shree Kumari", "Dr. S. B. Prasad", "Dr. Sangeeta Singh", "Dr. Alka Mishra", "Dr. Vasudha Rani", "Dr. Pooja Mahaseth", ""],
+        GOPD: ["Dr. Renu Jha", "Dr. Seema Jha", "Dr. Saroj Verma", "Dr. Raj Shree Kumari", "Dr. S. B. Prasad", "Dr. Sangeeta Singh", "Dr. Alka Mishra", "Dr. Vasudha Rani", "Dr. Pooja Mahaseth", ""],
+        CHOPD: ["Dr. Renu Jha", "Dr. Seema Jha", "Dr. Saroj Verma", "Dr. Raj Shree Kumari", "Dr. S. B. Prasad", "Dr. Sangeeta Singh", "Dr. Alka Mishra", "Dr. Vasudha Rani", "Dr. Pooja Mahaseth", ""],
+      };
+
+      // Function to update the list of doctors based on the selected department
+      function updateDoctorsList() {
+        const departmentSelect = document.getElementById("department");
+        const doctorSelect = document.getElementById("doctor");
+        const selectedDepartment = departmentSelect.value;
+
+        // Clear the existing options in the doctors select element
+        doctorSelect.innerHTML = "";
+
+        // Populate the doctors select element with the doctors of the selected department
+        const doctors = doctorsByDepartment[selectedDepartment];
+        doctors.forEach(doctor => {
+          const option = document.createElement("option");
+          option.text = doctor;
+          option.value = doctor;
+          doctorSelect.appendChild(option);
+        });
+      }
+
+      // Attach an event listener to the department select element
+      document.getElementById("department").addEventListener("change", updateDoctorsList);
+
+      // Call the updateDoctorsList function initially to populate doctors based on the initial department selection
+      updateDoctorsList();
+    </script>
+  </body>
+</html>

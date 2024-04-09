@@ -1,0 +1,286 @@
+{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<style>
+  label {
+    width: 230px;
+  }
+  .form-group {
+    margin-bottom: 0.2rem;
+    line-height: 0.5rem;
+    align-items: center;
+  }
+  .form-control {
+    padding: ".15rem .75rem";
+  }
+</style>
+
+
+<div class="" id="printContent" style="width: 100%; margin-top: -10px; display: none;">
+
+  <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.8rem">
+    <h2>DEPARTMENT OF CLINICAL PATHOLOGY</h2>
+    <h4>DARBHANGA MEDIAL COLLEGE & HOSPITAL</h4>
+    <h6>LAHERIASARAI, DARBHANGA (BIHAR)</h6>
+    <h6>REPORT OF EXAMINATION OF BIOCHEMISTRY</h6>
+  </div>
+  <hr />
+  <div style="display: flex; justify-content: space-between">
+    <div style="display: flex; justify-content: space-between; width: 100%;">
+      <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+        <p>Patient Name : <strong>{% if serology.reg_no.name %}{{serology.reg_no.name}}{% endif %} </strong></p>
+        <p>Refd By. : <strong>{% if serology.patient.referby.name %}{{serology.patient.referby.name}}{% endif %}</strong></p>
+        <p>Bill No. : <strong>{% if serology.patient.bill_no %}{{serology.patient.bill_no}}{% endif %}</strong></p>
+      </div>
+      <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+        <p>Date : <strong>{% if serology.created_at %}{{serology.created_at}}{% endif %}</strong></p>
+        <p>Reg No. : <strong>{% if serology.reg_no %}{{serology.reg_no.regno}}{% endif %}</strong></p>
+        <p>Lab No. : <strong>{% if serology.patient.lab_no %}{{serology.patient.lab_no}}{% endif %}</strong></p>
+      </div>
+    </div>
+  </div>
+  <hr />
+  <div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered"  width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Test</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if serology.hiv %}
+          <tr>
+            
+            <td style="font-family: sans-serif; color: black; font-size: 1rem;">HIV</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{serology.hiv}}</td>
+          </tr>
+          {% endif %}
+          {% if serology.hcv %}
+          <tr>
+            
+            <td style="font-family: sans-serif; color: black; font-size: 1rem;">HCV</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{serology.hcv}}</td>
+          </tr>
+          {% endif %}
+          {% if serology.hbsag %}
+          <tr>
+            
+            <td style="font-family: sans-serif; color: black; font-size: 1rem;">HBSAG</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{serology.hbsag}}</td>
+          </tr>
+          {% endif %}
+          
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="container-fluid">
+  <!-- Page Heading -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+
+  {% endfor %} {% endif %}
+  <form id="patientForm" method="POST" action="/pathology/update_serology_test/{{serology.pk}}/">
+    {% csrf_token %}
+
+    <div class="row">
+        <!-- Left Column (Patient Details) -->
+        <div class="col-md-4 mb-3">
+            <label for="regno">Reg No.:</label>
+            <input type="number" class="form-control" id="regno"  value="{{serology.reg_no.regno}}" disabled  name="regno"  />
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="bill_no">Bill No.:</label>
+            <input type="text" class="form-control" id="bill_no" value="" name="bill_no"  disabled  />
+        </div>
+
+        <div class="col-md-4 mb-3" >
+            <label for="labno">Lab No :</label>
+            <input type="text" id="labno" class="form-control"  disabled name="labno" />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="patient_name">Patient Name :</label>
+            <input type="text" class="form-control" id="patient_name" name="patient_name" disabled  />
+        </div>
+
+
+        <div class="col-md-4 mb-3">
+            <label for="department">Department:</label>
+            <input type="text" class="form-control" id="department" value="" name="department"  disabled  />
+        </div>
+
+
+
+        <div class="col-md-4 mb-3" >
+            <label for="doctor">Refer By :</label>
+            <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
+            <option>Select Doctor</option>
+            </select> -->
+            <input type="text" class="form-control" id="doctor" value="" name="doctor" disabled   />
+
+        </div>
+            
+        <div class="col-md-4 mb-3">
+            <label for="hiv">HIV :</label>
+            <input type="text" class="form-control" id="hiv" value="{{serology.hiv}}" name="hiv"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label for="hcv">HCV:</label>
+          <input type="text" class="form-control" id="hcv" value="{{serology.hcv}}" name="hcv"  />
+      </div>
+  
+      <div class="col-md-4 mb-3">
+          <label for="hbsag">HBSAG:</label>
+          <input type="text" class="form-control" id="hbsag" value="{{serology.hbsag}}" name="hbsag"  />
+      </div>
+  
+
+    </div>
+
+
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="#;" id="printButton" style=" display: none;" class="btn btn-primary">Print</a>
+
+  </form>
+</div>
+
+<!-- End of Main Content -->
+{% endblock %} {% block script %}
+<script></script>
+<script>
+  // Function to handle showing the print button after page load
+  document.addEventListener("DOMContentLoaded", function () {
+    // Show the print button
+    document.getElementById("printButton").style.display = "inline-block";
+  });
+</script>
+<script>
+  $(document).ready(function () {
+      // Function to handle printing
+      $("#printButton").click(function () {
+          // Show the hidden print content
+          $("#printContent").show();
+
+          // Print only the content inside the printContent div
+          var printContents = $("#printContent").html();
+          var originalContents = $("body").html();
+          $("body").empty().html(printContents);
+
+          // Trigger the print dialog
+          window.print();
+
+          // Restore the original page content
+          $("#printContent").hide();
+          $("body").html(originalContents);
+          $("#printContent").hide();
+      });
+  });
+</script>
+<script>
+  // Function to handle form submission
+  function handleFormSubmission(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Your additional logic for form validation or processing goes here
+
+    // Select all input fields in the form
+    const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
+
+    // Flag to keep track of form validity
+    let isValid = true;
+
+    // Loop through each input field
+    inputs.forEach(function (input) {
+      // Check if the input field is  and does not have a value
+      if (input.hasAttribute("required") && !input.value.trim()) {
+        // If a  field is empty, set isValid to false
+        isValid = false;
+        // Highlight the empty field (you can customize this part)
+        input.style.border = "1px solid red";
+      } else {
+        // Remove any previous highlighting
+        input.style.border = "";
+      }
+    });
+
+    // If the form is valid, submit it
+    if (isValid) {
+      document.getextementById("patientForm").submit();
+    } else {
+      // If the form is invalid, display an alert (you can customize this part)
+      //   alert("Please fill out all  fields.");
+    }
+  }
+
+  // Function to handle keyboard shortcuts
+  function handleShortcut(event) {
+    // if (event.ctrlKey && event.key === "s") {
+    if (event.key === "F2") {
+      // Ctrl + S pressed, trigger form submission
+      handleFormSubmission(event);
+    }
+  }
+
+  // Attach event listener for form submission
+  document.getextementById("patientForm").addEventListener("submit", handleFormSubmission);
+
+  // Attach event listener for keyboard shortcuts
+  document.addEventListener("keydown", handleShortcut);
+</script>
+
+<script>
+  $(document).ready(function () {
+    var regno = {{ serology.reg_no.regno }};
+    if (regno) {
+    $.ajax({
+        url: '{% url "fetch_patient_data_details" %}',
+        type: "GET",
+        data: {
+        regno: regno,
+        },
+        success: function (data) {
+        // Update input fields with fetched data
+        $("#patient_name").val(data.name);
+        $("#bill_no").val(data.bill_no);
+        $("#labno").val(data.lab_no);
+        $("#department").val(data.department);
+        $("#doctor").val(data.referby);
+        $("#patient_name").val(data.name);
+        },
+        error: function (xhr, status, error) {
+        console.error(xhr.responseText);
+        // Handle error if necessary
+        $("#patient_name").val('');
+        $("#bill_no").val('');
+        $("#labno").val('');
+        $("#department").val('');
+        $("#doctor").val('');
+        $("#patient_name").val('');
+        },
+    });
+    } else {
+        // Clear input fields when regno is empty
+        $("#patient_name").val('');
+        $("#bill_no").val('');
+        $("#labno").val('');
+        $("#department").val('');
+        $("#doctor").val('');
+        $("#patient_name").val('');
+    }
+  });
+</script>
+
+
+{% endblock %}

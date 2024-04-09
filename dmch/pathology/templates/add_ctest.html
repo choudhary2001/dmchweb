@@ -1,0 +1,257 @@
+{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<style>
+  label {
+    width: 230px;
+  }
+  .form-group {
+    margin-bottom: 0.2rem;
+    line-height: 0.5rem;
+    align-items: center;
+  }
+  .form-control {
+    padding: ".15rem .75rem";
+  }
+</style>
+<div class="container-fluid">
+  <!-- Page Heading -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+
+  {% endfor %} {% endif %}
+  <form id="patientForm" method="POST" action="{% url 'create_ctest_report' %}">
+    {% csrf_token %}
+
+    <div class="row">
+        <!-- Left Column (Patient Details) -->
+        <div class="col-md-4 mb-3">
+            <label for="regno">Reg No.:</label>
+            <input type="number" class="form-control" id="regno" name="regno" required />
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="bill_no">Bill No.:</label>
+            <input type="text" class="form-control" id="bill_no" value="" name="bill_no" required disabled  />
+        </div>
+
+        <div class="col-md-4 mb-3" >
+            <label for="labno">Lab No :</label>
+            <input type="text" id="labno" class="form-control"  disabled name="labno" />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="patient_name">Patient Name :</label>
+            <input type="text" class="form-control" id="patient_name" name="patient_name" disabled  />
+        </div>
+
+
+        <div class="col-md-4 mb-3">
+            <label for="department">Department:</label>
+            <input type="text" class="form-control" id="department" value="" name="department"  disabled  />
+        </div>
+
+
+
+        <div class="col-md-4 mb-3" >
+            <label for="doctor">Refer By :</label>
+            <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
+            <option>Select Doctor</option>
+            </select> -->
+            <input type="text" class="form-control" id="doctor" value="" name="doctor" disabled   />
+
+        </div>
+      
+        <div class="col-md-4 mb-3">
+            <label for="volume">Volume :</label>
+            <input type="text" class="form-control" id="volume" value="" name="volume"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label for="consistency">Consistency:</label>
+          <input type="text" class="form-control" id="consistency" value="" name="consistency"  />
+      </div>
+  
+      <div class="col-md-4 mb-3">
+          <label for="colour">Colour:</label>
+          <input type="text" class="form-control" id="colour" value="" name="colour"  />
+      </div>
+  
+      <div class="col-md-4 mb-3">
+          <label for="abestinenece">Abestinenece:</label>
+          <input type="text" class="form-control" id="abestinenece" value="" name="abestinenece"  />
+      </div>
+  
+
+              
+        <div class="col-md-4 mb-3">
+              <label for="time_exam">Time Exam:</label>
+              <input type="text" class="form-control" id="time_exam" value="" name="time_exam"  />
+          </div>
+
+            
+          <div class="col-md-4 mb-3">
+            <label for="method_collection">Method Collection:</label>
+            <input type="text" class="form-control" id="method_collection" value="" name="method_collection"  />
+        </div>
+
+          
+        <div class="col-md-4 mb-3">
+          <label for="total_count">Total Count:</label>
+          <input type="text" class="form-control" id="total_count" value="" name="total_count"  />
+        </div>
+
+          
+        <div class="col-md-4 mb-3">
+          <label for="active">Active:</label>
+          <input type="text" class="form-control" id="active" value="" name="active"  />
+        </div>
+
+          
+        <div class="col-md-4 mb-3">
+          <label for="sluggish">Sluggish:</label>
+          <input type="text" class="form-control" id="sluggish" value="" name="sluggish"  />
+        </div>
+
+          
+        <div class="col-md-4 mb-3">
+          <label for="non_matliz">Non Matliz:</label>
+          <input type="text" class="form-control" id="non_matliz" value="" name="non_matliz"  />
+        </div>
+
+          
+        <div class="col-md-4 mb-3">
+          <label for="rbc">RBC:</label>
+          <input type="text" class="form-control" id="rbc" value="" name="rbc"  />
+        </div>
+
+          
+        <div class="col-md-4 mb-3">
+          <label for="wbc">WBC:</label>
+          <input type="text" class="form-control" id="wbc" value="" name="wbc"  />
+        </div>
+
+          
+        <div class="col-md-4 mb-3">
+          <label for="epithelial_cells">Epithelial Cells:</label>
+          <input type="text" class="form-control" id="epithelial_cells" value="" name="epithelial_cells"  />
+        </div>
+
+          
+        <div class="col-md-4 mb-3">
+          <label for="abnormality">Abnormality:</label>
+          <input type="text" class="form-control" id="abnormality" value="" name="abnormality"  />
+        </div>
+
+
+    </div>
+
+
+
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+</div>
+
+<!-- End of Main Content -->
+{% endblock %} {% block script %}
+<script></script>
+<script>
+
+
+  // Function to handle form submission
+  function handleFormSubmission(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Your additional logic for form validation or processing goes here
+
+    // Select all input fields in the form
+    const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
+
+    // Flag to keep track of form validity
+    let isValid = true;
+
+    // Loop through each input field
+    inputs.forEach(function (input) {
+      // Check if the input field is  and does not have a value
+      if (input.hasAttribute("required") && !input.value.trim()) {
+        // If a  field is empty, set isValid to false
+        isValid = false;
+        // Highlight the empty field (you can customize this part)
+        input.style.border = "1px solid red";
+      } else {
+        // Remove any previous highlighting
+        input.style.border = "";
+      }
+    });
+
+    // If the form is valid, submit it
+    if (isValid) {
+      document.getextementById("patientForm").submit();
+    } else {
+      // If the form is invalid, display an alert (you can customize this part)
+      //   alert("Please fill out all  fields.");
+    }
+  }
+
+  // Function to handle keyboard shortcuts
+  function handleShortcut(event) {
+    // if (event.ctrlKey && event.key === "s") {
+    if (event.key === "F2") {
+      // Ctrl + S pressed, trigger form submission
+      handleFormSubmission(event);
+    }
+  }
+
+  // Attach event listener for form submission
+  document.getextementById("patientForm").addEventListener("submit", handleFormSubmission);
+
+  // Attach event listener for keyboard shortcuts
+  document.addEventListener("keydown", handleShortcut);
+</script>
+
+<script>
+  $(document).ready(function () {
+    $("#regno").on("input", function () {
+      var regno = $(this).val();
+      if (regno) {
+        $.ajax({
+          url: '{% url "fetch_patient_data_details" %}',
+          type: "GET",
+          data: {
+            regno: regno,
+          },
+          success: function (data) {
+            // Update input fields with fetched data
+            $("#patient_name").val(data.name);
+            $("#bill_no").val(data.bill_no);
+            $("#labno").val(data.lab_no);
+            $("#department").val(data.department);
+            $("#doctor").val(data.referby);
+            $("#patient_name").val(data.name);
+          },
+          error: function (xhr, status, error) {
+            console.error(xhr.responseText);
+            // Handle error if necessary
+            $("#patient_name").val('');
+            $("#bill_no").val('');
+            $("#labno").val('');
+            $("#department").val('');
+            $("#doctor").val('');
+            $("#patient_name").val('');
+          },
+        });
+      } else {
+        // Clear input fields when regno is empty
+        $("#patient_name").val('');
+        $("#bill_no").val('');
+        $("#labno").val('');
+        $("#department").val('');
+        $("#doctor").val('');
+        $("#patient_name").val('');
+      }
+    });
+  });
+</script>
+
+
+{% endblock %}

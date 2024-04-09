@@ -1,0 +1,405 @@
+{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<style>
+  label {
+    width: 230px;
+  }
+  .form-group {
+    margin-bottom: 0.2rem;
+    line-height: 0.5rem;
+    align-items: center;
+  }
+  .form-control {
+    padding: ".15rem .75rem";
+  }
+</style>
+<div class="container-fluid">
+  <!-- Page Heading -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+
+  {% endfor %} {% endif %}
+  <form id="orderForm" method="POST" action="/drug/purchase/{{purchase.purchase_id}}/update/">
+    {% csrf_token %}
+    <h3>PURCHASE</h3>
+    <div class="row">
+      <!-- Left Column (Patient Details) -->
+      <div class="col-md-4 mb-3">
+        <div class="form-group">
+          <label for="order_id">Order No.:</label>
+          <input type="text" class="form-control" id="regno" value="{{purchase.purchase_id}}" name="purchase_id" required />
+        </div>
+      </div>
+
+      <!-- Right Column (Order Details) -->
+      <div class="col-md-4 mb-3">
+        <div class="form-group">
+          <label for="suppliar" id="suppliar">Supplier Name:</label>
+          <select class="form-control" name="suppliar" required>
+            <option>Select Supplier</option>
+            {% for s in suppliar %}
+            <option {% if purchase.supplier.suppliar_id == s.suppliar_id %}selected{% endif %} value="{{s.suppliar_id}}">{{s.name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+
+
+      <div class="col-md-4 mb-3">
+        <div class="form-group">
+          <label for="invoice">Invoice No.:</label>
+          <input type="text" value="{{purchase.invoice_no}}" class="form-control" id="invoice" name="invoice" required />
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <div class="form-group">
+          <label for="invoice_date">Invoice Date.:</label>
+          <input type="date" value="{{ purchase.invoice_date|date:'Y-m-d' }}" class="form-control" id="invoice_date" name="invoice_date" required />
+        </div>
+      </div>
+    </div>
+
+    <h3>Products</h3>
+    <div id="productFields">
+        {% for p in purchase.products.all %}
+      <div class="row product-row">
+
+        <!-- Middle Column (Product Details) -->
+        <div class="col-md-4 mb-3">
+          <div class="form-group">
+            <label for="product_type" id="product_type">Product Type:</label>
+            <select class="form-control" name="product_type_1" required>
+              <option>Select Product Type</option>
+              {% for s in unique_p_types %}
+              <option {% if p.product.p_type == s %}selected{% endif %} value="{{s}}">{{s}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <!-- Right Column (Order Details) -->
+        <div class="col-md-4 mb-3">
+          <div class="form-group">
+            <label for="product_name" id="product_name">Product Name:</label>
+            <select class="form-control" name="product_name_1" required>
+              <option>Select Product Name</option>
+              {% for s in product %}
+              <option {% if p.product.product_type_id == s.product_type_id %}selected{% endif %} value="{{s.product_type_id}}">{{s.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <!-- Left Column (Patient Details) -->
+        <div class="col-md-4 mb-3">
+          <div class="form-group">
+            <label for="mfgname">Mfg. Name:</label>
+            <input value="{{p.mfg_name}}" type="text" class="form-control" name="mfgname_1" required />
+          </div>
+        </div>
+
+        <!-- Middle Column (Product Details) -->
+        <div class="col-md-4 mb-3">
+          <div class="form-group">
+            <label for="batchno">Batch No.:</label>
+            <input value="{{p.batch_no}}" type="text" class="form-control" name="batchno_1" required />
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3" style="display: none;">
+          <div class="form-group">
+            <label for="mfgname">Products Details Id:</label>
+            <input value="{{p.productdetails_id}}" type="text" class="form-control" name="productdetails_id_1" required />
+          </div>
+        </div>
+
+
+        <!-- Right Column (Order Details) -->
+        <div class="col-md-4 mb-3">
+          <div class="form-group">
+            <label for="mfgdate">Mfg Date:</label>
+            <input value="{{p.mfg_date|date:'Y-m-d'}}" type="date" class="form-control" name="mfgdate_1" required />
+          </div>
+        </div>
+
+        <!-- Left Column (Patient Details) -->
+        <div class="col-md-4 mb-3">
+          <div class="form-group">
+            <label for="expdate">Exp. Date:</label>
+            <input value="{{p.exp_date|date:'Y-m-d'}}" type="date" class="form-control" name="expdate_1" required />
+          </div>
+        </div>
+
+
+
+        <!-- Middle Column (Product Details) -->
+        <div class="col-md-4 mb-3">
+          <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input value="{{p.quantity}}" type="number" class="form-control" name="quantity_1" required />
+          </div>
+        </div>
+
+        <!-- Right Column (Order Details) -->
+        <div class="col-md-4 mb-3">
+          <div class="form-group">
+            <label for="date">Date:</label>
+            <input value="{{p.purchase_date|date:'Y-m-d'}}" type="date" class="form-control" name="date_1" required />
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    <input type="hidden" id="productCount" name="product_count" {% if purchase.products.all|length %}value="{{ purchase.products.all|length }}"{% else %}value="1"{% endif %} />
+
+    <div class="text-center mt-3">
+      <button type="button" class="btn btn-primary" id="addProductField">Add Product</button>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+</div>
+
+<!-- End of Main Content -->
+{% endblock %} {% block script %}
+<script></script>
+<script>
+  $(document).ready(function () {
+    $("#department").change(function () {
+      var departmentId = $(this).val();
+      $.ajax({
+        url: '{% url "get_doctors_by_department" %}',
+        type: "GET",
+        data: {
+          department_id: departmentId,
+        },
+        success: function (data) {
+          console.log(data);
+          $("#doctor").empty();
+          $.each(data.doctors, function (index, doctor) {
+            $("#doctor").append('<option value="' + doctor.doctor_id + '">' + doctor.name + "</option>");
+          });
+        },
+      });
+    });
+  });
+</script>
+<script>
+  // Function to add product fields dynamically
+  document.getElementById("addProductField").addEventListener("click", function () {
+    var productCount = parseInt($("#productCount").val());
+    productCount++;
+    $("#productCount").val(productCount);
+    var productFields = document.getElementById("productFields");
+    var productRow = document.createElement("div");
+    productRow.className = "row product-row";
+
+
+    var middleColumn = document.createElement("div");
+    middleColumn.className = "col-md-4 mb-3";
+    middleColumn.innerHTML = `
+        <div class="form-group">
+          <label for="product_type" id="product_type" name="product_type">Product Type:</label>
+          <select class="form-control" name="product_type_${productCount}" required>
+            <option>Select Product Type</option>
+              {% for s in unique_p_types %}
+                <option value="{{s}}">{{s}}</option>
+                {% endfor %}
+          </select>
+        </div>
+      `;
+
+
+    var productsdetailsid = document.createElement("div");
+    productsdetailsid.className = "col-md-4 mb-3";
+    productsdetailsid.innerHTML = `
+        <div class="col-md-4 mb-3" style="display: none;">
+          <div class="form-group">
+            <label for="mfgname">Products Details Id:</label>
+            <input  type="text" class="form-control" name="productdetails_id_${productCount}" required />
+          </div>
+        </div>
+    `;
+
+    var rightColumn = document.createElement("div");
+    rightColumn.className = "col-md-4 mb-3";
+    rightColumn.innerHTML = `
+        <div class="form-group">
+          <label for="product_name" id="product_name" name="product_name">Product Name:</label>
+          <select class="form-control" name="product_name_${productCount}" required>
+            <option>Select Product Name</option>
+            {% for s in product %}
+            <option value="{{s.product_type_id}}" >{{s.name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      `;
+
+    var mfgColumn = document.createElement("div");
+    mfgColumn.className = "col-md-4 mb-3";
+    mfgColumn.innerHTML = `
+        <div class="form-group">
+          <label for="mfgname">Mfg. Name:</label>
+          <input type="text" class="form-control" name="mfgname_${productCount}" required />
+        </div>
+      `;
+
+    var batchColumn = document.createElement("div");
+    batchColumn.className = "col-md-4 mb-3";
+    batchColumn.innerHTML = `
+        <div class="form-group">
+          <label for="batchno">Batch No.:</label>
+          <input type="text" class="form-control" name="batchno_${productCount}" required />
+        </div>
+      `;
+
+    var mfgDateColumn = document.createElement("div");
+    mfgDateColumn.className = "col-md-4 mb-3";
+    mfgDateColumn.innerHTML = `
+        <div class="form-group">
+          <label for="batchno">Mfg Date.:</label>
+          <input type="date" class="form-control" name="mfgdate_${productCount}" required />
+        </div>
+      `;
+
+    var expDatecolumn = document.createElement("div");
+    expDatecolumn.className = "col-md-4 mb-3";
+    expDatecolumn.innerHTML = `
+        <div class="form-group">
+          <label for="batchno">Exp Date.:</label>
+          <input type="date" class="form-control" name="expdate_${productCount}" required />
+        </div>
+      `;
+
+
+    var quantityColumn = document.createElement("div");
+    quantityColumn.className = "col-md-4 mb-3";
+    quantityColumn.innerHTML = `
+      <div class="form-group">
+        <label for="quantity">Quantity:</label>
+        <input type="number" class="form-control" name="quantity_${productCount}" required />
+      </div>
+    `;
+
+
+
+    var dateColumn = document.createElement("div");
+    dateColumn.className = "col-md-4 mb-3";
+    dateColumn.innerHTML = `
+        <div class="form-group">
+          <label for="batchno">Date.:</label>
+          <input type="date" class="form-control" name="date_${productCount}" required />
+        </div>
+      `;
+
+    var removeButton = document.createElement("div");
+    removeButton.className = "col-md-12 mb-3";
+    removeButton.innerHTML = `
+        <button type="button" class="btn btn-danger remove-product">Remove Product</button>
+      `;
+
+    productRow.appendChild(middleColumn);
+    productRow.appendChild(rightColumn);
+    productRow.appendChild(mfgColumn);
+    productRow.appendChild(batchColumn);
+    productRow.appendChild(mfgDateColumn);
+    productRow.appendChild(mfgDateColumn);
+    productRow.appendChild(expDatecolumn);
+    productRow.appendChild(quantityColumn);
+    productRow.appendChild(dateColumn);
+    productRow.appendChild(removeButton);
+    
+    productFields.appendChild(productRow);
+    productRow.appendChild(productsdetailsid);
+  });
+
+  // Function to remove product fields
+  document.addEventListener("click", function (event) {
+    if (event.target.classList.contains("remove-product")) {
+      var productCount = parseInt($("#productCount").val());
+      productCount--;
+      $("#productCount").val(productCount);
+      event.target.closest(".product-row").remove();
+    }
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+    // Event delegation for product type select elements
+    $("#productFields").on("change", "select[name^='product_type']", function () {
+      var productType = $(this).val();
+      var container = $(this).closest(".product-row");
+      var productNameSelect = container.find("select[name^='product_name']");
+
+      $.ajax({
+        url: '{% url "get_product_names_by_type" %}',
+        type: "GET",
+        data: {
+          product_type: productType,
+        },
+        success: function (data) {
+          productNameSelect.empty();
+          $.each(data.products, function (index, product) {
+            productNameSelect.append('<option value="' + product.product_type_id + '">' + product.name + "</option>");
+          });
+        },
+      });
+    });
+  });
+</script>
+
+<script>
+  // Function to handle form submission
+  function handleFormSubmission(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Your additional logic for form validation or processing goes here
+
+    // Select all input fields in the form
+    const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
+
+    // Flag to keep track of form validity
+    let isValid = true;
+
+    // Loop through each input field
+    inputs.forEach(function (input) {
+      // Check if the input field is required and does not have a value
+      if (input.hasAttribute("required") && !input.value.trim()) {
+        // If a required field is empty, set isValid to false
+        isValid = false;
+        // Highlight the empty field (you can customize this part)
+        input.style.border = "1px solid red";
+      } else {
+        // Remove any previous highlighting
+        input.style.border = "";
+      }
+    });
+
+    // If the form is valid, submit it
+    if (isValid) {
+      document.getElementById("patientForm").submit();
+    } else {
+      // If the form is invalid, display an alert (you can customize this part)
+      //   alert("Please fill out all required fields.");
+    }
+  }
+
+  // Function to handle keyboard shortcuts
+  function handleShortcut(event) {
+    // if (event.ctrlKey && event.key === "s") {
+    if (event.key === "F2") {
+      // Ctrl + S pressed, trigger form submission
+      handleFormSubmission(event);
+    }
+  }
+
+  // Attach event listener for form submission
+  document.getElementById("patientForm").addEventListener("submit", handleFormSubmission);
+
+  // Attach event listener for keyboard shortcuts
+  document.addEventListener("keydown", handleShortcut);
+</script>
+{% endblock %}

@@ -1,0 +1,256 @@
+{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<style>
+  label {
+    width: 230px;
+  }
+  .form-group {
+    margin-bottom: 0.2rem;
+    line-height: 0.5rem;
+    align-items: center;
+  }
+  .form-control {
+    padding: ".15rem .75rem";
+  }
+</style>
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <form id="patientForm" method="POST" action="{% url 'add_patient' %}">
+    {% csrf_token %}
+
+    <div>Appointment Date : {{current_time_kolkata}}</div>
+    <div class="form-group" style="display: flex; width: 100%">
+      <label for="regno">Registration Number :</label>
+      <input type="text" class="form-control" id="regno" value="{{regno}}" style="width: 55%" name="regno" required disabled />
+      <input id="redcard" value="true" name="redcard" type="checkbox" style="width: 5%; display: none;"  />
+      <select id="redcardtype" name="redcardtype" class="form-control"  style="width: 15%;"  >
+        <option value="select">Select</option>
+        <option value="Red Card" >Red Card</option>
+        <option value="RB Case" >RB Case</option>
+      </select>
+      <!-- <p style="width: 10%; margin: 0 !important">Red Card</p> -->
+      <input id="redcardid" name="redcardid" style="width: 25%; display: none" class="form-control" type="number" />
+    </div>
+    <div class="form-group" style="display: flex">
+      <label for="uhidno">UHID Number :</label>
+      <div style="display: flex; width: 100%">
+        <input type="text" class="form-control" id="uhidno" name="uhidno" style="width: 50%" value="{{uhidno}}" required disabled /> &nbsp; &nbsp;
+        <input type="text" class="form-control" id="uhidnoincre" name="uhidnoincre" style="width: 49%" value="{{uhidnoincre}}" disabled required />
+      </div>
+    </div>
+    <!-- <div class="form-group">
+      <label for="uhidnoincre">UHID Number Increment</label>
+    </div> -->
+    <div class="form-group" style="display: flex">
+      <label for="name">Name :</label>
+      <input type="text" class="form-control" id="name" name="name" required />
+    </div>
+    <div class="form-group" style="display: flex">
+      <label for="guardianname">Guardian's Name :</label>
+      <div style="display: flex; width: 100%">
+        <select class="form-control" id="guardiannametitle" name="guardiannametitle" style="width: 25%" required>
+          <option value="Self">Self</option>
+          <option value="S/O">S/O (Son of)</option>
+          <option value="D/O">D/O (Daughter of)</option>
+          <option value="W/O">W/O (Wife of)</option>
+          <option value="H/O">H/O (Husband of)</option>
+          <option value="F/O">F/O (Father of)</option>
+          <option value="M/O">M/O (Mother of)</option>
+          <option value="G/O">G/O (Guardian of)</option>
+        </select>
+        &nbsp; &nbsp;
+        <input type="text" class="form-control" id="guardianname" name="guardianname" style="width: 74%" required />
+      </div>
+    </div>
+    <div class="form-group" style="display: flex">
+      <label for="age">Age :</label>
+      <div style="display: flex; width: 100%">
+        <input type="number" class="form-control" id="year" name="year" style="width: 33%" placeholder="Year" /> &nbsp; <input type="number" class="form-control" id="month" name="month" style="width: 33%" placeholder="Month" /> &nbsp;
+        <input type="number" class="form-control" id="days" name="days" style="width: 33%" placeholder="Days" />
+      </div>
+    </div>
+
+    <div class="form-group" style="display: flex">
+      <label for="age">Gender :</label>
+      <select type="text" id="gender" class="form-control" name="gender" required style="">
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Prefer not to say">Prefer not to say</option>
+        <option value="Non-binary">Non-binary</option>
+        <option value="Transgender">Transgender</option>
+        <option value="Genderqueer">Genderqueer</option>
+        <option value="Agender">Agender</option>
+      </select>
+    </div>
+
+    <div class="form-group" style="display: flex">
+      <label for="mobile">Mobile No. :</label>
+      <input type="text" class="form-control" id="mobile" name="mobile" />
+    </div>
+
+    <div class="form-group" style="display: flex">
+      <label for="address">Address :</label>
+      <textarea type="text" class="form-control" id="address" required name="address"></textarea>
+    </div>
+
+    <div class="form-group" style="display: flex">
+      <label for="policest">Police Station :</label>
+      <input type="text" class="form-control" id="policest" required name="policest" />
+    </div>
+
+    <div class="form-group" style="display: flex">
+      <label for="district">District :</label>
+      <input type="text" class="form-control" id="district" name="district" />
+    </div>
+
+    <!-- <div class="form-group" style="display: flex">
+      <label for="state">State :</label>
+      <input type="text" class="form-control" id="state" name="state" />
+    </div> -->
+
+    <div class="form-group" style="display: flex">
+      <label for="pincode">Pin Code :</label>
+      <input type="text" class="form-control" id="pincode" name="pincode" />
+    </div>
+
+    <div class="form-group" style="display: flex">
+      <label for="department">Departments :</label>
+
+      <select type="text" id="department" class="form-control" name="department" required style="">
+        <option>Select Department</option>
+        {% for d in departments %}
+        <option value="{{d.department_id}}">{{d.name}}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group" style="display: flex">
+      <label for="doctor">Doctors :</label>
+      <select class="form-control" style="width: 10%">
+        <option>Dr.</option>
+      </select>
+      <select type="text" id="doctor" class="form-control" name="doctor" style="width: 90%"></select>
+    </div>
+
+    <div class="form-group" style="display: flex">
+      <label for="visittype">Visit Type :</label>
+
+      <select type="text" id="visittype" class="form-control" name="visittype" required style="">
+        <option value="Regular">Regular</option>
+        <option value="Emergency">Emergency</option>
+        <option value="Police Case">Police Case</option>
+        <option value="Reffer">Reffer</option>
+        <!-- <option value="LEP">LEP</option> -->
+        <option value="Unknown">Unknown</option>
+        <option value="Registered">Registered</option>
+      </select>
+    </div>
+
+    <div class="form-group" style="display: flex">
+      <label for="remarks">Remarks :</label>
+      <input type="text" class="form-control" id="remarks" name="remarks" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+</div>
+
+<!-- End of Main Content -->
+{% endblock %} {% block script %}
+<script></script>
+<script>
+  $(document).ready(function () {
+    $("#department").change(function () {
+      var departmentId = $(this).val();
+      $.ajax({
+        url: '{% url "get_doctors_by_department" %}',
+        type: "GET",
+        data: {
+          department_id: departmentId,
+        },
+        success: function (data) {
+          console.log(data);
+          $("#doctor").empty();
+          $.each(data.doctors, function (index, doctor) {
+            $("#doctor").append('<option value="' + doctor.doctor_id + '">' + doctor.name + "</option>");
+          });
+        },
+      });
+    });
+  });
+
+  $(document).ready(function () {
+    $("#redcardid").hide();
+    $("#redcardtype").change(function () {
+      var redcardId = $(this).val();
+      console.log(redcardId)
+      if (redcardId === 'select'){
+        $("#redcardid").hide();
+      }
+      else{
+        $("#redcardid").show();
+      }
+    });
+  });
+
+  // function toggleInputVisibility() {
+  //   var inputField = document.getElementById("redcardid");
+  //   if (document.getElementById("redcard").val() !== 'select') {
+  //     $("#redcardid").show();
+  //   } else {
+  //     $("#redcardid").hide();
+  //   }
+  // }
+</script>
+<script>
+  // Function to handle form submission
+  function handleFormSubmission(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Your additional logic for form validation or processing goes here
+
+    // Select all input fields in the form
+    const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
+
+    // Flag to keep track of form validity
+    let isValid = true;
+
+    // Loop through each input field
+    inputs.forEach(function (input) {
+      // Check if the input field is required and does not have a value
+      if (input.hasAttribute("required") && !input.value.trim()) {
+        // If a required field is empty, set isValid to false
+        isValid = false;
+        // Highlight the empty field (you can customize this part)
+        input.style.border = "1px solid red";
+      } else {
+        // Remove any previous highlighting
+        input.style.border = "";
+      }
+    });
+
+    // If the form is valid, submit it
+    if (isValid) {
+      document.getElementById("patientForm").submit();
+    } else {
+      // If the form is invalid, display an alert (you can customize this part)
+      //   alert("Please fill out all required fields.");
+    }
+  }
+
+  // Function to handle keyboard shortcuts
+  function handleShortcut(event) {
+    // if (event.ctrlKey && event.key === "s") {
+    if (event.key === "F2") {
+      // Ctrl + S pressed, trigger form submission
+      handleFormSubmission(event);
+    }
+  }
+
+  // Attach event listener for form submission
+  document.getElementById("patientForm").addEventListener("submit", handleFormSubmission);
+
+  // Attach event listener for keyboard shortcuts
+  document.addEventListener("keydown", handleShortcut);
+</script>
+{% endblock %}

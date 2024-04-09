@@ -1,0 +1,120 @@
+{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+  {% endfor %} {% endif %}
+
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary"><button href="#" class="btn btn-primary" data-toggle="modal" data-target="#adddepartmentModal">Add Test</button></h6>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+            <th>Name</th>
+              <th>Type</th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr>
+                <th>Name</th>
+              <th>Code</th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
+          </tfoot>
+          <tbody>
+            {% for d in tests %}
+            <tr>
+              <td>{{d.test_name}}</td>
+              <td>{{d.test_code}}</td>
+              <td>
+                <a href="#" class="btn btn-primary btn-icon-split" data-toggle="modal" data-target="#adddepartmentModal_{{d.id}}">
+                  <span class="icon text-white-50">
+                    <i class="fas fa-arrow-right"></i>
+                  </span>
+                  <span class="text">Edit</span>
+                </a>
+                <div class="modal fade" id="adddepartmentModal_{{d.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabelDEpartment" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabelDEpartment">Update Test Code Details</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">×</span>
+                        </button>
+                      </div>
+                      <form class="user" method="POST" action="/pathology/test-code/{{d.id}}/update/">
+                        <div class="modal-body">
+                          {% csrf_token %}
+                          <div class="form-group">
+                            <input type="text" name="test_name" class="form-control" value="{{d.test_name}}" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Test Name..." />
+                          </div>
+                          <div class="form-group">
+                            <input type="text" name="test_code" class="form-control" value="{{d.test_code}}" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter TEst Code..." />
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                          <button class="btn btn-primary" type="submit">Update Tsst</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <a href="/pathology/test-code/{{d.id}}/delete/" class="btn btn-danger btn-icon-split">
+                  <span class="icon text-white-50">
+                    <i class="fas fa-trash"></i>
+                  </span>
+                  <span class="text">Delete</span>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Logout Modal-->
+  <div class="modal fade" id="adddepartmentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabelDEpartment" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabelDEpartment">Add Test</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <form class="user" method="POST" action="">
+          <div class="modal-body">
+            {% csrf_token %}
+            <div class="form-group">
+              <input type="text" name="test_name" class="form-control" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Test Name..." />
+            </div>
+
+            <div class="form-group">
+              <input type="text" name="test_code" class="form-control" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Test Code..." />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <button class="btn btn-primary" type="submit">Add Test</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block script %} {% endblock %}

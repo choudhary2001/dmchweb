@@ -1,0 +1,324 @@
+{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<style>
+  label {
+    width: 230px;
+  }
+  .form-group {
+    margin-bottom: 0.2rem;
+    line-height: 0.5rem;
+    align-items: center;
+  }
+  .form-control {
+    padding: ".15rem .75rem";
+  }
+</style>
+<div class="container-fluid">
+  <!-- Page Heading -->
+
+  <div class="" id="printContent" style="width: 100%; margin-top: -10px; height: 1110px; display: none;">
+    <div style="height: 655px;">
+      <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.8rem">
+        <h2>DEPARTMENT OF CLINICAL PATHOLOGY</h2>
+        <h4>DARBHANGA MEDIAL COLLEGE & HOSPITAL</h4>
+        <h6>LAHERIASARAI, DARBHANGA (BIHAR)</h6>
+      </div>
+      <hr />
+      <div style="display: flex; justify-content: space-between">
+        <div style="display: flex">
+          <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+            <p>Date : <strong>{% if patient.created_at %}{{patient.created_at}}{% endif %} </strong></p>
+            <p>Lab NO. : <strong>{% if patient.lab_no %}{{patient.lab_no}}{% endif %}</strong></p>
+            <p>Bill No. : <strong>{% if patient.bill_no %}{{patient.bill_no}}{% endif %}</strong></p>
+            <p>Reg No. : <strong>{% if patient.reg_no %}{{patient.reg_no.regno}}{% endif %}</strong></p>
+            <p>Patient Name : <strong>{% if patient.reg_no %}{{patient.reg_no.name}}{% endif %}</strong></p>
+            <p>Age : <strong>{% if patient.reg_no.year %}{{patient.reg_no.year}}Y{% endif %} {% if patient.reg_no.month %}{{patient.reg_no.month}}M{% endif %} {% if patient.reg_no.days %}{{patient.reg_no.days}}D{% endif %} /{{patient.gender}}</strong></p>
+            <p>Gender : <strong>{% if patient.reg_no.gender %}{{patient.reg_no.gender}}{% endif %}</strong></p>
+            <p>Dept : <strong>{% if patient.department %}{{patient.department.name}}{% endif %} {% if patient.pincode %}{{patient.pincode}}{% endif %}</strong></p>
+            <p>Doctor : <strong>{% if patient.referby %}{{patient.referby.name}}{% endif %}</strong></p>
+            <p>Test Name : <strong>{% if patient.test_name %}{{patient.test_name.test_name}}{% endif %}</strong></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <hr />
+    <div style="height: 555px;">
+      <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.2rem">
+        <h2>DEPARTMENT OF CLINICAL PATHOLOGY</h2>
+        <h4>DARBHANGA MEDIAL COLLEGE & HOSPITAL</h4>
+        <h6>LAHERIASARAI, DARBHANGA (BIHAR)</h6>
+      </div>
+      <hr />
+      <div style="display: flex; justify-content: space-between">
+        <div style="display: flex">
+          <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+            <p>Date : <strong>{% if patient.created_at %}{{patient.created_at}}{% endif %} </strong></p>
+            <p>Lab NO. : <strong>{% if patient.lab_no %}{{patient.lab_no}}{% endif %}</strong></p>
+            <p>Bill No. : <strong>{% if patient.bill_no %}{{patient.bill_no}}{% endif %}</strong></p>
+            <p>Reg No. : <strong>{% if patient.reg_no %}{{patient.reg_no.regno}}{% endif %}</strong></p>
+            <p>Patient Name : <strong>{% if patient.reg_no %}{{patient.reg_no.name}}{% endif %}</strong></p>
+            <p>Age : <strong>{% if patient.reg_no.year %}{{patient.reg_no.year}}Y{% endif %} {% if patient.reg_no.month %}{{patient.reg_no.month}}M{% endif %} {% if patient.reg_no.days %}{{patient.reg_no.days}}D{% endif %} /{{patient.gender}}</strong></p>
+            <p>Gender : <strong>{% if patient.reg_no.gender %}{{patient.reg_no.gender}}{% endif %}</strong></p>
+            <p>Dept : <strong>{% if patient.department %}{{patient.department.name}}{% endif %} {% if patient.pincode %}{{patient.pincode}}{% endif %}</strong></p>
+            <p>Doctor : <strong>{% if patient.referby %}{{patient.referby.name}}{% endif %}</strong></p>
+            <p>Test Name : <strong>{% if patient.test_name %}{{patient.test_name.test_name}}{% endif %}</strong></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+
+  {% endfor %} {% endif %}
+  <form id="patientForm" method="POST" action="/pathology/update_patient_registration/{{patient.id}}/">
+    {% csrf_token %}
+
+    <div class="row">
+        <!-- Left Column (Patient Details) -->
+        <div class="col-md-4 mb-3">
+
+            <label for="bill_no">Bill No.:</label>
+            <input type="tel" class="form-control" id="bill_no" value="{{patient.bill_no}}" name="bill_no" disabled required />
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="regno">Reg No.:</label>
+            <input type="number" class="form-control" id="regno" name="regno" value="{{patient.reg_no.regno}}" disabled required />
+
+        </div>
+
+
+        <div class="col-md-4 mb-3">
+            <label for="department">Department:</label>
+            <select type="text" id="department" class="form-control" name="department" required style="">
+                <option>Select Department</option>
+                {% for d in departments %}
+                <option {% if patient.department.department_id == d.department_id %}selected{% endif %} value="{{d.department_id}}" >{{d.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="patient_name">Patient Name :</label>
+            <input type="tel" class="form-control" id="patient_name" value="{{patient.reg_no.name}}" disabled  name="patient_name"  disabled/>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="gender">Gender:</label>
+            <input type="text" class="form-control" id="gender" value="{{patient.reg_no.gender}}"  name="gender" disabled  />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="age">Age:</label>
+            <input type="text" class="form-control" id="age" value="" disabled  name="age"  />
+        </div>
+
+        <div class="col-md-4 mb-3" >
+            <label for="doctor">Refer By :</label>
+            <select type="text" id="doctor" class="form-control" name="doctor" >
+            <option>Select Doctor</option>
+            </select>
+        </div>
+      
+        <div class="col-md-4 mb-3" >
+            <label for="labno">Lab No :</label>
+            <input type="text" id="labno" value="{{patient.lab_no}}" class="form-control" name="labno" />
+        </div>
+      
+        <div class="col-md-4 mb-3">
+            <label for="date">Date:</label>
+            <input type="date" id="date" class="form-control" name="date" value="{{ patient.date|date:'Y-m-d' }}" required>
+        </div>
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="test_name">Test Name:</label>
+
+        <input type="text" id="test_name" value="{{ test.testName }}" class="form-control" name="test_name" />
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="#;" id="printButton" style=" display: none;" class="btn btn-primary">Print</a>
+
+  </form>
+</div>
+
+<!-- End of Main Content -->
+{% endblock %} {% block script %}
+<script>
+  // Function to handle showing the print button after page load
+  document.addEventListener("DOMContentLoaded", function () {
+    // Show the print button
+    document.getElementById("printButton").style.display = "inline-block";
+  });
+</script>
+<script>
+  $(document).ready(function () {
+      // Function to handle printing
+      $("#printButton").click(function () {
+          // Show the hidden print content
+          $("#printContent").show();
+
+          // Print only the content inside the printContent div
+          var printContents = $("#printContent").html();
+          var originalContents = $("body").html();
+          $("body").empty().html(printContents);
+
+          // Trigger the print dialog
+          window.print();
+
+          // Restore the original page content
+          $("#printContent").hide();
+          $("body").html(originalContents);
+          $("#printContent").hide();
+      });
+  });
+</script>
+<script>
+    var departmentId ={{patient.department.department_id}};
+        $.ajax({
+        url: '{% url "get_doctors_by_department" %}',
+        type: "GET",
+        data: {
+            department_id: departmentId,
+        },
+        success: function (data) {
+            console.log(data);
+            $("#doctor").empty();
+            $.each(data.doctors, function (index, doctor) {
+            $("#doctor").append('<option value="' + doctor.doctor_id + '">' + doctor.name + "</option>");
+            });
+        },
+    });
+
+  $(document).ready(function () {
+    $("#department").change(function () {
+      var departmentId = $(this).val();
+      $.ajax({
+        url: '{% url "get_doctors_by_department" %}',
+        type: "GET",
+        data: {
+          department_id: departmentId,
+        },
+        success: function (data) {
+          console.log(data);
+          $("#doctor").empty();
+          $.each(data.doctors, function (index, doctor) {
+            $("#doctor").append('<option value="' + doctor.doctor_id + '">' + doctor.name + "</option>");
+          });
+        },
+      });
+    });
+  });
+
+  $(document).ready(function () {
+    $("#redcardid").hide();
+    $("#redcardtype").change(function () {
+      var redcardId = $(this).val();
+      console.log(redcardId)
+      if (redcardId === 'select'){
+        $("#redcardid").hide();
+      }
+      else{
+        $("#redcardid").show();
+      }
+    });
+  });
+
+
+  // Function to handle form submission
+  function handleFormSubmission(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Your additional logic for form validation or processing goes here
+
+    // Select all input fields in the form
+    const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
+
+    // Flag to keep track of form validity
+    let isValid = true;
+
+    // Loop through each input field
+    inputs.forEach(function (input) {
+      // Check if the input field is required and does not have a value
+      if (input.hasAttribute("required") && !input.value.trim()) {
+        // If a required field is empty, set isValid to false
+        isValid = false;
+        // Highlight the empty field (you can customize this part)
+        input.style.border = "1px solid red";
+      } else {
+        // Remove any previous highlighting
+        input.style.border = "";
+      }
+    });
+
+    // If the form is valid, submit it
+    if (isValid) {
+      document.getElementById("patientForm").submit();
+    } else {
+      // If the form is invalid, display an alert (you can customize this part)
+      //   alert("Please fill out all required fields.");
+    }
+  }
+
+  // Function to handle keyboard shortcuts
+  function handleShortcut(event) {
+    // if (event.ctrlKey && event.key === "s") {
+    if (event.key === "F2") {
+      // Ctrl + S pressed, trigger form submission
+      handleFormSubmission(event);
+    }
+  }
+
+  // Attach event listener for form submission
+  document.getElementById("patientForm").addEventListener("submit", handleFormSubmission);
+
+  // Attach event listener for keyboard shortcuts
+  document.addEventListener("keydown", handleShortcut);
+</script>
+
+<script>
+  $(document).ready(function () {
+    $("#regno").on("input", function () {
+      var regno = {{patient.reg_no}};
+      if (regno) {
+        $.ajax({
+          url: '{% url "fetch_patient_data" %}',
+          type: "GET",
+          data: {
+            regno: regno,
+          },
+          success: function (data) {
+            // Update input fields with fetched data
+            $("#patient_name").val(data.name);
+            $("#gender").val(data.gender);
+            $("#age").val(data.age);
+          },
+          error: function (xhr, status, error) {
+            console.error(xhr.responseText);
+            // Handle error if necessary
+            $("#patient_name").val('');
+            $("#gender").val('');
+            $("#age").val('');
+          },
+        });
+      } else {
+        // Clear input fields when regno is empty
+        $("#patient_name").val('');
+        $("#gender").val('');
+        $("#age").val('');
+      }
+    });
+  });
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,412 @@
+{% extends 'counter/base.html' %} {% load static %} {% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<style>
+  label {
+    width: 230px;
+  }
+  .form-group {
+    margin-bottom: 0.2rem;
+    line-height: 0.5rem;
+    align-items: center;
+  }
+  .form-control {
+    padding: ".15rem .75rem";
+  }
+  strong{
+    font-family: sans-serif; 
+    color: black;
+    font-size: 1rem;
+    margin-bottom: 0.4rem !important;
+  }
+  p
+  {
+    font-family: sans-serif !important; 
+    color: black !important;
+    font-size: 1rem !important;
+    margin-bottom: 0.4rem !important;
+  }
+  h1{
+    font-family: sans-serif; 
+    color: black;
+    font-size: 1rem;
+  }
+  @media print {
+    label, p, h1 {
+      font-family: sans-serif !important;
+      color: black !important;
+      font-size: 1rem !important;
+    }
+  }
+</style>
+
+<div class="" id="printContent" style="display: none; width:100%; margin-top: -20px;">
+    <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.4rem;">
+      <strong>वाह्य विभाग (Outdoor)</strong>
+      <strong>दरभंगा चिकित्सा महाविद्यालय अस्पताल</strong>
+      <strong>DARBHANGA MEDICAL COLLEGE HOSPITAL</strong>
+      <strong>लहेरियासराय, दरभंगा</strong>
+      <strong>LAHERIASARAI, DARBHANGA</strong>
+      <strong>पंजीकरण पर्ची (Registration Ticket)</strong>
+    </div>
+    <hr />
+    <div style="display: flex; justify-content: space-between;">
+      <div style="display: flex">
+        <div style="flex: 2; font-family: sans-serif; color: black; font-size: 1.2rem;  margin-bottom: 0.4rem !important;">
+          <p>DEPARTMENT :</p>
+          <p>REG NO. :</p>
+          <p>PATIENT NAME :</p>
+          <p>GUARDIAN NAME :</p>
+          <p>ADDRESS :</p>
+          <p>PS :</p>
+          {% if patient.redcard == True %}
+          <p>{{patient.redcardtype}} </p>
+          {% endif %}
+        </div>
+        <div style="font-family: sans-serif; color: black; font-size: 1.2rem;  margin-bottom: 0.4rem !important;">
+          <p><strong>{% if patient.department %}{{patient.department}}{% endif %} {% if patient.department.room_no %}(ROOM NO. {{patient.department.room_no}}){% endif %}</strong></p>
+          <p><strong>{% if patient.regno %}{{patient.regno}}{% endif %} </strong></p>            
+          <p><strong>{% if patient.name %}{{patient.name}}{% endif %}</strong></p>
+          <p><strong>{% if patient.guardiannametitle %}{{patient.guardiannametitle}}{% endif %} {% if patient.guardianname %}{{patient.guardianname}}{% endif %}</strong></p>
+          <p><strong>{% if patient.address %}{{patient.address}}{% endif %}</strong></p>
+          <p><strong>{% if patient.policest %}{{patient.policest}}{% endif %} {% if patient.pincode %}{{patient.pincode}}{% endif %}</strong></p>
+          <p><strong>{% if patient.redcardid %}{{patient.redcardid}}{% endif %}</strong></p>
+          
+        </div>
+      </div>
+      <div style=" font-family: sans-serif; color: black; font-size: 1.2rem;  margin-bottom: 0.4rem !important;">
+        <p>REG. DATE : <strong>{% if patient.appointment_date %}{{patient.appointment_date}}{% endif %}</strong></p>
+        <p>REG. FEES : <strong>RS {% if patient.visittype == 'Unknown' %}0{% else %}{% if patient.redcard == True  %}0{% else %}5{% endif %}{% endif %} /-</strong></p>
+        <p>AGE/GENDER : <strong>{% if patient.year %}{{patient.year}}Y{% endif %} {% if patient.month %}{{patient.month}}M{% endif %} {% if patient.days %}{{patient.days}}D{% endif %} /{{patient.gender}}</strong></p>
+        <p>MOBILE NO : <strong>{% if patient.mobno %}{{patient.mobno}}{% endif %}</strong></p>
+        <p>DISTRICT : <strong>{% if patient.district %}{{patient.district}}{% endif %}</strong></p>
+        <p>PATIENT TYPE :  <strong>{% if patient.visittype %}{{patient.visittype}}{% endif %}</strong></p>
+      </div>
+    </div>
+    <hr />
+
+    <div style="height: 38vh"></div>
+    <!-- <hr /> -->
+    <div style="display: flex; align-items: center; justify-content: center; font-family: sans-serif; color: black; font-size: 1.2rem; ">
+      <img src="{% static 'img/chunav.JPG' %}" style="height: 110px;" /> &nbsp; &nbsp;
+      <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.2rem;">
+        <strong>लोकसभा आम निर्वाचन 2024</strong>
+        <strong>13 मई एवम 20 मई को अवश्य करे मतदान।</strong>
+        <strong>हमर मतदान दरभंगाक सम्मान।</strong>
+      </div>
+    </div>
+</div>
+
+
+<div class="container-fluid" id="originalContent">
+  <!-- Page Heading -->
+  <form id="patientForm" method="POST" action="/update-patients/{{patient.regno}}">
+    {% csrf_token %}
+    <div>Appointment Date : {{patient.appointment_date}}</div>
+    <div class="form-group" style="display: flex; width: 100%;">
+      <label for="regno">Registration Number :</label>
+      <input type="text" class="form-control" id="regno" style="width: 60%" value="{{patient.regno}}" name="regno" required disabled  />
+      <select name="redcardtype" class="form-control" id="redcardtype" style="width: 15%;" class="form-group" disabled >
+        <option value="select">Select</option>
+        <option {% if patient.redcardtype == 'Red Card' %} selected {% endif %} value="Red Card" >Red Card</option>
+        <option {% if patient.redcardtype == 'RB Case' %} selected {% endif %} value="RB Case" >RB Case</option>
+      </select>
+      <input id="redcardid"  name="redcardid" value="{{patient.redcardid}}" style="width: 25%; {% if patient.redcard %}{% else %}display: none{% endif %}" class="form-control" disabled type="number" />
+    </div>
+    <div class="form-group" style="display: flex">
+      <label for="uhidno">UHID Number :</label>
+      <div style="display: flex; width: 100%">
+        <input type="text" class="form-control" id="uhidno" name="uhidno" style="width: 50%" value="{{patient.uhidno}}" required  disabled /> &nbsp; &nbsp;
+        <input type="text" class="form-control" id="uhidnoincre" name="uhidnoincre" style="width: 49%" value="{{patient.uhidnoincre}}" required   disabled  />
+        
+      </div>
+    </div>
+    <!-- <div class="form-group">
+      <label for="uhidnoincre">UHID Number Increment</label>
+    </div> -->
+    <div class="form-group" style="display: flex">
+      <label for="name">Name :</label>
+      <input type="text" class="form-control" id="name" name="name" value="{{patient.name}}" required   />
+    </div>
+    <div class="form-group" style="display: flex">
+      <label for="guardianname">Guardian's Name :</label>
+      <div style="display: flex; width: 100%">
+        <select class="form-control" id="guardiannametitle" name="guardiannametitle" style="width: 25%" required   >
+            <option value="Self" {% if patient.guardiannametitle == 'Self' %} selected {% endif %}>Self</option>
+            <option value="S/O" {% if patient.guardiannametitle == 'S/O' %} selected {% endif %}>S/O (Son of)</option>
+            <option value="D/O" {% if patient.guardiannametitle == 'D/O' %} selected {% endif %}>D/O (Daughter of)</option>
+            <option value="W/O" {% if patient.guardiannametitle == 'W/O' %} selected {% endif %}>W/O (Wife of)</option>
+            <option value="H/O" {% if patient.guardiannametitle == 'H/O' %} selected {% endif %}>H/O (Husband of)</option>
+            <option value="F/O" {% if patient.guardiannametitle == 'F/O' %} selected {% endif %}>F/O (Father of)</option>
+            <option value="M/O" {% if patient.guardiannametitle == 'M/O' %} selected {% endif %}>M/O (Mother of)</option>
+            <option value="G/O" {% if patient.guardiannametitle == 'G/O' %} selected {% endif %}>G/O (Guardian of)</option>
+          </select>
+          
+        &nbsp; &nbsp;
+        <input type="text" class="form-control" id="guardianname" name="guardianname" style="width: 74%" value="{{patient.guardianname}}" required    />
+      </div>
+    </div>
+    <div class="form-group" style="display: flex">
+      <label for="age">Age :</label>
+      <div style="display: flex; width: 100%">
+        <input type="number" class="form-control" id="year" name="year" style="width: 33%" placeholder="Year" value="{{patient.year}}"   /> &nbsp; <input type="number" class="form-control" id="month" name="month" style="width: 33%" placeholder="Month" value="{{patient.month}}"   /> &nbsp;
+        <input type="number" class="form-control" id="days" name="days" style="width: 33%" placeholder="Days" value="{{patient.days}}"  />
+      </div>
+    </div>
+
+    <div class="form-group" style="display: flex">
+      <label for="age">Gender :</label>
+      <select type="text" id="gender" class="form-control" name="gender" required style=""  >
+        <option value="Male" {% if patient.gender == 'Male' %} selected {% endif %}>Male</option>
+        <option value="Female" {% if patient.gender == 'Female' %} selected {% endif %}>Female</option>
+        <option value="Other" {% if patient.gender == 'Other' %} selected {% endif %}>Other</option>
+        <option value="Prefer not to say" {% if patient.gender == 'Prefer not to say' %} selected {% endif %}>Prefer not to say</option>
+        <option value="Non-binary" {% if patient.gender == 'Non-binary' %} selected {% endif %}>Non-binary</option>
+        <option value="Transgender" {% if patient.gender == 'Transgender' %} selected {% endif %}>Transgender</option>
+        <option value="Genderqueer" {% if patient.gender == 'Genderqueer' %} selected {% endif %}>Genderqueer</option>
+        <option value="Agender" {% if patient.gender == 'Agender' %} selected {% endif %}>Agender</option>
+      </select>
+      
+    </div>
+
+    <div class="form-group" style="display: flex">
+      <label for="mobile">Mobile No. :</label>
+      <input type="text" class="form-control" id="mobile" value="{{patient.mobno}}" name="mobile"   />
+    </div>
+
+    <div class="form-group" style="display: flex">
+      <label for="address">Address :</label>
+      <textarea type="text" class="form-control" id="address" required name="address" value="{{patient.address}}"  >{{patient.address}}</textarea>
+    </div>
+
+    <div class="form-group" style="display: flex">
+      <label for="policest">Police Station :</label>
+      <input type="text" class="form-control" id="policest" required name="policest" value="{{patient.policest}}"   />
+    </div>
+
+    <div class="form-group" style="display: flex">
+      <label for="district">District :</label>
+      <input type="text" class="form-control" id="district" name="district" value="{{patient.district}}"   />
+    </div>
+
+    <!-- <div class="form-group" style="display: flex">
+      <label for="state">State :</label>
+      <input type="text" class="form-control" id="state" name="state" />
+    </div> -->
+
+    <div class="form-group" style="display: flex">
+      <label for="pincode">Pin Code :</label>
+      <input type="text" class="form-control" id="pincode" name="pincode" value="{{patient.pincode}}"   />
+    </div>
+
+    <div class="form-group" style="display: flex">
+      <label for="department">Departments :</label>
+      <select type="text" id="department" class="form-control" name="department" value="{{patient.department.department_id}}" required style=""  >
+        <option>Select Department</option>
+        {% for d in departments %}
+          <option value="{{d.department_id}}" {% if patient.department.department_id == d.department_id %} selected {% endif %}>{{d.name}}</option>
+        {% endfor %}
+      </select>
+      
+    </div>
+
+    <div class="form-group" style="display: flex">
+      <label for="doctor">Doctors :</label>
+      <select type="text" id="doctor" class="form-control" name="doctor" required style="" value="{{patient.doctor.doctor_id}}"  >
+        <option>Select Doctor</option>
+        </select>
+    </div>
+
+    <div class="form-group" style="display: flex">
+      <label for="visittype">Visit Type :</label>
+      <select type="text" id="visittype" class="form-control" name="visittype" required style=" "  >
+        <option value="Regular" {% if patient.visittype == 'Regular' %} selected {% endif %}>Regular</option>
+        <option value="Emergency" {% if patient.visittype == 'Emergency' %} selected {% endif %}>Emergency</option>
+        <option value="Police Case" {% if patient.visittype == 'Police Case' %} selected {% endif %}>Police Case</option>
+        <option value="Reffer" {% if patient.visittype == 'Reffer' %} selected {% endif %}>Reffer</option>
+        <!-- <option value="LEP" {% if patient.visittype == 'LEP' %} selected {% endif %}>LEP</option> -->
+        <option value="Unknown" {% if patient.visittype == 'Unknown' %} selected {% endif %}>Unknown</option>
+        <option value="Free" {% if patient.visittype == 'Free' %} selected {% endif %}>ANC Free</option>
+        <option value="Registered" {% if patient.visittype == 'Registered' %} selected {% endif %}>Registered</option>
+      </select>
+      
+    </div>
+
+    <div class="form-group" style="display: flex">
+      <label for="remarks">Remarks :</label>
+      <input type="text" class="form-control" id="remarks" name="remarks" value="{{patient.symptoms}}"   />
+    </div>
+      <button type="submit" class="btn btn-primary">Update</button>
+    
+    <a href="#;" id="printButton" style=" display: none;" class="btn btn-primary">Print</a>
+
+  </form>
+</div>
+
+
+<!-- End of Main Content -->
+{% endblock %} {% block script %}
+<script>
+    $(document).ready(function () {
+      var patientDepartmentId = "{{ patient.department.department_id }}";
+        console.log(patientDepartmentId)
+        $.ajax({
+          url: '{% url "get_doctors_by_department" %}',
+          type: "GET",
+          data: {
+            department_id: patientDepartmentId,
+          },
+          success: function (data) {
+            console.log(data);
+            $("#doctor").empty();
+            $.each(data.doctors, function (index, doctor) {
+              $("#doctor").append('<option value="' + doctor.doctor_id + '">' + doctor.name + "</option>");
+            });
+            
+            // Select the previously selected doctor if available
+            var selectedDoctorId = "{{ patient.doctor.doctor_id }}";
+            if (selectedDoctorId) {
+              $("#doctor").val(selectedDoctorId);
+            }
+          },
+        });
+        
+      if (patientDepartmentId) {
+        $("#department").val(patientDepartmentId).trigger("change");
+      }
+  
+      $("#department").change(function () {
+        var departmentId = $(this).val();
+        $.ajax({
+          url: '{% url "get_doctors_by_department" %}',
+          type: "GET",
+          data: {
+            department_id: departmentId,
+          },
+          success: function (data) {
+            console.log(data);
+            $("#doctor").empty();
+            $.each(data.doctors, function (index, doctor) {
+              $("#doctor").append('<option value="' + doctor.doctor_id + '">' + doctor.name + "</option>");
+            });
+            
+            // Select the previously selected doctor if available
+            var selectedDoctorId = "{{ patient.doctor.doctor_id }}";
+            if (selectedDoctorId) {
+              $("#doctor").val(selectedDoctorId);
+            }
+          },
+        });
+      });
+    });
+</script>
+
+<script>
+  // Function to handle showing the print button after page load
+  document.addEventListener("DOMContentLoaded", function () {
+    // Show the print button
+    document.getElementById("printButton").style.display = "inline-block";
+  });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        // Function to handle printing
+        $("#printButton").click(function () {
+            // Show the hidden print content
+            $("#printContent").show();
+
+            // Print only the content inside the printContent div
+            var printContents = $("#printContent").html();
+            var originalContents = $("body").html();
+            $("body").empty().html(printContents);
+
+            // Trigger the print dialog
+            window.print();
+
+            // Restore the original page content
+            $("#printContent").hide();
+            $("body").html(originalContents);
+            $("#printContent").hide();
+        });
+    });
+
+  //   $(document).ready(function () {
+  //   $("#redcardid").hide();
+  //   $("#redcardtype").change(function () {
+  //     var redcardId = $(this).val();
+  //     console.log(redcardId)
+  //     if (redcardId === 'select'){
+  //       $("#redcardid").hide();
+  //     }
+  //     else{
+  //       $("#redcardid").show();
+  //     }
+  //   });
+  // });
+
+
+  // function toggleInputVisibility() {
+  //   var inputField = document.getElementById("redcardid");
+  //   if (document.getElementById("redcard").checked) {
+  //     $("#redcardid").show();
+  //   } else {
+  //     $("#redcardid").hide();
+  //   }
+  // }
+</script>
+  
+  
+  
+<script>
+  // Function to handle form submission
+  function handleFormSubmission(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Your additional logic for form validation or processing goes here
+
+    // Select all input fields in the form
+    const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
+
+    // Flag to keep track of form validity
+    let isValid = true;
+
+    // Loop through each input field
+    inputs.forEach(function (input) {
+      // Check if the input field is required and does not have a value
+      if (input.hasAttribute("required") && !input.value.trim()) {
+        // If a required field is empty, set isValid to false
+        isValid = false;
+        // Highlight the empty field (you can customize this part)
+        input.style.border = "1px solid red";
+      } else {
+        // Remove any previous highlighting
+        input.style.border = "";
+      }
+    });
+
+    // If the form is valid, submit it
+    if (isValid) {
+      document.getElementById("patientForm").submit();
+    } else {
+      // If the form is invalid, display an alert (you can customize this part)
+      //   alert("Please fill out all required fields.");
+    }
+  }
+
+  // Function to handle keyboard shortcuts
+  function handleShortcut(event) {
+    // if (event.ctrlKey && event.key === "s") {
+    if (event.key === "F2") {
+      // Ctrl + S pressed, trigger form submission
+      handleFormSubmission(event);
+    }
+  }
+
+  // Attach event listener for form submission
+  document.getElementById("patientForm").addEventListener("submit", handleFormSubmission);
+
+  // Attach event listener for keyboard shortcuts
+  document.addEventListener("keydown", handleShortcut);
+</script>
+{% endblock %}

@@ -1,0 +1,736 @@
+{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<style>
+  label {
+    width: 230px;
+  }
+  .form-group {
+    margin-bottom: 0.2rem;
+    line-height: 0.5rem;
+    align-items: center;
+  }
+  .form-control {
+    padding: ".15rem .75rem";
+  }
+  label{
+    color: black !important;
+    font-family: sans-serif;  
+
+  }
+  td, th{
+    color: black !important;
+    font-family: sans-serif;  
+    font-size: 1rem;
+  }
+</style>
+<div class="container-fluid">
+  <!-- Page Heading -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+
+  {% endfor %} {% endif %}
+
+
+  <div class="" id="printContent" style="width: 100%; margin-top: -10px; display: none;">
+
+      <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.8rem">
+        <h2>DEPARTMENT OF CLINICAL PATHOLOGY</h2>
+        <h4>DARBHANGA MEDIAL COLLEGE & HOSPITAL</h4>
+        <h6>LAHERIASARAI, DARBHANGA (BIHAR)</h6>
+        <h6>REPORT OF EXAMINATION OF BIOCHEMISTRY</h6>
+      </div>
+      <hr />
+      <div style="display: flex; justify-content: space-between">
+        <div style="display: flex; justify-content: space-between; width: 100%;">
+          <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+            <p>Patient Name : <strong>{% if test_report.reg_no.name %}{{test_report.reg_no.name}}{% endif %} </strong></p>
+            <p>Refd By. : <strong>{% if test_report.patient.referby.name %}{{test_report.patient.referby.name}}{% endif %}</strong></p>
+            <p>Bill No. : <strong>{% if test_report.patient.bill_no %}{{test_report.patient.bill_no}}{% endif %}</strong></p>
+          </div>
+          <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+            <p>Date : <strong>{% if test_report.created_at %}{{test_report.created_at}}{% endif %}</strong></p>
+            <p>Reg No. : <strong>{% if test_report.reg_no %}{{test_report.reg_no.regno}}{% endif %}</strong></p>
+            <p>Lab No. : <strong>{% if test_report.patient.lab_no %}{{test_report.patient.lab_no}}{% endif %}</strong></p>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div>
+
+        <div class="table-responsive">
+          <table class="table table-bordered"  width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th style="font-family: sans-serif; color: black; font-size: 1rem;">Test</th>
+                <th style="font-family: sans-serif; color: black; font-size: 1rem;">Result</th>
+                <th style="font-family: sans-serif; color: black; font-size: 1rem;">Normal Range</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if test_report.palsma_glucose_fasting %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Plasma Glucose Fasting</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.palsma_glucose_fasting}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">70 - 110 mg/dl</td>
+              </tr>
+              {% endif %}
+              {% if test_report.palsma_glucose_pp %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Plasma Glucose PP</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.palsma_glucose_pp}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">70 - 150 mg/dl</td>
+              </tr>
+              {% endif %}
+              {% if test_report.blood_sugar_random %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Blood Sugar Random</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.blood_sugar_random}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">70 - 150 mg/dl</td>
+              </tr>
+              {% endif %}
+              {% if test_report.blood_ures %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Blood Urea</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.blood_ures}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">15 - 45 mg/dl</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.serun_creatinine %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Serum Creatinine</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.serun_creatinine}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">07 - 1.5 mg/dl</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.serum_uric_acid %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Serum Uric Acid</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.serum_uric_acid}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">3.5 - 7.2 mg/dl</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.billirubin_total %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Billirubin Total</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.billirubin_total}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">0.0 - 1.2 mg/dl</td>
+              </tr>
+              {% endif %}
+              
+              {% if test_report.sgpt %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">SGPT</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.sgpt}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">0.0 - 35 IU/L</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.sgot %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">SGOT</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.sgot}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">0.0 - 45 IU/L</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.total_protein %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Total Protein</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.total_protein}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">6.4 - 8.3 g/dl</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.serum_albumin %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Serum Albumin</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.serum_albumin}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">3.5 - 5.2 g/dl</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.alk_phosphatase %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Alk Phosphatae</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.alk_phosphatase}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">30 - 130 U/L</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.gama_gt %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Gama GT</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.gama_gt}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">0 - 55 IU/L</td>
+              </tr>
+              {% endif %}
+              
+              {% if test_report.amylase %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Amylease</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.amylase}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">0 - 80 U/L</td>
+              </tr>
+              {% endif %}
+              
+              {% if test_report.hbaic %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Hbaic</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.hbaic}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">UP TO 6.4%</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.total_cholestrol %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Total Cholestrol</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.total_cholestrol}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">0 - 200 mg/dl</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.hdl_cholestrol %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">HDL Cholestrol</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.hdl_cholestrol}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">45 - 80 mg/dl</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.ldl_cholestrol %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">LDL Cholestrol</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.ldl_cholestrol}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">60 - 140 mg/dl</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.vldl_cholestrol %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">VLDL Cholestrol</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.vldl_cholestrol}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">22 - 33 mg/dl</td>
+              </tr>
+              {% endif %}
+              
+              {% if test_report.serum_trigicerides %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Serum Trigicerides</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.serum_trigicerides}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">40 - 160 mg/dl</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.serun_sodium %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Serum Sodium</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.serun_sodium}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">136 -146 mmo/L</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.serum_potasium %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Serum Potasium</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.serum_potasium}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">3.5 -5.5 mmo/dl</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.serum_cloried %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Serum Chloride</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.serum_cloried}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">98.0 - 107.0 mmo/L</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.serum_calcium %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Serum Calcium</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.serum_calcium}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">8.6 - 10.2 mmo/L</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.aso_titer %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">ASO Titer</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.aso_titer}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Up to 250 IU/L</td>
+              </tr>
+              {% endif %}
+
+
+              {% if test_report.crp %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">CRP</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.crp}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">0.0 - 6.0 mg/L</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.raf_factor %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">RAF Factor</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.raf_factor}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">0.0 - 20 mg/ml</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.lipase %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Lipase</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.lipase}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">0 - 38.0 U/L</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.esr %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">ESR</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.esr}}</td>
+                
+              </tr>
+              {% endif %}
+
+              {% if test_report.bt %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">BT</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.bt}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">2 - 7 m</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.ct %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">CT</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.ct}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">8 - 15</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.cbc %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">CBC</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.cbc}}</td>
+                
+              </tr>
+              {% endif %}
+
+              {% if test_report.lth %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">LDH</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.lth}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">140 - 280 U/L</td>
+              </tr>
+              {% endif %}
+
+              {% if test_report.other %}
+              <tr>
+                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">Other</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem;">{{test_report.other}}</td>
+                
+              </tr>
+              {% endif %}
+
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+  </div>
+
+
+
+  <form id="patientForm" method="POST" action="/pathology/update_test_report/{{test_report.pk}}/">
+    {% csrf_token %}
+
+    <div class="row">
+        <!-- Left Column (Patient Details) -->
+        <div class="col-md-4 mb-3">
+            <label for="regno">Reg No.:</label>
+            <input type="number" class="form-control" id="regno"  value="{{test_report.reg_no.regno}}" disabled  name="regno"  />
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="bill_no">Bill No.:</label>
+            <input type="text" class="form-control" id="bill_no" value="" name="bill_no"  disabled  />
+        </div>
+
+        <div class="col-md-4 mb-3" >
+            <label for="labno">Lab No :</label>
+            <input type="text" id="labno" class="form-control"  disabled name="labno" />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="patient_name">Patient Name :</label>
+            <input type="text" class="form-control" id="patient_name" name="patient_name" disabled  />
+        </div>
+
+
+        <div class="col-md-4 mb-3">
+            <label for="department">Department:</label>
+            <input type="text" class="form-control" id="department" value="" name="department"  disabled  />
+        </div>
+
+
+
+        <div class="col-md-4 mb-3" >
+            <label for="doctor">Refer By :</label>
+            <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
+            <option>Select Doctor</option>
+            </select> -->
+            <input type="text" class="form-control" id="doctor" value="" name="doctor" disabled   />
+
+        </div>
+  
+        <div class="col-md-4 mb-3">
+            <label for="palsma_glucose_fasting">Plasma Glucode Fasting:</label>
+            <input type="text" class="form-control" id="palsma_glucose_fasting" value="{{test_report.palsma_glucose_fasting}}" name="palsma_glucose_fasting"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="palsma_glucose_pp">Plasma Glucode PP:</label>
+            <input type="text" class="form-control" id="palsma_glucose_pp" value="{{test_report.palsma_glucose_pp}}" name="palsma_glucose_pp"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="blood_sugar_random">Blood Sugar Random :</label>
+            <input type="text" class="form-control" id="blood_sugar_random" value="{{test_report.blood_sugar_random}}" name="blood_sugar_random"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="blood_ures">Blood Urea:</label>
+            <input type="text" class="form-control" id="blood_ures" value="{{test_report.blood_ures}}" name="blood_ures"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="serun_creatinine">Serun Creatinine:</label>
+            <input type="text" class="form-control" id="serun_creatinine" value="{{test_report.serun_creatinine}}" name="serun_creatinine"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="serum_uric_acid">Serum Uric Acid:</label>
+            <input type="text" class="form-control" id="serum_uric_acid" value="{{test_report.serum_uric_acid}}" name="serum_uric_acid"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="billirubin_total">Billirubin Total:</label>
+            <input type="text" class="form-control" id="billirubin_total" value="{{test_report.billirubin_total}}" name="billirubin_total"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="sgpt">SGPT:</label>
+            <input type="text" class="form-control" id="sgpt" value="{{test_report.sgpt}}" name="sgpt"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="sgot">SGOT:</label>
+            <input type="text" class="form-control" id="sgot" value="{{test_report.sgot}}" name="sgot"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="total_protein">Total Protein:</label>
+            <input type="text" class="form-control" id="total_protein" value="{{test_report.total_protein}}" name="total_protein"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="serum_albumin">Serum Albumin:</label>
+            <input type="text" class="form-control" id="serum_albumin" value="{{test_report.serum_albumin}}" name="serum_albumin"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="alk_phosphatase">ALK Phosphatase:</label>
+            <input type="text" class="form-control" id="alk_phosphatase" value="{{test_report.alk_phosphatase}}" name="alk_phosphatase"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="gama_gt">Gama GT. (GGT):</label>
+            <input type="text" class="form-control" id="gama_gt" value="{{test_report.gama_gt}}" name="gama_gt"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="amylase">Amylase:</label>
+            <input type="text" class="form-control" id="amylase" value="{{test_report.amylase}}" name="amylase"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="hbaic">HbAIC:</label>
+            <input type="text" class="form-control" id="hbaic" value="{{test_report.hbaic}}" name="hbaic"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="total_cholestrol">Total Cholestrol:</label>
+            <input type="text" class="form-control" id="total_cholestrol" value="{{test_report.total_cholestrol}}" name="total_cholestrol"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="hdl_cholestrol">HDL Cholestrol:</label>
+            <input type="text" class="form-control" id="hdl_cholestrol" value="{{test_report.hdl_cholestrol}}" name="hdl_cholestrol"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="ldl_cholestrol">LDL Cholestrol:</label>
+            <input type="text" class="form-control" id="ldl_cholestrol" value="{{test_report.ldl_cholestrol}}" name="ldl_cholestrol"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="vldl_cholestrol">VLDL Cholestrol:</label>
+            <input type="text" class="form-control" id="vldl_cholestrol" value="{{test_report.vldl_cholestrol}}" name="vldl_cholestrol"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="serum_trigicerides">Serum Trigicerides:</label>
+            <input type="text" class="form-control" id="serum_trigicerides" value="{{test_report.serum_trigicerides}}" name="serum_trigicerides"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="serun_sodium">Serum Sodium +:</label>
+            <input type="text" class="form-control" id="serun_sodium" value="{{test_report.serun_sodium}}" name="serun_sodium"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="serum_potasium">Serum Potasium +:</label>
+            <input type="text" class="form-control" id="serum_potasium" value="{{test_report.serum_potasium}}" name="serum_potasium"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="serum_cloried">Serum Chloride +:</label>
+            <input type="text" class="form-control" id="serum_cloried" value="{{test_report.serum_cloried}}" name="serum_potasium"   />
+        </div>
+
+
+        <div class="col-md-4 mb-3">
+            <label for="serum_calcium">Serum Calcium +:</label>
+            <input type="text" class="form-control" id="serum_calcium" value="{{test_report.serum_calcium}}" name="serum_calcium"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="aso_titer">ASO Titer:</label>
+            <input type="text" class="form-control" id="aso_titer" value="{{test_report.aso_titer}}" name="aso_titer"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="crp">CRP:</label>
+            <input type="text" class="form-control" id="crp" value="{{test_report.crp}}" name="crp"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="raf_factor">RA Factor:</label>
+            <input type="text" class="form-control" id="raf_factor" value="{{test_report.raf_factor}}" name="raf_factor"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="lipase">LIPASE:</label>
+            <input type="text" class="form-control" id="lipase" value="{{test_report.lipase}}" name="lipase"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="esr">ESR:</label>
+            <input type="text" class="form-control" id="esr" value="{{test_report.esr}}" name="esr"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="bt">BT:</label>
+            <input type="text" class="form-control" id="bt" value="{{test_report.bt}}" name="bt"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="ct">CT:</label>
+            <input type="text" class="form-control" id="ct" value="{{test_report.ct}}" name="ct"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="cbc">CBC:</label>
+            <input type="text" class="form-control" id="cbc" value="{{test_report.cbc}}" name="cbc"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="lth">LTH:</label>
+            <input type="text" class="form-control" id="lth" value="{{test_report.lth}}" name="lth"   />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="other">Other:</label>
+            <input type="text" class="form-control" id="other" value="{{test_report.other}}" name="other"   />
+        </div>
+
+
+    </div>
+
+
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="#;" id="printButton" style=" display: none;" class="btn btn-primary">Print</a>
+
+  </form>
+</div>
+
+<!-- End of Main Content -->
+{% endblock %} {% block script %}
+<script></script>
+<script>
+    // Function to handle showing the print button after page load
+    document.addEventListener("DOMContentLoaded", function () {
+      // Show the print button
+      document.getElementById("printButton").style.display = "inline-block";
+    });
+  </script>
+<script>
+  $(document).ready(function () {
+      // Function to handle printing
+      $("#printButton").click(function () {
+          // Show the hidden print content
+          $("#printContent").show();
+
+          // Print only the content inside the printContent div
+          var printContents = $("#printContent").html();
+          var originalContents = $("body").html();
+          $("body").empty().html(printContents);
+
+          // Trigger the print dialog
+          window.print();
+
+          // Restore the original page content
+          $("#printContent").hide();
+          $("body").html(originalContents);
+          $("#printContent").hide();
+      });
+  });
+</script>
+<script>
+  // Function to handle form submission
+  function handleFormSubmission(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Your additional logic for form validation or processing goes here
+
+    // Select all input fields in the form
+    const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
+
+    // Flag to keep track of form validity
+    let isValid = true;
+
+    // Loop through each input field
+    inputs.forEach(function (input) {
+      // Check if the input field is  and does not have a value
+      if (input.hasAttribute("required") && !input.value.trim()) {
+        // If a  field is empty, set isValid to false
+        isValid = false;
+        // Highlight the empty field (you can customize this part)
+        input.style.border = "1px solid red";
+      } else {
+        // Remove any previous highlighting
+        input.style.border = "";
+      }
+    });
+
+    // If the form is valid, submit it
+    if (isValid) {
+      document.getextementById("patientForm").submit();
+    } else {
+      // If the form is invalid, display an alert (you can customize this part)
+      //   alert("Please fill out all  fields.");
+    }
+  }
+
+  // Function to handle keyboard shortcuts
+  function handleShortcut(event) {
+    // if (event.ctrlKey && event.key === "s") {
+    if (event.key === "F2") {
+      // Ctrl + S pressed, trigger form submission
+      handleFormSubmission(event);
+    }
+  }
+
+  // Attach event listener for form submission
+  document.getextementById("patientForm").addEventListener("submit", handleFormSubmission);
+
+  // Attach event listener for keyboard shortcuts
+  document.addEventListener("keydown", handleShortcut);
+</script>
+
+<script>
+  $(document).ready(function () {
+    var regno = {{ test_report.reg_no.regno }};
+    if (regno) {
+    $.ajax({
+        url: '{% url "fetch_patient_data_details" %}',
+        type: "GET",
+        data: {
+        regno: regno,
+        },
+        success: function (data) {
+        // Update input fields with fetched data
+        $("#patient_name").val(data.name);
+        $("#bill_no").val(data.bill_no);
+        $("#labno").val(data.lab_no);
+        $("#department").val(data.department);
+        $("#doctor").val(data.referby);
+        $("#patient_name").val(data.name);
+        },
+        error: function (xhr, status, error) {
+        console.error(xhr.responseText);
+        // Handle error if necessary
+        $("#patient_name").val('');
+        $("#bill_no").val('');
+        $("#labno").val('');
+        $("#department").val('');
+        $("#doctor").val('');
+        $("#patient_name").val('');
+        },
+    });
+    } else {
+        // Clear input fields when regno is empty
+        $("#patient_name").val('');
+        $("#bill_no").val('');
+        $("#labno").val('');
+        $("#department").val('');
+        $("#doctor").val('');
+        $("#patient_name").val('');
+    }
+  });
+</script>
+
+
+{% endblock %}

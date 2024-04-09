@@ -1,0 +1,108 @@
+{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+
+  {% endfor %} {% endif %}
+  <div style="display: flex"></div>
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <form action="{% url 'order_details_view_print' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+        <div style="flex: 1">
+          <input type="datetime-local" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+        </div>
+        <div style="">
+          <span>-</span>
+        </div>
+        <div style="flex: 1">
+          <input type="datetime-local" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+        </div>
+
+        <div style="flex: 1">
+          <button class="btn btn-primary w-100" type="submit">Filter</button>
+        </div>
+        <div style="flex: 1">
+          <button class="btn btn-primary w-100" onclick="printTable()">Print Table</button>
+        </div>
+      </form>
+    </div>
+    <div class="card-body" id="printablecontent">
+      <div class="table-responsive">
+        <table class="table table-bordered" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>Order No.</th>
+              <th>Supplier Name</th>
+              <th>Product Type</th>
+              <th>Product Name</th>
+              <th>Mfg Name</th>
+              <th>Quantity</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+            <tr>
+              <td>{{ order.order_id }}</td>
+              <td>
+                <p>
+                  {{ order.supplier.name }}<br />
+                  Gst : {{ order.gst }}<br />
+                  Mob No. :{{ order.mob_no }}<br />
+                  Email : {{ order.email }}<br />
+                </p>
+              </td>
+              
+              <td>
+                {% for product in order.products.all %}
+                <p>{{ product.product.p_type }}</p>
+
+                {% endfor %}
+              </td>
+              <td>
+                {% for product in order.products.all %}
+                <p>{{ product.product.name }}</p>
+
+                {% endfor %}
+              </td>
+              <td>
+                {% for product in order.products.all %}
+                <p>{{ product.mfg_name }}</p>
+
+                {% endfor %}
+              </td>
+              <td>
+                {% for product in order.products.all %}
+                <p>{{ product.quantity }}</p>
+                {% endfor %}
+              </td>
+              <td>{{order.order_date}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block script %}
+<script>
+  // Function to print the table
+  function printTable() {
+    // Show the hidden print content
+    // Print only the content inside the printContent div
+    var printContents = $("#printablecontent").html();
+    var originalContents = $("body").html();
+    $("body").empty().html(printContents);
+
+    // Trigger the print dialog
+    window.print();
+    $("body").html(originalContents);
+  }
+</script>
+{% endblock %}

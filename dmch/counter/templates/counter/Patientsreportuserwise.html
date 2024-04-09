@@ -1,0 +1,112 @@
+{% extends 'counter/base.html' %}
+{% block css %}
+{% endblock %}
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  {% if messages %}
+  {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+  {% endfor %}
+  {% endif %}
+
+  <div class="card py-2" style="display: flex; flex-direction: row; justify-content: space-between; padding-left: 5px; padding-right: 5px">
+    <form action="{% url 'show_patients_report_userwise' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+      <div style="flex: 1">
+        <input type="datetime-local" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+      </div>
+      <div style="">
+        <span>-</span>
+      </div>
+      <div style="flex: 1">
+        <input type="datetime-local" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+      </div>
+      <div style="flex: 3">
+        <select name="department" class="form-control mb-2 mb-md-0">
+          <option>Select Department</option>
+          <option value="All">All</option>
+          {% for d in departments %}
+          <option value="{{ d.department_id }}">{{ d.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div style="flex: 1">
+        <button class="btn btn-primary w-100" type="submit">Filter</button>
+      </div>
+      <div style="flex: 1">
+        <a href="#;" class="btn btn-primary" id="printButton">Print</a>
+      </div>
+    </form>
+  </div>
+
+
+  <div class="card shadow mb-4" id="printablecontent">
+    <div class="card-header d-flex flex-wrap" >
+        <!-- <div class="d-flex flex-wrap">
+            <h3>Patient Report</h3>
+        </div>
+        <br/> -->
+
+        <div class="card d-flex flex-wrap" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">
+          Total Patient : {{total_patient}}
+        </div>
+        <div class="card d-flex flex-wrap" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">
+          Total Amount : RS {{total_patient_amount}} /-
+        </div>
+
+    </div>
+
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>Staff Name</th>
+              <th>Department</th>
+              <th>Total Patients</th>
+              <th>Total Amount</th>
+              <th>Red Card</th>
+              <th>RB Case</th>
+              <th>Date</th>
+             
+            </tr>
+          </thead>
+          <tbody>
+            {% for user_data in users_with_patients %}
+            <tr>
+              <td>{{ user_data.user.first_name }} {{ user_data.user.last_name }}</td>
+              <td>{% if user_data.department %}{{ user_data.department }}{% else %} All {% endif %}</td>
+              <td>{{ user_data.total }}</td>
+              <td>Rs {{ user_data.total_amount }} /-</td>
+              <td>{{ user_data.redcard }}</td>
+              <td>{{ user_data.rbcase }}</td>
+              <td>{{ user_data.start_date }} - {{ user_data.end_date }}</td>
+            </tr>
+              {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+{% block script %}
+<script>
+  $(document).ready(function () {
+    // Function to handle printing
+    $("#printButton").click(function () {
+      // Show the hidden print content
+      // Print only the content inside the printContent div
+      var printContents = $("#printablecontent").html();
+      var originalContents = $("body").html();
+      $("body").empty().html(printContents);
+
+      // Trigger the print dialog
+      window.print();
+      $("body").html(originalContents);
+    });
+  });
+</script>
+{% endblock %}

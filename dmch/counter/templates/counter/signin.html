@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>DMCH Darbhanga</title>
+  </head>
+  <body>
+    <div class="container" style="display: flex; align-items: center; justify-content: center; height: 100%">
+      <form id="loginForm" action="#" method="post" style="border: 1px solid #ccc; width: 600px">
+        {% csrf_token %}
+        <div class="imgcontainer">
+          <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Avatar" class="avatar" />
+        </div>
+        <div class="container">
+          <div id="resultDiv"></div>
+          <label for="uname"><b>Username</b></label>
+
+          <input type="text" required placeholder="Enter Username" name="uname" required />
+
+          <label for="psw"><b>Password</b></label>
+
+          <input type="password" required placeholder="Enter Password" name="psw" required />
+
+          <button type="button" onclick="login()">Login</button>
+          <!-- Changed type to "button" to prevent form submission -->
+
+          <label>Show Data?</label><a href="index.html">Go To Home Page</a>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      // Check if the user is already logged in
+      const storedToken = localStorage.getItem("token");
+      if (storedToken) {
+        // Redirect to index.html if the user is already logged in
+        window.location.href = "index.html";
+      }
+
+      function login() {
+        const form = document.getElementById("loginForm");
+        const username = form.elements["uname"].value;
+        const password = form.elements["psw"].value;
+        if (username === "test" && password === "test") {
+          // Store the token in local storage
+          localStorage.setItem("token", true);
+          document.getElementById("resultDiv").innerHTML = "Login successful!";
+          // Redirect to index.html after successful login
+          window.location.href = "index.html";
+        }
+      }
+    </script>
+  </body>
+</html>
