@@ -64,7 +64,7 @@
         </div>
         <div style="font-family: sans-serif; color: black; font-size: 1.2rem;  margin-bottom: 0.4rem !important;">
           <p><strong>{% if patient.department %}{{patient.department}}{% endif %} {% if patient.department.room_no %}(ROOM NO. {{patient.department.room_no}}){% endif %}</strong></p>
-          <p><strong>{% if patient.regno %}{{patient.regno}}{% endif %} </strong></p>            
+          <p><strong>{% if patient.regid %}{{patient.regid}}{% endif %} </strong></p>            
           <p><strong>{% if patient.name %}{{patient.name}}{% endif %}</strong></p>
           <p><strong>{% if patient.guardiannametitle %}{{patient.guardiannametitle}}{% endif %} {% if patient.guardianname %}{{patient.guardianname}}{% endif %}</strong></p>
           <p><strong>{% if patient.address %}{{patient.address}}{% endif %}</strong></p>
@@ -99,12 +99,12 @@
 
 <div class="container-fluid" id="originalContent">
   <!-- Page Heading -->
-  <form id="patientForm" method="POST" action="/update-patients/{{patient.regno}}">
+  <form id="patientForm" method="POST" action="/update-patients/{{patient.regid}}">
     {% csrf_token %}
     <div>Appointment Date : {{patient.appointment_date}}</div>
     <div class="form-group" style="display: flex; width: 100%;">
-      <label for="regno">Registration Number :</label>
-      <input type="text" class="form-control" id="regno" style="width: 60%" value="{{patient.regno}}" name="regno" required disabled  />
+      <label for="regid">Registration Number :</label>
+      <input type="text" class="form-control" id="regid" style="width: 60%" value="{{patient.regid}}" name="regid" required disabled  />
       <select name="redcardtype" class="form-control" id="redcardtype" style="width: 15%;" class="form-group" disabled >
         <option value="select">Select</option>
         <option {% if patient.redcardtype == 'Red Card' %} selected {% endif %} value="Red Card" >Red Card</option>

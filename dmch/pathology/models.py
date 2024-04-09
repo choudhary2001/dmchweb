@@ -22,7 +22,7 @@ class Patient_registration(models.Model):
     def save(self, *args, **kwargs):
         if not self.patient_id:
             self.patient_id = str(uuid.uuid4().int)[:8]
-        if not self.bill_no:  # Check if regno is not already set
+        if not self.bill_no: 
             last_patient_pp = Patient_registration.objects.order_by('-created_at').first()
             if last_patient_pp:
                 bill_no = int(last_patient_pp.bill_no) + 1

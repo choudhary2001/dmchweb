@@ -23,10 +23,10 @@ print(current_time_kolkata)
 
 @login_required
 def fetch_patient_data(request):
-    if request.method == 'GET' and 'regno' in request.GET:
-        regno = request.GET.get('regno')
+    if request.method == 'GET' and 'regid' in request.GET:
+        regid = request.GET.get('regid')
         try:
-            patient = Patient.objects.filter(regno=regno).first()
+            patient = Patient.objects.filter(regid=regid).first()
             age_parts = []
             if patient.year:
                 age_parts.append(f"{patient.year} Y")
@@ -50,10 +50,10 @@ def fetch_patient_data(request):
 
 @login_required
 def fetch_patient_data_details(request):
-    if request.method == 'GET' and 'regno' in request.GET:
-        regno = request.GET.get('regno')
+    if request.method == 'GET' and 'regid' in request.GET:
+        regid = request.GET.get('regid')
         try:
-            patient = Patient.objects.filter(regno=regno).first()
+            patient = Patient.objects.filter(regid=regid).first()
             pr = Patient_registration.objects.filter(reg_no = patient).first()
 
             if pr is not None:
@@ -88,7 +88,7 @@ def create_patient_registration(request):
     current_time_kolkata = current_time_utc.astimezone(kolkata_timezone)
     if request.method == 'POST':
         bill_no = request.POST.get('bill_no')
-        reg_no = request.POST.get('regno')
+        reg_no = request.POST.get('regid')
         department = request.POST.get('department')
         refer_by = request.POST.get('doctor')
         lab_no = request.POST.get('labno')
@@ -99,7 +99,7 @@ def create_patient_registration(request):
             # Create a patient_registration object
             department = Department.objects.filter(department_id = department).first()
             doctor = Doctor.objects.filter(doctor_id = refer_by).first()
-            p = Patient.objects.filter(regno = reg_no).first()
+            p = Patient.objects.filter(regid = reg_no).first()
             # tc = Testcode.objects.filter(id = test_name).first()
             patient = Patient_registration.objects.create(
                 user = request.user,
@@ -278,7 +278,7 @@ def update_patient_registration(request, pk):
 
     if request.method == 'POST':
         bill_no = request.POST.get('bill_no')
-        reg_no = request.POST.get('regno')
+        reg_no = request.POST.get('regid')
         department = request.POST.get('department')
         refer_by = request.POST.get('doctor')
         lab_no = request.POST.get('labno')
@@ -289,7 +289,7 @@ def update_patient_registration(request, pk):
             # Create a patient_registration object
             department = Department.objects.filter(department_id = department).first()
             doctor = Doctor.objects.filter(doctor_id = refer_by).first()
-            p = Patient.objects.filter(regno = reg_no).first()
+            p = Patient.objects.filter(regid = reg_no).first()
             # tc = Testcode.objects.filter(pk = test_name).first()
 
             patient.department = department
@@ -411,7 +411,7 @@ def delete_testcode(request, pk):
 def create_test_report(request):
     if request.method == 'POST':
         # Extract data from POST request for all fields
-        reg_no = request.POST.get('regno')
+        reg_no = request.POST.get('regid')
         print(reg_no)
         data = {}
         for field in Test_report._meta.fields:
@@ -419,7 +419,7 @@ def create_test_report(request):
         print(data)
         # Fetch the corresponding Patient object based on the provided reg_no
 
-        patient = Patient.objects.filter(regno=reg_no).first()
+        patient = Patient.objects.filter(regid=reg_no).first()
         pr = Patient_registration.objects.filter(reg_no=patient).first()
         print(patient, pr)
         # Assign the patient object to the reg_no field in the data
@@ -614,13 +614,13 @@ def delete_test_report(request, pk):
 def create_urine_test(request):
     if request.method == 'POST':
         # Extract data from POST request for all fields
-        reg_no = request.POST.get('regno')
+        reg_no = request.POST.get('regid')
 
         data = {}
         for field in Urine_test._meta.fields:
             data[field.name] = request.POST.get(field.name)
 
-        patient = Patient.objects.filter(regno=reg_no).first()
+        patient = Patient.objects.filter(regid=reg_no).first()
         pr = Patient_registration.objects.filter(reg_no=patient).first()
         print(patient, pr)
         # Assign the patient object to the reg_no field in the data
@@ -791,13 +791,13 @@ def delete_urine_test(request, pk):
 @login_required
 def create_stool_test(request):
     if request.method == 'POST':
-        reg_no = request.POST.get('regno')
+        reg_no = request.POST.get('regid')
 
         data = {}
         for field in Stool_test._meta.fields:
             data[field.name] = request.POST.get(field.name)
 
-        patient = Patient.objects.filter(regno=reg_no).first()
+        patient = Patient.objects.filter(regid=reg_no).first()
         pr = Patient_registration.objects.filter(reg_no=patient).first()
         print(patient, pr)
         # Assign the patient object to the reg_no field in the data
@@ -963,12 +963,12 @@ def delete_stool_test(request, pk):
 def create_ctest_report(request):
     if request.method == 'POST':
         data = {}
-        reg_no = request.POST.get('regno')
+        reg_no = request.POST.get('regid')
 
         for field in Ctest_report._meta.fields:
             data[field.name] = request.POST.get(field.name)
 
-        patient = Patient.objects.filter(regno=reg_no).first()
+        patient = Patient.objects.filter(regid=reg_no).first()
         pr = Patient_registration.objects.filter(reg_no=patient).first()
         print(patient, pr)
         # Assign the patient object to the reg_no field in the data
@@ -1134,13 +1134,13 @@ def delete_ctest_report(request, pk):
 @login_required
 def create_cbc_test(request):
     if request.method == 'POST':
-        reg_no = request.POST.get('regno')
+        reg_no = request.POST.get('regid')
 
         data = {}
         for field in Cbc_test._meta.fields:
             data[field.name] = request.POST.get(field.name)
 
-        patient = Patient.objects.filter(regno=reg_no).first()
+        patient = Patient.objects.filter(regid=reg_no).first()
         pr = Patient_registration.objects.filter(reg_no=patient).first()
         print(patient, pr)
         # Assign the patient object to the reg_no field in the data
@@ -1299,13 +1299,13 @@ def delete_cbc_test(request, pk):
 @login_required
 def create_serology_test(request):
     if request.method == 'POST':
-        reg_no = request.POST.get('regno')
+        reg_no = request.POST.get('regid')
 
         data = {}
         for field in Serology_test._meta.fields:
             data[field.name] = request.POST.get(field.name)
 
-        patient = Patient.objects.filter(regno=reg_no).first()
+        patient = Patient.objects.filter(regid=reg_no).first()
         pr = Patient_registration.objects.filter(reg_no=patient).first()
         print(patient, pr)
         # Assign the patient object to the reg_no field in the data

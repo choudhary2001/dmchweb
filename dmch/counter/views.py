@@ -78,12 +78,12 @@ def add_patient(request):
     pp = Patient.objects.all().first()
     last_patient_pp = Patient.objects.order_by('-appointment_date').first()
     if last_patient_pp:
-        regno = int(last_patient_pp.regno) + 1
+        regid = int(last_patient_pp.regid) + 1
     else:
-        regno = 1
+        regid = 1
 
 
-    print(regno)
+    print(regid)
     # uhidno =int(latest_patient['uhidno__max']) + 1 if latest_patient['uhidno__max'] is not None else 1
 
     current_date = current_time_kolkata.date()
@@ -116,7 +116,7 @@ def add_patient(request):
 
     if request.method == 'POST':
         try:
-            # regno = request.POST.get('regno')
+            # regid = request.POST.get('regid')
             # regnoid = request.POST.get('regnoid')
             # uhidno = request.POST.get('uhidno')
             # uhidnoincre = request.POST.get('uhidnoincre')
@@ -166,15 +166,15 @@ def add_patient(request):
             de = Department.objects.filter(department_id = department).first()
             d = Doctor.objects.filter(doctor_id = doctor).first()
 
-            while Patient.objects.filter(regno=regno).exists():
-                regno += 1
+            while Patient.objects.filter(regid=regid).exists():
+                regid += 1
     
             while Patient.objects.filter(appointment_date__gte=start_date, appointment_date__lt=end_date, uhidnoincre=uhidnoincre).exists():
                 uhidnoincre += 1
     
             patient = Patient.objects.create(
                 user = request.user,
-                # regno=regno,
+                # regid=regid,
                 uhidno=uhidno,
                 uhidnoincre=uhidnoincre,
                 name=name,
@@ -207,7 +207,7 @@ def add_patient(request):
     de = Department.objects.all().order_by('-created_at')
     context = {
         'patient' : p,
-        'regno' : regno,
+        'regid' : regid,
         'uhidno' : uhidno,
         'uhidnoincre' : uhidnoincre,
         'departments' : de,
@@ -512,7 +512,7 @@ def show_patients_report_userwise(request):
 
 @login_required
 def update_patients(request, pk):
-    p = Patient.objects.filter(regno = pk).first()
+    p = Patient.objects.filter(regid = pk).first()
     de = Department.objects.all().order_by('-created_at')
     if request.method == "POST":
         # if request.user.is_superuser:
@@ -558,7 +558,7 @@ def update_patients(request, pk):
         p.save()
 
 
-        return redirect(f'/update-patients/{p.regno}')
+        return redirect(f'/update-patients/{p.regid}')
         # else:
         #     logout(request)
         #     return redirect('signin') 
@@ -574,7 +574,7 @@ def update_patients(request, pk):
 @login_required
 def delete_patients(request, pk):
     if request.user.is_superuser:
-        p = Patient.objects.filter(regno = pk).first()
+        p = Patient.objects.filter(regid = pk).first()
         if p is not None:
             p.delete()
         return redirect('show_patients')

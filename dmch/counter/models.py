@@ -40,8 +40,9 @@ class Doctor(models.Model):
     
 class Patient(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    regno = models.CharField(max_length=100, primary_key = True, unique = True)
+    regno = models.CharField(max_length=100,  unique = True)
     regnoid = models.CharField(max_length=100)
+    regid = models.AutoField(primary_key=True)
     uhidno = models.CharField(max_length=100)
     uhidnoincre = models.CharField(max_length=100)
     redcard = models.BooleanField(default=False)

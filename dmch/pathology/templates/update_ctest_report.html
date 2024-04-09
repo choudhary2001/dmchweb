@@ -33,7 +33,7 @@
       </div>
       <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
         <p>Date : <strong>{% if ctest.created_at %}{{ctest.created_at}}{% endif %}</strong></p>
-        <p>Reg No. : <strong>{% if ctest.reg_no %}{{ctest.reg_no.regno}}{% endif %}</strong></p>
+        <p>Reg No. : <strong>{% if ctest.reg_no %}{{ctest.reg_no.regid}}{% endif %}</strong></p>
         <p>Lab No. : <strong>{% if ctest.patient.lab_no %}{{ctest.patient.lab_no}}{% endif %}</strong></p>
       </div>
     </div>
@@ -193,8 +193,8 @@
     <div class="row">
         <!-- Left Column (Patient Details) -->
         <div class="col-md-4 mb-3">
-            <label for="regno">Reg No.:</label>
-            <input type="number" class="form-control" id="regno"  value="{{ctest.reg_no.regno}}" disabled  name="regno" required />
+            <label for="regid">Reg No.:</label>
+            <input type="number" class="form-control" id="regid"  value="{{ctest.reg_no.regid}}" disabled  name="regid" required />
 
         </div>
 
@@ -405,13 +405,13 @@ $(document).ready(function () {
 
 <script>
   $(document).ready(function () {
-    var regno = {{ ctest.reg_no.regno }};
-    if (regno) {
+    var regid = {{ ctest.reg_no.regid }};
+    if (regid) {
     $.ajax({
         url: '{% url "fetch_patient_data_details" %}',
         type: "GET",
         data: {
-        regno: regno,
+        regid: regid,
         },
         success: function (data) {
         // Update input fields with fetched data
@@ -434,7 +434,7 @@ $(document).ready(function () {
         },
     });
     } else {
-        // Clear input fields when regno is empty
+        // Clear input fields when regid is empty
         $("#patient_name").val('');
         $("#bill_no").val('');
         $("#labno").val('');

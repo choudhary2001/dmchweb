@@ -77,7 +77,7 @@
           <tbody>
             {% for d in patients %}
             <tr>
-              <td {% if d.redcard == True %}style="color:red;"{% endif %} >{{d.regno}}</td>
+              <td {% if d.redcard == True %}style="color:red;"{% endif %} >{{d.regid}}</td>
               <td>{{d.name}}</td>
               <td>{{d.address}}</td>
               <td>{{d.doctor.name}}</td>

@@ -18,7 +18,7 @@
 
   <div class="" id="printContent" style="width: 100%; margin-top: -10px; height: 1110px; display: none;">
     <div style="height: 655px;">
-      <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.8rem">
+      <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.2rem">
         <h2>DEPARTMENT OF CLINICAL PATHOLOGY</h2>
         <h4>DARBHANGA MEDIAL COLLEGE & HOSPITAL</h4>
         <h6>LAHERIASARAI, DARBHANGA (BIHAR)</h6>
@@ -30,13 +30,13 @@
             <p>Date : <strong>{% if patient.created_at %}{{patient.created_at}}{% endif %} </strong></p>
             <p>Lab NO. : <strong>{% if patient.lab_no %}{{patient.lab_no}}{% endif %}</strong></p>
             <p>Bill No. : <strong>{% if patient.bill_no %}{{patient.bill_no}}{% endif %}</strong></p>
-            <p>Reg No. : <strong>{% if patient.reg_no %}{{patient.reg_no.regno}}{% endif %}</strong></p>
+            <p>Reg No. : <strong>{% if patient.reg_no %}{{patient.reg_no.regid}}{% endif %}</strong></p>
             <p>Patient Name : <strong>{% if patient.reg_no %}{{patient.reg_no.name}}{% endif %}</strong></p>
             <p>Age : <strong>{% if patient.reg_no.year %}{{patient.reg_no.year}}Y{% endif %} {% if patient.reg_no.month %}{{patient.reg_no.month}}M{% endif %} {% if patient.reg_no.days %}{{patient.reg_no.days}}D{% endif %} /{{patient.gender}}</strong></p>
             <p>Gender : <strong>{% if patient.reg_no.gender %}{{patient.reg_no.gender}}{% endif %}</strong></p>
             <p>Dept : <strong>{% if patient.department %}{{patient.department.name}}{% endif %} {% if patient.pincode %}{{patient.pincode}}{% endif %}</strong></p>
             <p>Doctor : <strong>{% if patient.referby %}{{patient.referby.name}}{% endif %}</strong></p>
-            <p>Test Name : <strong>{% if patient.test_name %}{{patient.test_name.test_name}}{% endif %}</strong></p>
+            <p>Test Name : <strong>{% if patient.test_name %}{{patient.test_name}}{% endif %}</strong></p>
           </div>
         </div>
 
@@ -56,7 +56,7 @@
             <p>Date : <strong>{% if patient.created_at %}{{patient.created_at}}{% endif %} </strong></p>
             <p>Lab NO. : <strong>{% if patient.lab_no %}{{patient.lab_no}}{% endif %}</strong></p>
             <p>Bill No. : <strong>{% if patient.bill_no %}{{patient.bill_no}}{% endif %}</strong></p>
-            <p>Reg No. : <strong>{% if patient.reg_no %}{{patient.reg_no.regno}}{% endif %}</strong></p>
+            <p>Reg No. : <strong>{% if patient.reg_no %}{{patient.reg_no.regid}}{% endif %}</strong></p>
             <p>Patient Name : <strong>{% if patient.reg_no %}{{patient.reg_no.name}}{% endif %}</strong></p>
             <p>Age : <strong>{% if patient.reg_no.year %}{{patient.reg_no.year}}Y{% endif %} {% if patient.reg_no.month %}{{patient.reg_no.month}}M{% endif %} {% if patient.reg_no.days %}{{patient.reg_no.days}}D{% endif %} /{{patient.gender}}</strong></p>
             <p>Gender : <strong>{% if patient.reg_no.gender %}{{patient.reg_no.gender}}{% endif %}</strong></p>
@@ -89,8 +89,8 @@
         </div>
 
         <div class="col-md-4 mb-3">
-            <label for="regno">Reg No.:</label>
-            <input type="number" class="form-control" id="regno" name="regno" value="{{patient.reg_no.regno}}" disabled required />
+            <label for="regid">Reg No.:</label>
+            <input type="number" class="form-control" id="regid" name="regid" value="{{patient.reg_no.regid}}" disabled required />
 
         </div>
 
@@ -141,7 +141,7 @@
     <div class="form-group mb-3">
         <label for="test_name">Test Name:</label>
 
-        <input type="text" id="test_name" value="{{ test.testName }}" class="form-control" name="test_name" />
+        <input type="text" id="test_name" value="{{ patient.test_name }}" class="form-control" name="test_name" />
 
     </div>
 
@@ -287,14 +287,14 @@
 
 <script>
   $(document).ready(function () {
-    $("#regno").on("input", function () {
-      var regno = {{patient.reg_no}};
-      if (regno) {
+    $("#regid").on("input", function () {
+      var regid = {{patient.reg_no}};
+      if (regid) {
         $.ajax({
           url: '{% url "fetch_patient_data" %}',
           type: "GET",
           data: {
-            regno: regno,
+            regid: regid,
           },
           success: function (data) {
             // Update input fields with fetched data
@@ -311,7 +311,7 @@
           },
         });
       } else {
-        // Clear input fields when regno is empty
+        // Clear input fields when regid is empty
         $("#patient_name").val('');
         $("#gender").val('');
         $("#age").val('');

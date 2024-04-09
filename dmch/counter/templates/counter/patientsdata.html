@@ -78,7 +78,7 @@
           <tbody>
             {% for d in patients %}
             <tr>
-              <td {% if d.redcard == True %}style="color:red;"{% endif %} >{{d.regno}}</td>
+              <td {% if d.redcard == True %}style="color:red;"{% endif %} >{{d.regid}}</td>
               <td>{{d.name}}</td>
               <td>{{d.address}}</td>
               <td>{{d.doctor.name}}</td>
@@ -88,7 +88,7 @@
               <td>{{d.appointment_date}}</td>
               {% if request.user.is_superuser %}
               <td>
-                <a href="/update-patients/{{d.regno}}" class="btn btn-primary btn-icon-split">
+                <a href="/update-patients/{{d.regid}}" class="btn btn-primary btn-icon-split">
                   <span class="icon text-white-50">
                     <i class="fas fa-arrow-right"></i>
                   </span>
@@ -96,7 +96,7 @@
                 </a>
               </td>
               <td>
-                <a href="/delete-patients/{{d.regno}}" class="btn btn-danger btn-icon-split">
+                <a href="/delete-patients/{{d.regid}}" class="btn btn-danger btn-icon-split">
                   <span class="icon text-white-50">
                     <i class="fas fa-trash"></i>
                   </span>
@@ -105,7 +105,7 @@
               </td>
               {% else %}
               <td>
-                <a href="/update-patients/{{d.regno}}" class="btn btn-primary btn-icon-split">
+                <a href="/update-patients/{{d.regid}}" class="btn btn-primary btn-icon-split">
                   <span class="icon text-white-50">
                     <i class="fas fa-arrow-right"></i>
                   </span>

@@ -41,9 +41,9 @@
     </style>
   </head>
   <body>
-    <div class="" id="printContent" style="width: 100%; margin-top: -10px; height: 1110px;">
-      <div style="height: 555px;">
-        <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.8rem">
+    <div class="" id="printContent" style="width: 100%; margin-top: -10px;">
+      <div style="height: 455px;">
+        <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.2rem">
           <h2>DEPARTMENT OF CLINICAL PATHOLOGY</h2>
           <h4>DARBHANGA MEDIAL COLLEGE & HOSPITAL</h4>
           <h6>LAHERIASARAI, DARBHANGA (BIHAR)</h6>
@@ -72,7 +72,7 @@
               <p><strong>{% if patient.reg_no.gender %}{{patient.reg_no.gender}}{% endif %}</strong></p>
               <p><strong>{% if patient.department %}{{patient.department.name}}{% endif %} {% if patient.pincode %}{{patient.pincode}}{% endif %}</strong></p>
               <p><strong>{% if patient.referby %}{{patient.referby.name}}{% endif %}</strong></p>
-              <p><strong>{% if patient.testName %}{{patient.testName}}{% endif %}</strong></p>
+              <p><strong>{% if patient.test_name %}{{patient.test_name}}{% endif %}</strong></p>
             </div>
           </div>
   

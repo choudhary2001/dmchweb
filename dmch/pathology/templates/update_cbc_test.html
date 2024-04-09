@@ -32,7 +32,7 @@
       </div>
       <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
         <p>Date : <strong>{% if cbc.created_at %}{{cbc.created_at}}{% endif %}</strong></p>
-        <p>Reg No. : <strong>{% if cbc.reg_no %}{{cbc.reg_no.regno}}{% endif %}</strong></p>
+        <p>Reg No. : <strong>{% if cbc.reg_no %}{{cbc.reg_no.regid}}{% endif %}</strong></p>
         <p>Lab No. : <strong>{% if cbc.patient.lab_no %}{{cbc.patient.lab_no}}{% endif %}</strong></p>
       </div>
     </div>
@@ -323,8 +323,8 @@
     <div class="row">
         <!-- Left Column (Patient Details) -->
         <div class="col-md-4 mb-3">
-            <label for="regno">Reg No.:</label>
-            <input type="number" class="form-control" id="regno"  value="{{cbc.reg_no.regno}}" disabled  name="regno"required />
+            <label for="regid">Reg No.:</label>
+            <input type="number" class="form-control" id="regid"  value="{{cbc.reg_no.regid}}" disabled  name="regid"required />
 
         </div>
 
@@ -589,13 +589,13 @@
 
 <script>
   $(document).ready(function () {
-    var regno = {{ cbc.reg_no.regno }};
-    if (regno) {
+    var regid = {{ cbc.reg_no.regid }};
+    if (regid) {
     $.ajax({
         url: '{% url "fetch_patient_data_details" %}',
         type: "GET",
         data: {
-        regno: regno,
+        regid: regid,
         },
         success: function (data) {
         // Update input fields with fetched data
@@ -618,7 +618,7 @@
         },
     });
     } else {
-        // Clear input fields when regno is empty
+        // Clear input fields when regid is empty
         $("#patient_name").val('');
         $("#bill_no").val('');
         $("#labno").val('');

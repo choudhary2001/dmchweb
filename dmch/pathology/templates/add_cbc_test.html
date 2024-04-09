@@ -25,8 +25,8 @@
     <div class="row">
         <!-- Left Column (Patient Details) -->
         <div class="col-md-4 mb-3">
-            <label for="regno">Reg No.:</label>
-            <input type="number" class="form-control" id="regno" name="regno" required />
+            <label for="regid">Reg No.:</label>
+            <input type="number" class="form-control" id="regid" name="regid" required />
 
         </div>
 
@@ -266,14 +266,14 @@
 
 <script>
   $(document).ready(function () {
-    $("#regno").on("input", function () {
-      var regno = $(this).val();
-      if (regno) {
+    $("#regid").on("input", function () {
+      var regid = $(this).val();
+      if (regid) {
         $.ajax({
           url: '{% url "fetch_patient_data_details" %}',
           type: "GET",
           data: {
-            regno: regno,
+            regid: regid,
           },
           success: function (data) {
             // Update input fields with fetched data
@@ -296,7 +296,7 @@
           },
         });
       } else {
-        // Clear input fields when regno is empty
+        // Clear input fields when regid is empty
         $("#patient_name").val('');
         $("#bill_no").val('');
         $("#labno").val('');
