@@ -1,0 +1,219 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Print Patient Details</title>
+    <style>
+      /* Hide URL, page number, and date in printed page */
+      @media print {
+        .no-print {
+          display: none !important;
+        }
+      }
+    </style>
+    <style>
+
+    </style>
+  </head>
+  <body>
+    <div class="" id="printContent" style="width: 100%; margin-top: -10px;">
+
+        <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black;">
+          <h2 style="margin: 2px;" >DEPARTMENT OF CLINICAL PATHOLOGY</h2>
+          <h4 style="margin: 2px;" >DARBHANGA MEDICAL COLLEGE & HOSPITAL</h4>
+          <h6 style="margin: 2px;" >LAHERIASARAI, DARBHANGA (BIHAR)</h6>
+          <h6 style="margin: 2px;" >REPORT OF EXAMINATION OF H.S.F.</h6>
+        </div>
+        <hr />
+        <div style="display: flex; justify-content: space-between">
+          <div style="display: flex; justify-content: space-between; width: 100%;">
+            <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+              <p>Patient Name : <strong>{% if ctest.reg_no.name %}{{ctest.reg_no.name}}{% endif %} </strong></p>
+              <p>Refd By. : <strong>{% if ctest.patient.referby.name %}{{ctest.patient.referby.name}}{% endif %}</strong></p>
+              <p>Bill No. : <strong>{% if ctest.patient.bill_no %}{{ctest.patient.bill_no}}{% endif %}</strong></p>
+            </div>
+            <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+              <p>Date : <strong>{% if ctest.created_at %}{{ctest.created_at}}{% endif %}</strong></p>
+              <p>Reg No. : <strong>{% if ctest.reg_no %}{{ctest.reg_no.regid}}{% endif %}</strong></p>
+              <p>Lab No. : <strong>{% if ctest.patient.lab_no %}{{ctest.patient.lab_no}}{% endif %}</strong></p>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div>
+      
+          <div class="table-responsive">
+            <table class="table table-bordered"  width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th style=" text-align:left;">Test</th>
+                  <th style=" text-align:left;">Result</th>
+                  <!-- <th>Normal Range</th> -->
+                </tr>
+              </thead>
+              <tbody>
+                {% if ctest.volume %}
+                <tr>
+                  
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Volume</td>
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{ctest.volume}}</td>
+                  <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">70 - 110 mg/dl</td> -->
+                </tr>
+                {% endif %}
+                {% if ctest.consistency %}
+                <tr>
+                  
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Consistency</td>
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{ctest.consistency}}</td>
+                  <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">70 - 150 mg/dl</td> -->
+                </tr>
+                {% endif %}
+                {% if ctest.colour %}
+                <tr>
+                  
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Colour</td>
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{ctest.colour}}</td>
+                  <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">70 - 150 mg/dl</td> -->
+                </tr>
+                {% endif %}
+                {% if ctest.abestinenece %}
+                <tr>
+                  
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Abesistinence</td>
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{ctest.abestinenece}}</td>
+                  <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">15 - 45 mg/dl</td> -->
+                </tr>
+                {% endif %}
+      
+                {% if ctest.time_exam %}
+                <tr>
+                  
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Time Exam</td>
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{ctest.time_exam}}</td>
+                  <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">07 - 1.5 mg/dl</td> -->
+                </tr>
+                {% endif %}
+      
+                {% if ctest.method_collection %}
+                <tr>
+                  
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Method Collection</td>
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{ctest.method_collection}}</td>
+                  <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">3.5 - 7.2 mg/dl</td> -->
+                </tr>
+                {% endif %}
+      
+                {% if ctest.total_count %}
+                <tr>
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Total Count</td>
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{ctest.total_count}}</td>
+                  <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">0.0 - 1.2 mg/dl</td> -->
+                </tr>
+                {% endif %}
+                
+                {% if ctest.active %}
+                <tr>
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Active</td>
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{ctest.active}}</td>
+                  <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">0.0 - 35 IU/L</td> -->
+                </tr>
+                {% endif %}
+      
+                {% if ctest.sluggish %}
+                <tr>
+                  
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Sluggish</td>
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{ctest.sluggish}}</td>
+                  <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">0.0 - 45 IU/L</td> -->
+                </tr>
+                {% endif %}
+      
+                {% if ctest.non_matliz %}
+                <tr>
+                  
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Non Matliz</td>
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{ctest.non_matliz}}</td>
+                  <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">6.4 - 8.3 g/dl</td> -->
+                </tr>
+                {% endif %}
+      
+                {% if ctest.rbc %}
+                <tr>
+                  
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">RBC</td>
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{ctest.rbc}}</td>
+                  <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">3.5 - 5.2 g/dl</td> -->
+                </tr>
+                {% endif %}
+      
+                {% if ctest.wbc %}
+                <tr>
+                  
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">WBC</td>
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{ctest.wbc}}</td>
+                  <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">30 - 130 U/L</td> -->
+                </tr>
+                {% endif %}
+      
+                {% if ctest.epithelial_cells %}
+                <tr>
+                  
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Epithelial Cells</td>
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{ctest.epithelial_cells}}</td>
+                  <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">0 - 55 IU/L</td> -->
+                </tr>
+                {% endif %}
+                
+                {% if ctest.abnormality %}
+                <tr>
+                  
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Abnormality</td>
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{ctest.abnormality}}</td>
+                  <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">0 - 80 U/L</td> -->
+                </tr>
+                {% endif %}
+                
+              </tbody>
+            </table>
+          </div>
+      
+        </div>
+      
+      </div>
+
+    <!-- <script>
+      // Trigger print dialog when the page is loaded
+      window.onload = function () {
+        window.print();
+        // window.location.href = "/add-patients/";
+      };
+    </script> -->
+    <script>
+      // Function to print the patient details
+      function printPatientDetails() {
+        window.print();
+
+        // Check if the browser supports the `onafterprint` event
+        if (window.onafterprint !== undefined) {
+          // Wait for the print job to complete
+          window.onafterprint = function () {
+            // Redirect to the next URL
+            window.location.href = "/pathology/create_ctest_report/"; // Replace '/your-next-url' with the URL you want to redirect to
+          };
+        } else {
+          // If the browser does not support `onafterprint`, redirect after a delay
+          setTimeout(function () {
+            window.location.href = "/pathology/create_ctest_report/"; // Replace '/your-next-url' with the URL you want to redirect to
+          }, 5000); // Redirect after 5 seconds
+        }
+      }
+
+      // Trigger print dialog when the page is loaded
+      window.onload = function () {
+        printPatientDetails();
+      };
+    </script>
+  </body>
+</html>

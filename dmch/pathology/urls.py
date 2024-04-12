@@ -8,6 +8,14 @@ urlpatterns = [
     path('fetch_patient_data/', views.fetch_patient_data, name='fetch_patient_data'),
     path('fetch_patient_data_details/', views.fetch_patient_data_details, name='fetch_patient_data_details'),
 
+    path('add-doctors/', views.doctors, name="pathology_doctors"),
+    path('update-doctors/<int:doctor_id>', views.doctors_update, name="pathology_doctors_update"),
+    path('delete-doctors/<int:doctor_id>', views.doctors_delete, name="pathology_doctors_delete"),
+
+    path('add-departments/', views.departments, name="pathology_departments"),
+    path('update-departments/<int:department_id>', views.departments_update, name="pathology_departments_update"),
+    path('delete-departments/<int:department_id>', views.departments_delete, name="pathology_departments_delete"),
+
     path('create_testcode/', views.create_testcode, name='create_testcode'),
     path('test-code/<int:pk>/update/', views.update_testcode, name='update_testcode'),
     path('test-code/<int:pk>/delete/', views.delete_testcode, name='delete_testcode'),

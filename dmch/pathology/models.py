@@ -3,6 +3,35 @@ from counter.models import *
 from django.contrib.auth.models import User
 
 
+class PathologyDepartment(models.Model):
+    department_id = models.CharField(max_length=8, unique=True, editable=False, default="")
+    name = models.CharField(max_length = 255)
+    room_no = models.CharField(max_length = 255, blank = True, null = True)
+    created_at = models.DateTimeField(auto_now_add = True)
+
+    def save(self, *args, **kwargs):
+        if not self.department_id:
+            self.department_id = str(uuid.uuid4().int)[:8]
+        super(PathologyDepartment, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+
+class PathologyDoctor(models.Model):
+    doctor_id = models.CharField(max_length=8, unique=True, editable=False, default="")
+    name = models.CharField(max_length = 255)
+    created_at = models.DateTimeField(auto_now_add = True)
+
+    def save(self, *args, **kwargs):
+        if not self.doctor_id:
+            self.doctor_id = str(uuid.uuid4().int)[:8]
+        super(PathologyDoctor, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
 class Testcode(models.Model):
     test_code = models.CharField(max_length=200, unique = True)
     test_name = models.CharField(max_length=200)
@@ -10,12 +39,15 @@ class Testcode(models.Model):
 class Patient_registration(models.Model):
     patient_id = models.CharField(max_length=8, unique=True, editable=False, default="")
     user = models.ForeignKey(User, on_delete = models.CASCADE, blank = True, null = True)
-    department = models.ForeignKey(Department, on_delete = models.CASCADE)
+    department = models.ForeignKey(PathologyDepartment, on_delete = models.CASCADE, blank = True, null = True)
     date = models.DateField()
     bill_no = models.PositiveIntegerField(unique=True)
     lab_no = models.CharField(max_length = 200, blank = True, null = True)
+    patient_name = models.CharField(max_length = 200, blank = True, null = True)
+    gender = models.CharField(max_length = 200, blank = True, null = True)
+    age = models.CharField(max_length = 200, blank = True, null = True)
     reg_no = models.ForeignKey(Patient, on_delete = models.CASCADE)
-    referby = models.ForeignKey(Doctor, on_delete = models.CASCADE, blank = True, null = True)
+    referby = models.ForeignKey(PathologyDoctor, on_delete = models.CASCADE, blank = True, null = True)
     test_name = models.CharField(max_length = 255, blank = True, null = True)
     created_at = models.DateTimeField(auto_now_add = True)
 
@@ -226,3 +258,5 @@ class Serology_test(models.Model):
         if not self.strology_id:
             self.strology_id = str(uuid.uuid4().int)[:8]
         super(Serology_test, self).save(*args, **kwargs)
+
+

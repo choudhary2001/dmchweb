@@ -65,6 +65,7 @@ class Patient(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, blank = True, null = True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, blank = True, null = True)
     visittype = models.CharField(max_length=100)
+    de = models.CharField(max_length = 255, blank = True, null = True)
     appointment_date = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):

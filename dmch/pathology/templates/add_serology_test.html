@@ -26,7 +26,7 @@
         <!-- Left Column (Patient Details) -->
         <div class="col-md-4 mb-3">
             <label for="regid">Reg No.:</label>
-            <input type="number" class="form-control" id="regid" name="regid" required />
+            <input type="text" class="form-control" id="regid" name="regid" required />
 
         </div>
 
@@ -154,6 +154,10 @@
             regid: regid,
           },
           success: function (data) {
+            if (data.sr_report && data.sr_report.available) {
+                // Redirect to another page
+                window.location.href = `/pathology/update_serology_test/${data.sr_report.id}/`;
+            }
             // Update input fields with fetched data
             $("#patient_name").val(data.name);
             $("#bill_no").val(data.bill_no);

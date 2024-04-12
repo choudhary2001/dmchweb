@@ -26,7 +26,7 @@
         <!-- Left Column (Patient Details) -->
         <div class="col-md-4 mb-3">
             <label for="regid">Reg No.:</label>
-            <input type="number" class="form-control" id="regid" name="regid" required />
+            <input type="text" class="form-control" id="regid" name="regid" required />
 
         </div>
 
@@ -83,7 +83,7 @@
         </div>
 
         <div class="col-md-4 mb-3">
-            <label for="serun_creatinine">Serun Creatinine:</label>
+            <label for="serun_creatinine">Serum Creatinine:</label>
             <input type="text" class="form-control" id="serun_creatinine" value="" name="serun_creatinine"   />
         </div>
 
@@ -93,7 +93,7 @@
         </div>
 
         <div class="col-md-4 mb-3">
-            <label for="billirubin_total">Billirubin Total:</label>
+            <label for="billirubin_total">Total Bilirubin:</label>
             <input type="text" class="form-control" id="billirubin_total" value="" name="billirubin_total"   />
         </div>
 
@@ -123,7 +123,7 @@
         </div>
 
         <div class="col-md-4 mb-3">
-            <label for="gama_gt">Gama GT. (GGT):</label>
+            <label for="gama_gt">Gamma GT. (GGT):</label>
             <input type="text" class="form-control" id="gama_gt" value="" name="gama_gt"   />
         </div>
 
@@ -133,27 +133,27 @@
         </div>
 
         <div class="col-md-4 mb-3">
-            <label for="hbaic">HbAIC:</label>
+            <label for="hbaic">HBa1C:</label>
             <input type="text" class="form-control" id="hbaic" value="" name="hbaic"   />
         </div>
 
         <div class="col-md-4 mb-3">
-            <label for="total_cholestrol">Total Cholestrol:</label>
+            <label for="total_cholestrol">Total Cholesterol:</label>
             <input type="text" class="form-control" id="total_cholestrol" value="" name="total_cholestrol"   />
         </div>
 
         <div class="col-md-4 mb-3">
-            <label for="hdl_cholestrol">HDL Cholestrol:</label>
+            <label for="hdl_cholestrol">HDL Cholesterol:</label>
             <input type="text" class="form-control" id="hdl_cholestrol" value="" name="hdl_cholestrol"   />
         </div>
 
         <div class="col-md-4 mb-3">
-            <label for="ldl_cholestrol">LDL Cholestrol:</label>
+            <label for="ldl_cholestrol">LDL Cholesterol:</label>
             <input type="text" class="form-control" id="ldl_cholestrol" value="" name="ldl_cholestrol"   />
         </div>
 
         <div class="col-md-4 mb-3">
-            <label for="vldl_cholestrol">VLDL Cholestrol:</label>
+            <label for="vldl_cholestrol">VLDL Cholesterol:</label>
             <input type="text" class="form-control" id="vldl_cholestrol" value="" name="vldl_cholestrol"   />
         </div>
 
@@ -224,7 +224,7 @@
         </div>
 
         <div class="col-md-4 mb-3">
-          <label for="lth">LTH:</label>
+          <label for="lth">LDH:</label>
           <input type="text" class="form-control" id="lth" value="" name="lth"   />
       </div>
       <div class="col-md-4 mb-3">
@@ -304,6 +304,7 @@
             regid: regid,
           },
           success: function (data) {
+            console.log(data)
             // Update input fields with fetched data
             $("#patient_name").val(data.name);
             $("#bill_no").val(data.bill_no);
@@ -311,6 +312,10 @@
             $("#department").val(data.department);
             $("#doctor").val(data.referby);
             $("#patient_name").val(data.name);
+            if (data.test_report && data.test_report.available) {
+                // Redirect to another page
+                window.location.href = `/pathology/update_test_report/${data.test_report.id}/`;
+            }
           },
           error: function (xhr, status, error) {
             console.error(xhr.responseText);

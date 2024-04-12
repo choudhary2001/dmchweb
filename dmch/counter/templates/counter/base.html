@@ -34,11 +34,14 @@
 
     {% block css %} {% endblock %}
     <style>
+
       body,
       html {
         margin: 0;
         padding: 0;
         height: 100%;
+        font-family: sans-serif; 
+        color: black; 
       }
 
       #preloader {
@@ -228,6 +231,20 @@
         <!-- Heading -->
         <div class="sidebar-heading">Pathology</div>
 
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'pathology_doctors' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Doctors</span></a
+          >
+        </li>
+
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'pathology_departments' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Departments</span></a
+          >
+        </li>
 
 
         <li class="nav-item active">
@@ -275,7 +292,7 @@
         <li class="nav-item active">
           <a class="nav-link" href="{% url 'create_ctest_report' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>C Test</span></a
+            <span>H.S.F. Report</span></a
           >
         </li>
 
@@ -305,7 +322,7 @@
               <a class="collapse-item" href="{% url 'create_test_report_view' %}">Test Report</a>
               <a class="collapse-item" href="{% url 'urine_test_report_view' %}">Urine Test Report</a>
               <a class="collapse-item" href="{% url 'stool_test_report_view' %}">Stool Test Report</a>
-              <a class="collapse-item" href="{% url 'c_test_report_view' %}">C Test Report</a>
+              <a class="collapse-item" href="{% url 'c_test_report_view' %}">H.S.F. Test Report</a>
               <a class="collapse-item" href="{% url 'cbc_test_report_view' %}">CBC Test Report</a>
               <a class="collapse-item" href="{% url 'serology_test_report_view' %}">Serology Test Report</a>
             </div>
@@ -646,11 +663,11 @@
     <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
 
     <!-- Page level plugins -->
-    <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+    <!-- <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script> -->
 
     <!-- Page level custom scripts -->
-    <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>
-    <script src="{% static 'js/demo/chart-pie-demo.js' %}"></script>
+    <!-- <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>
+    <script src="{% static 'js/demo/chart-pie-demo.js' %}"></script> -->
 
     <!-- Page level plugins -->
     <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>

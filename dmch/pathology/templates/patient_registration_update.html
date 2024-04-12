@@ -16,53 +16,53 @@
 <div class="container-fluid">
   <!-- Page Heading -->
 
-  <div class="" id="printContent" style="width: 100%; margin-top: -10px; height: 1110px; display: none;">
-    <div style="height: 655px;">
+  <div class="" id="printContent" style="width: 100%; margin-top: -10px; height: 842px; display: none;">
+    <div style="height: 50%;">
       <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.2rem">
         <h2>DEPARTMENT OF CLINICAL PATHOLOGY</h2>
-        <h4>DARBHANGA MEDIAL COLLEGE & HOSPITAL</h4>
+        <h4>DARBHANGA MEDICAL COLLEGE & HOSPITAL</h4>
         <h6>LAHERIASARAI, DARBHANGA (BIHAR)</h6>
       </div>
       <hr />
       <div style="display: flex; justify-content: space-between">
         <div style="display: flex">
-          <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
-            <p>Date : <strong>{% if patient.created_at %}{{patient.created_at}}{% endif %} </strong></p>
-            <p>Lab NO. : <strong>{% if patient.lab_no %}{{patient.lab_no}}{% endif %}</strong></p>
-            <p>Bill No. : <strong>{% if patient.bill_no %}{{patient.bill_no}}{% endif %}</strong></p>
-            <p>Reg No. : <strong>{% if patient.reg_no %}{{patient.reg_no.regid}}{% endif %}</strong></p>
-            <p>Patient Name : <strong>{% if patient.reg_no %}{{patient.reg_no.name}}{% endif %}</strong></p>
-            <p>Age : <strong>{% if patient.reg_no.year %}{{patient.reg_no.year}}Y{% endif %} {% if patient.reg_no.month %}{{patient.reg_no.month}}M{% endif %} {% if patient.reg_no.days %}{{patient.reg_no.days}}D{% endif %} /{{patient.gender}}</strong></p>
-            <p>Gender : <strong>{% if patient.reg_no.gender %}{{patient.reg_no.gender}}{% endif %}</strong></p>
-            <p>Dept : <strong>{% if patient.department %}{{patient.department.name}}{% endif %} {% if patient.pincode %}{{patient.pincode}}{% endif %}</strong></p>
-            <p>Doctor : <strong>{% if patient.referby %}{{patient.referby.name}}{% endif %}</strong></p>
-            <p>Test Name : <strong>{% if patient.test_name %}{{patient.test_name}}{% endif %}</strong></p>
+          <div style="font-family: sans-serif; color: black; font-size: 1rem;  margin-bottom: 0.2rem !important;">
+            <p>Date : {% if patient.created_at %}{{patient.created_at}}{% endif %} </p>
+            <p>Lab NO. : {% if patient.lab_no %}{{patient.lab_no}}{% endif %}</p>
+            <p>Bill No. : {% if patient.bill_no %}{{patient.bill_no}}{% endif %}</p>
+            <p>Reg No. : {% if patient.reg_no %}{{patient.reg_no.regid}}{% endif %}</p>
+            <p>Patient Name : {% if patient.reg_no %}{% if patient.reg_no.de == 'Pathology' %}{{patient.reg_no.regnoid}}{% else %}{{patient.reg_no.regid}}{% endif %}{% endif %}</p>
+            <p>Age : {% if patient.reg_no.year %}{{patient.reg_no.year}}Y{% endif %} {% if patient.reg_no.month %}{{patient.reg_no.month}}M{% endif %} {% if patient.reg_no.days %}{{patient.reg_no.days}}D{% endif %}</p>
+            <p>Gender : {% if patient.reg_no.gender %}{{patient.reg_no.gender}}{% endif %}</p>
+            <p>Dept : {% if patient.department %}{{patient.department.name}}{% endif %} {% if patient.pincode %}{{patient.pincode}}{% endif %}</p>
+            <p>Doctor : {% if patient.referby %}{{patient.referby.name}}{% endif %}</p>
+            <p>Test Name : {% if patient.test_name %}{{patient.test_name}}{% endif %}</p>
           </div>
         </div>
 
       </div>
     </div>
     <hr />
-    <div style="height: 555px;">
+    <div style="height: 50%;">
       <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.2rem">
         <h2>DEPARTMENT OF CLINICAL PATHOLOGY</h2>
-        <h4>DARBHANGA MEDIAL COLLEGE & HOSPITAL</h4>
+        <h4>DARBHANGA MEDICAL COLLEGE & HOSPITAL</h4>
         <h6>LAHERIASARAI, DARBHANGA (BIHAR)</h6>
       </div>
       <hr />
       <div style="display: flex; justify-content: space-between">
         <div style="display: flex">
-          <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
-            <p>Date : <strong>{% if patient.created_at %}{{patient.created_at}}{% endif %} </strong></p>
-            <p>Lab NO. : <strong>{% if patient.lab_no %}{{patient.lab_no}}{% endif %}</strong></p>
-            <p>Bill No. : <strong>{% if patient.bill_no %}{{patient.bill_no}}{% endif %}</strong></p>
-            <p>Reg No. : <strong>{% if patient.reg_no %}{{patient.reg_no.regid}}{% endif %}</strong></p>
-            <p>Patient Name : <strong>{% if patient.reg_no %}{{patient.reg_no.name}}{% endif %}</strong></p>
-            <p>Age : <strong>{% if patient.reg_no.year %}{{patient.reg_no.year}}Y{% endif %} {% if patient.reg_no.month %}{{patient.reg_no.month}}M{% endif %} {% if patient.reg_no.days %}{{patient.reg_no.days}}D{% endif %} /{{patient.gender}}</strong></p>
-            <p>Gender : <strong>{% if patient.reg_no.gender %}{{patient.reg_no.gender}}{% endif %}</strong></p>
-            <p>Dept : <strong>{% if patient.department %}{{patient.department.name}}{% endif %} {% if patient.pincode %}{{patient.pincode}}{% endif %}</strong></p>
-            <p>Doctor : <strong>{% if patient.referby %}{{patient.referby.name}}{% endif %}</strong></p>
-            <p>Test Name : <strong>{% if patient.test_name %}{{patient.test_name.test_name}}{% endif %}</strong></p>
+          <div style="font-family: sans-serif; color: black; font-size: 1rem;  margin-bottom: 0.2rem !important;">
+            <p>Date : {% if patient.created_at %}{{patient.created_at}}{% endif %} </p>
+            <p>Lab NO. : {% if patient.lab_no %}{{patient.lab_no}}{% endif %}</p>
+            <p>Bill No. : {% if patient.bill_no %}{{patient.bill_no}}{% endif %}</p>
+            <p>Reg No. : {% if patient.reg_no %}{{patient.reg_no.regid}}{% endif %}</p>
+            <p>Patient Name : {% if patient.reg_no %}{% if patient.reg_no.de == 'Pathology' %}{{patient.reg_no.regnoid}}{% else %}{{patient.reg_no.regid}}{% endif %}{% endif %}</p>
+            <p>Age : {% if patient.reg_no.year %}{{patient.reg_no.year}}Y{% endif %} {% if patient.reg_no.month %}{{patient.reg_no.month}}M{% endif %} {% if patient.reg_no.days %}{{patient.reg_no.days}}D{% endif %}</p>
+            <p>Gender : {% if patient.reg_no.gender %}{{patient.reg_no.gender}}{% endif %}</p>
+            <p>Dept : {% if patient.department %}{{patient.department.name}}{% endif %} {% if patient.pincode %}{{patient.pincode}}{% endif %}</p>
+            <p>Doctor : {% if patient.referby %}{{patient.referby.name}}{% endif %}</p>
+            <p>Test Name : {% if patient.test_name %}{{patient.test_name}}{% endif %}</p>
           </div>
         </div>
 
@@ -82,6 +82,15 @@
     <div class="row">
         <!-- Left Column (Patient Details) -->
         <div class="col-md-4 mb-3">
+          <label for="department">Department:</label>
+          <select type="text" id="department" class="form-control" name="department" required style="">
+              <option>Select Department</option>
+              {% for d in departments %}
+              <option {% if patient.department.department_id == d.department_id %}selected{% endif %} value="{{d.department_id}}" >{{d.name}}</option>
+              {% endfor %}
+          </select>
+      </div>
+        <div class="col-md-4 mb-3">
 
             <label for="bill_no">Bill No.:</label>
             <input type="tel" class="form-control" id="bill_no" value="{{patient.bill_no}}" name="bill_no" disabled required />
@@ -89,62 +98,66 @@
         </div>
 
         <div class="col-md-4 mb-3">
-            <label for="regid">Reg No.:</label>
-            <input type="number" class="form-control" id="regid" name="regid" value="{{patient.reg_no.regid}}" disabled required />
-
-        </div>
-
+          <label for="date">Date:</label>
+          <input type="date" id="date" class="form-control" name="date" value="{{ patient.date|date:'Y-m-d' }}" required>
+      </div>
+        <div class="col-md-4 mb-3" >
+          <label for="labno">Lab No :</label>
+          <input type="text" id="labno" value="{{patient.lab_no}}" class="form-control" name="labno" />
+      </div>
+    
 
         <div class="col-md-4 mb-3">
-            <label for="department">Department:</label>
-            <select type="text" id="department" class="form-control" name="department" required style="">
-                <option>Select Department</option>
-                {% for d in departments %}
-                <option {% if patient.department.department_id == d.department_id %}selected{% endif %} value="{{d.department_id}}" >{{d.name}}</option>
-                {% endfor %}
-            </select>
+            <label for="regid">Reg No.:</label>
+            <input type="text" class="form-control" id="regid" name="regid" value="{% if patient.reg_no %}{% if patient.reg_no.de == 'Pathology' %}{{patient.reg_no.regnoid}}{% else %}{{patient.reg_no.regid}}{% endif %}{% endif %}" disabled required />
+
         </div>
+
+
+
 
         <div class="col-md-4 mb-3">
             <label for="patient_name">Patient Name :</label>
-            <input type="tel" class="form-control" id="patient_name" value="{{patient.reg_no.name}}" disabled  name="patient_name"  disabled/>
+            <input type="tel" class="form-control" id="patient_name" value="{{patient.reg_no.name}}"   name="patient_name" />
         </div>
 
         <div class="col-md-4 mb-3">
             <label for="gender">Gender:</label>
-            <input type="text" class="form-control" id="gender" value="{{patient.reg_no.gender}}"  name="gender" disabled  />
+            <input type="text" class="form-control" id="gender" value="{{patient.reg_no.gender}}"  name="gender"   />
         </div>
 
         <div class="col-md-4 mb-3">
             <label for="age">Age:</label>
-            <input type="text" class="form-control" id="age" value="" disabled  name="age"  />
+            <input type="text" class="form-control" id="age" value="{% if patient.reg_no.year %}{{patient.reg_no.year}}Y{% endif %} {% if patient.reg_no.month %}{{patient.reg_no.month}}M{% endif %} {% if patient.reg_no.days %}{{patient.reg_no.days}}D{% endif %}"  name="age"  />
         </div>
+
+        <div class="col-md-4 mb-3">
+          <label for="mob_no">Mobile No.:</label>
+          <input type="text" class="form-control" id="mob_no" value="{{patient.reg_no.mobno}}" name="mob_no" required />
+        </div>
+
+            
 
         <div class="col-md-4 mb-3" >
             <label for="doctor">Refer By :</label>
             <select type="text" id="doctor" class="form-control" name="doctor" >
             <option>Select Doctor</option>
+              {% for d in doctors %}
+                <option {% if patient.referby.doctor_id == d.doctor_id %}selected{% endif %} value="{{d.department_id}}" >{{d.name}}</option>
+                {% endfor %}
             </select>
         </div>
       
-        <div class="col-md-4 mb-3" >
-            <label for="labno">Lab No :</label>
-            <input type="text" id="labno" value="{{patient.lab_no}}" class="form-control" name="labno" />
-        </div>
-      
-        <div class="col-md-4 mb-3">
-            <label for="date">Date:</label>
-            <input type="date" id="date" class="form-control" name="date" value="{{ patient.date|date:'Y-m-d' }}" required>
-        </div>
-    </div>
 
-    <div class="form-group mb-3">
+   
+
+    <div class="col-md-6 mb-3">
         <label for="test_name">Test Name:</label>
 
         <input type="text" id="test_name" value="{{ patient.test_name }}" class="form-control" name="test_name" />
 
     </div>
-
+  </div>
     <button type="submit" class="btn btn-primary">Save</button>
     <a href="#;" id="printButton" style=" display: none;" class="btn btn-primary">Print</a>
 
@@ -183,41 +196,41 @@
   });
 </script>
 <script>
-    var departmentId ={{patient.department.department_id}};
-        $.ajax({
-        url: '{% url "get_doctors_by_department" %}',
-        type: "GET",
-        data: {
-            department_id: departmentId,
-        },
-        success: function (data) {
-            console.log(data);
-            $("#doctor").empty();
-            $.each(data.doctors, function (index, doctor) {
-            $("#doctor").append('<option value="' + doctor.doctor_id + '">' + doctor.name + "</option>");
-            });
-        },
-    });
+  //   var departmentId ={{patient.department.department_id}};
+  //       $.ajax({
+  //       url: '{% url "get_doctors_by_department" %}',
+  //       type: "GET",
+  //       data: {
+  //           department_id: departmentId,
+  //       },
+  //       success: function (data) {
+  //           console.log(data);
+  //           $("#doctor").empty();
+  //           $.each(data.doctors, function (index, doctor) {
+  //           $("#doctor").append('<option value="' + doctor.doctor_id + '">' + doctor.name + "</option>");
+  //           });
+  //       },
+  //   });
 
-  $(document).ready(function () {
-    $("#department").change(function () {
-      var departmentId = $(this).val();
-      $.ajax({
-        url: '{% url "get_doctors_by_department" %}',
-        type: "GET",
-        data: {
-          department_id: departmentId,
-        },
-        success: function (data) {
-          console.log(data);
-          $("#doctor").empty();
-          $.each(data.doctors, function (index, doctor) {
-            $("#doctor").append('<option value="' + doctor.doctor_id + '">' + doctor.name + "</option>");
-          });
-        },
-      });
-    });
-  });
+  // $(document).ready(function () {
+  //   $("#department").change(function () {
+  //     var departmentId = $(this).val();
+  //     $.ajax({
+  //       url: '{% url "get_doctors_by_department" %}',
+  //       type: "GET",
+  //       data: {
+  //         department_id: departmentId,
+  //       },
+  //       success: function (data) {
+  //         console.log(data);
+  //         $("#doctor").empty();
+  //         $.each(data.doctors, function (index, doctor) {
+  //           $("#doctor").append('<option value="' + doctor.doctor_id + '">' + doctor.name + "</option>");
+  //         });
+  //       },
+  //     });
+  //   });
+  // });
 
   $(document).ready(function () {
     $("#redcardid").hide();
@@ -301,6 +314,8 @@
             $("#patient_name").val(data.name);
             $("#gender").val(data.gender);
             $("#age").val(data.age);
+            $("#mob_no").val(data.mob_no);
+
           },
           error: function (xhr, status, error) {
             console.error(xhr.responseText);
@@ -308,6 +323,8 @@
             $("#patient_name").val('');
             $("#gender").val('');
             $("#age").val('');
+            $("#mob_no").val('');
+
           },
         });
       } else {
@@ -315,6 +332,8 @@
         $("#patient_name").val('');
         $("#gender").val('');
         $("#age").val('');
+        $("#mob_no").val('');
+
       }
     });
   });
