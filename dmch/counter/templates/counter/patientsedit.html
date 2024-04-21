@@ -61,6 +61,9 @@
           {% if patient.redcard == True %}
           <p>{{patient.redcardtype}} </p>
           {% endif %}
+          {% if patient.revisit == 'Revisit' %}
+            <p>Old Reg No. </p>
+          {% endif %}
         </div>
         <div style="font-family: sans-serif; color: black; font-size: 1.2rem;  margin-bottom: 0.4rem !important;">
           <p><strong>{% if patient.department %}{{patient.department}}{% endif %} {% if patient.department.room_no %}(ROOM NO. {{patient.department.room_no}}){% endif %}</strong></p>
@@ -70,12 +73,13 @@
           <p><strong>{% if patient.address %}{{patient.address}}{% endif %}</strong></p>
           <p><strong>{% if patient.policest %}{{patient.policest}}{% endif %} {% if patient.pincode %}{{patient.pincode}}{% endif %}</strong></p>
           <p><strong>{% if patient.redcardid %}{{patient.redcardid}}{% endif %}</strong></p>
+          <p><strong>{% if patient.revisit == 'Revisit' %}{{patient.revisitid}} (Re Visit){% endif %}</strong></p>
           
         </div>
       </div>
       <div style=" font-family: sans-serif; color: black; font-size: 1.2rem;  margin-bottom: 0.4rem !important;">
         <p>REG. DATE : <strong>{% if patient.appointment_date %}{{patient.appointment_date}}{% endif %}</strong></p>
-        <p>REG. FEES : <strong>RS {% if patient.visittype == 'Unknown' %}0{% else %}{% if patient.redcard == True  %}0{% else %}5{% endif %}{% endif %} /-</strong></p>
+        <p>REG. FEES : <strong>RS {% if patient.visittype == 'Unknown' %}0{% else %}{% if patient.redcard == True %}0{% else %}{% if patient.revisit == 'Revisit' %}0{% else %}5{% endif %}{% endif %}{% endif %} /-</strong></p>
         <p>AGE/GENDER : <strong>{% if patient.year %}{{patient.year}}Y{% endif %} {% if patient.month %}{{patient.month}}M{% endif %} {% if patient.days %}{{patient.days}}D{% endif %} /{{patient.gender}}</strong></p>
         <p>MOBILE NO : <strong>{% if patient.mobno %}{{patient.mobno}}{% endif %}</strong></p>
         <p>DISTRICT : <strong>{% if patient.district %}{{patient.district}}{% endif %}</strong></p>
@@ -99,12 +103,25 @@
 
 <div class="container-fluid" id="originalContent">
   <!-- Page Heading -->
-  <form id="patientForm" method="POST" action="/update-patients/{{patient.regid}}">
+  <form id="patientForm" method="POST" action="{% if paitient_visit == 'Revisit' %}/add-patients/?visit={{paitient_visit}}{% else %}/update-patients/{{patient.regid}}{% endif %}">
     {% csrf_token %}
-    <div>Appointment Date : {{patient.appointment_date}}</div>
+    <div style="display: flex; width: 100%">
+      <div style="width: 60%">Appointment Date : {{current_time_kolkata}}</div>
+ 
+      {% if paitient_visit == 'Revisit' %}
+      <div class="form-group" style="width: 100%">
+        <select id="patient_type" name="patient_type" class="form-control" style="">
+          <option selected value="Revisit">Re Visit</option>
+        </select>
+      </div>
+      {% endif %}
+      {% if patient.revisit == 'Revisit' %}
+        <p>Old Reg No. {{patient.revisitid}} (Re Visit)</p>
+      {% endif %}
+    </div>
     <div class="form-group" style="display: flex; width: 100%;">
       <label for="regid">Registration Number :</label>
-      <input type="text" class="form-control" id="regid" style="width: 60%" value="{{patient.regid}}" name="regid" required disabled  />
+      <input type="text" class="form-control" id="regid" style="width: 60%" value="{{patient.regid}}" name="regid" required {% if paitient_visit == 'Revisit' %}{% else %}disabled{% endif %} />
       <select name="redcardtype" class="form-control" id="redcardtype" style="width: 15%;" class="form-group" disabled >
         <option value="select">Select</option>
         <option {% if patient.redcardtype == 'Red Card' %} selected {% endif %} value="Red Card" >Red Card</option>
@@ -211,7 +228,7 @@
 
     <div class="form-group" style="display: flex">
       <label for="doctor">Doctors :</label>
-      <select type="text" id="doctor" class="form-control" name="doctor" required style="" value="{{patient.doctor.doctor_id}}"  >
+      <select type="text" id="doctor" class="form-control" name="doctor"  style="" value="{{patient.doctor.doctor_id}}"  >
         <option>Select Doctor</option>
         </select>
     </div>

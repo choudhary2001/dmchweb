@@ -30,7 +30,7 @@
           <select class="form-control" name="department_id" required>
             <option>Select Department</option>
             {% for s in department %}
-            <option {% if supply.department.department_id == s.department_id  %} selected{% endif %} value="{{s.department_id}}">{{s.name}}</option>
+            <option {% if supply.departpment.department_id == s.department_id  %} selected{% endif %} value="{{s.department_id}}">{{s.name}}</option>
             {% endfor %}
           </select>
         </div>

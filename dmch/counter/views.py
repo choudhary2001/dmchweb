@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 from django.db.models import Count
 from django.utils import timezone
 import pytz
-
+from drug.models import *
 # Get the current time in UTC
 current_time_utc = timezone.now()
 
@@ -42,6 +42,7 @@ def signin(request):
             # User is authenticated, log them in
             login(request, user)
             if user.is_superuser == False:
+                d = DrugDepartment.objects.filter(name = p.user_role).first()
                 if p:
                     request.session['user_role'] = f"{p.user_role}"
                 
@@ -49,6 +50,11 @@ def signin(request):
                     return redirect('/drug/product-type/add/')
                 if p.user_role == 'Pathology':
                     return redirect('/pathology/create_test_report/')
+                    
+                if d is not None:
+                    request.session['user_role_store'] = "Medicine Store"
+                    return redirect('/medicine_store/supply/view/')
+
                 return redirect('add_patient')
             # messages.success(request, "You have successfully signed in.")
             request.session['user_role'] = 'Admin'
@@ -58,6 +64,56 @@ def signin(request):
             # Authentication failed
             messages.error(request, "Invalid email or password. Please try again.")
     return render(request, 'counter/login.html')
+
+
+@login_required
+def fetch_patient_data_details(request):
+    if request.method == 'GET' and 'regid' in request.GET:
+        regid = request.GET.get('regid')
+        try:
+            # patient = Patient.objects.filter(regid=regid).first()
+            try:
+                regid_int = int(regid)
+                # If no exception is raised, it means regid is an integer
+                patient = Patient.objects.filter(Q(regid=regid_int) | Q(regnoid=regid)).first()
+            except ValueError:
+                # If regid cannot be converted to an integer, treat it as a varchar
+                patient = Patient.objects.filter(regnoid=regid).first()
+
+            if patient is not None:
+                thirty_days_ago = timezone.now() - timezone.timedelta(days=30)
+    
+                # Check if the update_date is within the last 30 days
+                if patient.update_date and patient.update_date >= thirty_days_ago:
+                    available = True
+                else:
+                    available = False
+                if patient.revisit == 'Revisit':
+                    available = False
+                print(available)
+                report = {
+                    'available' : available,
+                    'id' : patient.regno
+                }
+
+
+                data = {
+                    'report' : report,
+                }
+            else:
+                report = {
+                    'available' : False,
+                    'id' : None
+                }
+                data = {
+                   'report' : report, 
+                }
+
+            return JsonResponse(data)
+        except Patient.DoesNotExist:
+            return JsonResponse({'error': 'Patient not found'}, status=404)
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
 @login_required
@@ -94,13 +150,7 @@ def add_patient(request):
 
         start_date = current_date 
         end_date = current_date + timedelta(days=1) 
-        # Check if the latest entry is from today or not
-        # latest_patient = Patient.objects.filter(appointment_date__lt=end_date).aggregate(
-        #     Max('uhidnoincre')
-        # )
 
-        # print(latest_patient)
-        # next_day = start_date + timedelta(days=1)
         latest_patient_today = Patient.objects.filter(appointment_date__gte=start_date, appointment_date__lt=end_date, de = None).order_by('-appointment_date').first()
         # latest_patient_today = Patient.objects.filter(appointment_date__lt=end_date).order_by('-appointment_date').first()
         if latest_patient_today:
@@ -108,17 +158,15 @@ def add_patient(request):
         else:
             uhidnoincre = 1
 
-
-        # If there are no entries for today, set the values to start from 1
-        # if not all(latest_patient.values()):
-        #     uhidnoincre = 1
-        # else:
-        #     uhidnoincre = int(latest_patient['uhidnoincre__max']) + 1 if latest_patient['uhidnoincre__max'] is not None else 1
-        # print(uhidnoincre)
-
         if request.method == 'POST':
             try:
-                # regid = request.POST.get('regid')
+                paitient_type = request.GET.get('visit', None)
+                if paitient_type:
+                    paitient_type = 'Revisit'
+                else:
+                    paitient_type = None
+
+                regid = request.POST.get('regid')
                 # regnoid = request.POST.get('regnoid')
                 # uhidno = request.POST.get('uhidno')
                 # uhidnoincre = request.POST.get('uhidnoincre')
@@ -168,12 +216,6 @@ def add_patient(request):
                 de = Department.objects.filter(department_id = department).first()
                 d = Doctor.objects.filter(doctor_id = doctor).first()
 
-                # while Patient.objects.filter(regid=regid).exists():
-                #     regid += 1
-        
-                # while Patient.objects.filter(appointment_date__gte=start_date, appointment_date__lt=end_date, uhidnoincre=uhidnoincre).exists():
-                #     uhidnoincre += 1
-        
                 patient = Patient.objects.create(
                     user = request.user,
                     # regid=regid,
@@ -201,6 +243,19 @@ def add_patient(request):
                     redcardtype = redcardtype,
                     de = None
                 )
+                if paitient_type == 'Revisit':
+                    rp = Patient.objects.filter(regid = regid).first()
+                    rp.update_date = current_time_kolkata
+
+                    patient.revisit = 'Revisit'
+                    patient.revisitid = rp.regid
+                    patient.symptoms = rp.symptoms
+                    patient.doctor = rp.doctor
+                    patient.department = rp.department
+                    patient.visittype = rp.visittype
+                    patient.save()
+
+                    return render(request, 'counter/patientsprint.html', {"patient" : patient})
                 return render(request, 'counter/patientsprint.html', {"patient" : patient})
 
             except Exception as e:
@@ -221,7 +276,8 @@ def add_patient(request):
     else:
         logout(request)
         return redirect('signin') 
-        
+
+
 @csrf_exempt
 def get_doctors_by_department(request):
     department_id = request.GET.get('department_id')
@@ -275,6 +331,7 @@ def show_patients(request):
         rb_case_total = 0
         unkown_total = 0
         free_total = 0
+        revisit_total = 0
         for p in patients:
             if p.visittype == 'Unknown':
                 unkown_total += 1
@@ -285,6 +342,8 @@ def show_patients(request):
                     red_card_total += 1
                 if p.redcardtype == 'RB Case':
                     rb_case_total += 1
+            if p.revisit == 'Revisit':
+                revisit_total += 1
 
 
         non_price = red_card_total + rb_case_total + unkown_total + free_total
@@ -304,7 +363,8 @@ def show_patients(request):
             'current_time_kolkata' : current_time_kolkata,
             'redcard' : red_card_total,
             'rbcase': rb_case_total,
-            'free_total' : free_total
+            'free_total' : free_total,
+            'revisit_total' : revisit_total
         }
         return render(request, 'counter/patientsdata.html', context=context)
     else:
@@ -374,6 +434,7 @@ def show_patients_report(request):
         rb_case_total = 0
         unkown_total = 0
         free_total = 0
+        revisit_total = 0
         for p in patients:
             if p.visittype == 'Unknown':
                 unkown_total += 1
@@ -384,6 +445,8 @@ def show_patients_report(request):
                     red_card_total += 1
                 if p.redcardtype == 'RB Case':
                     rb_case_total += 1
+            if p.revisit == 'Revisit':
+                revisit_total += 1
 
         non_price = red_card_total + rb_case_total + unkown_total + free_total
         # Count the total number of patients
@@ -419,7 +482,8 @@ def show_patients_report(request):
             'department' : department,
             'start_date' : min_appointment_date,
             'end_date' : max_appointment_date,
-            'free_total' : free_total
+            'free_total' : free_total,
+            'revisit_total' : revisit_total
         }
         return render(request, 'counter/Patientsreport.html', context=context)
     else:
@@ -456,6 +520,7 @@ def show_patients_report_userwise(request):
         # Filter patients based on the provided date range and user
         if request.user.is_superuser:
             users = User.objects.all()
+            
         else:
             users = [request.user]
 
@@ -497,22 +562,25 @@ def show_patients_report_userwise(request):
 
             min_appointment_date = patients.aggregate(Min('appointment_date'))['appointment_date__min']
             max_appointment_date = patients.aggregate(Max('appointment_date'))['appointment_date__max']
-            if total_amount > 0:
-                users_with_patients.append({
-                    'user': user,
-                    'patients': patients,
-                    'total': total,
-                    'redcard': red_card_total,
-                    'rbcase': rb_case_total,
-                    'unknown': unknown_total,
-                    'total_amount': total_amount,
-                    'visittype_counts': visittype_counts,
-                    'date_range': (start_date, end_date),
-                    'department': department,
-                    'start_date' : min_appointment_date,
-                    'end_date' : max_appointment_date,
-                    'free_total' : free_total
-                })
+            p = Profile.objects.filter(user = user).first()
+            if p is not None:
+                if p.user_role == 'Registration':
+                    if total_amount > 0:
+                        users_with_patients.append({
+                            'user': user,
+                            'patients': patients,
+                            'total': total,
+                            'redcard': red_card_total,
+                            'rbcase': rb_case_total,
+                            'unknown': unknown_total,
+                            'total_amount': total_amount,
+                            'visittype_counts': visittype_counts,
+                            'date_range': (start_date, end_date),
+                            'department': department,
+                            'start_date' : min_appointment_date,
+                            'end_date' : max_appointment_date,
+                            'free_total' : free_total
+                        })
         d = Department.objects.all()
         context = {
             'users_with_patients': users_with_patients,
@@ -531,10 +599,16 @@ def show_patients_report_userwise(request):
 def update_patients(request, pk):
     if request.user.is_superuser or request.session['user_role'] == 'Registration':
 
+        paitient_type = request.GET.get('visit', None)
+        if paitient_type:
+            paitient_type = 'Revisit'
+        else:
+            paitient_type = None
+        print(paitient_type)
         p = Patient.objects.filter(regid = pk, de = None).first()
         de = Department.objects.all().order_by('-created_at')
         if request.method == "POST":
-            # if request.user.is_superuser:
+
             name = request.POST.get('name')
             guardiannametitle = request.POST.get('guardiannametitle')
             guardianname = request.POST.get('guardianname')
@@ -578,15 +652,16 @@ def update_patients(request, pk):
 
 
             return redirect(f'/update-patients/{p.regid}')
-            # else:
-            #     logout(request)
-            #     return redirect('signin') 
+
+        
         context = {
+            'paitient_visit' : paitient_type,
             'patient' : p,
             'departments' : de,
             'title' : 'Update Patient Details',
-            'current_time_kolkata' : current_time_kolkata
+            'current_time_kolkata' : current_time_kolkata,
         }
+        print(context)
         return render(request, 'counter/patientsedit.html', context= context)
     else:
         logout(request)
@@ -749,8 +824,11 @@ def dataentryoperator(request):
             else:
                 messages.error(request, 'User already exists with this username.')
         d = Profile.objects.all().order_by('-created_at')
+        de = DrugDepartment.objects.all().order_by('-created_at')
+
         context = {
             'users' : d,
+            'departments' : de,
             'title' : 'Staff'
         }
         return render(request, 'counter/users.html', context = context)

@@ -63,7 +63,7 @@ def departments_update(request, department_id):
             else:
                 messages.error(request, 'Department name already exists.')
 
-        return redirect('departments')
+        return redirect('drug_departments')
     else:
         logout(request)
         return redirect('signin') 
@@ -142,7 +142,7 @@ def suppliar_delete_view(request, suppliar_id):
 
 @login_required
 def product_type_add_view(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Drug':
+    if request.user.is_superuser or request.session['user_role'] == 'Drug'  or request.session['user_role_store'] == 'Medicine Store' :
 
         if request.method == 'POST':
             name = request.POST.get('name')
@@ -166,7 +166,7 @@ def product_type_add_view(request):
 
 @login_required
 def product_type_update_view(request, product_type_id):
-    if request.user.is_superuser or request.session['user_role'] == 'Drug':
+    if request.user.is_superuser or request.session['user_role'] == 'Drug'  or request.session['user_role_store'] == 'Medicine Store' :
 
         product_type = get_object_or_404(ProductType, product_type_id=product_type_id)
         if request.method == 'POST':
@@ -180,7 +180,7 @@ def product_type_update_view(request, product_type_id):
 
 @login_required
 def product_type_delete_view(request, product_type_id):
-    if request.user.is_superuser or request.session['user_role'] == 'Drug':
+    if request.user.is_superuser or request.session['user_role'] == 'Drug'  or request.session['user_role_store'] == 'Medicine Store' :
 
         product_type = get_object_or_404(ProductType, product_type_id=product_type_id)
 
@@ -305,7 +305,7 @@ def order_details_view(request):
             start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
             end_datetime = start_datetime + timedelta(days=1)
 
-            o = o.filter(order_date__gte=start_date, order_date__lt=end_datetime)
+            o = o.filter(order_date__gte=start_datetime, order_date__lt=end_datetime)
         elif end_date:
             o = o.filter(order_date__lt=end_date)
 
@@ -364,7 +364,7 @@ def order_details_view_print(request):
             start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
             end_datetime = start_datetime + timedelta(days=1)
 
-            o = o.filter(order_date__gte=start_date, order_date__lt=end_datetime)
+            o = o.filter(order_date__gte=start_datetime, order_date__lt=end_datetime)
         elif end_date:
             o = o.filter(order_date__lt=end_date)
 
@@ -379,9 +379,10 @@ def order_details_view_print(request):
     else:
         logout(request)
         return redirect('signin') 
+
 @login_required
 def get_product_names_by_type(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Drug':
+    if request.user.is_superuser or request.session['user_role'] == 'Drug' or request.session['user_role_store'] == 'Medicine Store' :
 
         # Get the selected product type from the AJAX request
         product_type = request.GET.get('product_type')
@@ -427,19 +428,6 @@ def get_product_names_by_type_purchase(request):
     else:
         logout(request)
         return redirect('signin') 
-
-# @login_required
-# def get_product_details(request):
-#     # Get the selected product type from the AJAX request
-#     product_type = request.GET.get('product_name')
-#     print(product_type)
-#     pp = ProductPurchase.objects.filter(productdetails_id=product_type).first()
-#     print(pp)
-#     product_purchase_dict = model_to_dict(pp)
-    
-#     # Return the dictionary as JSON response
-#     return JsonResponse({'product': product_purchase_dict})
-
 
 @login_required
 def get_product_details(request):
@@ -781,27 +769,6 @@ def purchase_update_view(request,purchase_id):
         logout(request)
         return redirect('signin') 
 
-# @login_required
-# def purchase_update_view(request, purchase_id):
-#     purchase = get_object_or_404(Purchase, purchase_id=purchase_id)
-#     if request.method == 'POST':
-#         # Extract data from the form
-#         purchase.order_id = request.POST.get('order_id')
-#         purchase.supplier_id = request.POST.get('supplier_id')
-#         purchase.mob_no = request.POST.get('mob_no')
-#         purchase.gst = request.POST.get('gst')
-#         purchase.email = request.POST.get('email')
-#         purchase.invoice_no = request.POST.get('invoice_no')
-#         purchase.invoice_date = request.POST.get('invoice_date')
-#         purchase.total_amount = request.POST.get('total_amount')
-#         purchase.paid = request.POST.get('paid')
-#         purchase.due = request.POST.get('due')
-#         # Save the changes
-#         purchase.save()
-#         return redirect('success-page')  # Replace 'success-page' with actual URL
-#     else:
-#         return render(request, 'purchase_update.html', {'purchase': purchase})
-
 
 @login_required
 def purchase_details_view(request):
@@ -846,7 +813,7 @@ def purchase_details_view(request):
             start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
             end_datetime = start_datetime + timedelta(days=1)
 
-            p = p.filter(order_date__gte=start_date, order_date__lt=end_datetime)
+            p = p.filter(order_date__gte=start_datetime, order_date__lt=end_datetime)
         elif end_date:
             p = p.filter(order_date__lt=end_date)
 
@@ -904,7 +871,7 @@ def purchase_details_view_print(request):
             start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
             end_datetime = start_datetime + timedelta(days=1)
 
-            p = p.filter(order_date__gte=start_date, order_date__lt=end_datetime)
+            p = p.filter(order_date__gte=start_datetime, order_date__lt=end_datetime)
         elif end_date:
             p = p.filter(order_date__lt=end_date)
 
@@ -949,7 +916,8 @@ def supply_add_view(request):
             supply = Supply.objects.create(
                 user = request.user,
                 departpment=department,
-                indent  = indent
+                indent  = indent,
+                de = None
             )
 
             # Loop through the product form fields
@@ -1018,31 +986,6 @@ def supply_add_view(request):
         logout(request)
         return redirect('signin') 
 
-# @login_required
-# def supply_update_view(request, supply_id):
-#     supply = get_object_or_404(Supply, supply_id=supply_id)
-#     if request.method == 'POST':
-#         # Extract data from the form
-#         supply.order_id = request.POST.get('order_id')
-#         supply.supplier_id = request.POST.get('supplier_id')
-#         supply.mob_no = request.POST.get('mob_no')
-#         supply.gst = request.POST.get('gst')
-#         supply.email = request.POST.get('email')
-#         supply.invoice_no = request.POST.get('invoice_no')
-#         supply.invoice_date = request.POST.get('invoice_date')
-#         supply.department_id = request.POST.get('department_id')
-#         supply.product_name = request.POST.get('product_name')
-#         supply.product_type = request.POST.get('product_type')
-#         supply.mfg_name = request.POST.get('mfg_name')
-#         supply.batch_no = request.POST.get('batch_no')
-#         supply.quantity = request.POST.get('quantity')
-#         supply.mfg_date = request.POST.get('mfg_date')
-#         supply.exp_date = request.POST.get('exp_date')
-#         # Save the changes
-#         supply.save()
-#         return redirect('success-page')  # Replace 'success-page' with actual URL
-#     else:
-#         return render(request, 'supply_update.html', {'supply': supply})
 
 @login_required
 def supply_delete_view(request, supply_id):
@@ -1085,9 +1028,9 @@ def supply_details_view(request):
         
         # Filter patients based on the provided date range
         if request.user.is_superuser:
-            p = Supply.objects.all().order_by('-order_date')
+            p = Supply.objects.filter(de = None).order_by('-order_date')
         else:
-            p = Supply.objects.filter(user=request.user).order_by('-order_date')
+            p = Supply.objects.filter(user=request.user, de = None).order_by('-order_date')
 
         if start_date and end_date:
             # end_date = end_date + timedelta(days=1) 
@@ -1099,7 +1042,7 @@ def supply_details_view(request):
             start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
             end_datetime = start_datetime + timedelta(days=1)
 
-            p = p.filter(order_date__gte=start_date, order_date__lt=end_datetime)
+            p = p.filter(order_date__gte=start_datetime, order_date__lt=end_datetime)
         elif end_date:
             p = p.filter(order_date__lt=end_date)
 
@@ -1168,7 +1111,7 @@ def supply_details_view_print(request):
             start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
             end_datetime = start_datetime + timedelta(days=1)
 
-            p = p.filter(order_date__gte=start_date, order_date__lt=end_datetime)
+            p = p.filter(order_date__gte=start_datetime, order_date__lt=end_datetime)
         elif end_date:
             p = p.filter(order_date__lt=end_date)
 
@@ -1209,10 +1152,7 @@ def supply_update_view(request, supply_id):
             product_type = request.POST.get('product_type')
             mfg_name = request.POST.get('mfg_name')
             batch_no = request.POST.get('batch_no')
-
             department = DrugDepartment.objects.filter(department_id=department_id).first()
-
-
             supply.department = department
             supply.indent = indent
             supply.save()
@@ -1252,8 +1192,8 @@ def supply_update_view(request, supply_id):
                             pp.mfg_name = mfg_name
                             pp.batch_no = batch_no
                             pp.quantity = quantity
-                            pp.mfg_date = mfg_date
-                            pp.exp_date = exp_date
+                            pp.mfg_date = mfgdate
+                            pp.exp_date = expdate
                             pp.stock_quantity = quantity
                             pp.supply_date = date
 
@@ -1301,9 +1241,10 @@ def supply_update_view(request, supply_id):
             'department' : d,
             'product' : p,
             'unique_p_types' : unique_p_types,
-            'supply' : supply
+            'supply' : supply,
         }
         return render(request, 'update_supply.html', context=context)
     else:
         logout(request)
         return redirect('signin') 
+    

@@ -33,7 +33,7 @@
       </div>
       <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
         <p>Date : <strong>{% if serology.created_at %}{{serology.created_at}}{% endif %}</strong></p>
-        <p>Reg No. : <strong>{% if serology.reg_no %}{{serology.reg_no.regid}}{% endif %}</strong></p>
+        <p>Reg No. : <strong>{% if serology.reg_no %}{% if serology.reg_no.de == 'Pathology' %}{{serology.reg_no.regnoid}}{% else %}{{serology.reg_no.regid}}{% endif %}{% endif %}</strong></p>
         <p>Lab No. : <strong>{% if serology.patient.lab_no %}{{serology.patient.lab_no}}{% endif %}</strong></p>
       </div>
     </div>
@@ -53,22 +53,22 @@
           {% if serology.hiv %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">HIV</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{serology.hiv}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">HIV</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{serology.hiv}}</td>
           </tr>
           {% endif %}
           {% if serology.hcv %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">HCV</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{serology.hcv}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">HCV</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{serology.hcv}}</td>
           </tr>
           {% endif %}
           {% if serology.hbsag %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">HBSAG</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{serology.hbsag}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">HBSAG</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{serology.hbsag}}</td>
           </tr>
           {% endif %}
           
@@ -77,6 +77,11 @@
     </div>
 
   </div>
+  <div style="display: flex;justify-content: space-between; width: 100%;position: absolute; bottom: 0;" >
+    <div>Checked By ..............</div>
+    <div>Signature ..................................................</div>
+  </div>
+
 
 </div>
 
@@ -94,7 +99,7 @@
         <!-- Left Column (Patient Details) -->
         <div class="col-md-4 mb-3">
             <label for="regid">Reg No.:</label>
-            <input type="number" class="form-control" id="regid"  value="{{serology.reg_no.regid}}" disabled  name="regid"  />
+            <input type="text" class="form-control" id="regid"  value="{{serology.reg_no.regid}}" disabled  name="regid"  />
 
         </div>
 

@@ -34,14 +34,13 @@
 
     {% block css %} {% endblock %}
     <style>
-
       body,
       html {
         margin: 0;
         padding: 0;
         height: 100%;
-        font-family: sans-serif; 
-        color: black; 
+        font-family: sans-serif;
+        color: black;
       }
 
       #preloader {
@@ -124,10 +123,8 @@
             <span>Staff</span></a
           >
         </li>
-        
-        {% endif %}
-        
-        {% if request.session.user_role == 'Registration' or request.session.user_role == 'Admin' %}
+
+        {% endif %} {% if request.session.user_role == 'Registration' or request.session.user_role == 'Admin' %}
         <hr class="sidebar-divider" />
         <div class="sidebar-heading">Patient</div>
 
@@ -158,15 +155,14 @@
             <span>Patient Report Staff Wise</span></a
           >
         </li>
-        {% endif %}
-        {% endif %} {% if request.session.user_role == 'Drug' or request.session.user_role == 'Admin' %}
+        {% endif %} {% endif %} {% if request.session.user_role == 'Drug' or request.session.user_role == 'Admin' %}
         <hr class="sidebar-divider" />
 
         <!-- Heading -->
         <div class="sidebar-heading">Drug</div>
 
-          <!-- Nav Item - Dashboard -->
-          <li class="nav-item active">
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item active">
           <a class="nav-link" href="{% url 'drug_departments' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Departments</span></a
@@ -238,14 +234,12 @@
           >
         </li>
 
-
         <li class="nav-item active">
           <a class="nav-link" href="{% url 'pathology_departments' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Departments</span></a
           >
         </li>
-
 
         <li class="nav-item active">
           <a class="nav-link" href="{% url 'create_testcode' %}">
@@ -328,7 +322,56 @@
             </div>
           </div>
         </li>
+        {% endif %} {% if request.session.user_role_store == 'Medicine Store' %}
+        <hr class="sidebar-divider" />
+
+        <!-- Heading -->
+        <div class="sidebar-heading">{{request.session.user_role}}</div>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'product-type-add' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Product Name</span></a
+          >
+        </li>
+        
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'medicine_stock_add_view' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Add Stock</span></a
+          >
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'medicine_supply_details_view' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Stock Record</span></a
+          >
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'medicine_supply_add_view' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Medicine Consumption</span></a
+          >
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'supply_details_user_view' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Medicine Consumption Details</span></a
+          >
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'get_consumption_and_remaining_quantity' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Item Wise Consumption</span></a
+          >
+        </li>
+
         {% endif %}
+
         <!-- Divider -->
         <!-- <hr class="sidebar-divider" /> -->
 
@@ -608,7 +651,7 @@
             <div class="copyright text-center my-auto">
               <span>Copyright &copy; Swastik 2024</span>
             </div>
-            <br/>
+            <br />
             <div class="copyright text-center my-auto">
               <span>Contact For Any Query :- <a href="tel:7654531678">7654531678</a></span>
             </div>

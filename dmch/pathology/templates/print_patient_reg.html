@@ -18,7 +18,7 @@
     </style>
   </head>
   <body>
-    <div class="" id="printContent" style="width: 100%; margin-top: -10px; height: 842px;">
+    <div class="" id="printContent" style="width: 100%; margin-top: -10px; height: 100vh;">
       <div style="height: 50%;">
         <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black;">
           <h2 style="margin: 2px;">DEPARTMENT OF CLINICAL PATHOLOGY</h2>
@@ -30,22 +30,23 @@
           <div style="display: flex">
             <div style="font-family: sans-serif; color: black; font-size: 1rem;  margin-bottom: 0.2rem !important;">
               <p style="margin: 2px;">Date : {% if patient.created_at %}{{patient.created_at}}{% endif %} </p>
-              <p style="margin: 2px;">Lab NO. : {% if patient.lab_no %}{{patient.lab_no}}{% endif %}</p>
+              <p style="margin: 2px;">Lab NO. : <strong>{% if patient.lab_no %}{{patient.lab_no}}{% endif %}</strong></p>
               <p style="margin: 2px;">Bill No. : {% if patient.bill_no %}{{patient.bill_no}}{% endif %}</p>
               <p style="margin: 2px;">Reg No. : {% if patient.reg_no %}{% if patient.reg_no.de == 'Pathology' %}{{patient.reg_no.regnoid}}{% else %}{{patient.reg_no.regid}}{% endif %}{% endif %}</p>
               <p style="margin: 2px;">Patient Name : {% if patient.reg_no %}{{patient.reg_no.name}}{% endif %}</p>
               <p style="margin: 2px;">Age : {% if patient.reg_no.year %}{{patient.reg_no.year}}Y{% endif %} {% if patient.reg_no.month %}{{patient.reg_no.month}}M{% endif %} {% if patient.reg_no.days %}{{patient.reg_no.days}}D{% endif %}</p>
               <p style="margin: 2px;">Gender : {% if patient.reg_no.gender %}{{patient.reg_no.gender}}{% endif %}</p>
+              <p style="margin: 2px;">Mob No. : {% if patient.reg_no.mobno %}{{patient.reg_no.mobno}}{% endif %}</p>
               <p style="margin: 2px;">Dept : {% if patient.department %}{{patient.department.name}}{% endif %} {% if patient.pincode %}{{patient.pincode}}{% endif %}</p>
               <p style="margin: 2px;">Doctor : {% if patient.referby %}{{patient.referby.name}}{% endif %}</p>
-              <p style="margin: 2px;">Test Name : {% if patient.test_name %}{{patient.test_name}}{% endif %}</p>
+              <p style="margin: 2px;">Test Name : <strong>{% if patient.test_name %}{{patient.test_name}}{% endif %}</strong></p>
             </div>
           </div>
   
         </div>
       </div>
       <hr />
-      <div style="height: 50%;">
+      <div style="">
         <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black;">
           <h2 style="margin: 2px;">DEPARTMENT OF CLINICAL PATHOLOGY</h2>
           <h4 style="margin: 2px;">DARBHANGA MEDICAL COLLEGE & HOSPITAL</h4>
@@ -56,21 +57,21 @@
           <div style="display: flex">
             <div style="font-family: sans-serif; color: black; font-size: 1rem;  margin-bottom: 0.2rem !important;">
               <p style="margin: 2px;">Date : {% if patient.created_at %}{{patient.created_at}}{% endif %} </p>
-              <p style="margin: 2px;">Lab NO. : {% if patient.lab_no %}{{patient.lab_no}}{% endif %}</p>
+              <p style="margin: 2px;">Lab NO. : <strong>{% if patient.lab_no %}{{patient.lab_no}}{% endif %}</strong></p>
               <p style="margin: 2px;">Bill No. : {% if patient.bill_no %}{{patient.bill_no}}{% endif %}</p>
               <p style="margin: 2px;">Reg No. : {% if patient.reg_no %}{% if patient.reg_no.de == 'Pathology' %}{{patient.reg_no.regnoid}}{% else %}{{patient.reg_no.regid}}{% endif %}{% endif %}</p>
               <p style="margin: 2px;">Patient Name : {% if patient.reg_no %}{{patient.reg_no.name}}{% endif %}</p>
               <p style="margin: 2px;">Age : {% if patient.reg_no.year %}{{patient.reg_no.year}}Y{% endif %} {% if patient.reg_no.month %}{{patient.reg_no.month}}M{% endif %} {% if patient.reg_no.days %}{{patient.reg_no.days}}D{% endif %}</p>
               <p style="margin: 2px;">Gender : {% if patient.reg_no.gender %}{{patient.reg_no.gender}}{% endif %}</p>
+              <p style="margin: 2px;">Mob No. : {% if patient.reg_no.mobno %}{{patient.reg_no.mobno}}{% endif %}</p>
               <p style="margin: 2px;">Dept : {% if patient.department %}{{patient.department.name}}{% endif %} {% if patient.pincode %}{{patient.pincode}}{% endif %}</p>
               <p style="margin: 2px;">Doctor : {% if patient.referby %}{{patient.referby.name}}{% endif %}</p>
-              <p style="margin: 2px;">Test Name : {% if patient.test_name %}{{patient.test_name}}{% endif %}</p>
+              <p style="margin: 2px;">Test Name : <strong>{% if patient.test_name %}{{patient.test_name}}{% endif %}</strong></p>
             </div>
           </div>
   
         </div>
       </div>
-  
     </div>
 
     <!-- <script>

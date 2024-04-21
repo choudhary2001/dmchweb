@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'counter',
     'drug',
-    'pathology'
+    'pathology',
+    'medicine_store'
 ]
 
 MIDDLEWARE = [

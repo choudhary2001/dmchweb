@@ -32,7 +32,7 @@
       </div>
       <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
         <p>Date : <strong>{% if cbc.created_at %}{{cbc.created_at}}{% endif %}</strong></p>
-        <p>Reg No. : <strong>{% if cbc.reg_no %}{{cbc.reg_no.regid}}{% endif %}</strong></p>
+        <p>Reg No. : <strong>{% if cbc.reg_no %}{% if cbc.reg_no.de == 'Pathology' %}{{cbc.reg_no.regnoid}}{% else %}{{cbc.reg_no.regid}}{% endif %}{% endif %}</strong></p>
         <p>Lab No. : <strong>{% if cbc.patient.lab_no %}{{cbc.patient.lab_no}}{% endif %}</strong></p>
       </div>
     </div>
@@ -53,69 +53,69 @@
           {% if cbc.rbc %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">RBC</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">RBC</td>
             <td style="font-family: sans-serif; color: {% if not 3.50 <= cbc.rbc <= 5.50 %}red{% else %}black{% endif %}; font-size: 1rem; ">{{cbc.rbc}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">3.50 - 5.50 10^6/uL</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.50 - 5.50 10^6/uL</td>
           </tr>
           {% endif %}
           {% if cbc.hgb %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">HGB</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">HGB</td>
             <td style="font-family: sans-serif; color: {% if not  11.0 <= cbc.hgb <= 16.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.hgb}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">11.0 - 16.0 g/dl</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">11.0 - 16.0 g/dl</td>
           </tr>
           {% endif %}
           {% if cbc.hct %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">HCT</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">HCT</td>
             <td style="font-family: sans-serif; color: {% if not  37.0 <= cbc.hct <= 54.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.hct}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">37.0 - 54.0 %</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">37.0 - 54.0 %</td>
           </tr>
           {% endif %}
           {% if cbc.mcv %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">MCV</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">MCV</td>
             <td style="font-family: sans-serif; color: {% if not  80.0 <= cbc.mcv <= 100.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.mcv}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">80.0 - 100.0 fl</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">80.0 - 100.0 fl</td>
           </tr>
           {% endif %}
 
           {% if cbc.mch %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">MCH</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">MCH</td>
             <td style="font-family: sans-serif; color: {% if not  27.0 <= cbc.mch <= 34.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.mch}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">27.0 - 34.0 pg</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">27.0 - 34.0 pg</td>
           </tr>
           {% endif %}
 
           {% if cbc.mchc %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">MCHC</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">MCHC</td>
             <td style="font-family: sans-serif; color: {% if not  32.0 <= cbc.mchc <= 36.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.mchc}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">32.0 - 36.0 g/dl</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">32.0 - 36.0 g/dl</td>
           </tr>
           {% endif %}
 
           {% if cbc.rdw_sd %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">RDW SD</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">RDW SD</td>
             <td style="font-family: sans-serif; color: {% if not  35.0 <= cbc.rdw_sd <= 56.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.rdw_sd}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">35.0 - 56.0 fL</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">35.0 - 56.0 fL</td>
           </tr>
           {% endif %}
           
           {% if cbc.rdw_cv %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">RDW CV</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">RDW CV</td>
             <td style="font-family: sans-serif; color: {% if not  11.0 <= cbc.rdw_cv <= 16.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.rdw_cv}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">11.0 - 16.0 %</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">11.0 - 16.0 %</td>
 
           </tr>
           {% endif %}
@@ -123,153 +123,153 @@
           {% if cbc.sgot %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">SGOT</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{cbc.sgot}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">SGOT</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{cbc.sgot}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
           </tr>
           {% endif %}
 
           {% if cbc.wbc %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">WBC</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">WBC</td>
             <td style="font-family: sans-serif; color: {% if not  4.0 <= cbc.rbc <= 10.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.wbc}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">4.0 - 10.0 10^3/uL</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">4.0 - 10.0 10^3/uL</td>
           </tr>
           {% endif %}
 
           {% if cbc.neut %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">NENUT</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">NENUT</td>
             <td style="font-family: sans-serif; color: {% if not  50.0 <= cbc.neut <= 70.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.neut}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">50.0 - 70.0 %</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">50.0 - 70.0 %</td>
           </tr>
           {% endif %}
 
           {% if cbc.lymph %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">LYMPH</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">LYMPH</td>
             <td style="font-family: sans-serif; color: {% if not  20.0 <= cbc.lymph <= 40.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.lymph}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">20.0 - 40.0 %</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">20.0 - 40.0 %</td>
           </tr>
           {% endif %}
 
           {% if cbc.mono %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">MONO</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">MONO</td>
             <td style="font-family: sans-serif; color: {% if not  3.0 <= cbc.mono <= 12.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.mono}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">3.0 - 12.0 %</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.0 - 12.0 %</td>
           </tr>
           {% endif %}
           
           {% if cbc.eo %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">EO</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">EO</td>
             <td style="font-family: sans-serif; color: {% if not  0.50 <= cbc.eo <= 5.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.eo}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">0.5 - 5.0 %</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.5 - 5.0 %</td>
           </tr>
           {% endif %}
           
           {% if cbc.baso %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">BASO</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">BASO</td>
             <td style="font-family: sans-serif; color: {% if not  0.0 <= cbc.baso <= 1.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.baso}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">0.0 - 1.0 %</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 1.0 %</td>
           </tr>
           {% endif %}
 
           {% if cbc.plt %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">PLT</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">PLT</td>
             <td style="font-family: sans-serif; color: {% if not  100 <= cbc.plt <= 300 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.plt}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">100 - 300 10^3/uL</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">100 - 300 10^3/uL</td>
           </tr>
           {% endif %}
 
           {% if cbc.pdw %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">PDW</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{cbc.pdw}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">PDW</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{cbc.pdw}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
           </tr>
           {% endif %}
 
           {% if cbc.mpv %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">MPV</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">MPV</td>
             <td style="font-family: sans-serif; color: {% if not  6.50 <= cbc.mpv <= 12.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.mpv}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">6.5 - 12.0 fL</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">6.5 - 12.0 fL</td>
           </tr>
           {% endif %}
 
           {% if cbc.p_lcr %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">P LCR</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">P LCR</td>
             <td style="font-family: sans-serif; color: {% if not  11.0 <= cbc.p_lcr <= 45.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.p_lcr}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">11.0 - 45.0 %</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">11.0 - 45.0 %</td>
           </tr>
           {% endif %}
           
           {% if cbc.pct %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">PCT</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">PCT</td>
             <td style="font-family: sans-serif; color: {% if not  0.108 <= cbc.pct <= 0.282 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.pct}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">0.108 - 0.282 %</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.108 - 0.282 %</td>
           </tr>
           {% endif %}
 
           {% if cbc.ret %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">RET</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{cbc.ret}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">RET</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{cbc.ret}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
           </tr>
           {% endif %}
 
           {% if cbc.irf %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">IRF</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">IRF</td>
             <td style="font-family: sans-serif; color: black;; font-size: 1rem;">{{cbc.irf}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
           </tr>
           {% endif %}
 
           {% if cbc.lfr %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">LFR</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{cbc.lfr}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">LFR</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{cbc.lfr}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
           </tr>
           {% endif %}
 
           {% if cbc.mfr %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">MFR</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{cbc.mfr}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">MFR</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{cbc.mfr}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
           </tr>
           {% endif %}
 
           {% if cbc.hfr %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">HFR</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{cbc.hfr}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">HFR</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{cbc.hfr}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
           </tr>
           {% endif %}
 
@@ -277,27 +277,27 @@
           {% if cbc.wbc_ip_message %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">WBC Ip Message</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{cbc.wbc_ip_message}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">WBC Ip Message</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{cbc.wbc_ip_message}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
           </tr>
           {% endif %}
 
           {% if cbc.rcb_rft_ip_message %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Rcb Rft Ip Message</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{cbc.rcb_rft_ip_message}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Rcb Rft Ip Message</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{cbc.rcb_rft_ip_message}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
           </tr>
           {% endif %}
 
           {% if cbc.plt_ip_message %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Plt Ip Message</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{cbc.plt_ip_message}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Plt Ip Message</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{cbc.plt_ip_message}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
           </tr>
           {% endif %}
 
@@ -307,6 +307,11 @@
     </div>
 
   </div>
+  <div style="display: flex;justify-content: space-between; width: 100%;position: absolute; bottom: 0;" >
+    <div>Checked By ..............</div>
+    <div>Signature ..................................................</div>
+  </div>
+
 
 </div>
 
@@ -324,7 +329,7 @@
         <!-- Left Column (Patient Details) -->
         <div class="col-md-4 mb-3">
             <label for="regid">Reg No.:</label>
-            <input type="number" class="form-control" id="regid"  value="{{cbc.reg_no.regid}}" disabled  name="regid"required />
+            <input type="text" class="form-control" id="regid"  value="{{cbc.reg_no.regid}}" disabled  name="regid"required />
 
         </div>
 

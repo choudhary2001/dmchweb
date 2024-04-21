@@ -30,7 +30,7 @@ urlpatterns = [
     # URL patterns for test_report model
     path('create_test_report/', views.create_test_report, name='create_test_report'),
     # path('create_test_report_view/', views.create_test_report_view, name='create_test_report_view_print'),
-    path('create_test_report_view_print/', views.create_test_report_view, name='create_test_report_view'),
+    path('create_test_report_view/', views.create_test_report_view, name='create_test_report_view'),
     path('create_test_report_view_print/', views.create_test_report_view_print, name='create_test_report_view_print'),
     path('update_test_report/<int:pk>/', views.update_test_report, name='update_test_report'),
     path('delete_test_report/<int:pk>/', views.delete_test_report, name='delete_test_report'),

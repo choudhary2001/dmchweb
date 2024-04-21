@@ -18,15 +18,24 @@
   <form id="patientForm" method="POST" action="{% url 'add_patient' %}">
     {% csrf_token %}
 
-    <div>Appointment Date : {{current_time_kolkata}}</div>
+    <div style="display: flex; width: 100%">
+      <div style="width: 60%">Appointment Date : {{current_time_kolkata}}</div>
+      <div class="form-group" style="width: 100%">
+        <select id="patient_type" name="patient_type" class="form-control" style="">
+          <option value="Regular">Regular</option>
+          <option value="Revisit">Re Visit</option>
+        </select>
+      </div>
+    </div>
+
     <div class="form-group" style="display: flex; width: 100%">
       <label for="regid">Registration Number :</label>
       <input type="text" class="form-control" id="regid" value="{{regid}}" style="width: 55%" name="regid" disabled required />
 
-      <select id="redcardtype" name="redcardtype" class="form-control"  style="width: 15%;"  >
+      <select id="redcardtype" name="redcardtype" class="form-control" style="width: 15%">
         <option value="select">Select</option>
-        <option value="Red Card" >Red Card</option>
-        <option value="RB Case" >RB Case</option>
+        <option value="Red Card">Red Card</option>
+        <option value="RB Case">RB Case</option>
       </select>
       <!-- <p style="width: 10%; margin: 0 !important">Red Card</p> -->
       <input id="redcardid" name="redcardid" style="width: 25%; display: none" class="form-control" type="number" />
@@ -159,13 +168,12 @@
 <!-- End of Main Content -->
 {% endblock %} {% block script %}
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      document.getElementById("name").focus();
-    });
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("name").focus();
+  });
 </script>
 <script>
   $(document).ready(function () {
-    
     $("#department").change(function () {
       var departmentId = $(this).val();
       $.ajax({
@@ -189,12 +197,23 @@
     $("#redcardid").hide();
     $("#redcardtype").change(function () {
       var redcardId = $(this).val();
-      console.log(redcardId)
-      if (redcardId === 'select'){
+      console.log(redcardId);
+      if (redcardId === "select") {
         $("#redcardid").hide();
-      }
-      else{
+      } else {
         $("#redcardid").show();
+      }
+    });
+  });
+
+  $(document).ready(function () {
+    $("#regid").prop("disabled", true); // Initially disable the regid element
+    $("#patient_type").change(function () {
+      var patientType = $(this).val(); // Get the value of the selected option
+      if (patientType === "Revisit") {
+        $("#regid").prop("disabled", false); // If the selected option is "Revisit", disable the regid element
+      } else {
+        $("#regid").prop("disabled", true); // Otherwise, enable the regid element
       }
     });
   });
@@ -208,6 +227,38 @@
   //   }
   // }
 </script>
+
+<script>
+  $(document).ready(function () {
+    $("#regid").on("keypress", function (e) {
+      if (e.which === 13) {
+        var regid = $(this).val();
+        if (regid) {
+          $.ajax({
+            url: '{% url "fetch_patient__details" %}',
+            type: "GET",
+            data: {
+              regid: regid,
+            },
+            success: function (data) {
+              if (data.report && data.report.available) {
+                window.location.href = `/update-patients/${data.report.id}?visit=Revisit`;
+              }
+              if (data.report && !data.report.available) {
+                window.location.reload();
+              }
+            },
+            error: function (xhr, status, error) {
+              console.error(xhr.responseText);
+              window.location.reload();
+            },
+          });
+        }
+      }
+    });
+  });
+</script>
+
 <script>
   // Function to handle form submission
   function handleFormSubmission(event) {

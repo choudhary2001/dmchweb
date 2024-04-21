@@ -87,6 +87,9 @@
                               <option {% if d.user_role == 'Registration' %} selected {% endif %} value="Registration" >Registration</option>
                               <option {% if d.user_role == 'Drug' %} selected {% endif %}  value="Drug" >Drug</option>
                               <option {% if d.user_role == 'Pathology' %} selected {% endif %}  value="Pathology" >Pathology</option>
+                              {% for dd in departments %}
+                                <option {% if d.user_role == dd.name %} selected {% endif %}value="{{dd.name}}" >{{dd.name}}</option>
+                              {% endfor %}
                             </select>
                           </div>
                           <div class="form-group">
@@ -152,6 +155,9 @@
                   <option value="Registration" >Registration</option>
                   <option value="Drug" >Drug</option>
                   <option value="Pathology" >Pathology</option>
+                  {% for d in departments %}
+                    <option value="{{d.name}}" >{{d.name}}</option>
+                  {% endfor %}
                 </select>
               </div>
               <div class="form-group">

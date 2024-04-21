@@ -36,7 +36,7 @@
             </div>
             <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
               <p>Date : <strong>{% if serology.created_at %}{{serology.created_at}}{% endif %}</strong></p>
-              <p>Reg No. : <strong>{% if serology.reg_no %}{{serology.reg_no.regid}}{% endif %}</strong></p>
+              <p>Reg No. : <strong>{% if serology.reg_no %}{% if serology.reg_no.de == 'Pathology' %}{{serology.reg_no.regnoid}}{% else %}{{serology.reg_no.regid}}{% endif %}{% endif %}</strong></p>
               <p>Lab No. : <strong>{% if serology.patient.lab_no %}{{serology.patient.lab_no}}{% endif %}</strong></p>
             </div>
           </div>
@@ -80,7 +80,11 @@
           </div>
       
         </div>
-      
+        <div style="display: flex;justify-content: space-between; width: 100%;position: absolute; bottom: 0;" >
+          <div>Checked By ..............</div>
+          <div>Signature ..................................................</div>
+        </div>
+  
       </div>
       
 

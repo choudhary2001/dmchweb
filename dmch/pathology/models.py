@@ -38,16 +38,16 @@ class Testcode(models.Model):
 
 class Patient_registration(models.Model):
     patient_id = models.CharField(max_length=8, unique=True, editable=False, default="")
-    user = models.ForeignKey(User, on_delete = models.CASCADE, blank = True, null = True)
-    department = models.ForeignKey(PathologyDepartment, on_delete = models.CASCADE, blank = True, null = True)
+    user = models.ForeignKey(User, on_delete = models.SET_NULL, blank = True, null =True)
+    department = models.ForeignKey(PathologyDepartment, on_delete = models.SET_NULL,  blank = True, null = True)
     date = models.DateField()
     bill_no = models.PositiveIntegerField(unique=True)
     lab_no = models.CharField(max_length = 200, blank = True, null = True)
     patient_name = models.CharField(max_length = 200, blank = True, null = True)
     gender = models.CharField(max_length = 200, blank = True, null = True)
     age = models.CharField(max_length = 200, blank = True, null = True)
-    reg_no = models.ForeignKey(Patient, on_delete = models.CASCADE)
-    referby = models.ForeignKey(PathologyDoctor, on_delete = models.CASCADE, blank = True, null = True)
+    reg_no = models.ForeignKey(Patient, on_delete = models.SET_NULL, blank = True, null =True)
+    referby = models.ForeignKey(PathologyDoctor, on_delete = models.SET_NULL, blank = True, null = True)
     test_name = models.CharField(max_length = 255, blank = True, null = True)
     created_at = models.DateTimeField(auto_now_add = True)
 
@@ -65,10 +65,10 @@ class Patient_registration(models.Model):
 
 
 class Test_report(models.Model):
-    user = models.ForeignKey(User, on_delete = models.CASCADE, blank = True, null = True)
+    user = models.ForeignKey(User, on_delete = models.SET_NULL,  blank = True, null = True)
     test_report_id = models.CharField(max_length=8, unique=True, editable=False, default="")
-    reg_no = models.ForeignKey(Patient, on_delete = models.CASCADE)
-    patient = models.ForeignKey(Patient_registration, on_delete = models.CASCADE)
+    reg_no = models.ForeignKey(Patient, on_delete = models.SET_NULL, blank = True, null =True)
+    patient = models.ForeignKey(Patient_registration, on_delete = models.SET_NULL, blank = True, null =True)
     palsma_glucose_fasting = models.CharField(max_length = 200, blank = True, null = True)
     palsma_glucose_pp = models.CharField(max_length = 200, blank = True, null = True)
     blood_sugar_random = models.CharField(max_length = 200, blank = True, null = True)
@@ -112,10 +112,10 @@ class Test_report(models.Model):
 
 
 class Urine_test(models.Model):
-    user = models.ForeignKey(User, on_delete = models.CASCADE, blank = True, null = True)
+    user = models.ForeignKey(User, on_delete = models.SET_NULL,  blank = True, null = True)
     urinetest_id = models.CharField(max_length=8, unique=True, editable=False, default="")
-    reg_no = models.ForeignKey(Patient, on_delete = models.CASCADE)
-    patient = models.ForeignKey(Patient_registration, on_delete = models.CASCADE)
+    reg_no = models.ForeignKey(Patient, on_delete = models.SET_NULL, blank = True, null =True)
+    patient = models.ForeignKey(Patient_registration, on_delete = models.SET_NULL, blank = True, null =True)
     amount = models.CharField(max_length = 200, blank = True, null = True)
     colour = models.CharField(max_length = 200, blank = True, null = True)
     odour = models.CharField(max_length = 200, blank = True, null = True)
@@ -145,10 +145,10 @@ class Urine_test(models.Model):
 
 
 class Stool_test(models.Model):
-    user = models.ForeignKey(User, on_delete = models.CASCADE, blank = True, null = True)
+    user = models.ForeignKey(User, on_delete = models.SET_NULL,  blank = True, null = True)
     stool_id = models.CharField(max_length=8, unique=True, editable=False, default="")
-    reg_no = models.ForeignKey(Patient, on_delete = models.CASCADE)
-    patient = models.ForeignKey(Patient_registration, on_delete = models.CASCADE)
+    reg_no = models.ForeignKey(Patient, on_delete = models.SET_NULL, blank = True, null =True)
+    patient = models.ForeignKey(Patient_registration, on_delete = models.SET_NULL, blank = True, null =True)
     colour = models.CharField(max_length = 200, blank = True, null = True)
     odour = models.CharField(max_length = 200, blank = True, null = True)
     consistency = models.CharField(max_length = 200, blank = True, null = True)
@@ -176,10 +176,10 @@ class Stool_test(models.Model):
 
 
 class Ctest_report(models.Model):
-    user = models.ForeignKey(User, on_delete = models.CASCADE, blank = True, null = True)
+    user = models.ForeignKey(User, on_delete = models.SET_NULL,  blank = True, null = True)
     cttest_id = models.CharField(max_length=8, unique=True, editable=False, default="")
-    reg_no = models.ForeignKey(Patient, on_delete = models.CASCADE)
-    patient = models.ForeignKey(Patient_registration, on_delete = models.CASCADE)
+    reg_no = models.ForeignKey(Patient, on_delete = models.SET_NULL, blank = True, null =True)
+    patient = models.ForeignKey(Patient_registration, on_delete = models.SET_NULL, blank = True, null =True)
     volume = models.CharField(max_length = 200, blank = True, null = True)
     consistency = models.CharField(max_length = 200, blank = True, null = True)
     colour = models.CharField(max_length = 200, blank = True, null = True)
@@ -203,10 +203,10 @@ class Ctest_report(models.Model):
 
 
 class Cbc_test(models.Model):
-    user = models.ForeignKey(User, on_delete = models.CASCADE, blank = True, null = True)
+    user = models.ForeignKey(User, on_delete = models.SET_NULL,  blank = True, null = True)
     cbctest_id = models.CharField(max_length=8, unique=True, editable=False, default="")
-    reg_no = models.ForeignKey(Patient, on_delete = models.CASCADE)
-    patient = models.ForeignKey(Patient_registration, on_delete = models.CASCADE)
+    reg_no = models.ForeignKey(Patient, on_delete = models.SET_NULL, blank = True, null =True)
+    patient = models.ForeignKey(Patient_registration, on_delete = models.SET_NULL, blank = True, null =True)
     rbc = models.CharField(max_length = 200, blank = True, null = True)
     hgb = models.CharField(max_length = 200, blank = True, null = True)
     hct = models.CharField(max_length = 200, blank = True, null = True)
@@ -244,10 +244,10 @@ class Cbc_test(models.Model):
 
 
 class Serology_test(models.Model):
-    user = models.ForeignKey(User, on_delete = models.CASCADE, blank = True, null = True)
+    user = models.ForeignKey(User, on_delete = models.SET_NULL,  blank = True, null = True)
     strology_id = models.CharField(max_length=8, unique=True, editable=False, default="")
-    reg_no = models.ForeignKey(Patient, on_delete = models.CASCADE)
-    patient = models.ForeignKey(Patient_registration, on_delete = models.CASCADE, blank = True, null = True)
+    reg_no = models.ForeignKey(Patient, on_delete = models.SET_NULL, blank = True, null =True)
+    patient = models.ForeignKey(Patient_registration, on_delete = models.SET_NULL, blank = True, null = True)
 
     hiv = models.CharField(max_length = 200, blank = True, null = True)
     hcv = models.CharField(max_length = 200, blank = True, null = True)

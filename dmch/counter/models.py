@@ -4,7 +4,7 @@ import datetime
 import uuid
 
 class Profile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete = models.SET_NULL, blank = True, null =True)
     user_role = models.CharField(max_length = 255)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -26,7 +26,7 @@ class Department(models.Model):
 
 class Doctor(models.Model):
     doctor_id = models.CharField(max_length=8, unique=True, editable=False, default="")
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, blank = True, null = True)
+    department = models.ForeignKey(Department, on_delete = models.SET_NULL, blank = True, null = True)
     name = models.CharField(max_length = 255)
     created_at = models.DateTimeField(auto_now_add = True)
 
@@ -39,7 +39,7 @@ class Doctor(models.Model):
         return self.name
     
 class Patient(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete = models.SET_NULL, blank = True, null =True)
     regno = models.CharField(max_length=100,  unique = True)
     regnoid = models.CharField(max_length=100)
     regid = models.AutoField(primary_key=True)
@@ -62,11 +62,14 @@ class Patient(models.Model):
     state = models.CharField(max_length=100, blank = True, null = True)
     pincode = models.CharField(max_length=20, blank = True, null = True)
     symptoms = models.TextField()
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, blank = True, null = True)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, blank = True, null = True)
+    doctor = models.ForeignKey(Doctor, on_delete = models.SET_NULL,  blank = True, null = True)
+    department = models.ForeignKey(Department, on_delete = models.SET_NULL,  blank = True, null = True)
     visittype = models.CharField(max_length=100)
     de = models.CharField(max_length = 255, blank = True, null = True)
     appointment_date = models.DateTimeField(auto_now_add=True)
+    revisit = models.CharField(max_length = 50, blank = True, null = True, default = "Regular")
+    revisitid = models.CharField(max_length = 50, blank = True, null = True)
+    update_date = models.DateTimeField(auto_now_add=True, blank = True, null = True)
 
     def save(self, *args, **kwargs):
         if not self.regnoid:  # Check if regnoid is not already set

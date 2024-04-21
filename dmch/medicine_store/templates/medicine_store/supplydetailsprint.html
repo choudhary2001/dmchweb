@@ -1,0 +1,132 @@
+{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+
+  {% endfor %} {% endif %}
+  <div style="display: flex"></div>
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <form action="{% url 'supply_details_user_view_print' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+        <div style="flex: 1">
+          <input type="datetime-local" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+        </div>
+        <div style="">
+          <span>-</span>
+        </div>
+        <div style="flex: 1">
+          <input type="datetime-local" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+        </div>
+
+        <!-- <div style="flex: 3">
+          <select name="department" class="form-control mb-2 mb-md-0">
+            <option>Select Department</option>
+            <option value="All">All</option>
+            {% for d in departments %}
+            <option value="{{d.department_id}}">{{d.name}}</option>
+            {% endfor %}
+          </select>
+        </div> -->
+        <div style="flex: 1">
+          <button class="btn btn-primary w-100" type="submit">Filter</button>
+        </div>
+        <div style="flex: 1">
+          <button class="btn btn-primary w-100" onclick="printTable()">Print Table</button>
+        </div>
+      </form>
+    </div>
+    <div class="card-body" id="printablecontent">
+      <div class="table-responsive" id="tableContainer">
+        <table class="table table-bordered" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Medicine Name</th>
+              <th>Mfg By</th>
+              <th>Mfg Date</th>
+              <th>Exp Date</th>
+              <th>Quantity</th>
+              <th>Supply Time</th>
+              <!-- <th>Action</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in supply %}
+            <tr>
+              <td>{{ order.patient.name }}</td>
+
+              <td>
+                {% for product in order.products.all %}
+                <p>{{ product.product.product_name }}</p>
+                {% endfor %}
+              </td>
+
+              <td>
+                {% for product in order.products.all %}
+                <p>{{ product.product.mfg_name }}</p>
+
+                {% endfor %}
+              </td>
+
+              <td>
+                {% for product in order.products.all %}
+                <p>{{ product.product.mfg_date }}</p>
+
+                {% endfor %}
+              </td>
+              <td>
+                {% for product in order.products.all %}
+                <p>{{ product.product.exp_date }}</p>
+
+                {% endfor %}
+              </td>
+
+              <td>
+                {% for product in order.products.all %}
+                <p>{{ product.quantity }}</p>
+                {% endfor %}
+              </td>
+
+              <td>{{order.created_at|date:"F j, Y"}}</td>
+              <!-- <td>
+                <a href="/drug/supply/{{ order.supply_id }}/update/" class="btn btn-primary btn-icon-split">
+                  <span class="icon text-white-50">
+                    <i class="fas fa-arrow-right"></i>
+                  </span>
+                  <span class="text">Edit</span>
+                </a>
+                <a href="/drug/supply/{{ order.supply_id }}/delete/" class="btn btn-danger btn-icon-split">
+                  <span class="icon text-white-50">
+                    <i class="fas fa-trash"></i>
+                  </span>
+                </a>
+              </td> -->
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block script %}
+<script>
+  // Function to print the table
+  function printTable() {
+    // Show the hidden print content
+    // Print only the content inside the printContent div
+    var printContents = $("#printablecontent").html();
+    var originalContents = $("body").html();
+    $("body").empty().html(printContents);
+
+    // Trigger the print dialog
+    window.print();
+    $("body").html(originalContents);
+  }
+</script>
+{% endblock %}

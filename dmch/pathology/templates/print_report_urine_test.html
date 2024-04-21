@@ -37,7 +37,7 @@
             </div>
             <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
               <p>Date : <strong>{% if urine.created_at %}{{urine.created_at}}{% endif %}</strong></p>
-              <p>Reg No. : <strong>{% if urine.reg_no %}{{urine.reg_no.regid}}{% endif %}</strong></p>
+              <p>Reg No. : <strong>{% if urine.reg_no %}{% if urine.reg_no.de == 'Pathology' %}{{urine.reg_no.regnoid}}{% else %}{{urine.reg_no.regid}}{% endif %}{% endif %}</strong></p>
               <p>Lab No. : <strong>{% if urine.patient.lab_no %}{{urine.patient.lab_no}}{% endif %}</strong></p>
             </div>
           </div>
@@ -232,6 +232,11 @@
           </div>
       
         </div>
+        <div style="display: flex;justify-content: space-between; width: 100%;position: absolute; bottom: 0;" >
+          <div>Checked By ..............</div>
+          <div>Signature ..................................................</div>
+        </div>
+  
       
       </div>
       

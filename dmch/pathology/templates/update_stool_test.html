@@ -32,7 +32,7 @@
       </div>
       <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
         <p>Date : <strong>{% if stool.created_at %}{{stool.created_at}}{% endif %}</strong></p>
-        <p>Reg No. : <strong>{% if stool.reg_no %}{{stool.reg_no.regid}}{% endif %}</strong></p>
+        <p>Reg No. : <strong>{% if stool.reg_no %}{% if stool.reg_no.de == 'Pathology' %}{{stool.reg_no.regnoid}}{% else %}{{stool.reg_no.regid}}{% endif %}{% endif %}</strong></p>
         <p>Lab No. : <strong>{% if stool.patient.lab_no %}{{stool.patient.lab_no}}{% endif %}</strong></p>
       </div>
     </div>
@@ -54,146 +54,146 @@
           {% if stool.colour %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Colour</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{stool.colour}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">70 - 150 mg/dl</td> -->
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Colour</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.colour}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 150 mg/dl</td> -->
           </tr>
           {% endif %}
 
           {% if stool.odour %}
           <tr>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Odour</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{stool.odour}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">70 - 150 mg/dl</td> -->
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Odour</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.odour}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 150 mg/dl</td> -->
           </tr>
           {% endif %}
 
           {% if stool.consistency %}
           <tr>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Consistency </td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{stool.consistency}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">15 - 45 mg/dl</td> -->
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Consistency </td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.consistency}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">15 - 45 mg/dl</td> -->
           </tr>
           {% endif %}
 
           {% if stool.ocalt_blood %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Ocalt Blood</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{stool.ocalt_blood}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">07 - 1.5 mg/dl</td> -->
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Ocalt Blood</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.ocalt_blood}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">07 - 1.5 mg/dl</td> -->
           </tr>
           {% endif %}
 
           {% if stool.reducing_sugar %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Reducing Sugar</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{stool.reducing_sugar}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">3.5 - 7.2 mg/dl</td> -->
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Reducing Sugar</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.reducing_sugar}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.5 - 7.2 mg/dl</td> -->
           </tr>
           {% endif %}
 
           {% if stool.chemical_reaction %}
           <tr>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Chemical Reaction</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{stool.chemical_reaction}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">0.0 - 1.2 mg/dl</td> -->
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Chemical Reaction</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.chemical_reaction}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 1.2 mg/dl</td> -->
           </tr>
           {% endif %}
           
           {% if stool.ova_roundword %}
           <tr>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">OVA Round Word</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{stool.ova_roundword}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">0.0 - 35 IU/L</td> -->
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">OVA Round Word</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.ova_roundword}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 35 IU/L</td> -->
           </tr>
           {% endif %}
 
           {% if stool.ova_hookworm %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">OVA Hook Kworm</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{stool.ova_hookworm}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">0.0 - 45 IU/L</td> -->
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">OVA Hook Kworm</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.ova_hookworm}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 45 IU/L</td> -->
           </tr>
           {% endif %}
 
           {% if stool.ova_threadworm %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">OVA Thread Worm</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{stool.ova_threadworm}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">6.4 - 8.3 g/dl</td> -->
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">OVA Thread Worm</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.ova_threadworm}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">6.4 - 8.3 g/dl</td> -->
           </tr>
           {% endif %}
 
           {% if stool.ova_tenia %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">OVA Tenia</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{stool.ova_tenia}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">3.5 - 5.2 g/dl</td> -->
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">OVA Tenia</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.ova_tenia}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.5 - 5.2 g/dl</td> -->
           </tr>
           {% endif %}
 
           {% if stool.ova_tt %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">OVA TT</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{stool.ova_tt}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">30 - 130 U/L</td> -->
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">OVA TT</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.ova_tt}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">30 - 130 U/L</td> -->
           </tr>
           {% endif %}
 
           {% if stool.eh_cyst %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">EH Cyst </td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{stool.eh_cyst}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">0 - 55 IU/L</td> -->
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">EH Cyst </td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.eh_cyst}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 55 IU/L</td> -->
           </tr>
           {% endif %}
           
           {% if stool.ecoli_cyst %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Ecoli Cyst</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{stool.ecoli_cyst}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">0 - 80 U/L</td> -->
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Ecoli Cyst</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.ecoli_cyst}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
           </tr>
           {% endif %}
           {% if stool.girida_lamba_cyst %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Girida Lamba Cyst </td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{stool.girida_lamba_cyst}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">0 - 80 U/L</td> -->
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Girida Lamba Cyst </td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.girida_lamba_cyst}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
           </tr>
           {% endif %}
           {% if stool.wbc %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">WBC </td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{stool.wbc}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">0 - 80 U/L</td> -->
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">WBC </td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.wbc}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
           </tr>
           {% endif %}
           {% if stool.rbc %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">RBC</td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{stool.rbc}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">0 - 80 U/L</td> -->
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">RBC</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.rbc}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
           </tr>
           {% endif %}
 
           {% if stool.others %}
           <tr>
             
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Others </td>
-            <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{stool.others}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">0 - 80 U/L</td> -->
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Others </td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.others}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
           </tr>
           {% endif %}
 
@@ -202,6 +202,11 @@
     </div>
 
   </div>
+  <div style="display: flex;justify-content: space-between; width: 100%;position: absolute; bottom: 0;" >
+    <div>Checked By ..............</div>
+    <div>Signature ..................................................</div>
+  </div>
+
 
 </div>
 
@@ -219,7 +224,7 @@
         <!-- Left Column (Patient Details) -->
         <div class="col-md-4 mb-3">
             <label for="regid">Reg No.:</label>
-            <input type="number" class="form-control" id="regid"  value="{{stool.reg_no.regid}}" disabled  name="regid"  />
+            <input type="text" class="form-control" id="regid"  value="{{stool.reg_no.regid}}" disabled  name="regid"  />
 
         </div>
 

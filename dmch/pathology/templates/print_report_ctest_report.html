@@ -36,7 +36,7 @@
             </div>
             <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
               <p>Date : <strong>{% if ctest.created_at %}{{ctest.created_at}}{% endif %}</strong></p>
-              <p>Reg No. : <strong>{% if ctest.reg_no %}{{ctest.reg_no.regid}}{% endif %}</strong></p>
+              <p>Reg No. : <strong>{% if ctest.reg_no %}{% if ctest.reg_no.de == 'Pathology' %}{{ctest.reg_no.regnoid}}{% else %}{{ctest.reg_no.regid}}{% endif %}{% endif %}</strong></p>
               <p>Lab No. : <strong>{% if ctest.patient.lab_no %}{{ctest.patient.lab_no}}{% endif %}</strong></p>
             </div>
           </div>
@@ -78,30 +78,30 @@
                   <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">70 - 150 mg/dl</td> -->
                 </tr>
                 {% endif %}
+                {% if ctest.method_collection %}
+                <tr>
+                  
+                  <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Mode of collection</td>
+                  <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{ctest.method_collection}}</td>
+                  <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.5 - 7.2 mg/dl</td> -->
+                </tr>
+                {% endif %}
+      
                 {% if ctest.abestinenece %}
                 <tr>
                   
-                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Abesistinence</td>
-                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{ctest.abestinenece}}</td>
-                  <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">15 - 45 mg/dl</td> -->
+                  <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Time of collection</td>
+                  <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{ctest.abestinenece}}</td>
+                  <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">15 - 45 mg/dl</td> -->
                 </tr>
                 {% endif %}
       
                 {% if ctest.time_exam %}
                 <tr>
                   
-                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Time Exam</td>
-                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{ctest.time_exam}}</td>
-                  <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">07 - 1.5 mg/dl</td> -->
-                </tr>
-                {% endif %}
-      
-                {% if ctest.method_collection %}
-                <tr>
-                  
-                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Method Collection</td>
-                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{ctest.method_collection}}</td>
-                  <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">3.5 - 7.2 mg/dl</td> -->
+                  <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Time of examination</td>
+                  <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{ctest.time_exam}}</td>
+                  <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">07 - 1.5 mg/dl</td> -->
                 </tr>
                 {% endif %}
       
@@ -133,7 +133,7 @@
                 {% if ctest.non_matliz %}
                 <tr>
                   
-                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Non Matliz</td>
+                  <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">Non Motile</td>
                   <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">{{ctest.non_matliz}}</td>
                   <!-- <td style="font-family: sans-serif; color: black; font-size: 0.8rem; padding:3px">6.4 - 8.3 g/dl</td> -->
                 </tr>
@@ -180,6 +180,11 @@
           </div>
       
         </div>
+        <div style="display: flex;justify-content: space-between; width: 100%;position: absolute; bottom: 0;" >
+          <div>Checked By ..............</div>
+          <div>Signature ..................................................</div>
+        </div>
+  
       
       </div>
 

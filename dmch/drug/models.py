@@ -47,10 +47,10 @@ class ProductType(models.Model):
 
 
 class ProductDetails(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank = True, null = True)
+    user = models.ForeignKey(User, on_delete = models.SET_NULL,  blank = True, null = True)
     productdetails_id = models.CharField(max_length=8, unique=True, editable=False, default="")
-    product = models.ForeignKey(ProductType, on_delete=models.CASCADE)
-    department = models.ForeignKey(DrugDepartment, on_delete=models.CASCADE, blank = True, null = True)
+    product = models.ForeignKey(ProductType, on_delete = models.SET_NULL, blank = True, null =True)
+    department = models.ForeignKey(DrugDepartment, on_delete = models.SET_NULL,  blank = True, null = True)
     mfg_name = models.CharField(max_length=255, blank = True, null = True)
     batch_no = models.CharField(max_length=255, blank = True, null = True)
     stock_quantity = models. BigIntegerField(blank=True, null=True)
@@ -71,12 +71,12 @@ class ProductDetails(models.Model):
         super(ProductDetails, self).save(*args, **kwargs)
 
 class ProductPurchase(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank = True, null = True)
+    user = models.ForeignKey(User, on_delete = models.SET_NULL, blank = True, null = True)
     productdetails_id = models.CharField(max_length=8, unique=True, editable=False, default="")
-    product = models.ForeignKey(ProductType, on_delete=models.CASCADE ,blank = True, null = True)
+    product = models.ForeignKey(ProductType, on_delete = models.SET_NULL, blank = True, null = True)
     product_name = models.CharField(max_length = 255, blank = True, null = True)
     product_type = models.CharField(max_length = 255, blank = True, null = True)
-    department = models.ForeignKey(DrugDepartment, on_delete=models.CASCADE, blank = True, null = True)
+    department = models.ForeignKey(DrugDepartment, on_delete = models.SET_NULL, blank = True, null = True)
     mfg_name = models.CharField(max_length=255, blank = True, null = True)
     batch_no = models.CharField(max_length=255)
     stock_quantity = models. BigIntegerField(blank=True, null=True)
@@ -98,14 +98,14 @@ class ProductPurchase(models.Model):
 
 
 class ProductSupply(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank = True, null = True)
+    user = models.ForeignKey(User, on_delete = models.SET_NULL, blank = True, null = True)
     productdetails_id = models.CharField(max_length=8, unique=True, editable=False, default="")
     product_name = models.CharField(max_length = 255, blank = True, null = True)
     product_type = models.CharField(max_length = 255, blank = True, null = True)
-    product = models.ForeignKey(ProductType, on_delete=models.CASCADE, blank = True, null = True)
-    department = models.ForeignKey(DrugDepartment, on_delete=models.CASCADE, blank = True, null = True)
+    product = models.ForeignKey(ProductType, on_delete = models.SET_NULL,  blank = True, null = True)
+    department = models.ForeignKey(DrugDepartment, on_delete = models.SET_NULL,  blank = True, null = True)
     mfg_name = models.CharField(max_length=255, blank = True, null = True)
-    batch_no = models.CharField(max_length=255)
+    batch_no = models.CharField(max_length=255, blank = True, null = True)
     stock_quantity = models. BigIntegerField(blank=True, null=True)
     quantity = models. BigIntegerField(blank=True, null=True)
     mfg_date = models.DateField(blank=True, null=True)
@@ -117,6 +117,7 @@ class ProductSupply(models.Model):
     supply_date = models.DateField(blank=True, null=True)
     order_date = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    remarks = models.CharField(max_length = 255, blank = True, null = True, default="")
 
     def save(self, *args, **kwargs):
         if not self.productdetails_id:
@@ -126,10 +127,10 @@ class ProductSupply(models.Model):
 
 
 class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank = True, null = True)
+    user = models.ForeignKey(User, on_delete = models.SET_NULL,  blank = True, null = True)
     ord_id = models.CharField(max_length=8, unique=True, editable=False, default="")
     order_id = models.CharField(max_length=20)
-    supplier = models.ForeignKey(Suppliar, on_delete=models.CASCADE)
+    supplier = models.ForeignKey(Suppliar, on_delete = models.SET_NULL, blank = True, null =True)
     mob_no = models.CharField(max_length=20, blank = True, null = True)
     gst = models.CharField(max_length=20, blank = True, null = True)
     email = models.CharField(max_length=80, blank = True, null = True)
@@ -142,10 +143,10 @@ class Order(models.Model):
         super(Order, self).save(*args, **kwargs)
 
 class Purchase(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank = True, null = True)
+    user = models.ForeignKey(User, on_delete = models.SET_NULL, blank = True, null = True)
     purchase_id = models.CharField(max_length=8, unique=True, editable=False, default="")
     order_id = models.CharField(max_length=20)
-    supplier = models.ForeignKey(Suppliar, on_delete=models.CASCADE)
+    supplier = models.ForeignKey(Suppliar, on_delete = models.SET_NULL, blank = True, null =True)
     mob_no = models.CharField(max_length=20, blank = True, null = True)
     gst = models.CharField(max_length=20, blank = True, null = True)
     email = models.CharField(max_length=80, blank = True, null = True)
@@ -164,13 +165,15 @@ class Purchase(models.Model):
 
 
 class Supply(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank = True, null = True)
+    user = models.ForeignKey(User, on_delete = models.SET_NULL,  blank = True, null = True)
     supply_id = models.CharField(max_length=8, unique=True, editable=False, default="")
-    indent = models.CharField(max_length=20)
-    departpment = models.ForeignKey(DrugDepartment, on_delete = models.CASCADE, blank = True, null = True)
+    indent = models.CharField(max_length=20, blank = True, null = True)
+    departpment = models.ForeignKey(DrugDepartment, on_delete = models.SET_NULL,  blank = True, null = True)
     products = models.ManyToManyField(ProductSupply, related_name='supply_products')
     total_quantity = models.IntegerField(blank = True, null = True)
     quantity = models.IntegerField(blank = True, null = True)
+    de = models.CharField(max_length = 100, blank = True, null = True, default=None)
+    remarks = models.CharField(max_length = 255, blank = True, null = True, default="")
     order_date = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):

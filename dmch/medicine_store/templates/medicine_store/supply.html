@@ -1,0 +1,408 @@
+{% extends 'counter/base.html' %} {% block css %}
+<!-- CSS for Select2 -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+{% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<style>
+  label {
+    width: 230px;
+  }
+  .form-group {
+    margin-bottom: 0.2rem;
+    line-height: 0.5rem;
+    align-items: center;
+  }
+  .form-control {
+    padding: ".15rem .75rem";
+  }
+  .mb-1{
+    padding: 0 !important;
+  }
+  .exp_date{
+    max-width: 11.77% !important;
+  }
+</style>
+<div class="container-fluid">
+  <!-- Page Heading -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+
+  {% endfor %} {% endif %}
+  <form id="orderForm" method="POST" action="{% url 'medicine_supply_add_view' %}">
+    {% csrf_token %}
+    <!-- <h3>Supply</h3> -->
+    <div class="row">
+      <!-- Left Column (Patient Details) -->
+
+      <div class="col-md-4 mb-3">
+        <div class="form-group">
+          <label for="regid">Reg No.:</label>
+          <input type="text" class="form-control" id="regid" name="regid"  />
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <div class="form-group">
+          <label for="patient_name">Patient Name :</label>
+          <input type="text" class="form-control" id="patient_name" name="patient_name"  />
+        </div>
+      </div>
+
+       <!-- Right Column (Order Details) -->
+       <div class="col-md-4 mb-3">
+        <div class="form-group">
+          <label for="date">Date:</label>
+          <input type="date" class="form-control" value="{% if request.session.supply_date %}{{request.session.supply_date}}{% endif %}" name="date" required />
+        </div>
+      </div>
+
+    </div>
+
+    <h3>Medicine</h3>
+    <div id="productFields">
+      <div class="row product-row">
+        <!-- Right Column (Order Details) -->
+        <div class="col-md-2 mb-1" style="padding: 0 !important;">
+          <div class="form-group">
+            <label for="product_name" id="product_name">Medicine Name:</label>
+            <select class="form-control" name="product_name_1" id="product_name_1" required>
+              <option value="">Select Medicine Name</option>
+              {% for s in productsupply %}
+              <option value="{{ s.productdetails_id }}">{{ s.product_name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="col-md-2 mb-1" style="padding: 0 !important;">
+          <div class="form-group">
+            <label for="mfgname">Mfg. By:</label>
+            <input type="text" class="form-control" name="mfgname_1" disabled required />
+          </div>
+        </div>
+
+        <div class="col-md-2 mb-1" style="display: none">
+          <div class="form-group">
+            <label for="mfgname">Product:</label>
+            <input type="text" class="form-control" name="product_type_id_column_1" />
+          </div>
+        </div>
+
+        <!-- Middle Column (Product Details) -->
+        <div class="col-md-2 mb-1" style="padding: 0 !important; ">
+          <div class="form-group">
+            <label for="batchno">Batch No.:</label>
+            <input type="text" class="form-control" name="batchno_1" disabled required />
+          </div>
+        </div>
+
+        <!-- Right Column (Order Details) -->
+        <div class="col-md-2 mb-1 exp_date" style="padding: 0 !important; ">
+          <div class="form-group">
+            <label for="mfgdate">Mfg Date:</label>
+            <input type="date" class="form-control" name="mfgdate_1" disabled required />
+          </div>
+        </div>
+        <div class="col-md-2 mb-1" style="padding: 0 !important; max-width: 11.77% !important;">
+          <div class="form-group">
+            <label for="expdate">Exp. Date:</label>
+            <input type="date" class="form-control" name="expdate_1" disabled required />
+          </div>
+        </div>
+
+        <div class="col-md-1 mb-1" style="padding: 0 !important;">
+          <div class="form-group">
+            <label for="stock_quantity">Stock:</label>
+            <input type="number" class="form-control" name="stock_quantity_1" disabled required />
+          </div>
+        </div>
+
+        <!-- Left Column (Patient Details) -->
+        <div class="col-md-1 mb-1" style="padding: 0 !important;">
+          <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" class="form-control" name="quantity_1" required />
+          </div>
+        </div>
+
+       
+
+      </div>
+    </div>
+
+    <input type="hidden" id="productCount" name="product_count" value="1" />
+
+    <!-- <div class="text-center mt-3">
+      <button type="button" class="btn btn-primary" id="addProductField">Add Medicine</button>
+    </div> -->
+    <div class="text-left mt-3">
+      <button type="submit" id="submitBtn" class="btn btn-primary">Save</button>
+    </div>
+  </form>
+</div>
+
+<!-- End of Main Content -->
+{% endblock %} {% block script %}
+
+<!-- JavaScript for Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("regid").focus();
+  });
+</script>
+
+
+<script>
+  $("#orderForm").on("keydown", function (event) {
+
+    if (event.keyCode === 13) { // Check if Enter key is pressed
+        event.preventDefault(); // Prevent the default behavior of the Enter key
+
+    }
+});
+
+  // Function to add product fields dynamically
+  $("#productFields").on("keyup", "input[name^='quantity']", function (event) {
+    if (event.keyCode === 13) { // Check if Enter key is pressed
+      event.preventDefault();
+    var productCount = parseInt($("#productCount").val());
+
+    productCount++;
+    $("#productCount").val(productCount);
+    var productFields = document.getElementById("productFields");
+    var productRow = document.createElement("div");
+    productRow.className = "row product-row";
+    var submitButton = $("#submitBtn");
+    submitButton.prop("disabled", true);
+
+    var rightColumn = document.createElement("div");
+    rightColumn.className = "col-md-2 mb-1";
+    rightColumn.innerHTML = `
+          <div class="form-group">
+            <label for="product_name_${productCount}e" id="product_name">Medicine Name:</label>
+            <select class="form-control product-name-select" name="product_name_${productCount}" id="product_name_${productCount}" required>
+              <option>Select Medicine Name</option>
+              {% for s in productsupply %}
+              <option value="{{s.productdetails_id}}">{{s.product_name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        `;
+
+    var mfgColumn = document.createElement("div");
+    mfgColumn.className = "col-md-2 mb-1";
+    mfgColumn.innerHTML = `
+          <div class="form-group">
+            <label for="mfgname">Mfg. By:</label>
+            <input type="text" class="form-control" name="mfgname_${productCount}" disabled required />
+          </div>
+        `;
+
+    var batchColumn = document.createElement("div");
+    batchColumn.className = "col-md-2 mb-1";
+    batchColumn.innerHTML = `
+          <div class="form-group">
+            <label for="batchno">Batch No.:</label>
+            <input type="text" class="form-control" name="batchno_${productCount}" disabled required />
+          </div>
+        `;
+
+    var mfgDateColumn = document.createElement("div");
+    mfgDateColumn.className = "col-md-2 mb-1 exp_date";
+    mfgDateColumn.innerHTML = `
+          <div class="form-group">
+            <label for="batchno">Mfg Date.:</label>
+            <input type="date" class="form-control" name="mfgdate_${productCount}" disabled required />
+          </div>
+        `;
+
+    var expDatecolumn = document.createElement("div");
+    expDatecolumn.className = "col-md-2 mb-1 exp_date";
+    expDatecolumn.innerHTML = `
+          <div class="form-group">
+            <label for="batchno">Exp Date.:</label>
+            <input type="date" class="form-control" name="expdate_${productCount}" disabled required />
+          </div>
+        `;
+
+    var quantityColumn = document.createElement("div");
+    quantityColumn.className = "col-md-1 mb-1";
+    quantityColumn.innerHTML = `
+        <div class="form-group">
+          <label for="quantity">Quantity:</label>
+          <input type="number" class="form-control" name="quantity_${productCount}" required />
+        </div>
+      `;
+
+    var amountcolumn = document.createElement("div");
+    amountcolumn.className = "col-md-1 mb-1";
+    amountcolumn.innerHTML = `
+          <div class="form-group">
+            <label for="stock_quantity">Stock :</label>
+            <input type="number" class="form-control" name="stock_quantity_${productCount}" disabled required />
+          </div>
+        `;
+
+
+
+    var product_type_id_column = document.createElement("div");
+    product_type_id_column.className = "col-md-2 mb-1 ";
+    product_type_id_column.innerHTML = `
+          <div class="form-group" style="display:none;">
+            <label for="batchno">product_type_id_column.:</label>
+            <input type="date" class="form-control" name="product_type_id_column_${productCount}" required />
+          </div>
+        `;
+
+
+
+
+    var removeButton = document.createElement("div");
+    removeButton.className = "col-md-1 mb-1";
+    removeButton.innerHTML = `
+      <div class="form-group">
+          <label for="">&nbsp;</label>
+          <button type="button" class="btn btn-danger remove-product">x</button>
+      </div>
+    `;
+
+    
+    productRow.appendChild(rightColumn);
+    productRow.appendChild(mfgColumn);
+    productRow.appendChild(batchColumn);
+    productRow.appendChild(mfgDateColumn);
+    productRow.appendChild(mfgDateColumn);
+    productRow.appendChild(expDatecolumn);
+    productRow.appendChild(amountcolumn);
+    productRow.appendChild(quantityColumn);
+    productRow.appendChild(removeButton);
+    // $(`#product_name_${productCount}`).select2();
+    productFields.appendChild(productRow);
+    $(".product-name-select").select2();
+    submitButton.prop("disabled", false);
+    }
+  });
+
+  // Function to remove product fields
+  document.addEventListener("click", function (event) {
+    if (event.target.classList.contains("remove-product")) {
+      var productCount = parseInt($("#productCount").val());
+      productCount--;
+      $("#productCount").val(productCount);
+      event.target.closest(".product-row").remove();
+    }
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+    $("#product_name_1").select2();
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+    // Event delegation for product name select elements
+    $("#productFields").on("change", "select[name^='product_name']", function () {
+      var productName = $(this).val();
+      var container = $(this).closest(".product-row");
+      var productTypeSelect = container.find("select[name^='product_type']");
+      var mfgNameInput = container.find("input[name^='mfgname']");
+      var batchNoInput = container.find("input[name^='batchno']");
+      var mfgDateInput = container.find("input[name^='mfgdate']");
+      var expDateInput = container.find("input[name^='expdate']");
+      var stockQuantityInput = container.find("input[name^='stock_quantity']");
+
+      $.ajax({
+        url: '{% url "get_medicine_details" %}',
+        type: "GET",
+        data: {
+          product_name: productName,
+        },
+        success: function (data) {
+          console.log(data.product);
+          mfgNameInput.val(data.product.mfg_name);
+          batchNoInput.val(data.product.batch_no);
+          mfgDateInput.val(data.product.mfg_date);
+          expDateInput.val(data.product.exp_date);
+          stockQuantityInput.val(data.product.stock_quantity);
+        },
+      });
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+    $("#regid").on("input", function () {
+      var regid = $(this).val();
+      if (regid) {
+        $.ajax({
+          url: '{% url "fetch_patient_data" %}',
+          type: "GET",
+          data: {
+            regid: regid,
+          },
+          success: function (data) {
+            console.log(data);
+            // Update input fields with fetched data
+            $("#patient_name").val(data.name);
+            
+          },
+          error: function (xhr, status, error) {
+            console.error(xhr.responseText);
+            // Handle error if necessary
+            $("#patient_name").val("");
+          },
+        });
+      } else {
+        // Clear input fields when regid is empty
+        $("#patient_name").val("");
+      }
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+    // Function to check if quantity is valid
+    function validateQuantity(quantityInput, stockQuantityInput) {
+      var stockQuantity = parseInt(stockQuantityInput.val());
+      var enteredQuantity = parseInt(quantityInput.val());
+      return enteredQuantity > 0 && enteredQuantity <= stockQuantity;
+    }
+
+    // Event delegation for product name select elements
+    $("#productFields").on("change", "select[name^='product_name']", function () {
+      // Your existing code for fetching medicine details...
+    });
+
+    // Event delegation for quantity input fields
+    $("#productFields").on("input", "input[name^='quantity']", function () {
+      var quantityInput = $(this);
+      var container = quantityInput.closest(".product-row");
+      var stockQuantityInput = container.find("input[name^='stock_quantity']");
+      var submitButton = $("#submitBtn");
+
+      // Check if entered quantity is valid
+      if (validateQuantity(quantityInput, stockQuantityInput)) {
+        // Enable submit button if quantity is valid
+        submitButton.prop("disabled", false);
+        quantityInput.removeClass("is-invalid");
+        quantityInput.next(".invalid-feedback").remove(); // Remove existing error message
+      } else {
+        // Disable submit button if quantity is invalid
+        submitButton.prop("disabled", true);
+        // Show error message
+        quantityInput.addClass("is-invalid");
+        quantityInput.next(".invalid-feedback").remove(); // Remove existing error message
+        quantityInput.after("<div class='invalid-feedback'>Quantity should be greater than 0 and less than or equal to the stock quantity</div>");
+      }
+    });
+  });
+</script>
+
+
+{% endblock %}

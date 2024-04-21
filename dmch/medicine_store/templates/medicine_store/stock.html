@@ -1,0 +1,174 @@
+{% extends 'counter/base.html' %} {% block css %}
+<!-- CSS for Select2 -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+{% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+
+  {% endfor %} {% endif %}
+  <div style="display: flex"></div>
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <form action="{% url 'medicine_supply_details_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+        <div style="flex: 1">
+          <input type="datetime-local" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+        </div>
+        <div style="">
+          <span>-</span>
+        </div>
+        <div style="flex: 1">
+          <input type="datetime-local" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+        </div>
+
+        <div style="flex: 3">
+          <select class="form-control" name="product_name" id="product_name" required>
+            <option value="">Select Medicine Name</option>
+            <option value="All">All</option>
+            {% for s in productsupply %}
+            <option {% if department == s.productdetails_id %}selected{% endif %} value="{{ s.productdetails_id }}">{{ s.product_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div style="flex: 1">
+          <button class="btn btn-primary w-100" type="submit">Filter</button>
+        </div>
+        <div style="flex: 1">
+          <a href="{% url 'medicine_supply_details_view_print' %}" class="btn btn-primary w-100">Print</a>
+        </div>
+      </form>
+    </div>
+    <div class="card-body" id="printablecontent">
+      <!-- <style>
+        .table td{
+          padding: 0.4rem !important;
+          font-size: 0.8rem !important;
+          
+        }
+      </style> -->
+      <div class="table-responsive" id="tableContainer">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>Department</th>
+              <th>Product Type</th>
+              <th>Product Name</th>
+              <th>Mfg By</th>
+              <th>Mfg Date</th>
+              <th>Exp Date</th>
+              <th>Batch No</th>
+              <th>Quantity</th>
+              <th>In Stock</th>
+              <th>Remarks</th>
+              <th>Supply Time</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in supply %}
+            <tr>
+              <td>{{ order.departpment.name }}</td>
+
+              <td>
+                {% for product in order.products.all %}
+                <p>{{ product.product_type }}</p>
+
+                {% endfor %}
+              </td>
+              <td>
+                {% for product in order.products.all %}
+                <p>{{ product.product_name }}</p>
+
+                {% endfor %}
+              </td>
+              <td>
+                {% for product in order.products.all %}
+                <p>{{ product.mfg_name }}</p>
+
+                {% endfor %}
+              </td>
+
+              <td>
+                {% for product in order.products.all %}
+                <p>{% if product.mfg_date != None %}{{ product.mfg_date }}{% endif %}</p>
+                {% endfor %}
+              </td>
+              <td>
+                {% for product in order.products.all %}
+                <p>{% if product.exp_date != None %}{{ product.exp_date }}{% endif %}</p>
+
+                {% endfor %}
+              </td>
+
+              <td>
+                {% for product in order.products.all %}
+                <p>{{ product.batch_no }}</p>
+
+                {% endfor %}
+              </td>
+              <td>
+                {% for product in order.products.all %}
+                <p>{{ product.quantity }}</p>
+                {% endfor %}
+              </td>
+              <td>
+                {% for product in order.products.all %}
+                <p>{{ product.stock_quantity }}</p>
+                {% endfor %}
+              </td>
+              <td>
+                {{ order.remarks }}
+              </td>
+              <td>{{order.order_date|date:"F j, Y"}}</td>
+              <td>
+                <a href="/medicine_store/supply/{{ order.supply_id }}/update/" class="btn btn-primary btn-icon-split">
+                  <span class="icon text-white-50">
+                    <i class="fas fa-arrow-right"></i>
+                  </span>
+                  <span class="text">Edit</span>
+                </a>
+                {% if order.de == request.session.user_role %}
+                <a href="/medicine_store/supply/{{ order.supply_id }}/delete/" class="btn btn-danger btn-icon-split">
+                  <span class="icon text-white-50">
+                    <i class="fas fa-trash"></i>
+                  </span>
+                </a>
+                {% endif  %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block script %}
+<!-- JavaScript for Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<script>
+  // Function to print the table
+  function printTable() {
+    // Show the hidden print content
+    // Print only the content inside the printContent div
+    var printContents = $("#printablecontent").html();
+    var originalContents = $("body").html();
+    $("body").empty().html(printContents);
+
+    // Trigger the print dialog
+    window.print();
+    $("body").html(originalContents);
+  }
+</script>
+<script>
+  $(document).ready(function () {
+    $("#product_name").select2();
+  });
+</script>
+{% endblock %}

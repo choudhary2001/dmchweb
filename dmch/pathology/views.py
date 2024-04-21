@@ -729,7 +729,14 @@ def create_test_report(request):
             print(data)
             # Fetch the corresponding Patient object based on the provided reg_no
 
-            patient = Patient.objects.filter(regid=reg_no).first()
+            try:
+                regid_int = int(reg_no)
+                # If no exception is raised, it means regid is an integer
+                patient = Patient.objects.filter(Q(regid=regid_int) | Q(regnoid=reg_no)).first()
+            except ValueError:
+                # If regid cannot be converted to an integer, treat it as a varchar
+                patient = Patient.objects.filter(regnoid=reg_no).first()
+
             pr = Patient_registration.objects.filter(reg_no=patient).first()
             print(patient, pr)
             if pr is not None:
@@ -808,32 +815,14 @@ def create_test_report_view(request):
             tr = tr.filter(created_at__lt=end_date)
         
         
-        non_price = 0
-        red_card_total = 0
-        rb_case_total = 0
-        unkown_total = 0
-        # for p in patients:
-        #     if p.visittype == 'Unknown':
-        #         unkown_total += 1
-        #     if p.redcard in [True, 'true']:  
-        #         if p.redcardtype == 'Red Card':
-        #             red_card_total += 1
-        #         if p.redcardtype == 'RB Case':
-        #             rb_case_total += 1
-
-
-        non_price = red_card_total + rb_case_total + unkown_total
         # Count the total number of patients
         total = tr.count()
-
-        total_amount = (int(total) * 5) - (non_price * 5)
+        
 
 
         context = {
             'patients': tr,
-            'title': f'Total Patients: {total}',
-            'total_amount' : total_amount,
-            'title' : 'Test Report'
+            'title' : f'Test Report :  {total}'
         }
         return render(request, 'test_report_data.html', context=context)
     else:
@@ -885,14 +874,6 @@ def create_test_report_view_print(request):
         red_card_total = 0
         rb_case_total = 0
         unkown_total = 0
-        # for p in patients:
-        #     if p.visittype == 'Unknown':
-        #         unkown_total += 1
-        #     if p.redcard in [True, 'true']:  
-        #         if p.redcardtype == 'Red Card':
-        #             red_card_total += 1
-        #         if p.redcardtype == 'RB Case':
-        #             rb_case_total += 1
 
 
         non_price = red_card_total + rb_case_total + unkown_total
@@ -918,16 +899,14 @@ def create_test_report_view_print(request):
 @login_required
 def update_test_report(request, pk):
     if request.user.is_superuser or request.session['user_role'] == 'Pathology':
-
         test_report_obj = get_object_or_404(Test_report, pk=pk)
         if request.method == 'POST':
-            # Update test_report instance
             for field in Test_report._meta.fields:
                 if request.POST.get(field.name):
                     setattr(test_report_obj, field.name, request.POST.get(field.name))
             test_report_obj.save()
         counter = 1 
-        return render(request, 'update_test_report.html', {'test_report': test_report_obj, 'title' : 'Update Test Report'})  # Assuming you have a template for updating test report
+        return render(request, 'update_test_report.html', {'test_report': test_report_obj, 'title' : 'Update Test Report'})
     else:
         logout(request)
         return redirect('signin') 
@@ -963,7 +942,15 @@ def create_urine_test(request):
             for field in Urine_test._meta.fields:
                 data[field.name] = request.POST.get(field.name)
 
-            patient = Patient.objects.filter(regid=reg_no).first()
+
+            try:
+                regid_int = int(reg_no)
+                # If no exception is raised, it means regid is an integer
+                patient = Patient.objects.filter(Q(regid=regid_int) | Q(regnoid=reg_no)).first()
+            except ValueError:
+                # If regid cannot be converted to an integer, treat it as a varchar
+                patient = Patient.objects.filter(regnoid=reg_no).first()
+
             pr = Patient_registration.objects.filter(reg_no=patient).first()
             print(patient, pr)
             if pr is not None:
@@ -1172,7 +1159,16 @@ def create_stool_test(request):
             for field in Stool_test._meta.fields:
                 data[field.name] = request.POST.get(field.name)
 
-            patient = Patient.objects.filter(regid=reg_no).first()
+            # patient = Patient.objects.filter(regid=reg_no).first()
+
+            try:
+                regid_int = int(reg_no)
+                # If no exception is raised, it means regid is an integer
+                patient = Patient.objects.filter(Q(regid=regid_int) | Q(regnoid=reg_no)).first()
+            except ValueError:
+                # If regid cannot be converted to an integer, treat it as a varchar
+                patient = Patient.objects.filter(regnoid=reg_no).first()
+
             pr = Patient_registration.objects.filter(reg_no=patient).first()
             print(patient, pr)
             if pr is not None:
@@ -1375,7 +1371,16 @@ def create_ctest_report(request):
             for field in Ctest_report._meta.fields:
                 data[field.name] = request.POST.get(field.name)
 
-            patient = Patient.objects.filter(regid=reg_no).first()
+            # patient = Patient.objects.filter(regid=reg_no).first()
+
+            try:
+                regid_int = int(reg_no)
+                # If no exception is raised, it means regid is an integer
+                patient = Patient.objects.filter(Q(regid=regid_int) | Q(regnoid=reg_no)).first()
+            except ValueError:
+                # If regid cannot be converted to an integer, treat it as a varchar
+                patient = Patient.objects.filter(regnoid=reg_no).first()
+
             pr = Patient_registration.objects.filter(reg_no=patient).first()
             print(patient, pr)
             if pr is not None:
@@ -1578,7 +1583,16 @@ def create_cbc_test(request):
             for field in Cbc_test._meta.fields:
                 data[field.name] = request.POST.get(field.name)
 
-            patient = Patient.objects.filter(regid=reg_no).first()
+            # patient = Patient.objects.filter(regid=reg_no).first()
+
+            try:
+                regid_int = int(reg_no)
+                # If no exception is raised, it means regid is an integer
+                patient = Patient.objects.filter(Q(regid=regid_int) | Q(regnoid=reg_no)).first()
+            except ValueError:
+                # If regid cannot be converted to an integer, treat it as a varchar
+                patient = Patient.objects.filter(regnoid=reg_no).first()
+
             pr = Patient_registration.objects.filter(reg_no=patient).first()
             print(patient, pr)
             if pr is not None:
@@ -1774,6 +1788,7 @@ def create_serology_test(request):
                 data[field.name] = request.POST.get(field.name)
 
             patient = Patient.objects.filter(regid=reg_no).first()
+            
             pr = Patient_registration.objects.filter(reg_no=patient).first()
             print(patient, pr)
             if pr is not None:

@@ -53,9 +53,9 @@
                 <th>Volume</th>
                 <th>Consistency</th>
                 <th>Colour</th>
-                <th>Abestinenece</th>
-                <th>Time Exam</th>
-                <th>Method Collection</th>
+                <th>Mode of collection</th>
+                <th>Time of collection</th>
+                <th>Time of examination</th>
               <th>Date</th>
               {% if request.user.is_superuser %}
               <th>Edit</th>
@@ -76,9 +76,9 @@
                 <th>Volume</th>
                 <th>Consistency</th>
                 <th>Colour</th>
-                <th>Abestinenece</th>
-                <th>Time Exam</th>
-                <th>Method Collection</th>
+                <th>Mode of collection</th>
+                <th>Time of collection</th>
+                <th>Time of examination</th>
                 <th>Date</th>
               {% if request.user.is_superuser %}
               <th>Edit</th>
@@ -100,9 +100,9 @@
               <td>{{d.volume}}</td>
               <td>{{d.consistency}}</td>
               <td>{{d.colour}}</td>
+              <td>{{d.method_collection}}</td>
               <td>{{d.abestinenece}}</td>
               <td>{{d.time_exam}}</td>
-              <td>{{d.method_collection}}</td>
               <td>{{d.created_at}}</td>
               {% if request.user.is_superuser %}
               <td>

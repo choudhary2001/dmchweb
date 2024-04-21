@@ -36,7 +36,7 @@
             </div>
             <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
               <p>Date : <strong>{% if cbc.created_at %}{{cbc.created_at}}{% endif %}</strong></p>
-              <p>Reg No. : <strong>{% if cbc.reg_no %}{{cbc.reg_no.regid}}{% endif %}</strong></p>
+              <p>Reg No. : <strong>{% if d.reg_no %}{% if cbc.reg_no.de == 'Pathology' %}{{cbc.reg_no.regnoid}}{% else %}{{cbc.reg_no.regid}}{% endif %}{% endif %}</strong></p>
               <p>Lab No. : <strong>{% if cbc.patient.lab_no %}{{cbc.patient.lab_no}}{% endif %}</strong></p>
             </div>
           </div>
@@ -311,6 +311,11 @@
           </div>
       
         </div>
+        <div style="display: flex;justify-content: space-between; width: 100%;position: absolute; bottom: 0;" >
+          <div>Checked By ..............</div>
+          <div>Signature ..................................................</div>
+        </div>
+  
       
       </div>
 

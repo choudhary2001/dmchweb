@@ -16,7 +16,7 @@
 <div class="container-fluid">
   <!-- Page Heading -->
 
-  <div class="" id="printContent" style="width: 100%; margin-top: -10px; height: 842px; display: none;">
+  <div class="" id="printContent" style="width: 100%; margin-top: -10px; height: 100vh; display: none;">
     <div style="height: 50%;">
       <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.2rem">
         <h2>DEPARTMENT OF CLINICAL PATHOLOGY</h2>
@@ -26,24 +26,25 @@
       <hr />
       <div style="display: flex; justify-content: space-between">
         <div style="display: flex">
-          <div style="font-family: sans-serif; color: black; font-size: 1rem;  margin-bottom: 0.2rem !important;">
+          <div style="font-family: sans-serif; color: black; font-size: 0.9rem;  margin-bottom: 0.2rem !important;">
             <p>Date : {% if patient.created_at %}{{patient.created_at}}{% endif %} </p>
-            <p>Lab NO. : {% if patient.lab_no %}{{patient.lab_no}}{% endif %}</p>
+            <p>Lab NO. : <strong>{% if patient.lab_no %}{{patient.lab_no}}{% endif %}</strong></p>
             <p>Bill No. : {% if patient.bill_no %}{{patient.bill_no}}{% endif %}</p>
-            <p>Reg No. : {% if patient.reg_no %}{{patient.reg_no.regid}}{% endif %}</p>
+            <p>Reg No. : {% if patient.reg_no %}{% if patient.reg_no.de == 'Pathology' %}{{patient.reg_no.regnoid}}{% else %}{{patient.reg_no.regid}}{% endif %}{% endif %}</p>
             <p>Patient Name : {% if patient.reg_no %}{% if patient.reg_no.de == 'Pathology' %}{{patient.reg_no.regnoid}}{% else %}{{patient.reg_no.regid}}{% endif %}{% endif %}</p>
             <p>Age : {% if patient.reg_no.year %}{{patient.reg_no.year}}Y{% endif %} {% if patient.reg_no.month %}{{patient.reg_no.month}}M{% endif %} {% if patient.reg_no.days %}{{patient.reg_no.days}}D{% endif %}</p>
             <p>Gender : {% if patient.reg_no.gender %}{{patient.reg_no.gender}}{% endif %}</p>
+            <p style="margin: 2px;">Mob No. : {% if patient.reg_no.mobno %}{{patient.reg_no.mobno}}{% endif %}</p>
             <p>Dept : {% if patient.department %}{{patient.department.name}}{% endif %} {% if patient.pincode %}{{patient.pincode}}{% endif %}</p>
             <p>Doctor : {% if patient.referby %}{{patient.referby.name}}{% endif %}</p>
-            <p>Test Name : {% if patient.test_name %}{{patient.test_name}}{% endif %}</p>
+            <p>Test Name : <strong>{% if patient.test_name %}{{patient.test_name}}{% endif %}</strong></p>
           </div>
         </div>
 
       </div>
     </div>
     <hr />
-    <div style="height: 50%;">
+    <div style="">
       <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.2rem">
         <h2>DEPARTMENT OF CLINICAL PATHOLOGY</h2>
         <h4>DARBHANGA MEDICAL COLLEGE & HOSPITAL</h4>
@@ -52,17 +53,18 @@
       <hr />
       <div style="display: flex; justify-content: space-between">
         <div style="display: flex">
-          <div style="font-family: sans-serif; color: black; font-size: 1rem;  margin-bottom: 0.2rem !important;">
+          <div style="font-family: sans-serif; color: black; font-size: 0.9rem;  margin-bottom: 0.2rem !important;">
             <p>Date : {% if patient.created_at %}{{patient.created_at}}{% endif %} </p>
-            <p>Lab NO. : {% if patient.lab_no %}{{patient.lab_no}}{% endif %}</p>
+            <p>Lab NO. : <strong>{% if patient.lab_no %}{{patient.lab_no}}{% endif %}</strong></p>
             <p>Bill No. : {% if patient.bill_no %}{{patient.bill_no}}{% endif %}</p>
-            <p>Reg No. : {% if patient.reg_no %}{{patient.reg_no.regid}}{% endif %}</p>
+            <p>Reg No. : {% if patient.reg_no %}{% if patient.reg_no.de == 'Pathology' %}{{patient.reg_no.regnoid}}{% else %}{{patient.reg_no.regid}}{% endif %}{% endif %}</p>
             <p>Patient Name : {% if patient.reg_no %}{% if patient.reg_no.de == 'Pathology' %}{{patient.reg_no.regnoid}}{% else %}{{patient.reg_no.regid}}{% endif %}{% endif %}</p>
             <p>Age : {% if patient.reg_no.year %}{{patient.reg_no.year}}Y{% endif %} {% if patient.reg_no.month %}{{patient.reg_no.month}}M{% endif %} {% if patient.reg_no.days %}{{patient.reg_no.days}}D{% endif %}</p>
             <p>Gender : {% if patient.reg_no.gender %}{{patient.reg_no.gender}}{% endif %}</p>
+            <p style="margin: 2px;">Mob No. : {% if patient.reg_no.mobno %}{{patient.reg_no.mobno}}{% endif %}</p>
             <p>Dept : {% if patient.department %}{{patient.department.name}}{% endif %} {% if patient.pincode %}{{patient.pincode}}{% endif %}</p>
             <p>Doctor : {% if patient.referby %}{{patient.referby.name}}{% endif %}</p>
-            <p>Test Name : {% if patient.test_name %}{{patient.test_name}}{% endif %}</p>
+            <p>Test Name : <strong>{% if patient.test_name %}{{patient.test_name}}{% endif %}</strong></p>
           </div>
         </div>
 
