@@ -90,6 +90,9 @@
                               {% for dd in departments %}
                                 <option {% if d.user_role == dd.name %} selected {% endif %}value="{{dd.name}}" >{{dd.name}}</option>
                               {% endfor %}
+                              {% for dd in sdepartments %}
+                                <option {% if d.user_role == dd.name %} selected {% endif %}value="{{dd.name}}" >{{dd.name}}</option>
+                              {% endfor %}
                             </select>
                           </div>
                           <div class="form-group">
@@ -157,6 +160,9 @@
                   <option value="Pathology" >Pathology</option>
                   {% for d in departments %}
                     <option value="{{d.name}}" >{{d.name}}</option>
+                  {% endfor %}
+                  {% for dd in sdepartments %}
+                    <option value="{{dd.name}}" >{{dd.name}}</option>
                   {% endfor %}
                 </select>
               </div>

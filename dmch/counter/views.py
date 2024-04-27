@@ -14,6 +14,7 @@ from django.db.models import Count
 from django.utils import timezone
 import pytz
 from drug.models import *
+from store.models import *
 # Get the current time in UTC
 current_time_utc = timezone.now()
 from django.db.models import Q
@@ -43,6 +44,7 @@ def signin(request):
             login(request, user)
             if user.is_superuser == False:
                 d = DrugDepartment.objects.filter(name = p.user_role).first()
+                sd = StoreDepartment.objects.filter(name = p.user_role).first()
                 if p:
                     request.session['user_role'] = f"{p.user_role}"
                 
@@ -54,7 +56,9 @@ def signin(request):
                 if d is not None:
                     request.session['user_role_store'] = "Medicine Store"
                     return redirect('/medicine_store/supply/view/')
-
+                if sd is not None:
+                    request.session['user_role_store'] = "General Store"
+                    return redirect('/store/add-products/')
                 return redirect('add_patient')
             # messages.success(request, "You have successfully signed in.")
             request.session['user_role'] = 'Admin'
@@ -1038,10 +1042,12 @@ def dataentryoperator(request):
                 messages.error(request, 'User already exists with this username.')
         d = Profile.objects.all().order_by('-created_at')
         de = DrugDepartment.objects.all().order_by('-created_at')
+        sde = StoreDepartment.objects.all().order_by('-created_at')
 
         context = {
             'users' : d,
             'departments' : de,
+            'sdepartments' : sde,
             'title' : 'Staff'
         }
         return render(request, 'counter/users.html', context = context)

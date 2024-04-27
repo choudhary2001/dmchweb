@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'counter',
     'drug',
     'pathology',
-    'medicine_store'
+    'medicine_store',
+    'store'
 ]
 
 MIDDLEWARE = [
