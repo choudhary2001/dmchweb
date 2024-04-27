@@ -37,6 +37,9 @@ urlpatterns = [
     path('purchase/<str:purchase_id>/update/', views.purchase_update_view, name='purchase-update'),
     path('purchase/<str:purchase_id>/delete/', views.purchase_delete_view, name='purchase-delete'),
 
+    path('stock/view/', views.stock_details_view, name='stock_details_view'),
+    path('stock/view/print/', views.stock_details_view_print, name='stock_details_view_print'),
+
     # Supply URLs
     path('supply/add/', views.supply_add_view, name='supply-add'),
     path('supply/view/print/', views.supply_details_view_print, name='supply_details_view_print'),

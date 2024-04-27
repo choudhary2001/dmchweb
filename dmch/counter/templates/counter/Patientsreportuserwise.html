@@ -68,6 +68,8 @@
               <th>Total Amount</th>
               <th>Red Card</th>
               <th>RB Case</th>
+              <th>UnKnown</th>
+              <th>ReVisit</th>
               <th>Date</th>
              
             </tr>
@@ -81,6 +83,8 @@
               <td>Rs {{ user_data.total_amount }} /-</td>
               <td>{{ user_data.redcard }}</td>
               <td>{{ user_data.rbcase }}</td>
+              <td>{{ user_data.unknown }}</td>
+              <td>{{ user_data.revisit_total }}</td>
               <td>{{ user_data.start_date }} - {{ user_data.end_date }}</td>
             </tr>
               {% endfor %}

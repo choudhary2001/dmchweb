@@ -57,6 +57,7 @@
         <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">Red Card - {{ redcard }}</div>
         <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">RB Case - {{ rbcase }}</div>
         <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">ANC Free - {{ free_total }}</div>
+        <div class="card" style="width: 15%; padding: 15px">Re Visit - {{revisit_total}}</div>
         {% for v in visittype_counts %}
         <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">{{ v.visittype }} - {{ v.total_count }}</div>
         {% endfor %}
@@ -71,6 +72,9 @@
               <th>Reg No.</th>
               <th>Department</th>
               <th>Card Type</th>
+              <th>RB Case</th>
+              <th>Un Known</th>
+              <th>Re Visit</th>
               <th>Amount</th>
               <th>Date</th>
             </tr>
@@ -81,8 +85,11 @@
             <tr>
               <td>{{d.regid}}</td>
               <td>{{d.department}}</td>
-              <td>{% if d.redcard == True %}{{d.redcardtype}}{% endif %}</td>
-              <td>Rs {% if d.visittype == 'Unknown' %}0{% else %}{% if d.redcard == True %}0{% else %}5{% endif %}{% endif %} /-</td>
+              <td>{% if d.redcardtype == 'Red Card' %}Red Card{% endif %}</td>
+              <td>{% if d.redcardtype == "RB Case" %}RB Case{% endif %}</td>
+              <td>{% if d.visittype == "Unknown" %}Un Known{% endif %}</td>
+              <td>{% if d.revisit == "Revisit" %}Re Visit{% endif %}</td>
+              <td>Rs {% if d.visittype == 'Unknown' %}0{% else %}{% if d.redcard == True %}0{% else %}{% if d.revisit == 'Revisit' %}0{% else %}5{% endif %}{% endif %}{% endif %} /-</td>
               <td>{{d.appointment_date}}</td>
             </tr>
             {% endfor %}

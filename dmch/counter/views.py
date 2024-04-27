@@ -16,7 +16,7 @@ import pytz
 from drug.models import *
 # Get the current time in UTC
 current_time_utc = timezone.now()
-
+from django.db.models import Q
 # Get the Kolkata timezone
 kolkata_timezone = pytz.timezone('Asia/Kolkata')
 
@@ -79,12 +79,12 @@ def fetch_patient_data_details(request):
             except ValueError:
                 # If regid cannot be converted to an integer, treat it as a varchar
                 patient = Patient.objects.filter(regnoid=regid).first()
-
+            print(patient.update_date)
             if patient is not None:
                 thirty_days_ago = timezone.now() - timezone.timedelta(days=30)
     
                 # Check if the update_date is within the last 30 days
-                if patient.update_date and patient.update_date >= thirty_days_ago:
+                if patient.appointment_date and patient.appointment_date >= thirty_days_ago:
                     available = True
                 else:
                     available = False
@@ -93,7 +93,7 @@ def fetch_patient_data_details(request):
                 print(available)
                 report = {
                     'available' : available,
-                    'id' : patient.regno
+                    'id' : regid
                 }
 
 
@@ -108,6 +108,7 @@ def fetch_patient_data_details(request):
                 data = {
                    'report' : report, 
                 }
+            print(data)
 
             return JsonResponse(data)
         except Patient.DoesNotExist:
@@ -290,8 +291,8 @@ def get_doctors_by_department(request):
 def show_patients(request):
     if request.user.is_superuser or request.session['user_role'] == 'Registration':
 
-        start_date_str = request.GET.get('start_date')
-        end_date_str = request.GET.get('end_date')
+        start_date_str = request.GET.get('start_date', None)
+        end_date_str = request.GET.get('end_date', None)
         department = request.GET.get('department')
 
         # Convert the date strings to datetime objects
@@ -346,7 +347,7 @@ def show_patients(request):
                 revisit_total += 1
 
 
-        non_price = red_card_total + rb_case_total + unkown_total + free_total
+        non_price = red_card_total + rb_case_total + unkown_total + free_total + revisit_total
         # Count the total number of patients
         total = patients.count()
 
@@ -364,12 +365,222 @@ def show_patients(request):
             'redcard' : red_card_total,
             'rbcase': rb_case_total,
             'free_total' : free_total,
-            'revisit_total' : revisit_total
+            'revisit_total' : revisit_total,
+            'start_date_str' : start_date_str,
+            'end_date_str' : end_date_str
         }
+        print(context)
         return render(request, 'counter/patientsdata.html', context=context)
     else:
         logout(request)
         return redirect('signin') 
+
+from django.http import JsonResponse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from urllib.parse import urlparse, parse_qs, unquote_plus
+
+@login_required
+def show_patients_data(request):
+    if request.user.is_superuser or request.session['user_role'] == 'Registration':
+        # Your existing code here
+        start_date_str = request.GET.get('start_date')
+        end_date_str = request.GET.get('end_date')
+        department = request.GET.get('department')
+        # start_date = request.GET.get('start_date', None)
+        # end_date = request.GET.get('end_date', None)
+
+        # Convert the date strings to datetime objects
+        if start_date_str:
+            start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
+        else:
+            start_date = None
+
+        if end_date_str:
+            end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
+            # Adjust the end date to include all records for that day
+            end_date = end_date + timedelta(days=1)  # Include records for the entire day
+        else:
+            end_date = None
+
+        
+        
+        # Filter patients based on the provided date range
+        if request.user.is_superuser:
+            patients = Patient.objects.filter(de=None).order_by('-appointment_date')
+        else:
+            patients = Patient.objects.filter(user = request.user, de = None).order_by('-appointment_date')
+
+        search_query = request.GET.get('searchValue')
+
+
+
+        url = search_query
+        parsed_url = urlparse(url)
+        query_string = parsed_url.query
+        query_params = parse_qs(query_string)
+        search_value_encoded = query_params.get('search', [''])[0]
+        search_value_decoded = unquote_plus(search_value_encoded)
+
+        print("Decoded search value:", search_value_decoded)
+
+        # Filter patients based on search query
+        if search_query:
+            patients = patients.filter(
+                Q(name__icontains=search_query) |
+                Q(regid__icontains=search_query) |
+                Q(address__icontains=search_query) |
+                Q(doctor__name__icontains=search_query) |
+                Q(department__name__icontains=search_query) |
+                Q(visittype__icontains=search_query) |
+                Q(revisit__icontains=search_query) |
+                Q(redcardtype__icontains=search_query)
+            )
+
+        if start_date and end_date:
+            # end_date = end_date + timedelta(days=1) 
+            # start_date = start_date - timedelta(days=1)
+            patients = patients.filter(appointment_date__range=(start_date, end_date))
+        elif start_date:
+            # If only start date is provided, include all records for that day
+            next_day = start_date + timedelta(days=1)
+            patients = patients.filter(appointment_date__gte=start_date, appointment_date__lt=next_day)
+        elif end_date:
+            patients = patients.filter(appointment_date__lt=end_date)
+        
+        # Pagination
+        page = request.GET.get('draw', 1)
+        paginator = Paginator(patients, 10)  # Show 10 patients per page
+        try:
+            patients = paginator.page(page)
+        except PageNotAnInteger:
+            patients = paginator.page(1)
+        except EmptyPage:
+            patients = paginator.page(paginator.num_pages)
+
+        # Serialize patients data
+        patients_data = []
+        for patient in patients:
+            if patient.doctor: 
+                patient_doctor = patient.doctor.name 
+            else: 
+                patient_doctor = ''
+
+            if patient.department: 
+                patient_department = patient.department.name 
+            else : 
+                patient_department = ''
+
+            if patient.redcardtype == 'Red Card': 
+                patient_redcardtype = 'Red Card'
+            else : 
+                patient_redcardtype = ''
+
+            if patient.revisit == 'Revisit': 
+                patient_revisit = 'Re Visit'
+            else : 
+                patient_revisit = ''
+            
+            patients_data.append({
+                'regid': patient.regid,
+                'name': patient.name,
+                'address': patient.address,
+                'doctor': patient_doctor,
+                'department': patient_department,
+                'visittype': patient.visittype,
+                'redcardtype': patient_redcardtype,
+                'revisittype': patient_revisit,
+                'appointment_date': patient.appointment_date,
+            })
+
+        # Prepare data for JSON response
+        data = {
+            'patients': patients_data,
+            'has_next': patients.has_next(),
+            'has_prev': patients.has_previous(),
+            'draw': request.GET.get('draw'),  # Echo back the draw parameter
+            'recordsTotal': paginator.count,  # Total records without filtering
+            'recordsFiltered': paginator.count,  # Total records after filtering (for now)
+            'data': patients_data,
+        }
+        return JsonResponse(data)
+    else:
+        logout(request)
+        return redirect('signin')
+
+
+# @login_required
+# def show_patients_data(request):
+#     if request.user.is_superuser or request.session['user_role'] == 'Registration':
+#         # Your existing code here
+#         start_date_str = request.GET.get('start_date')
+#         end_date_str = request.GET.get('end_date')
+#         department = request.GET.get('department')
+
+#         # Convert the date strings to datetime objects
+#         if start_date_str:
+#             start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
+#         else:
+#             start_date = None
+
+#         if end_date_str:
+#             end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
+#             # Adjust the end date to include all records for that day
+#             end_date = end_date + timedelta(days=1)  # Include records for the entire day
+#         else:
+#             end_date = None
+        
+#         # Filter patients based on the provided date range
+#         if request.user.is_superuser:
+#             patients = Patient.objects.filter(de=None).order_by('-appointment_date')
+#         else:
+#             patients = Patient.objects.filter(user = request.user, de = None).order_by('-appointment_date')
+
+
+#         if start_date and end_date:
+#             # end_date = end_date + timedelta(days=1) 
+#             # start_date = start_date - timedelta(days=1)
+#             patients = patients.filter(appointment_date__range=(start_date, end_date))
+#         elif start_date:
+#             # If only start date is provided, include all records for that day
+#             next_day = start_date + timedelta(days=1)
+#             patients = patients.filter(appointment_date__gte=start_date, appointment_date__lt=next_day)
+#         elif end_date:
+#             patients = patients.filter(appointment_date__lt=end_date)
+        
+#         # Pagination
+#         page = request.GET.get('page', 1)
+#         paginator = Paginator(patients, 10)  # Show 10 patients per page
+#         try:
+#             patients = paginator.page(page)
+#         except PageNotAnInteger:
+#             patients = paginator.page(1)
+#         except EmptyPage:
+#             patients = paginator.page(paginator.num_pages)
+
+#         # Serialize patients data
+#         patients_data = []
+#         for patient in patients:
+#             patients_data.append({
+#                 'regid': patient.regid,
+#                 'name': patient.name,
+#                 'address': patient.address,
+#                 'doctor': patient.doctor.name,
+#                 'doctor': patient.doctor.name,
+#                 'doctor': patient.doctor.name,
+#                 # Add other fields as needed
+#             })
+
+#         # Prepare data for JSON response
+#         data = {
+#             'patients': patients_data,
+#             'has_next': patients.has_next(),
+#             'has_prev': patients.has_previous(),
+#         }
+#         return JsonResponse(data)
+#     else:
+#         logout(request)
+#         return redirect('signin')
+
 
 # @login_required
 def show_patients_report(request):
@@ -448,7 +659,7 @@ def show_patients_report(request):
             if p.revisit == 'Revisit':
                 revisit_total += 1
 
-        non_price = red_card_total + rb_case_total + unkown_total + free_total
+        non_price = red_card_total + rb_case_total + unkown_total + free_total + revisit_total
         # Count the total number of patients
         total = patients.count()
 
@@ -552,8 +763,9 @@ def show_patients_report_userwise(request):
             rb_case_total = patients.filter(redcard=True, redcardtype='RB Case').count()
             unknown_total = patients.filter(visittype='Unknown').count()
             free_total = patients.filter(visittype='Free').count()
+            revisit_total = patients.filter(revisit='Revisit').count()
             total = patients.count()
-            non_price = red_card_total + rb_case_total + unknown_total
+            non_price = red_card_total + rb_case_total + unknown_total + revisit_total
             total_amount = (total * 5) - (non_price * 5)
             total_patient =  total_patient + total
             total_patient_amount =  total_patient_amount + total_amount
@@ -579,7 +791,8 @@ def show_patients_report_userwise(request):
                             'department': department,
                             'start_date' : min_appointment_date,
                             'end_date' : max_appointment_date,
-                            'free_total' : free_total
+                            'free_total' : free_total,
+                            'revisit_total':revisit_total
                         })
         d = Department.objects.all()
         context = {

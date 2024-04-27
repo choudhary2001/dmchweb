@@ -112,7 +112,11 @@
                 <p>{{ product.stock_quantity }}</p>
                 {% endfor %}
               </td>
-              <td>{{order.order_date}}</td>
+              <td>
+                {% for product in order.products.all %}
+                <p>{{ product.supply_date }}</p>
+                {% endfor %}
+              </td>
             </tr>
             {% endfor %}
           </tbody>

@@ -142,7 +142,7 @@ def suppliar_delete_view(request, suppliar_id):
 
 @login_required
 def product_type_add_view(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Drug'  or request.session['user_role_store'] == 'Medicine Store' :
+    if request.user.is_superuser or request.session['user_role'] == 'Drug' :
 
         if request.method == 'POST':
             name = request.POST.get('name')
@@ -166,7 +166,7 @@ def product_type_add_view(request):
 
 @login_required
 def product_type_update_view(request, product_type_id):
-    if request.user.is_superuser or request.session['user_role'] == 'Drug'  or request.session['user_role_store'] == 'Medicine Store' :
+    if request.user.is_superuser or request.session['user_role'] == 'Drug' :
 
         product_type = get_object_or_404(ProductType, product_type_id=product_type_id)
         if request.method == 'POST':
@@ -180,7 +180,7 @@ def product_type_update_view(request, product_type_id):
 
 @login_required
 def product_type_delete_view(request, product_type_id):
-    if request.user.is_superuser or request.session['user_role'] == 'Drug'  or request.session['user_role_store'] == 'Medicine Store' :
+    if request.user.is_superuser or request.session['user_role'] == 'Drug' :
 
         product_type = get_object_or_404(ProductType, product_type_id=product_type_id)
 
@@ -891,11 +891,138 @@ def purchase_details_view_print(request):
 def purchase_delete_view(request, purchase_id):
     if request.user.is_superuser or request.session['user_role'] == 'Drug':
         purchase = get_object_or_404(Purchase, purchase_id=purchase_id)
+        try:
+            if purchase:
+                for p in purchase.products:
+                    p.delete()
+        except Exception as e:
+            print(e)
         purchase.delete()
         return redirect('purchase_details_view')  
     else:
         logout(request)
         return redirect('signin') 
+
+
+
+
+@login_required
+def stock_details_view(request):
+    if request.user.is_superuser or request.session['user_role'] == 'Drug':
+
+        start_date_str = request.GET.get('start_date')
+        end_date_str = request.GET.get('end_date')
+        department_id = request.GET.get('department')
+        # o = Order.objects.all()
+        # Convert the date strings to datetime objects
+        if start_date_str:
+            # start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
+            start_date = start_date_str
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+
+        else:
+            start_date = None
+
+        if end_date_str:
+            # end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
+            end_date = end_date_str
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M') + timedelta(days=1)  # Add one day to include end_date
+
+            # Adjust the end date to include all records for that day
+            # end_date = end_date + timedelta(days=1)  # Include records for the entire day
+        else:
+            end_date = None
+        
+        # Filter patients based on the provided date range
+        if request.user.is_superuser:
+            p = Purchase.objects.all().order_by('-order_date')
+        else:
+            p = Purchase.objects.filter(user=request.user).order_by('-order_date')
+
+        if start_date and end_date:
+            # end_date = end_date + timedelta(days=1) 
+            # start_date = start_date - timedelta(days=1)
+            p = p.filter(order_date__range=(start_date, end_date))
+        elif start_date:
+            # If only start date is provided, include all records for that day
+            next_day = start_date + timedelta(days=1)
+            start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+            end_datetime = start_datetime + timedelta(days=1)
+
+            p = p.filter(order_date__gte=start_datetime, order_date__lt=end_datetime)
+        elif end_date:
+            p = p.filter(order_date__lt=end_date)
+
+
+        d = DrugDepartment.objects.all()
+        context = {
+            'purchase' : p,
+            'title' : f"Total Purchase : {len(p)}",
+        }
+        return render(request, 'stock.html', context=context)
+    else:
+        logout(request)
+        return redirect('signin') 
+
+@login_required
+def stock_details_view_print(request):
+    if request.user.is_superuser or request.session['user_role'] == 'Drug':
+
+        start_date_str = request.GET.get('start_date')
+        end_date_str = request.GET.get('end_date')
+        department_id = request.GET.get('department')
+        # o = Order.objects.all()
+        # Convert the date strings to datetime objects
+        if start_date_str:
+            # start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
+            start_date = start_date_str
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+
+        else:
+            start_date = None
+
+        if end_date_str:
+            # end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
+            end_date = end_date_str
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M') + timedelta(days=1)  # Add one day to include end_date
+
+            # Adjust the end date to include all records for that day
+            # end_date = end_date + timedelta(days=1)  # Include records for the entire day
+        else:
+            end_date = None
+        
+        # Filter patients based on the provided date range
+        if request.user.is_superuser:
+            p = Purchase.objects.all().order_by('-order_date')
+        else:
+            p = Purchase.objects.filter(user=request.user).order_by('-order_date')
+
+        if start_date and end_date:
+            # end_date = end_date + timedelta(days=1) 
+            # start_date = start_date - timedelta(days=1)
+            p = p.filter(order_date__range=(start_date, end_date))
+        elif start_date:
+            # If only start date is provided, include all records for that day
+            next_day = start_date + timedelta(days=1)
+            start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+            end_datetime = start_datetime + timedelta(days=1)
+
+            p = p.filter(order_date__gte=start_datetime, order_date__lt=end_datetime)
+        elif end_date:
+            p = p.filter(order_date__lt=end_date)
+
+
+        d = DrugDepartment.objects.all()
+        context = {
+            'purchase' : p,
+            'title' : f"Total Purchase : {len(p)}",
+        }
+        return render(request, 'stockprint.html', context=context)
+    else:
+        logout(request)
+        return redirect('signin') 
+
+
 
 @login_required
 def supply_add_view(request):
@@ -992,7 +1119,12 @@ def supply_delete_view(request, supply_id):
     if request.user.is_superuser or request.session['user_role'] == 'Drug':
 
         supply = get_object_or_404(Supply, supply_id=supply_id)
-
+        try:
+            if supply:
+                for p in supply.products:
+                    p.delete()
+        except Exception as e:
+            print(e)
         supply.delete()
         return redirect('supply_details_view')  # Replace 'success-page' with actual URL
     else:

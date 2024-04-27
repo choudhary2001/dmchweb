@@ -55,6 +55,13 @@
       <input type="text" class="form-control" id="name" name="name" required />
     </div>
     <div class="form-group" style="display: flex">
+      <label for="age">Age :</label>
+      <div style="display: flex; width: 100%">
+        <input type="number" class="form-control" id="year" name="year" style="width: 33%" placeholder="Year" /> &nbsp; <input type="number" class="form-control" id="month" name="month" style="width: 33%" placeholder="Month" /> &nbsp;
+        <input type="number" class="form-control" id="days" name="days" style="width: 33%" placeholder="Days" />
+      </div>
+    </div>
+    <div class="form-group" style="display: flex">
       <label for="guardianname">Guardian's Name :</label>
       <div style="display: flex; width: 100%">
         <select class="form-control" id="guardiannametitle" name="guardiannametitle" style="width: 25%" required>
@@ -71,13 +78,7 @@
         <input type="text" class="form-control" id="guardianname" name="guardianname" style="width: 74%" required />
       </div>
     </div>
-    <div class="form-group" style="display: flex">
-      <label for="age">Age :</label>
-      <div style="display: flex; width: 100%">
-        <input type="number" class="form-control" id="year" name="year" style="width: 33%" placeholder="Year" /> &nbsp; <input type="number" class="form-control" id="month" name="month" style="width: 33%" placeholder="Month" /> &nbsp;
-        <input type="number" class="form-control" id="days" name="days" style="width: 33%" placeholder="Days" />
-      </div>
-    </div>
+
 
     <div class="form-group" style="display: flex">
       <label for="age">Gender :</label>
@@ -229,9 +230,17 @@
 </script>
 
 <script>
+//   $("#patientForm").on("keydown", function (event) {
+
+//   if (event.keyCode === 13) { // Check if Enter key is pressed
+//       event.preventDefault(); // Prevent the default behavior of the Enter key
+
+//   }
+// });
   $(document).ready(function () {
     $("#regid").on("keypress", function (e) {
       if (e.which === 13) {
+        e.preventDefault();
         var regid = $(this).val();
         if (regid) {
           $.ajax({

@@ -63,86 +63,62 @@
               <th>Batch No</th>
               <th>Quantity</th>
               <th>In Stock</th>
-              <th>Remarks</th>
               <th>Supply Time</th>
+              <th>Remarks</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
             {% for order in supply %}
-            <tr>
-              <td>{{ order.departpment.name }}</td>
-
-              <td>
-                {% for product in order.products.all %}
-                <p>{{ product.product_type }}</p>
-
-                {% endfor %}
-              </td>
-              <td>
-                {% for product in order.products.all %}
-                <p>{{ product.product_name }}</p>
-
-                {% endfor %}
-              </td>
-              <td>
-                {% for product in order.products.all %}
-                <p>{{ product.mfg_name }}</p>
-
-                {% endfor %}
-              </td>
-
-              <td>
-                {% for product in order.products.all %}
-                <p>{% if product.mfg_date != None %}{{ product.mfg_date }}{% endif %}</p>
-                {% endfor %}
-              </td>
-              <td>
-                {% for product in order.products.all %}
-                <p>{% if product.exp_date != None %}{{ product.exp_date }}{% endif %}</p>
-
-                {% endfor %}
-              </td>
-
-              <td>
-                {% for product in order.products.all %}
-                <p>{{ product.batch_no }}</p>
-
-                {% endfor %}
-              </td>
-              <td>
-                {% for product in order.products.all %}
-                <p>{{ product.quantity }}</p>
-                {% endfor %}
-              </td>
-              <td>
-                {% for product in order.products.all %}
-                <p>{{ product.stock_quantity }}</p>
-                {% endfor %}
-              </td>
-              <td>
-                {{ order.remarks }}
-              </td>
-              <td>{{order.order_date|date:"F j, Y"}}</td>
-              <td>
-                <a href="/medicine_store/supply/{{ order.supply_id }}/update/" class="btn btn-primary btn-icon-split">
-                  <span class="icon text-white-50">
-                    <i class="fas fa-arrow-right"></i>
-                  </span>
-                  <span class="text">Edit</span>
-                </a>
-                {% if order.de == request.session.user_role %}
-                <a href="/medicine_store/supply/{{ order.supply_id }}/delete/" class="btn btn-danger btn-icon-split">
-                  <span class="icon text-white-50">
-                    <i class="fas fa-trash"></i>
-                  </span>
-                </a>
-                {% endif  %}
-              </td>
-            </tr>
+              {% for product in order.products.all %}
+                {% if forloop.first %}
+                  <tr>
+                    <td>{{ order.departpment.name }}</td>
+                    <td>{{ product.product_type }}</td>
+                    <td>{{ product.product_name }}</td>
+                    <td>{{ product.mfg_name }}</td>
+                    <td>{% if product.mfg_date %}{{ product.mfg_date }}{% endif %}</td>
+                    <td>{% if product.exp_date %}{{ product.exp_date }}{% endif %}</td>
+                    <td>{{ product.batch_no }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>{{ product.stock_quantity }}</td>
+                    <td >{{ product.supply_date|date:"F j, Y" }}</td>
+                    <td rowspan="{{ order.products.count }}">{{ order.remarks }}</td>
+                    <td rowspan="{{ order.products.count }}">
+                      <a href="/medicine_store/supply/{{ order.supply_id }}/update/" class="btn btn-primary btn-icon-split">
+                        <span class="icon text-white-50">
+                          <i class="fas fa-arrow-right"></i>
+                        </span>
+                        <span class="text">Edit</span>
+                      </a>
+                      {% if order.de == request.session.user_role %}
+                        <a href="/medicine_store/supply/{{ order.supply_id }}/delete/" class="btn btn-danger btn-icon-split">
+                          <span class="icon text-white-50">
+                            <i class="fas fa-trash"></i>
+                          </span>
+                        </a>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td>{{ order.departpment.name }}</td>
+                    <td>{{ product.product_type }}</td>
+                    <td>{{ product.product_name }}</td>
+                    <td>{{ product.mfg_name }}</td>
+                    <td>{% if product.mfg_date %}{{ product.mfg_date }}{% endif %}</td>
+                    <td>{% if product.exp_date %}{{ product.exp_date }}{% endif %}</td>
+                    <td>{{ product.batch_no }}</td>
+                    <td>{{ product.quantity }}</td>
+                    <td>{{ product.stock_quantity }}</td>
+                    <td >{{ product.supply_date|date:"F j, Y" }}</td>
+                  </tr>
+                {% endif %}
+              {% endfor %}
             {% endfor %}
           </tbody>
         </table>
+        
       </div>
     </div>
   </div>

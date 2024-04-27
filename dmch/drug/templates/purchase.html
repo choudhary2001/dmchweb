@@ -87,7 +87,7 @@
               </td>
               <td>
                 {% for product in order.products.all %}
-                <p>{{ product.stock_quantity }}</p>
+                <p>{{ product.quantity }}</p>
                 {% endfor %}
               </td>
               <td>
@@ -108,7 +108,11 @@
 
              
 
-              <td>{{order.order_date}}</td>
+              <td>
+                {% for product in order.products.all %}
+                <p>{{ product.purchase_date }}</p>
+                {% endfor %}
+              </td>
               <td>
                 <a href="/drug/purchase/{{ order.purchase_id }}/update/" class="btn btn-primary btn-icon-split">
                   <span class="icon text-white-50">

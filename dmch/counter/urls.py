@@ -17,6 +17,7 @@ urlpatterns = [
     path('accounts/logout/',views.signout,name='signout'),
     path('add-patients/',views.add_patient,name='add_patient'),
     path('show-patients/', views.show_patients, name="show_patients"),
+    path('show-patients-data/', views.show_patients_data, name="show_patients_data"),
     path('report-patients/', views.show_patients_report, name="show_patients_report"),
     path('report-patients-user/', views.show_patients_report_userwise, name="show_patients_report_userwise"),
     path('get-doctors-by-department/',views.get_doctors_by_department,name='get_doctors_by_department'),

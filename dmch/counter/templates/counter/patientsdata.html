@@ -1,3 +1,6 @@
+
+
+
 {% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -12,6 +15,8 @@
     <div class="card" style="width: 15%; padding: 15px">Red Card - {{redcard}}</div>
     <div class="card" style="width: 15%; padding: 15px">RB Case - {{rbcase}}</div>
     <div class="card" style="width: 15%; padding: 15px">ANC Free - {{free_total}}</div>
+    <div class="card" style="width: 15%; padding: 15px">Re Visit - {{revisit_total}}</div>
+
     {% for v in visittype_counts %}
     <div class="card" style="width: 15%; padding: 15px">{{v.visittype}} - {{v.total_count}}</div>
     {% endfor %}
@@ -48,6 +53,7 @@
               <th>Department</th>
               <th>Visit Type</th>
               <th>Card Type</th>
+              <th>Re Visit</th>
               <th>Appointment Date</th>
               {% if request.user.is_superuser %}
               <th>Edit</th>
@@ -66,6 +72,7 @@
               <th>Department</th>
               <th>Visit Type</th>
               <th>Card Type</th>
+              <th>Re Visit</th>
               <th>Appointment Date</th>
               {% if request.user.is_superuser %}
               <th>Edit</th>
@@ -75,6 +82,8 @@
               {% endif %}
             </tr>
           </tfoot>
+          {% if end_date_str != None or start_date_str != None %}
+
           <tbody>
             {% for d in patients %}
             <tr>
@@ -85,6 +94,7 @@
               <td>{{d.department.name}}</td>
               <td>{{d.visittype}}</td>
               <td>{% if d.redcard == True %}{{d.redcardtype}}{% endif %}</td>
+              <td>{% if d.revisit == 'Revisit' %}{{d.revisit}}{% endif %}</td>
               <td>{{d.appointment_date}}</td>
               {% if request.user.is_superuser %}
               <td>
@@ -116,10 +126,97 @@
             </tr>
             {% endfor %}
           </tbody>
+          {% endif %}
+  
         </table>
       </div>
     </div>
   </div>
 </div>
+
+{% if end_date_str == None or start_date_str == None %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery -->
+<script src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.min.js"></script> <!-- Include DataTables -->
+<script>
+  $(document).ready(function() {
+    // Initialize DataTable if not already initialized
+    if (!$.fn.DataTable.isDataTable('#dataTable')) {
+      var table = $('#dataTable').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+          "url": "{% url 'show_patients_data' %}",
+          "type": "GET",
+          "dataSrc": "patients",
+          "data": function(d) {
+                d.searchValue = $('#dataTable_filter input').val(); 
+                d.start_date = $('#start_date').val(); // Get start date value
+                d.end_date = $('#end_date').val(); // Get search value from DataTable search input
+            }// Key containing the array of data objects
+        },
+        "columns": [
+          {"data": "regid"},
+          {"data": "name"},
+          {"data": "address"},
+          {"data": "doctor"},
+          {"data": "department"},
+          {"data": "visittype"},
+          {"data": "redcardtype"},
+          {"data": "revisittype"},
+          {"data": "appointment_date"},
+          {% if request.user.is_superuser %}
+            {"data": "edit_link", "orderable": false, "searchable": false},
+            {"data": "delete_link", "orderable": false, "searchable": false}
+          {% else %}
+            {"data": "view_link", "orderable": false, "searchable": false}
+          {% endif %}
+        ],
+        "columnDefs": [
+        {% if request.user.is_superuser %}
+
+          {
+            // Define the column index for the edit link
+            "targets": 9, // Assuming the edit link is at index 7 (adjust as needed)
+            "render": function(data, type, row, meta) {
+              // Render the edit link
+              return '<a href="/update-patients/' + row.regid + '" class="btn btn-primary btn-icon-split"><span class="icon text-white-50"><i class="fas fa-arrow-right"></i></span><span class="text">Edit</span></a>';
+            }
+          },
+          {
+            // Define the column index for the edit link
+            "targets": 10, // Assuming the edit link is at index 7 (adjust as needed)
+            "render": function(data, type, row, meta) {
+              // Render the edit link
+              return '<a href="/delete-patients/' + row.regid + '" class="btn btn-danger btn-icon-split"><span class="icon text-white-50"><i class="fas fa-trash"></i></span><span class="text">Delete</span></a>';
+            }
+          },
+          {% else %}
+          {
+            // Define the column index for the edit link
+            "targets": 9, // Assuming the edit link is at index 7 (adjust as needed)
+            "render": function(data, type, row, meta) {
+              // Render the edit link
+              return '<a href="/update-patients/' + row.regid + '" class="btn btn-primary btn-icon-split"><span class="icon text-white-50"><i class="fas fa-arrow-right"></i></span><span class="text">Edit</span></a>';
+            }
+          },
+
+          {% endif %}
+
+        ],
+        "paging": true, // Enable pagination
+        "searching": true, // Enable search feature
+        "lengthChange": false, // Disable page length change
+        "dom": 'lfrtip', // Position of the feature elements
+        "buttons": ['copy', 'excel', 'pdf', 'print'],
+      });
+      $('#search_input').on('keyup', function() {
+        table.search(this.value).draw();
+      });
+
+     
+    }
+  });
+</script>
+{% endif %}
 
 {% endblock %} {% block script %} {% endblock %}

@@ -93,7 +93,15 @@
                 {% endfor %}
               </td>
 
-              <td>{{order.created_at|date:"F j, Y"}}</td>
+              <td>
+                
+                <!-- {{order.created_at|date:"F j, Y"}} -->
+                {% for product in order.products.all %}
+                  <p>{{ product.created_at }}</p>
+
+                {% endfor %}
+
+              </td>
               <!-- <td>
                 <a href="/drug/supply/{{ order.supply_id }}/update/" class="btn btn-primary btn-icon-split">
                   <span class="icon text-white-50">

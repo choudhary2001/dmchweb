@@ -1,6 +1,10 @@
 {% extends 'counter/base.html' %} {% block css %}
 <!-- CSS for Select2 -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
 {% endblock %} {% block content %}
 <!-- Begin Page Content -->
 <style>
@@ -13,13 +17,25 @@
     align-items: center;
   }
   .form-control {
-    padding: ".15rem .75rem";
+    padding: 0;
   }
   .mb-1{
     padding: 0 !important;
   }
   .exp_date{
     max-width: 11.77% !important;
+  }
+
+  .quantity{
+    max-width: 5.77% !important;
+  }
+  .close_button{
+    max-width: 25px !important;
+  }
+</style>
+<style>
+  .highlighted {
+    background-color: #00f0f0; /* Change to the desired background color */
   }
 </style>
 <div class="container-fluid">
@@ -62,37 +78,68 @@
     <div id="productFields">
       <div class="row product-row">
         <!-- Right Column (Order Details) -->
-        <div class="col-md-2 mb-1" style="padding: 0 !important;">
+
+        <div class="col-md-1 mb-1" style="padding: 0 !important;">
           <div class="form-group">
-            <label for="product_name" id="product_name">Medicine Name:</label>
-            <select class="form-control" name="product_name_1" id="product_name_1" required>
-              <option value="">Select Medicine Name</option>
-              {% for s in productsupply %}
-              <option value="{{ s.productdetails_id }}">{{ s.product_name }}</option>
+            <label for="product_type" id="product_type">Product Type:</label>
+            <select class="form-control" name="product_type_1" required>
+              <option>Select Product Type</option>
+              {% for s in unique_p_types %}
+              <option value="{{s}}">{{s}}</option>
               {% endfor %}
             </select>
           </div>
         </div>
 
+        <!-- Right Column (Order Details) -->
+        <div class="col-md-2 exp_date"  style="display:none;">
+          <div class="form-group">
+            <label for="product_name_1" id="product_name_1">Product Name:</label>
+            <select class="form-control" name="product_name_1" required>
+              <option>Select Product Name</option>
+              {% for s in product %}
+              <option value="{{s.product_type_id}}">{{s.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="col-md-3 mb-1" style="padding: 0 !important;">
+          <div class="form-group">
+            <label for="product_name" id="product_name">Medicine Name:</label>
+            <input type="text" class="form-control" id="searchMedicine" placeholder="Search Medicine">
+            <select class="form-control" name="product_name_1" id="product_name_1" style="display: none;" required>
+              <option value="">Select Medicine Name</option>
+              {% for s in productsupply %}
+                <option value="{{ s.productdetails_id }}">{{ s.product_name }}</option>
+              {% endfor %}
+            </select>
+            <!-- <div id="productFieldss" ></div> -->
+            <div id="productPopup" style="display: none; line-height: 12px; padding: 5px; position: absolute; background-color: white; border: 1px solid #ccc; max-height: 200px; overflow-y: auto; cursor: pointer;z-index: 9999;"></div>
+
+          </div>
+        </div>
+        
+
         <div class="col-md-2 mb-1" style="padding: 0 !important;">
           <div class="form-group">
             <label for="mfgname">Mfg. By:</label>
-            <input type="text" class="form-control" name="mfgname_1" disabled required />
+            <input type="text" class="form-control" name="mfgname_1" id="mfgname_1" disabled required />
           </div>
         </div>
 
         <div class="col-md-2 mb-1" style="display: none">
           <div class="form-group">
             <label for="mfgname">Product:</label>
-            <input type="text" class="form-control" name="product_type_id_column_1" />
+            <input type="text" class="form-control" name="product_type_id_column_1" id="product_type_id_column_1" />
           </div>
         </div>
 
         <!-- Middle Column (Product Details) -->
-        <div class="col-md-2 mb-1" style="padding: 0 !important; ">
+        <div class="col-md-1 mb-1" style="padding: 0 !important; ">
           <div class="form-group">
             <label for="batchno">Batch No.:</label>
-            <input type="text" class="form-control" name="batchno_1" disabled required />
+            <input type="text" class="form-control" name="batchno_1" id="batchno_1" disabled required />
           </div>
         </div>
 
@@ -100,25 +147,26 @@
         <div class="col-md-2 mb-1 exp_date" style="padding: 0 !important; ">
           <div class="form-group">
             <label for="mfgdate">Mfg Date:</label>
-            <input type="date" class="form-control" name="mfgdate_1" disabled required />
+            <input type="date" class="form-control" name="mfgdate_1" id="mfgdate_1" disabled required />
           </div>
         </div>
+
         <div class="col-md-2 mb-1" style="padding: 0 !important; max-width: 11.77% !important;">
           <div class="form-group">
             <label for="expdate">Exp. Date:</label>
-            <input type="date" class="form-control" name="expdate_1" disabled required />
+            <input type="date" class="form-control" name="expdate_1" id="expdate_1" disabled required />
           </div>
         </div>
 
         <div class="col-md-1 mb-1" style="padding: 0 !important;">
           <div class="form-group">
             <label for="stock_quantity">Stock:</label>
-            <input type="number" class="form-control" name="stock_quantity_1" disabled required />
+            <input type="number" class="form-control" name="stock_quantity_1" id="stock_quantity_1" disabled required />
           </div>
         </div>
 
         <!-- Left Column (Patient Details) -->
-        <div class="col-md-1 mb-1" style="padding: 0 !important;">
+        <div class="col-md-1 mb-1 quantity" style="padding: 0 !important;">
           <div class="form-group">
             <label for="quantity">Quantity:</label>
             <input type="number" class="form-control" name="quantity_1" required />
@@ -155,134 +203,287 @@
 
 
 <script>
-  $("#orderForm").on("keydown", function (event) {
+  var currentIndex = -1;
 
+  $("#orderForm").on("keydown", function (event) {
     if (event.keyCode === 13) { // Check if Enter key is pressed
         event.preventDefault(); // Prevent the default behavior of the Enter key
 
     }
-});
+  });
 
   // Function to add product fields dynamically
   $("#productFields").on("keyup", "input[name^='quantity']", function (event) {
     if (event.keyCode === 13) { // Check if Enter key is pressed
       event.preventDefault();
-    var productCount = parseInt($("#productCount").val());
+      var productCount = parseInt($("#productCount").val());
 
-    productCount++;
-    $("#productCount").val(productCount);
-    var productFields = document.getElementById("productFields");
-    var productRow = document.createElement("div");
-    productRow.className = "row product-row";
-    var submitButton = $("#submitBtn");
-    submitButton.prop("disabled", true);
+      productCount++;
+      $("#productCount").val(productCount);
+      var productFields = document.getElementById("productFields");
+      var productRow = document.createElement("div");
+      productRow.className = "row product-row";
+      var submitButton = $("#submitBtn");
+      submitButton.prop("disabled", true);
 
-    var rightColumn = document.createElement("div");
-    rightColumn.className = "col-md-2 mb-1";
-    rightColumn.innerHTML = `
+      var middleColumn = document.createElement("div");
+      middleColumn.className = "col-md-1 mb-1";
+      middleColumn.innerHTML = `
+            <div class="form-group">
+              <label for="product_type_${productCount}" id="product_type_${productCount}" name="product_type">Product Type:</label>
+              <select class="form-control" name="product_type_${productCount}" required>
+                <option>Select Product Type</option>
+                {% for s in unique_p_types %}
+                <option value="{{s}}">{{s}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          `;
+
+      var rightColumn = document.createElement("div");
+      rightColumn.className = "col-md-2 exp_date";
+      rightColumn.innerHTML = `
+            <div class="form-group" style="display:none;">
+              <label for="product_name_${productCount}" id="product_name_${productCount}" name="product_name">Product Name:</label>
+              <select class="form-control" name="product_name_${productCount}" required>
+                <option>Select Product Name</option>
+                {% for s in product %}
+                <option value="{{s.product_type_id}}">{{s.name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          `;
+
+
+      var rightColumn = document.createElement("div");
+      rightColumn.className = "col-md-3 mb-1";
+      rightColumn.innerHTML = `
+            <div class="form-group">
+              <label for="product_name_${productCount}" id="product_name">Medicine Name:</label>
+              <input type="text" class="form-control" id="searchMedicine_${productCount}" placeholder="Search Medicine">
+              <select class="form-control product-name-select" name="product_name_${productCount}" id="product_name_${productCount}" style="display:none;" required>
+                <option>Select Medicine Name</option>
+                {% for s in productsupply %}
+                <option value="{{s.productdetails_id}}">{{s.product_name}}</option>
+                {% endfor %}
+              </select>
+              <div id="productPopup_${productCount}" style="display: none; line-height: 12px; padding: 5px; position: absolute; background-color: white; border: 1px solid #ccc; max-height: 200px; overflow-y: auto; cursor: pointer;z-index: 9999;"></div>
+
+            </div>
+          `;
+
+      var mfgColumn = document.createElement("div");
+      mfgColumn.className = "col-md-2 mb-1";
+      mfgColumn.innerHTML = `
+            <div class="form-group">
+              <label for="mfgname">Mfg. By:</label>
+              <input type="text" class="form-control" name="mfgname_${productCount}" id="mfgname_${productCount}" disabled required />
+            </div>
+          `;
+
+      var batchColumn = document.createElement("div");
+      batchColumn.className = "col-md-1 mb-1";
+      batchColumn.innerHTML = `
+            <div class="form-group">
+              <label for="batchno">Batch No.:</label>
+              <input type="text" class="form-control" name="batchno_${productCount}" id="batchno_${productCount}" disabled required />
+            </div>
+          `;
+
+      var mfgDateColumn = document.createElement("div");
+      mfgDateColumn.className = "col-md-1 mb-1 exp_date";
+      mfgDateColumn.innerHTML = `
+            <div class="form-group">
+              <label for="batchno">Mfg Date.:</label>
+              <input type="date" class="form-control" name="mfgdate_${productCount}" id="mfgdate_${productCount}" disabled required />
+            </div>
+          `;
+
+      var expDatecolumn = document.createElement("div");
+      expDatecolumn.className = "col-md-2 mb-1 exp_date";
+      expDatecolumn.innerHTML = `
+            <div class="form-group">
+              <label for="batchno">Exp Date.:</label>
+              <input type="date" class="form-control" name="expdate_${productCount}" id="expdate_${productCount}" disabled required />
+            </div>
+          `;
+
+      var quantityColumn = document.createElement("div");
+      quantityColumn.className = "col-md-1 mb-1 quantity";
+      quantityColumn.innerHTML = `
           <div class="form-group">
-            <label for="product_name_${productCount}e" id="product_name">Medicine Name:</label>
-            <select class="form-control product-name-select" name="product_name_${productCount}" id="product_name_${productCount}" required>
-              <option>Select Medicine Name</option>
-              {% for s in productsupply %}
-              <option value="{{s.productdetails_id}}">{{s.product_name}}</option>
-              {% endfor %}
-            </select>
+            <label for="quantity">Quantity:</label>
+            <input type="number" class="form-control" name="quantity_${productCount}" id="quantity_${productCount}" required />
           </div>
         `;
 
-    var mfgColumn = document.createElement("div");
-    mfgColumn.className = "col-md-2 mb-1";
-    mfgColumn.innerHTML = `
-          <div class="form-group">
-            <label for="mfgname">Mfg. By:</label>
-            <input type="text" class="form-control" name="mfgname_${productCount}" disabled required />
-          </div>
-        `;
+      var amountcolumn = document.createElement("div");
+      amountcolumn.className = "col-md-1 mb-1";
+      amountcolumn.innerHTML = `
+            <div class="form-group">
+              <label for="stock_quantity">Stock :</label>
+              <input type="number" class="form-control" name="stock_quantity_${productCount}" id="stock_quantity_${productCount}" disabled required />
+            </div>
+          `;
 
-    var batchColumn = document.createElement("div");
-    batchColumn.className = "col-md-2 mb-1";
-    batchColumn.innerHTML = `
-          <div class="form-group">
-            <label for="batchno">Batch No.:</label>
-            <input type="text" class="form-control" name="batchno_${productCount}" disabled required />
-          </div>
-        `;
 
-    var mfgDateColumn = document.createElement("div");
-    mfgDateColumn.className = "col-md-2 mb-1 exp_date";
-    mfgDateColumn.innerHTML = `
-          <div class="form-group">
-            <label for="batchno">Mfg Date.:</label>
-            <input type="date" class="form-control" name="mfgdate_${productCount}" disabled required />
-          </div>
-        `;
 
-    var expDatecolumn = document.createElement("div");
-    expDatecolumn.className = "col-md-2 mb-1 exp_date";
-    expDatecolumn.innerHTML = `
-          <div class="form-group">
-            <label for="batchno">Exp Date.:</label>
-            <input type="date" class="form-control" name="expdate_${productCount}" disabled required />
-          </div>
-        `;
+      var product_type_id_column = document.createElement("div");
+      product_type_id_column.className = "col-md-2 mb-1 ";
+      product_type_id_column.innerHTML = `
+            <div class="form-group" style="display:none;">
+              <label for="batchno">product_type_id_column.:</label>
+              <input type="date" class="form-control" name="product_type_id_column_${productCount}" id="product_type_id_column_${productCount}" required />
+            </div>
+          `;
 
-    var quantityColumn = document.createElement("div");
-    quantityColumn.className = "col-md-1 mb-1";
-    quantityColumn.innerHTML = `
+
+
+
+      var removeButton = document.createElement("div");
+      removeButton.className = "col-md-1 mb-1 close_button";
+      removeButton.innerHTML = `
         <div class="form-group">
-          <label for="quantity">Quantity:</label>
-          <input type="number" class="form-control" name="quantity_${productCount}" required />
+            <label for="">&nbsp;</label>
+            <button type="button" class="btn btn-danger remove-product">x</button>
         </div>
       `;
 
-    var amountcolumn = document.createElement("div");
-    amountcolumn.className = "col-md-1 mb-1";
-    amountcolumn.innerHTML = `
-          <div class="form-group">
-            <label for="stock_quantity">Stock :</label>
-            <input type="number" class="form-control" name="stock_quantity_${productCount}" disabled required />
-          </div>
-        `;
+      productRow.appendChild(middleColumn);
+      productRow.appendChild(rightColumn);
+      productRow.appendChild(mfgColumn);
+      productRow.appendChild(batchColumn);
+      productRow.appendChild(mfgDateColumn);
+      productRow.appendChild(mfgDateColumn);
+      productRow.appendChild(expDatecolumn);
+      productRow.appendChild(amountcolumn);
+      productRow.appendChild(quantityColumn);
+      productRow.appendChild(removeButton);
+      // $(`#product_name_${productCount}`).select2();
+      productFields.appendChild(productRow);
+      // $(".product-name-select").select2();
+      // Find the current quantity input field and its container
+      var currentQuantityInput = $(this);
+      var currentProductRow = currentQuantityInput.closest(".product-row");
+
+      // Find the next product name input field within the same product row
+      var nextProductNameInput = currentProductRow.find("input[name^='product_name']").first();
+      console.log(nextProductNameInput)
+      // Move focus to the next product name input field
+      nextProductNameInput.focus();
+
+      // Show the product popup and update its content based on search input
+      $(`#searchMedicine_${productCount}`).on("input", function () {
+        var searchValue = $(this).val().trim().toLowerCase();
+        var selectOptions = $(`#product_name_${productCount} option`);
+        var popup = $(`#productPopup_${productCount}`);
+
+        // Clear existing options in the popup
+        popup.empty();
+
+        // Filter select options based on search value
+        selectOptions.each(function () {
+          var optionText = $(this).text().toLowerCase();
+          if (optionText.includes(searchValue)) {
+            // Append matching options to the popup
+            var optionClone = $(this).clone();
+            // var optionClone = `<option>${optionText}</option>`;
+            popup.append(optionClone);
+          }
+        });
+
+        // Show the popup
+        if (searchValue) {
+          var inputPosition = $(this).offset();
+          var inputHeight = $(this).outerHeight();
+          var inputWidth = $(this).outerWidth();
+
+          popup.css({
+            top: inputHeight + 15,
+            left: 0,
+            width: inputWidth + 45,
+          }).show();
+        } else {
+          popup.hide(); // Hide the popup if search input is empty
+        }
+      });
+
+      // Close the popup when clicking outside of it
+      $(document).on("click", function (event) {
+        if (!$(event.target).closest(`#productPopup_${productCount}, #searchMedicine_${productCount}`).length) {
+          $(`#productPopup_${productCount}`).hide();
+        }
+      });
 
 
 
-    var product_type_id_column = document.createElement("div");
-    product_type_id_column.className = "col-md-2 mb-1 ";
-    product_type_id_column.innerHTML = `
-          <div class="form-group" style="display:none;">
-            <label for="batchno">product_type_id_column.:</label>
-            <input type="date" class="form-control" name="product_type_id_column_${productCount}" required />
-          </div>
-        `;
+      $(document).on("keydown", function (event) {
+          var popup = $(`#productPopup_${productCount}`);
+          var options = popup.find("option");
+
+          if (popup.is(":visible")) {
+            if (event.keyCode === 38) { // Up arrow key
+              currentIndex = Math.max(currentIndex - 1, 0);
+              options.eq(currentIndex).attr("selected", "selected").siblings().removeAttr("selected");
+            } else if (event.keyCode === 40) { // Down arrow key
+              currentIndex = Math.min(currentIndex + 1, options.length - 1);
+              options.eq(currentIndex).attr("selected", "selected").siblings().removeAttr("selected");
+            } else if (event.keyCode === 13) { // Enter key
+              $(`#searchMedicine_${productCount}`).val(options.eq(currentIndex).text());
+              $(`#productPopup_${productCount}`).hide();
+              // Trigger click event on the selected option
+              options.eq(currentIndex).trigger("click");
+            }
+
+            // Highlight the currently selected option
+            options.removeClass("highlighted").eq(currentIndex).addClass("highlighted");
+
+            // Scroll the popup to show the highlighted option
+            var optionHeight = options.eq(currentIndex).outerHeight();
+            var popupScrollTop = popup.scrollTop();
+            var popupHeight = popup.innerHeight();
+            var optionTop = options.eq(currentIndex).position().top;
+
+            if (optionTop < 0) {
+              popup.scrollTop(popupScrollTop + optionTop);
+            } else if (optionTop + optionHeight > popupHeight) {
+              popup.scrollTop(popupScrollTop + optionTop + optionHeight - popupHeight);
+            }
+          }
+          
+        });
 
 
 
+      $(`#productPopup_${productCount}`).on("click", "option", function () {
+          var productName = $(this).text();
+          var productId = $(this).val(); // Get the value of the selected option
+          console.log(productId)
+          $(`#searchMedicine_${productCount}`).val(productName);
+          $(`#productPopup_${productCount}`).hide();
+          // Assign the value of the selected option to a hidden input field or perform any other action as needed
+          // $("#selectedProductId").val(productId);
+          
+          $.ajax({
+            url: '{% url "get_medicine_details" %}',
+            type: "GET",
+            data: {
+              product_name: productId,
+            },
+            success: function (data) {
+              console.log(data.product);
+              $(`#mfgname_${productCount}`).val(data.product.mfg_name);
+              $(`#batchno_${productCount}`).val(data.product.batch_no);
+              $(`#mfgdate_${productCount}`).val(data.product.mfg_date);
+              $(`#expdate_${productCount}`).val(data.product.exp_date);
+              $(`#stock_quantity_${productCount}`).val(data.product.stock_quantity);
+            },
+          });
+        });
+  
+      submitButton.prop("disabled", false);
+      }
 
-    var removeButton = document.createElement("div");
-    removeButton.className = "col-md-1 mb-1";
-    removeButton.innerHTML = `
-      <div class="form-group">
-          <label for="">&nbsp;</label>
-          <button type="button" class="btn btn-danger remove-product">x</button>
-      </div>
-    `;
-
-    
-    productRow.appendChild(rightColumn);
-    productRow.appendChild(mfgColumn);
-    productRow.appendChild(batchColumn);
-    productRow.appendChild(mfgDateColumn);
-    productRow.appendChild(mfgDateColumn);
-    productRow.appendChild(expDatecolumn);
-    productRow.appendChild(amountcolumn);
-    productRow.appendChild(quantityColumn);
-    productRow.appendChild(removeButton);
-    // $(`#product_name_${productCount}`).select2();
-    productFields.appendChild(productRow);
-    $(".product-name-select").select2();
-    submitButton.prop("disabled", false);
-    }
   });
 
   // Function to remove product fields
@@ -296,42 +497,119 @@
   });
 </script>
 
-<script>
-  $(document).ready(function () {
-    $("#product_name_1").select2();
-  });
-</script>
 
 <script>
   $(document).ready(function () {
-    // Event delegation for product name select elements
-    $("#productFields").on("change", "select[name^='product_name']", function () {
-      var productName = $(this).val();
-      var container = $(this).closest(".product-row");
-      var productTypeSelect = container.find("select[name^='product_type']");
-      var mfgNameInput = container.find("input[name^='mfgname']");
-      var batchNoInput = container.find("input[name^='batchno']");
-      var mfgDateInput = container.find("input[name^='mfgdate']");
-      var expDateInput = container.find("input[name^='expdate']");
-      var stockQuantityInput = container.find("input[name^='stock_quantity']");
+    var currentIndex = -1;
+    // Show the product popup and update its content based on search input
+    $("#searchMedicine").on("input", function () {
+      var searchValue = $(this).val().trim().toLowerCase();
+      var selectOptions = $("#product_name_1 option");
+      var popup = $("#productPopup");
 
-      $.ajax({
-        url: '{% url "get_medicine_details" %}',
-        type: "GET",
-        data: {
-          product_name: productName,
-        },
-        success: function (data) {
-          console.log(data.product);
-          mfgNameInput.val(data.product.mfg_name);
-          batchNoInput.val(data.product.batch_no);
-          mfgDateInput.val(data.product.mfg_date);
-          expDateInput.val(data.product.exp_date);
-          stockQuantityInput.val(data.product.stock_quantity);
-        },
+      // Clear existing options in the popup
+      popup.empty();
+
+      // Filter select options based on search value
+      selectOptions.each(function () {
+        var optionText = $(this).text().toLowerCase();
+        if (optionText.includes(searchValue)) {
+          // Append matching options to the popup
+          var optionClone = $(this).clone();
+          // var optionClone = `<option>${optionText}</option>`;
+
+          popup.append(optionClone);
+        }
+      });
+
+      // Show the popup
+      if (searchValue) {
+        var inputPosition = $(this).offset();
+        var inputHeight = $(this).outerHeight();
+        var inputWidth = $(this).outerWidth();
+
+        popup.css({
+          top: inputHeight + 15,
+          left: 0,
+          width: inputWidth + 50,
+        }).show();
+      } else {
+        popup.hide(); // Hide the popup if search input is empty
+      }
+    });
+
+    $(document).on("keydown", function (event) {
+      var popup = $("#productPopup");
+      var options = popup.find("option");
+
+      if (popup.is(":visible")) {
+        if (event.keyCode === 38) { // Up arrow key
+          currentIndex = Math.max(currentIndex - 1, 0);
+          options.eq(currentIndex).attr("selected", "selected").siblings().removeAttr("selected");
+        } else if (event.keyCode === 40) { // Down arrow key
+          currentIndex = Math.min(currentIndex + 1, options.length - 1);
+          options.eq(currentIndex).attr("selected", "selected").siblings().removeAttr("selected");
+        } else if (event.keyCode === 13) { // Enter key
+          $("#searchMedicine").val(options.eq(currentIndex).text());
+          $("#productPopup").hide();
+          // Trigger click event on the selected option
+          options.eq(currentIndex).trigger("click");
+        }
+
+        // Highlight the currently selected option
+        options.removeClass("highlighted").eq(currentIndex).addClass("highlighted");
+
+        // Scroll the popup to show the highlighted option
+        var optionHeight = options.eq(currentIndex).outerHeight();
+        var popupScrollTop = popup.scrollTop();
+        var popupHeight = popup.innerHeight();
+        var optionTop = options.eq(currentIndex).position().top;
+
+        if (optionTop < 0) {
+          popup.scrollTop(popupScrollTop + optionTop);
+        } else if (optionTop + optionHeight > popupHeight) {
+          popup.scrollTop(popupScrollTop + optionTop + optionHeight - popupHeight);
+        }
+      }
+
+    });
+
+      // Close the popup when clicking outside of it
+      $(document).on("click", function (event) {
+        if (!$(event.target).closest("#productPopup, #searchMedicine").length) {
+          $("#productPopup").hide();
+        }
+      });
+
+
+      $("#productPopup").on("click", "option", function () {
+        var productName = $(this).text();
+        var productId = $(this).val(); // Get the value of the selected option
+        console.log(productId, productName)
+        $("#searchMedicine").val(productName);
+        $("#productPopup").hide();
+        // Assign the value of the selected option to a hidden input field or perform any other action as needed
+        // $("#selectedProductId").val(productId);
+        
+        $.ajax({
+          url: '{% url "get_medicine_details" %}',
+          type: "GET",
+          data: {
+            product_name: productId,
+          },
+          success: function (data) {
+            console.log(data.product);
+            $("#mfgname_1").val(data.product.mfg_name);
+            $("#batchno_1").val(data.product.batch_no);
+            $("#mfgdate_1").val(data.product.mfg_date);
+            $("#expdate_1").val(data.product.exp_date);
+            $("#stock_quantity_1").val(data.product.stock_quantity);
+          },
+        });
       });
     });
-  });
+
+
 </script>
 
 <script>
@@ -361,6 +639,33 @@
         // Clear input fields when regid is empty
         $("#patient_name").val("");
       }
+    });
+  });
+
+  
+</script>
+
+<script>
+  $(document).ready(function () {
+    // Event delegation for product type select elements
+    $("#productFields").on("change", "select[name^='product_type']", function () {
+      var productType = $(this).val();
+      var container = $(this).closest(".product-row");
+      var productNameSelect = container.find("select[name^='product_name']");
+
+      $.ajax({
+        url: '{% url "get_medicine_names_by_type" %}',
+        type: "GET",
+        data: {
+          product_type: productType,
+        },
+        success: function (data) {
+          productNameSelect.empty();
+          $.each(data.products, function (index, product) {
+            productNameSelect.append('<option value="' + product.productdetails_id + '">' + product.name + "</option>");
+          });
+        },
+      });
     });
   });
 </script>

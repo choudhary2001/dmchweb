@@ -31,6 +31,7 @@
 
     <!-- Custom styles for this page -->
     <link href="/staticfiles/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 
     {% block css %} {% endblock %}
     <style>
@@ -208,6 +209,13 @@
         </li>
 
         <li class="nav-item active">
+          <a class="nav-link" href="{% url 'stock_details_view' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Stock Record</span></a
+          >
+        </li>
+
+        <li class="nav-item active">
           <a class="nav-link" href="{% url 'supply-add' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Add Supply</span></a
@@ -328,12 +336,12 @@
         <!-- Heading -->
         <div class="sidebar-heading">{{request.session.user_role}}</div>
 
-        <li class="nav-item active">
+        <!-- <li class="nav-item active">
           <a class="nav-link" href="{% url 'product-type-add' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Product Name</span></a
           >
-        </li>
+        </li> -->
         
         <li class="nav-item active">
           <a class="nav-link" href="{% url 'medicine_stock_add_view' %}">
@@ -346,6 +354,13 @@
           <a class="nav-link" href="{% url 'medicine_supply_details_view' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Stock Record</span></a
+          >
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'receivedsupply_details_view' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Received Stock</span></a
           >
         </li>
 
@@ -568,7 +583,7 @@
                   <h6 class="dropdown-header">Message Center</h6>
                   <a class="dropdown-item d-flex align-items-center" href="#">
                     <div class="dropdown-list-image mr-3">
-                      <img class="rounded-circle" src="img/undraw_profile_1.svg" alt="..." />
+                      <img class="rounded-circle" src="" alt="..." />
                       <div class="status-indicator bg-success"></div>
                     </div>
                     <div class="font-weight-bold">
@@ -578,7 +593,7 @@
                   </a>
                   <a class="dropdown-item d-flex align-items-center" href="#">
                     <div class="dropdown-list-image mr-3">
-                      <img class="rounded-circle" src="img/undraw_profile_2.svg" alt="..." />
+                      <img class="rounded-circle" src="" alt="..." />
                       <div class="status-indicator"></div>
                     </div>
                     <div>
@@ -588,7 +603,7 @@
                   </a>
                   <a class="dropdown-item d-flex align-items-center" href="#">
                     <div class="dropdown-list-image mr-3">
-                      <img class="rounded-circle" src="img/undraw_profile_3.svg" alt="..." />
+                      <img class="rounded-circle" src="" alt="..." />
                       <div class="status-indicator bg-warning"></div>
                     </div>
                     <div>
@@ -718,6 +733,8 @@
 
     <!-- Page level custom scripts -->
     <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
     {% block script %} {% endblock %}
   </body>
 </html>
