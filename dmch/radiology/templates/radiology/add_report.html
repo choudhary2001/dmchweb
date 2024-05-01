@@ -1,0 +1,226 @@
+{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<style>
+  label {
+    width: 230px;
+  }
+  .form-group {
+    margin-bottom: 0.2rem;
+    line-height: 0.5rem;
+    align-items: center;
+  }
+  .form-control {
+    padding: ".15rem .75rem";
+  }
+</style>
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <form id="patientForm" method="POST" action="{% url 'add_radiology_report' %}">
+    {% csrf_token %}
+
+    <div class="row">
+        <!-- Left Column (Patient Details) -->
+        <div class="col-md-4 mb-3">
+            <label for="regid">Reg No.:</label>
+            <input type="text" class="form-control" id="regid" name="regid" required />
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="patient_name">Patient Name :</label>
+            <input type="text" class="form-control" id="patient_name" name="patient_name" required  />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="department">Department:</label>
+            <select type="text" id="department" class="form-control" name="department" required style="" required>
+                <option>Select Department</option>
+                {% for d in departments %}
+                <option value="{{d.department_id}}">{{d.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-4 mb-3" >
+            <label for="doctor">Refer By :</label>
+            <select type="text" id="doctor" class="form-control" name="doctor" >
+            <option>Select Doctor</option>
+            {% for d in doctors %}
+              <option value="{{d.doctor_id}}">{{d.name}}</option>
+              {% endfor %}
+            </select>   
+        </div>
+
+        <div class="col-md-4 mb-3" >
+            <label for="investigation">Investigation :</label>
+            <select type="text" id="investigation" class="form-control" name="investigation" >
+            <option>Select Investigation</option>
+            {% for d in investigations %}
+              <option value="{{d.investigation_id}}">{{d.name}}</option>
+              {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-4 mb-3" >
+            <label for="department_unit">Department  (Unit) :</label>
+            <select type="text" id="department_unit" class="form-control" name="department_unit" >
+                <option>Select Unit</option>
+              <option value="USG">USG</option>
+              <option value="X-Ray">X-Ray</option>
+              <option value="C.T.">C.T.</option>
+            </select>
+        </div>
+
+        <div class="col-md-4 mb-3" >
+            <label for="patient_type">Patient Type :</label>
+            <select type="text" id="patient_type" class="form-control" name="patient_type" >
+                <option>Select Unit</option>
+              <option value="O.P.D">O.P.D</option>
+              <option value="I.P.D">I.P.D</option>
+            </select>
+        </div>
+
+        <div class="col-md-4 mb-3" >
+            <label for="investigation_type">Investigation Type :</label>
+            <select type="text" id="investigation_type" class="form-control" name="investigation_type" >
+                <option>Select Unit</option>
+              <option value="General">General</option>
+              <option value="FWB">FWB</option>
+              <option value="Special">Special</option>
+              <option value="M/B">M/B</option>
+              <option value="M/L">M/L</option>
+              <option value="P/C">P/C</option>
+            </select>
+        </div>
+
+        <div class="col-md-4 mb-3" style="display: none;" >
+            <label for="no_of_plate">No. of Plate:</label>
+            <input type="text" class="form-control" id="no_of_plate" name="no_of_plate"  />
+        </div>
+
+        <div class="col-md-4 mb-3" style="display: none;" >
+            <label for="plate_size">Plate Size:</label>
+            <input type="text" class="form-control" id="plate_size" name="plate_size"  />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="date">Date:</label>
+            <input type="date" class="form-control" id="date" name="date" value="{% if request.session.radiology_date %}{{request.session.radiology_date}}{% endif %}" required />
+        </div>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+</div>
+
+<!-- End of Main Content -->
+{% endblock %} {% block script %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("name").focus();
+  });
+</script>
+<script>
+  $(document).ready(function () {
+    $("#department").change(function () {
+      var departmentId = $(this).val();
+      $.ajax({
+        url: '{% url "radiology_get_doctors_by_department" %}',
+        type: "GET",
+        data: {
+          department_id: departmentId,
+        },
+        success: function (data) {
+          console.log(data);
+          $("#doctor").empty();
+          $.each(data.doctors, function (index, doctor) {
+            $("#doctor").append('<option value="' + doctor.doctor_id + '">' + doctor.name + "</option>");
+          });
+        },
+      });
+    });
+  });
+
+  $(document).ready(function () {
+    $("#redcardid").hide();
+    $("#redcardtype").change(function () {
+      var redcardId = $(this).val();
+      console.log(redcardId);
+      if (redcardId === "select") {
+        $("#redcardid").hide();
+      } else {
+        $("#redcardid").show();
+      }
+    });
+  });
+
+
+</script>
+<script>
+  $(document).ready(function () {
+    $("#department_unit").change(function () {
+      var unit = $(this).val();
+      if (unit === "X-Ray") {
+        $("#no_of_plate").parent().show(); // Show the field for No. of Plate
+        $("#plate_size").parent().show(); // Show the field for Plate Size
+      } else {
+        $("#no_of_plate").parent().hide(); // Hide the field for No. of Plate
+        $("#plate_size").parent().hide(); // Hide the field for Plate Size
+      }
+    });
+  });
+</script>
+
+
+<script>
+  // Function to handle form submission
+  function handleFormSubmission(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Your additional logic for form validation or processing goes here
+
+    // Select all input fields in the form
+    const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
+
+    // Flag to keep track of form validity
+    let isValid = true;
+
+    // Loop through each input field
+    inputs.forEach(function (input) {
+      // Check if the input field is required and does not have a value
+      if (input.hasAttribute("required") && !input.value.trim()) {
+        // If a required field is empty, set isValid to false
+        isValid = false;
+        // Highlight the empty field (you can customize this part)
+        input.style.border = "1px solid red";
+      } else {
+        // Remove any previous highlighting
+        input.style.border = "";
+      }
+    });
+
+    // If the form is valid, submit it
+    if (isValid) {
+      document.getElementById("patientForm").submit();
+    } else {
+      // If the form is invalid, display an alert (you can customize this part)
+      //   alert("Please fill out all required fields.");
+    }
+  }
+
+  // Function to handle keyboard shortcuts
+  function handleShortcut(event) {
+    // if (event.ctrlKey && event.key === "s") {
+    if (event.key === "F2") {
+      // Ctrl + S pressed, trigger form submission
+      handleFormSubmission(event);
+    }
+  }
+
+  // Attach event listener for form submission
+  document.getElementById("patientForm").addEventListener("submit", handleFormSubmission);
+
+  // Attach event listener for keyboard shortcuts
+  document.addEventListener("keydown", handleShortcut);
+</script>
+{% endblock %}

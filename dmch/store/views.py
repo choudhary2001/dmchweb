@@ -92,6 +92,10 @@ def product_add_view(request):
             # Extract data from the form
             print(request.POST)
             date = request.POST.get('date')
+            bill_no = request.POST.get('bill_no')
+            chalan_no = request.POST.get('chalan_no')
+            bill_date = request.POST.get('bill_date')
+            chalan_date = request.POST.get('chalan_date')
 
 
             # Loop through the product form fields
@@ -109,6 +113,10 @@ def product_add_view(request):
                     company_name=company_name,
                     quantity=quantity,
                     stock_quantity = quantity,
+                    bill_no = bill_no,
+                    chalan_no = chalan_no,
+                    bill_date = bill_date,
+                    chalan_date = chalan_date
                 )
             request.session['add_product_date'] = date
             
@@ -394,6 +402,32 @@ def supply_update_view(request, supply_id):
         logout(request)
         return redirect('signin') 
     
+@login_required
+def get_product_details_view(request):
+    departpment = request.session['user_role']
+    d = StoreDepartment.objects.filter(name = departpment).first()
+    if request.user.is_superuser or d is not None:
+        # Get the selected product type from the AJAX request
+        product_name = request.GET.get('product_name')
+        print(product_name)
+        if product_name:
+            # Retrieve the ProductPurchase object
+            product_purchase = Product.objects.filter(product_id=product_name).first()
+            print(product_purchase)
+            # Check if the ProductPurchase object exists
+            if product_purchase:
+                # Convert the model instance to a dictionary
+                product_purchase_dict = model_to_dict(product_purchase)
+                # Return the dictionary as JSON response
+                return JsonResponse({'product': product_purchase_dict})
+        else:
+            # If no product purchase found, return empty response or appropriate error message
+            return JsonResponse({'error': 'Product purchase not found for the given product name'}, status=404)
+
+    else:
+        logout(request)
+        return redirect('signin') 
+
 
 @login_required
 def product_add_consumption(request):
@@ -424,6 +458,11 @@ def product_add_consumption(request):
                             company_name = p.company_name,
                             quantity = quantity,
                             stock_quantity = quantity,
+                            bill_no = p.bill_no,
+                            chalan_no = p.chalan_no,
+                            bill_date = p.bill_date,
+                            chalan_date = p.chalan_date,
+
                         )
                         p.stock_quantity = p.stock_quantity - int(quantity)
                         p.save()
@@ -453,7 +492,7 @@ def product_consumption_delete_view(request, product_id):
         supply = get_object_or_404(ProductConsumption, product_id=product_id)
 
         supply.delete()
-        return redirect('product_details_view')  # Replace 'success-page' with actual URL
+        return redirect('product_consumption_details_view')  # Replace 'success-page' with actual URL
     else:
         logout(request)
         return redirect('signin') 

@@ -2,7 +2,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.dashboard, name="dashboard"),
+    path('home/', views.dashboard, name="dashboard"),
+    path('', views.home, name="home"),
     path('fetch_patient_data_details/', views.fetch_patient_data_details, name='fetch_patient__details'),
     path('add-departments/', views.departments, name="departments"),
     path('update-departments/<int:department_id>', views.departments_update, name="departments_update"),

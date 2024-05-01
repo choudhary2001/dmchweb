@@ -1,0 +1,582 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <!-- <meta content="width=device-width, initial-scale=1.0" name="viewport"> -->
+
+  <title>DMCH Darbhanga</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{% static 'img/favicon..png' %}" rel="icon">
+  <link href="{% static 'img/apple-touch-icon..png' %}" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/animate.css/animate.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: DMCH
+  * Template URL: https://bootstrapmade.com/DMCH-free-medical-bootstrap-theme/
+  * Updated: Mar 17 2024 with Bootstrap v5.3.3
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+  <style>
+    td, th{
+        border: none !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ======= Top Bar ======= -->
+  <div id="topbar" class="d-flex align-items-center fixed-top">
+    <div class="container d-flex justify-content-between">
+      <div class="contact-info d-flex align-items-center">
+        <i class="bi bi-envelope"></i> <a href="mailto:contact@example.com">contact@example.com</a>
+        <i class="bi bi-phone"></i> +91 9999999999
+      </div>
+      <div class="d-none d-lg-flex social-links align-items-center">
+        <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
+        <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+        <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+        <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center">
+
+      <h1 class="logo me-auto"><a href="/">DMCH</a></h1>
+      <!-- Uncomment below if you prefer to use an image logo -->
+      <!-- <a href="/" class="logo me-auto"><img src="{% static 'img/logo..png' %}" alt="" class="img-fluid"></a>-->
+
+      <nav id="navbar" class="navbar order-last order-lg-0">
+        <ul>
+          <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+          <li><a class="nav-link scrollto" href="#about">About</a></li>
+          <li><a class="nav-link scrollto" href="#services">Services</a></li>
+          <li><a class="nav-link scrollto" href="#departments">Departments</a></li>
+          <li><a class="nav-link scrollto" href="#doctors">Doctors</a></li>
+          <!-- <li class="dropdown"><a href="#"><span>Drop Down</span> <i class="bi bi-chevron-down"></i></a>
+            <ul>
+              <li><a href="#">Drop Down 1</a></li>
+              <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i class="bi bi-chevron-right"></i></a>
+                <ul>
+                  <li><a href="#">Deep Drop Down 1</a></li>
+                  <li><a href="#">Deep Drop Down 2</a></li>
+                  <li><a href="#">Deep Drop Down 3</a></li>
+                  <li><a href="#">Deep Drop Down 4</a></li>
+                  <li><a href="#">Deep Drop Down 5</a></li>
+                </ul>
+              </li>
+              <li><a href="#">Drop Down 2</a></li>
+              <li><a href="#">Drop Down 3</a></li>
+              <li><a href="#">Drop Down 4</a></li>
+            </ul>
+          </li> -->
+          <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+          <!-- <li><a class="nav-link scrollto" href="#contact">Contact</a></li> -->
+          <!-- <li><a class="nav-link scrollto" href="{% url 'signin' %}">Login</a></li> -->
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+
+      <a href="{% url 'signin' %}" class="appointment-btn scrollto"><span class=" d-md-inline">Login</span></a>
+
+    </div>
+  </header><!-- End Header -->
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="d-flex align-items-center">
+    <div class="container">
+      <h1>Welcome to DMCH</h1>
+      <h2>Enter your mobile no. and find your report.</h2>
+      <form action="{% url 'find_user_report'  %}" method="post">
+        {% csrf_token %}
+        <input type="tel" name="mobile" 
+        style="    
+          border-radius: 25px;
+          border: none;
+          padding: 10px;" 
+        >
+        <button type="submit" class="btn-get-started scrollto" style="border: none; outline: none;" >Find</button>
+      </form>
+    </div>
+  </section><!-- End Hero -->
+
+  <div style="display: flex;
+  flex-direction: column;
+  align-items: center;" >
+    {% for test_report in test_reports %}
+    <button id="printButton_{{test_report.test_report_id}}" class="btn-get-started scrollto" style="border: none; outline: none; background-color: #1977cc; border-radius: 25px; padding: 10px 15px; color: white;" onclick="printReport('{{test_report.test_report_id}}')">Print</button>
+    <div style="border: 1px solid black; margin: 25px; height: 100%; " >
+        <div class="" id="printContent_{{test_report.test_report_id}}" style="width: 100%; padding: 10px; height: 100%; background-color: #fff;">
+            <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black;">
+            <h1 style="margin: 2px;" >DEPARTMENT OF CLINICAL PATHOLOGY</h1>
+            <h4 style="margin: 2px;" >DARBHANGA MEDICAL COLLEGE & HOSPITAL</h4>
+            <h6 style="margin: 2px;" >LAHERIASARAI, DARBHANGA (BIHAR)</h6>
+            <h6 style="margin: 2px;" >REPORT OF EXAMINATION OF BIOCHEMISTRY</h6>
+            </div>
+            <hr />
+            <div style="display: flex; justify-content: space-between">
+            <div style="display: flex; justify-content: space-between; width: 100%;">
+                <div style="font-family: sans-serif; color: black; font-size: 1rem;  margin-bottom: 0 !important;">
+                <p style="margin-bottom: 0;" >Patient Name : <strong>{% if test_report.reg_no.name %}{{test_report.reg_no.name}}{% endif %} </strong></p>
+                <p style="margin-bottom: 0;">Refd By. : <strong>{% if test_report.patient.referby.name %}{{test_report.patient.referby.name}}{% endif %}</strong></p>
+                <p style="margin-bottom: 0;">Bill No. : <strong>{% if test_report.patient.bill_no %}{{test_report.patient.bill_no}}{% endif %}</strong></p>
+                </div>
+                <div style="font-family: sans-serif; color: black; font-size: 1rem;  margin-bottom: 0 !important;">
+                <p style="margin-bottom: 0;">Date : <strong>{% if test_report.created_at %}{{test_report.created_at}}{% endif %}</strong></p>
+                <p style="margin-bottom: 0;">Reg No. : <strong>{% if test_report.reg_no %}{% if test_report.reg_no.de == 'Pathology' %}{{test_report.reg_no.regnoid}}{% else %}{{test_report.reg_no.regid}}{% endif %}{% endif %}</strong></p>
+                <p style="margin-bottom: 0;">Lab No. : <strong>{% if test_report.patient.lab_no %}{{test_report.patient.lab_no}}{% endif %}</strong></p>
+                </div>
+            </div>
+            </div>
+            <hr />
+            <div style="height: 700px;" >
+            <div class="table-responsive">
+                <table class="table"  width="100%" cellspacing="0">
+                <thead>
+                    <tr >
+                    <th style="border: none !important;" ></th>
+                    <th style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px; text-align:left;">Test</th>
+                    <th style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px;  text-align:left;">Result</th>
+                    <th style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px;  text-align:left;">Normal Range</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if test_report.palsma_glucose_fasting %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Plasma Glucose Fasting</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.palsma_glucose_fasting}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 110 mg/dl</td>
+                    </tr>
+                    {% endif %}
+                    {% if test_report.palsma_glucose_pp %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Plasma Glucose PP</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.palsma_glucose_pp}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 150 mg/dl</td>
+                    </tr>
+                    {% endif %}
+                    {% if test_report.blood_sugar_random %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Blood Sugar Random</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.blood_sugar_random}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 150 mg/dl</td>
+                    </tr>
+                    {% endif %}
+                    {% if test_report.blood_ures %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Blood Urea</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.blood_ures}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">15 - 45 mg/dl</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.serun_creatinine %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Serum Creatinine</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.serun_creatinine}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.7 - 1.4 mg/dl</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.serum_uric_acid %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Serum Uric Acid</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.serum_uric_acid}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.5 - 7.2 mg/dl</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.billirubin_total %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Total Bilirubin</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.billirubin_total}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.4 - 1.2 mg/dl</td>
+                    </tr>
+                    {% endif %}
+                    
+                    {% if test_report.sgpt %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">SGPT</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.sgpt}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 35 IU/L</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.sgot %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">SGOT</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.sgot}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 45 IU/L</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.total_protein %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Total Protein</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.total_protein}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">6.4 - 8.3 g/dl</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.serum_albumin %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Serum Albumin</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.serum_albumin}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.5 - 5.2 g/dl</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.alk_phosphatase %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Alk Phosphatae</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.alk_phosphatase}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">30 - 130 U/L</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.gama_gt %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Gamma GT. (GGT)</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.gama_gt}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 55 IU/L</td>
+                    </tr>
+                    {% endif %}
+                    
+                    {% if test_report.amylase %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Amylease</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.amylase}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td>
+                    </tr>
+                    {% endif %}
+                    
+                    {% if test_report.hbaic %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">HbA1c</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.hbaic}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">UP TO 6.4%</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.total_cholestrol %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Total Cholesterol</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.total_cholestrol}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 220 mg/dl</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.hdl_cholestrol %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">HDL Cholesterol</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.hdl_cholestrol}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">45 - 80 mg/dl</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.ldl_cholestrol %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">LDL Cholesterol</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.ldl_cholestrol}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">60 - 140 mg/dl</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.vldl_cholestrol %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">VLDL Cholesterol</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.vldl_cholestrol}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">22 - 33 mg/dl</td>
+                    </tr>
+                    {% endif %}
+                    
+                    {% if test_report.serum_trigicerides %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Serum Trigicerides</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.serum_trigicerides}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">40 - 145 mg/dl</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.serun_sodium %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Serum Sodium</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.serun_sodium}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">136 -146 mmo/L</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.serum_potasium %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Serum Potasium</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.serum_potasium}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.5 -5.5 mmo/dl</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.serum_cloried %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Serum Chloride</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.serum_cloried}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">98.0 - 107.0 mmo/L</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.serum_calcium %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Serum Calcium</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.serum_calcium}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">8.6 - 10.2 mmo/L</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.aso_titer %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">ASO Titer</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.aso_titer}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Up to 250 IU/L</td>
+                    </tr>
+                    {% endif %}
+    
+    
+                    {% if test_report.crp %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">CRP</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.crp}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 6.0 mg/L</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.raf_factor %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">RAF Factor</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.raf_factor}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 20 mg/ml</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.lipase %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Lipase</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.lipase}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 38.0 U/L</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.esr %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">ESR</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.esr}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 9 mm/hr</td>
+                    
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.bt %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">BT</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.bt}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">30 Sec - 2 Min 30 Sec</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.ct %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">CT</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.ct}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">2 Min 50 Sec - 7 Min</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.lth %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">LDH</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.lth}}</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">140 - 280 U/L</td>
+                    </tr>
+                    {% endif %}
+    
+                    {% if test_report.other %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Other</td>
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.other}}</td>
+                    
+                    </tr>
+                    {% endif %}
+                    {% if test_report.cbc %}
+                    <tr><td style="border: none !important;"></td>
+                    
+                    <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"><strong>CBC, {{test_report.cbc}}</strong></td>
+                    
+                    </tr>
+                    {% endif %}
+                </tbody>
+                </table>
+            </div>
+    
+            </div>
+    
+            <div style="display: flex;justify-content: space-between; width: 100%;" >
+            <div>Checked By ..............</div>
+            <div>Signature ..................................................</div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+
+    <div class="footer-top">
+      <div class="container">
+        <div class="row">
+
+          <div class="col-lg-3 col-md-6 footer-contact">
+            <h3>DMCH</h3>
+            <p>
+              Darbhanga<br>
+              Bihar<br>
+              <strong>Phone:</strong> +91 99999999<br>
+              <strong>Email:</strong> info@example.com<br>
+            </p>
+          </div>
+
+          <div class="col-lg-2 col-md-6 footer-links">
+            <h4>Useful Links</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Home</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">About us</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Services</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Terms of service</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Privacy policy</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-3 col-md-6 footer-links">
+            <!-- <h4>Our Services</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Web Design</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Web Development</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Product Management</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Marketing</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Graphic Design</a></li>
+            </ul> -->
+          </div>
+
+          <div class="col-lg-4 col-md-6 footer-newsletter">
+            <h4>Join Our Newsletter</h4>
+            <p>Tamen quem nulla quae legam multos aute sint culpa legam noster magna</p>
+            <form action="" method="post">
+              <input type="email" name="email"><input type="submit" value="Subscribe">
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container d-md-flex py-4">
+
+      <div class="me-md-auto text-center text-md-start">
+        <div class="copyright">
+          &copy; Copyright <strong><a href="https://swastik.ai" target="_blank" ><span>Swastik</span></a></strong>. All Rights Reserved
+        </div>
+      </div>
+      <div class="social-links text-center text-md-right pt-3 pt-md-0">
+        <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
+        <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
+        <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
+        <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
+        <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
+      </div>
+    </div>
+  </footer><!-- End Footer -->
+
+  <div id="preloader"></div>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'vendor/purecounter/purecounter_vanilla.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{% static 'js/main.js' %}"></script>
+
+  <script>
+    // Function to print report
+    function printReport(reportId) {
+      var printContent = document.getElementById('printContent_' + reportId);
+      var printWindow = window.open('', '_blank');
+      printWindow.document.write('<html><head><title>Print Report</title></head><body>');
+      printWindow.document.write(printContent.innerHTML);
+      printWindow.document.write('</body></html>');
+      printWindow.document.close();
+      printWindow.print();
+    }
+  </script>
+  
+</body>
+
+</html>

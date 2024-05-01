@@ -405,7 +405,7 @@
 
         {% endif %}
 
-        {% if request.session.user_role_store == 'General Store' %}
+        {% if request.session.user_role_store == 'Store' %}
 
         <hr class="sidebar-divider" />
 
@@ -421,7 +421,7 @@
           >
         </li>
         {% endif %}
-        {% if request.session.user_role == 'General Store' or request.session.user_role == 'Admin' %}
+        {% if request.session.user_role_store == 'Store' or request.session.user_role == 'Admin' %}
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
@@ -432,7 +432,7 @@
         </li>
         {% endif %}
 
-        {% if request.session.user_role_store == 'General Store' %}
+        {% if request.session.user_role_store == 'Store' %}
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
@@ -442,7 +442,7 @@
           >
         </li>
         {% endif %} 
-        {% if request.session.user_role == 'General Store' or request.session.user_role == 'Admin' %}
+        {% if request.session.user_role_store == 'Store' or request.session.user_role == 'Admin' %}
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
@@ -453,6 +453,52 @@
         </li>
 
         {% endif %}
+
+        {% if request.session.user_role == 'Radiology' or request.session.user_role == 'Admin' %}
+        <hr class="sidebar-divider" />
+
+        <!-- Heading -->
+        <div class="sidebar-heading">Radiology</div>
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'radiology_departments' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Radiology Departments</span></a
+          >
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'radiology_doctors' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Radiology Doctors</span></a
+          >
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'radiology_investigations' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Radiology Investigation</span></a
+          >
+        </li>
+
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'add_radiology_report' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Add Report</span></a
+          >
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'show_radiology_report' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Show Report</span></a
+          >
+        </li>
+
+
+        {% endif %} 
 
         <!-- Divider -->
         <!-- <hr class="sidebar-divider" /> -->
@@ -731,7 +777,7 @@
         <footer class="sticky-footer bg-white">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright &copy; <a style="color: white;" href="https://swastik.ai" target="_blank" >Swastik 2024</a></span>
+              <span>Copyright &copy; <a  href="https://swastik.ai" target="_blank" >Swastik 2024</a></span>
             </div>
             <br />
             <div class="copyright text-center my-auto">

@@ -20,18 +20,15 @@
         <div style="flex: 1">
           <input type="datetime-local" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
         </div>
-        <div style="flex: 3">
+        <!-- <div style="flex: 3">
           <select name="department" class="form-control mb-2 mb-md-0">
             <option>Select Department</option>
             <option value="All">All</option>
             {% for d in departments %}
             <option value="{{d.department_id}}">{{d.name}}</option>
             {% endfor %}
-            <!-- <option value="MOPD">MOPD</option>
-            <option value="EOPD">EOPD</option>
-            <option value="ChildEOPD">ChildEOPD</option> -->
           </select>
-        </div>
+        </div> -->
         <div style="flex: 1">
           <button class="btn btn-primary w-100" type="submit">Filter</button>
         </div>
@@ -53,6 +50,10 @@
                 <th>Company Name</th>
                 <th>Quantity</th>
                 <th>In Stock</th>
+                <th>Bill No.</th>
+                <th>Bill Date</th>
+                <th>Chalan no</th>
+                <th>Chalan Date</th>
                 <th>Created At</th>
             </tr>
           </thead>
@@ -63,6 +64,10 @@
               <th>Company Name</th>
               <th>Quantity</th>
               <th>In Stock</th>
+              <th>Bill No.</th>
+              <th>Bill Date</th>
+              <th>Chalan no</th>
+              <th>Chalan Date</th>
               <th>Created At</th>
             </tr>
           </tfoot>
@@ -74,6 +79,10 @@
               <td>{{d.company_name}}</td>
               <td>{{d.quantity}}</td>
               <td>{{d.stock_quantity}}</td>
+              <td>{{d.bill_no}}</td>
+              <td>{{d.chalan_no}}</td>
+              <td>{{d.bill_date}}</td>
+              <td>{{d.chalan_date}}</td>
               <td>{{d.created_at}}</td>
               
             </tr>

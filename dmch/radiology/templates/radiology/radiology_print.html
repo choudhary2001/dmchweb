@@ -1,0 +1,113 @@
+{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+  {% endfor %} {% endif %}
+
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card py-2" style="display: flex; flex-direction: row; justify-content: space-between; padding-left: 5px; padding-right: 5px">
+      <form action="{% url 'show_radiology_report' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+        <div style="flex: 1">
+          <input type="datetime-local" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+        </div>
+        <div style="">
+          <span>-</span>
+        </div>
+        <div style="flex: 1">
+          <input type="datetime-local" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+        </div>
+        <div style="flex: 3">
+            <select name="department" class="form-control mb-2 mb-md-0">
+              <option>Select Department</option>
+              <option value="All">All</option>
+              {% for d in departments %}
+              <option value="{{d.department_id}}">{{d.name}}</option>
+              {% endfor %}
+            </select>
+        </div>
+        <div style="flex: 1">
+          <button class="btn btn-primary w-100" type="submit">Filter</button>
+        </div>
+        <div style="flex: 1">
+            <a href="#;" class="btn btn-primary" id="printButton">Print</a>
+        </div>
+        <div style="flex: 3">
+        <a href="#;" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</a>
+        </div>
+      </form>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive" id="printablecontent">
+        <table class="table table-bordered" id="" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Reg No.</th>
+              <th>Department</th>
+              <th>Refer By</th>
+              <th>Investigation</th>
+              <th>Investigation Unit</th>
+              <th>Patient Type</th>
+              <th>Investigation Type</th>
+              <th>No. Of Plate</th>
+              <th>PLate Size</th>
+              <th>Created At</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for d in radiology %}
+            <tr>
+              <td>{{d.patient_name}}</td>
+              <td>{{d.reg_no}}</td>
+              <td>{{d.department.name}}</td>
+              <td>{{d.doctor.name}}</td>
+              <td>{{d.investigation.name}}</td>
+              <td>{{d.investigation_unit}}</td>
+              <td>{{d.patient_type}}</td>
+              <td>{{d.investigation_type}}</td>
+              <td>{{d.no_of_plate}}</td>
+              <td>{{d.plate_size}}</td>
+              <td>{{d.created_at}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %} {% block script %}
+<script>
+
+  $(document).ready(function () {
+    // Function to handle printing
+    $("#printButton").click(function () {
+      var printContents = $("#printablecontent").html();
+      var originalContents = $("body").html();
+      $("body").empty().html(printContents);
+
+      // Trigger the print dialog
+      window.print();
+      $("body").html(originalContents);
+    });
+  });
+  function exportToExcel() {
+    var location = 'data:application/vnd.ms-excel;base64,';
+    var excelTemplate = '<html> ' +
+      '<head> ' +
+      '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/> ' +
+      '</head> ' +
+      '<body> ' +
+      document.getElementById("printablecontent").innerHTML +
+      '</body> ' +
+      '</html>'
+    window.location.href = location + window.btoa(excelTemplate);
+  }
+</script>
+{% endblock %}

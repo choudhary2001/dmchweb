@@ -1965,3 +1965,24 @@ def delete_serology_test(request, pk):
     else:
         logout(request)
         return redirect('signin') 
+
+
+def find_user_report(request):
+    if request.method == "POST":
+        mobile = request.POST.get('mobile')
+        patients = Patient.objects.filter(mobno=mobile).all()
+        print(patients)
+        test_reports = []
+        for patient in patients:
+            print(Patient_registration.objects.filter(reg_no = patient).all())
+            pr = Patient_registration.objects.filter(reg_no = patient).all()
+            for p in pr:
+                print(Test_report.objects.filter(patient=p).all())
+                test_reports.extend(Test_report.objects.filter(patient=p).all())
+                print(test_reports)
+        context = {
+            'test_reports': test_reports
+        }
+        return render(request, 'counter/test_report.html', context=context)
+    else:
+        return redirect('/home/')

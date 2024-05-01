@@ -14,6 +14,8 @@ urlpatterns = [
     path('view-products/print/', views.supply_details_view_print, name="supply_details_view_print"),
     path('delete-products/<str:product_id>/', views.product_delete_view, name="product_delete_view"),
 
+    path('get_product_details_view/', views.get_product_details_view, name="get_product_details_view"),
+
     path('add-products-consumption/', views.product_add_consumption, name="product_add_consumption"),
     path('view-products-consumption/', views.product_consumption_details_view, name="product_consumption_details_view"),
     path('view-products-consumption/print/', views.product_consumption_details_view_print, name="product_consumption_details_view_print"),

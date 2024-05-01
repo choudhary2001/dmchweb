@@ -75,4 +75,6 @@ urlpatterns = [
     path('update_urine_test/<int:pk>/', views.update_urine_test, name='update_urine_test'),
     path('delete_urine_test/<int:pk>/', views.delete_urine_test, name='delete_urine_test'),
 
+    path('find_user_report/', views.find_user_report, name='find_user_report'),
+
 ]

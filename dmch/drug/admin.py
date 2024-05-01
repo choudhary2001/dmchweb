@@ -6,3 +6,4 @@ admin.site.register(Supply)
 admin.site.register(ProductSupply)
 admin.site.register(ProductPurchase)
 admin.site.register(Purchase)
+    

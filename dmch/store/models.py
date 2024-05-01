@@ -27,6 +27,10 @@ class Product(models.Model):
     company_name = models.CharField(max_length = 255)
     quantity = models.BigIntegerField(blank=True, null=True)
     stock_quantity = models.BigIntegerField(blank=True, null=True)
+    bill_no = models.CharField(max_length = 50, blank = True, null = True)
+    chalan_no = models.CharField(max_length = 50, blank = True, null = True)
+    bill_date = models.DateField(blank=True, null=True)
+    chalan_date = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add = True)
 
     def save(self, *args, **kwargs):
@@ -46,6 +50,10 @@ class ProductConsumption(models.Model):
     company_name = models.CharField(max_length = 255)
     quantity = models.BigIntegerField(blank=True, null=True)
     stock_quantity = models.BigIntegerField(blank=True, null=True)
+    bill_no = models.CharField(max_length = 50, blank = True, null = True)
+    chalan_no = models.CharField(max_length = 50, blank = True, null = True)
+    bill_date = models.DateField(blank=True, null=True)
+    chalan_date = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add = True)
 
     def save(self, *args, **kwargs):

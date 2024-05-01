@@ -27,7 +27,8 @@ print(current_time_kolkata)
 
 from django.utils import timezone
 
-
+def home(request):
+    return render(request, 'counter/home.html')
 
 def signin(request):
     if request.method == "POST":
@@ -52,12 +53,15 @@ def signin(request):
                     return redirect('/drug/product-type/add/')
                 if p.user_role == 'Pathology':
                     return redirect('/pathology/create_test_report/')
+
+                if p.user_role == 'Radiology':
+                    return redirect('/radiology/add-report/')
                     
                 if d is not None:
                     request.session['user_role_store'] = "Medicine Store"
                     return redirect('/medicine_store/supply/view/')
                 if sd is not None:
-                    request.session['user_role_store'] = "General Store"
+                    request.session['user_role_store'] = "Store"
                     return redirect('/store/add-products/')
                 return redirect('add_patient')
             # messages.success(request, "You have successfully signed in.")

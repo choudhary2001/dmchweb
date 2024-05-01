@@ -64,9 +64,9 @@
         <!-- Middle Column (Product Details) -->
 
          
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
             <div class="form-group">
-              <label for="mfgname">Product Name:</label>
+              <label for="product_name_1">Product Name:</label>
               <!-- <input type="text" class="form-control" name="product_name_1"  /> -->
               <select class="form-control" name="product_name_1" >
                 <option>Select Product</option>
@@ -79,17 +79,23 @@
   
 
           
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
           <div class="form-group">
-            <label for="mfgname">Company Name:</label>
-            <input type="text" class="form-control" name="company_name_1"  />
+            <label for="company_name_1">Company Name:</label>
+            <input type="text" class="form-control" name="company_name_1" disabled />
+          </div>
+        </div>
+        <div class="col-md-2 mb-3">
+          <div class="form-group">
+            <label for="stock_1">Stock:</label>
+            <input type="number" class="form-control" name="stock_1" id="stock_1" disabled />
           </div>
         </div>
 
 
 
         <!-- Left Column (Patient Details) -->
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
           <div class="form-group">
             <label for="quantity">Quantity:</label>
             <input type="number" class="form-control" name="quantity_1" required />
@@ -164,7 +170,7 @@ if (event.keyCode === 13) { // Check if Enter key is pressed
 
 
     var productColumn = document.createElement("div");
-    productColumn.className = "col-md-4 mb-3";
+    productColumn.className = "col-md-3 mb-3";
     productColumn.innerHTML = `
           <div class="form-group">
             <label for="mfgname">Product Name:</label>
@@ -179,15 +185,24 @@ if (event.keyCode === 13) { // Check if Enter key is pressed
 
 
     var mfgColumn = document.createElement("div");
-    mfgColumn.className = "col-md-4 mb-3";
+    mfgColumn.className = "col-md-3 mb-3";
     mfgColumn.innerHTML = `
           <div class="form-group">
-            <label for="mfgname">Mfg. By:</label>
-            <input type="text" class="form-control" name="company_name_${productCount}"  />
+            <label for="mfgname">Company Name:</label>
+            <input type="text" class="form-control" name="company_name_${productCount}" disabled  />
           </div>
         `;
 
 
+
+    var squantityColumn = document.createElement("div");
+    squantityColumn.className = "col-md-2 mb-3";
+    squantityColumn.innerHTML = `
+        <div class="form-group">
+          <label for="quantity">Stock:</label>
+          <input type="number" class="form-control" name="stock_${productCount}" disabled />
+        </div>
+      `;
 
     var quantityColumn = document.createElement("div");
     quantityColumn.className = "col-md-3 mb-3";
@@ -211,6 +226,7 @@ if (event.keyCode === 13) { // Check if Enter key is pressed
 
     productRow.appendChild(productColumn);
     productRow.appendChild(mfgColumn);
+    productRow.appendChild(squantityColumn);
     productRow.appendChild(quantityColumn);
     productRow.appendChild(removeButton);
 
@@ -229,141 +245,29 @@ if (event.keyCode === 13) { // Check if Enter key is pressed
   });
 </script>
 
+
 <script>
-  $(document).ready(function () {
-    // Event delegation for product type select elements
-    $("#productFields").on("change", "select[name^='product_type']", function () {
-      var productType = $(this).val();
-      var container = $(this).closest(".product-row");
-      var productNameSelect = container.find("select[name^='product_name']");
-
-      $.ajax({
-        url: '{% url "get_product_names_by_type" %}',
-        type: "GET",
-        data: {
-          product_type: productType,
-        },
-        success: function (data) {
-          productNameSelect.empty();
-          $.each(data.products, function (index, product) {
-            productNameSelect.append('<option value="' + product.product_type_id + '">' + product.name + "</option>");
-          });
-        },
-      });
-    });
-  });
-</script>
-
-<!-- <script>
-  $(document).ready(function () {
-    // Event delegation for product type select elements
-    $("#productFields").on("change", "select[name^='product_type']", function () {
-      var productType = $(this).val();
-      var container = $(this).closest(".product-row");
-      var productNameSelect = container.find("select[name^='product_name']");
-
-      $.ajax({
-        url: '{% url "get_product_names_by_type_purchase" %}',
-        type: "GET",
-        data: {
-          product_type: productType,
-        },
-        success: function (data) {
-          productNameSelect.empty();
-          var product_type_id_column_Input = container.find("input[name^='product_type_id_column']");
-          product_type_id_column_Input.val(data.product_type_id_);
-          productNameSelect.append('<option value=""> Select Product Name</option>');
-          $.each(data.products, function (index, product) {
-            productNameSelect.append('<option value="' + product.product_type_id + '">' + product_name + "</option>");
-          });
-        },
-      });
-    });
-  });
-</script> -->
-
-<!-- <script>
-  // Function to handle form submission
-  function handleFormSubmission(event) {
-    event.preventDefault(); // Prevent default form submission
-
-    // Your additional logic for form validation or processing goes here
-
-    // Select all input fields in the form
-    const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
-
-    // Flag to keep track of form validity
-    let isValid = true;
-
-    // Loop through each input field
-    inputs.forEach(function (input) {
-      // Check if the input field is required and does not have a value
-      if (input.hasAttribute("required") && !input.value.trim()) {
-        // If a required field is empty, set isValid to false
-        isValid = false;
-        // Highlight the empty field (you can customize this part)
-        input.style.border = "1px solid red";
-      } else {
-        // Remove any previous highlighting
-        input.style.border = "";
-      }
-    });
-
-    // If the form is valid, submit it
-    if (isValid) {
-      document.getElementById("patientForm").submit();
-    } else {
-      // If the form is invalid, display an alert (you can customize this part)
-      //   alert("Please fill out all required fields.");
-    }
-  }
-
-  // Function to handle keyboard shortcuts
-  function handleShortcut(event) {
-    // if (event.ctrlKey && event.key === "s") {
-    if (event.key === "F2") {
-      // Ctrl + S pressed, trigger form submission
-      handleFormSubmission(event);
-    }
-  }
-
-  // Attach event listener for form submission
-  document.getElementById("patientForm").addEventListener("submit", handleFormSubmission);
-
-  // Attach event listener for keyboard shortcuts
-  document.addEventListener("keydown", handleShortcut);
-</script> -->
-
-<!-- <script>
   $(document).ready(function () {
     // Event delegation for product name select elements
     $("#productFields").on("change", "select[name^='product_name']", function () {
       var productName = $(this).val();
       var container = $(this).closest(".product-row");
-      var productTypeSelect = container.find("select[name^='product_type']");
-      var mfgNameInput = container.find("input[name^='mfgname']");
-      var batchNoInput = container.find("input[name^='batchno']");
-      var mfgDateInput = container.find("input[name^='mfgdate']");
-      var expDateInput = container.find("input[name^='expdate']");
-      var stockQuantityInput = container.find("input[name^='stock_quantity']");
+      var companyNameInput = container.find("input[name^='company_name']");
+      var stockInput = container.find("input[name^='stock']");
 
       $.ajax({
-        url: '{% url "get_product_details" %}',
+        url: '{% url "get_product_details_view" %}',
         type: "GET",
         data: {
           product_name: productName,
         },
         success: function (data) {
           console.log(data.product);
-          mfgNameInput.val(data.product.mfg_name);
-          batchNoInput.val(data.product.batch_no);
-          mfgDateInput.val(data.product.mfg_date);
-          expDateInput.val(data.product.exp_date);
-          stockQuantityInput.val(data.product.stock_quantity);
+          companyNameInput.val(data.product.company_name);
+          stockInput.val(data.product.stock_quantity); 
         },
       });
     });
   });
-</script> -->
-
+</script>
 {% endblock %}

@@ -10,7 +10,7 @@
     align-items: center;
   }
   .form-control {
-    padding: 0;
+    /* padding: 0; */
     /* font-size: 12px; */
   }
   .exp_date{
@@ -35,15 +35,42 @@
     {% csrf_token %}
     <div class="row">
       <!-- Left Column (Patient Details) -->
-      <div class="col-md-4 mb-3">
+      <div class="col-md-3 mb-3">
         <div class="form-group">
           <label for="department">Department:</label>
           <input type="text" class="form-control" value="{{request.session.user_role}}" disabled />
         </div>
       </div>
 
+        <!-- Left Column (Patient Details) -->
+        <div class="col-md-3 mb-3">
+          <div class="form-group">
+            <label for="bill_no">Bill No.:</label>
+            <input type="text" class="form-control" name="bill_no" required />
+          </div>
+        </div>
       <!-- Right Column (Order Details) -->
-      <div class="col-md-4 ">
+      <div class="col-md-3 mb-3">
+        <div class="form-group">
+          <label for="bill_date">Bill Date:</label>
+          <input type="date" class="form-control" name="bill_date"  required />
+        </div>
+      </div>
+
+      <!-- Left Column (Patient Details) -->
+      <div class="col-md-3 mb-3">
+        <div class="form-group">
+          <label for="chalan_no">Chalan No.:</label>
+          <input type="text" class="form-control" name="chalan_no" required />
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="form-group">
+          <label for="chalan_date">Chalan Date:</label>
+          <input type="date" class="form-control" name="chalan_date"  required />
+        </div>
+      </div>
+      <div class="col-md-3 mb-3 ">
         <div class="form-group">
           <label for="date">Date:</label>
           <input type="date" class="form-control" name="date" value="{% if request.session.add_product_date %}{{request.session.add_product_date}}{% endif %}" required />
