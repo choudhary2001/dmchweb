@@ -13,6 +13,9 @@ from datetime import datetime, timedelta
 from django.db.models import Count
 from django.utils import timezone
 import pytz
+from django.db.models import Sum
+from django.db.models.functions import Lower, Upper, Trim
+from django.db.models import CharField
 from django.forms.models import model_to_dict
 from django.shortcuts import render, redirect, get_object_or_404
 # Get the current time in UTC
@@ -249,7 +252,11 @@ def order_add_view(request):
         s = Suppliar.objects.all().order_by('-created_at')
         d = DrugDepartment.objects.all().order_by('-created_at')
         p = ProductType.objects.all().order_by('-created_at')
-        unique_p_types = ProductType.objects.values_list('p_type', flat=True).distinct()
+        # unique_p_types = ProductType.objects.values_list('p_type', flat=True).distinct()
+        unique_p_types = ProductType.objects.annotate(
+            normalized_p_type=Trim(Upper('p_type', output_field=CharField()))
+        ).values_list('normalized_p_type', flat=True).distinct()
+
         context = {
             'title' : 'Add Order',
             'suppliar' : s,
@@ -442,6 +449,7 @@ def get_product_details(request):
             print(product_purchase)
             # Check if the ProductPurchase object exists
             if product_purchase:
+                
                 # Convert the model instance to a dictionary
                 product_purchase_dict = model_to_dict(product_purchase)
                 # Return the dictionary as JSON response
@@ -576,6 +584,7 @@ def purchase_add_view(request):
             total_amount = request.POST.get('total_amount')
             paid = request.POST.get('paid')
             due = request.POST.get('due')
+            date = request.POST.get('date')
             # Create a new purchase instance
             suppliar = Suppliar.objects.filter(suppliar_id=supplier_id).first()
 
@@ -641,7 +650,11 @@ def purchase_add_view(request):
         s = Suppliar.objects.all().order_by('-created_at')
         d = DrugDepartment.objects.all().order_by('-created_at')
         p = ProductType.objects.all().order_by('-created_at')
-        unique_p_types = ProductType.objects.values_list('p_type', flat=True).distinct()
+        # unique_p_types = ProductType.objects.values_list('p_type', flat=True).distinct()
+        unique_p_types = ProductType.objects.annotate(
+            normalized_p_type=Trim(Upper('p_type', output_field=CharField()))
+        ).values_list('normalized_p_type', flat=True).distinct()
+
         context = {
             'title' : 'Add Purchase',
             'suppliar' : s,
@@ -673,6 +686,7 @@ def purchase_update_view(request,purchase_id):
             total_amount = request.POST.get('total_amount')
             paid = request.POST.get('paid')
             due = request.POST.get('due')
+            date = request.POST.get('date')
             suppliar = Suppliar.objects.filter(suppliar_id=supplier_id).first()
 
             purchase.suppliar = suppliar
@@ -695,7 +709,6 @@ def purchase_update_view(request,purchase_id):
                 purchaserate = request.POST.get(f'purchaserate_{i}')
                 quantity = request.POST.get(f'quantity_{i}')
                 amount = request.POST.get(f'amount_{i}')
-                date = request.POST.get(f'date_{i}')
                 productdetails_id = request.POST.get(f'productdetails_id_{i}')
 
                 print(f"Product[i]: Department ID: {department_name}, Product Type ID: {product_type_name}, MFG Name: {mfg_name}, Batch No: {batch_no}, Quantity: {quantity}")
@@ -755,7 +768,10 @@ def purchase_update_view(request,purchase_id):
         s = Suppliar.objects.all().order_by('-created_at')
         d = DrugDepartment.objects.all().order_by('-created_at')
         p = ProductType.objects.all().order_by('-created_at')
-        unique_p_types = ProductType.objects.values_list('p_type', flat=True).distinct()
+        unique_p_types = ProductType.objects.annotate(
+            normalized_p_type=Trim(Upper('p_type', output_field=CharField()))
+        ).values_list('normalized_p_type', flat=True).distinct()
+
         context = {
             'title' : 'Update Purchase',
             'suppliar' : s,
@@ -935,28 +951,35 @@ def stock_details_view(request):
         
         # Filter patients based on the provided date range
         if request.user.is_superuser:
-            p = Purchase.objects.all().order_by('-order_date')
+            p = ProductPurchase.objects.all().order_by('-purchase_date')
         else:
-            p = Purchase.objects.filter(user=request.user).order_by('-order_date')
+            p = ProductPurchase.objects.filter(user=request.user).order_by('-purchase_date')
 
         if start_date and end_date:
             # end_date = end_date + timedelta(days=1) 
             # start_date = start_date - timedelta(days=1)
-            p = p.filter(order_date__range=(start_date, end_date))
+            p = p.filter(purchase_date__range=(start_date, end_date))
         elif start_date:
             # If only start date is provided, include all records for that day
             next_day = start_date + timedelta(days=1)
             start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
             end_datetime = start_datetime + timedelta(days=1)
 
-            p = p.filter(order_date__gte=start_datetime, order_date__lt=end_datetime)
+            p = p.filter(purchase_date__gte=start_datetime, purchase_date__lt=end_datetime)
         elif end_date:
-            p = p.filter(order_date__lt=end_date)
+            p = p.filter(purchase_date__lt=end_date)
 
+        product_quantities = {}
+
+        # Iterate through unique product names and aggregate their quantities
+        for product_name in p.values_list('product_name', flat=True).distinct():
+            total_quantity = ProductPurchase.objects.filter(product_name=product_name).aggregate(total_quantity=Sum('quantity'))['total_quantity']
+            product_quantities[product_name] = total_quantity
 
         d = DrugDepartment.objects.all()
         context = {
             'purchase' : p,
+            'product_quantities': product_quantities,
             'title' : f"Total Purchase : {len(p)}",
         }
         return render(request, 'stock.html', context=context)
@@ -1011,10 +1034,17 @@ def stock_details_view_print(request):
         elif end_date:
             p = p.filter(order_date__lt=end_date)
 
+        product_quantities = {}
 
+        # Iterate through unique product names and aggregate their quantities
+        for product_name in p.values_list('product_name', flat=True).distinct():
+            total_quantity = ProductPurchase.objects.filter(product_name=product_name).aggregate(total_quantity=Sum('quantity'))['total_quantity']
+            product_quantities[product_name] = total_quantity
         d = DrugDepartment.objects.all()
         context = {
             'purchase' : p,
+            'product_quantities': product_quantities,
+
             'title' : f"Total Purchase : {len(p)}",
         }
         return render(request, 'stockprint.html', context=context)
@@ -1037,6 +1067,7 @@ def supply_add_view(request):
             product_type = request.POST.get('product_type')
             mfg_name = request.POST.get('mfg_name')
             batch_no = request.POST.get('batch_no')
+            date = request.POST.get('date')
             department = DrugDepartment.objects.filter(department_id=department_id).first()
 
             # Create a new supply instance
@@ -1060,7 +1091,6 @@ def supply_add_view(request):
                 quantity = request.POST.get(f'quantity_{i}')
                 stock_quantity = request.POST.get(f'stock_quantity_{i}')
                 amount = request.POST.get(f'amount_{i}')
-                date = request.POST.get(f'date_{i}')
                 product_type_id_column = request.POST.get(f'product_type_id_column_1{i}')
 
                 print(f"Product Type ID: {product_type_name}, MFG Name: {mfg_name}, Batch No: {batch_no}, Quantity: {quantity}")
@@ -1100,7 +1130,10 @@ def supply_add_view(request):
         s = Suppliar.objects.all().order_by('-created_at')
         d = DrugDepartment.objects.all().order_by('-created_at')
         p = ProductType.objects.all().order_by('-created_at')
-        unique_p_types = ProductType.objects.values_list('p_type', flat=True).distinct()
+        unique_p_types = ProductType.objects.annotate(
+            normalized_p_type=Trim(Upper('p_type', output_field=CharField()))
+        ).values_list('normalized_p_type', flat=True).distinct()
+
         context = {
             'title' : 'Add Supply',
             'suppliar' : s,
@@ -1284,6 +1317,8 @@ def supply_update_view(request, supply_id):
             product_type = request.POST.get('product_type')
             mfg_name = request.POST.get('mfg_name')
             batch_no = request.POST.get('batch_no')
+            date = request.POST.get('date')
+
             department = DrugDepartment.objects.filter(department_id=department_id).first()
             supply.department = department
             supply.indent = indent
@@ -1302,7 +1337,6 @@ def supply_update_view(request, supply_id):
                 quantity = request.POST.get(f'quantity_{i}')
                 stock_quantity = request.POST.get(f'stock_quantity_{i}')
                 amount = request.POST.get(f'amount_{i}')
-                date = request.POST.get(f'date_{i}')
                 productdetails_id = request.POST.get(f'productdetails_id_{i}')
 
 

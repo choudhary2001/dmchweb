@@ -96,6 +96,9 @@ def product_add_view(request):
             chalan_no = request.POST.get('chalan_no')
             bill_date = request.POST.get('bill_date')
             chalan_date = request.POST.get('chalan_date')
+            sp_order_no = request.POST.get('sp_order_no')
+            sp_order_date = request.POST.get('sp_order_date')
+            received_date = request.POST.get('received_date')
 
 
             # Loop through the product form fields
@@ -116,9 +119,13 @@ def product_add_view(request):
                     bill_no = bill_no,
                     chalan_no = chalan_no,
                     bill_date = bill_date,
-                    chalan_date = chalan_date
+                    chalan_date = chalan_date,
+                    sp_order_no = sp_order_no,
+                    sp_order_date = sp_order_date,
+                    received_date = received_date,
                 )
             request.session['add_product_date'] = date
+            request.session['received_date'] = received_date
             
 
             messages.success(request, 'Added Successfully')
@@ -439,6 +446,7 @@ def product_add_consumption(request):
             print(request.POST)
             date = request.POST.get('date')
             department = request.POST.get('department')
+            indent_no = request.POST.get('indent_no')
 
 
             # Loop through the product form fields
@@ -453,6 +461,7 @@ def product_add_consumption(request):
                             user = request.user,
                             sdepartment=d,
                             department = department,
+                            indent_no = indent_no,
                             created_at = date,
                             product_name = p.product_name,
                             company_name = p.company_name,
@@ -462,7 +471,9 @@ def product_add_consumption(request):
                             chalan_no = p.chalan_no,
                             bill_date = p.bill_date,
                             chalan_date = p.chalan_date,
-
+                            sp_order_no = p.sp_order_no,
+                            sp_order_date = p.sp_order_date,
+                            received_date = p.received_date
                         )
                         p.stock_quantity = p.stock_quantity - int(quantity)
                         p.save()
@@ -474,7 +485,7 @@ def product_add_consumption(request):
         d = StoreDepartment.objects.all().order_by('-created_at')
         p = Product.objects.all().order_by('-created_at')
         context = {
-            'title' : 'Add Product',
+            'title' : 'Transfer Product',
             'department' : d,
             'product' : p,
         }

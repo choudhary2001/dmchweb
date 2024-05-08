@@ -620,6 +620,7 @@ def doctors(request):
     else:
         logout(request)
         return redirect('signin')  
+
 @login_required
 def doctors_update(request, doctor_id):
     if request.user.is_superuser or request.session['user_role'] == 'Pathology':
@@ -781,7 +782,7 @@ def create_test_report_view(request):
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
-        department = request.GET.get('department')
+        department_id = request.GET.get('department')
 
         # Convert the date strings to datetime objects
         if start_date_str:
@@ -818,11 +819,28 @@ def create_test_report_view(request):
         # Count the total number of patients
         total = tr.count()
         
+        
+        department = None
+        if department_id != None:
+            if department_id != 'All':
+                de = PathologyDepartment.objects.filter(department_id = department_id).first()
+                pr = Patient_registration.objects.filter(department = de).all()
+                print(de)
+                if de:
+                    # tr = tr.filter(department = de, de = None)
+                    # print(tr)
+                    # department = de.name
+                    tr = tr.filter(patient__department=de)
+                    department = de.name
+
+        d = PathologyDepartment.objects.all()
 
 
         context = {
             'patients': tr,
-            'title' : f'Test Report :  {total}'
+            'title' : f'Test Report :  {total}',
+            'department' : department,
+            'departments' : d,
         }
         return render(request, 'test_report_data.html', context=context)
     else:
@@ -836,7 +854,7 @@ def create_test_report_view_print(request):
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
-        department = request.GET.get('department')
+        department_id = request.GET.get('department')
 
         # Convert the date strings to datetime objects
         if start_date_str:
@@ -881,13 +899,31 @@ def create_test_report_view_print(request):
         total = tr.count()
 
         total_amount = (int(total) * 5) - (non_price * 5)
+        
+        department = None
+        if department_id != None:
+            if department_id != 'All':
+                de = PathologyDepartment.objects.filter(department_id = department_id).first()
+                pr = Patient_registration.objects.filter(department = de).all()
+                print(de)
+                if de:
+                    # tr = tr.filter(department = de, de = None)
+                    # print(tr)
+                    # department = de.name
+                    tr = tr.filter(patient__department=de)
+                    department = de.name
+
+        d = PathologyDepartment.objects.all()
 
 
         context = {
             'patients': tr,
             'title': f'Total Patients: {total}',
             'total_amount' : total_amount,
-            'title' : 'Test Report'
+            'title' : 'Test Report',
+            'department' : department,
+            'departments' : d,
+
         }
         return render(request, 'print_test_report.html', context=context)
 

@@ -13,6 +13,7 @@
     padding: ".15rem .75rem";
   }
 </style>
+
 <div class="container-fluid">
   <!-- Page Heading -->
   <form id="patientForm" method="POST" action="{% url 'add_radiology_report' %}">
@@ -52,24 +53,37 @@
         </div>
 
         <div class="col-md-4 mb-3" >
+          <label for="department_unit">Department  (Unit) :</label>
+          <select type="text" id="department_unit" class="form-control" name="department_unit" >
+              <option>Select Unit</option>
+            <option value="USG">USG</option>
+            <option value="X-Ray">X-Ray</option>
+            <option value="C.T.">C.T.</option>
+          </select>
+        </div>
+
+      <div class="col-md-4 mb-3" style="display: none;" >
+        <label for="sub_unit">Sub Unit :</label>
+        <select type="text" id="sub_unit" class="form-control" name="sub_unit" >
+            <option value="">Select Sub Unit</option>
+            <!-- <option value="Digital X-Ray Super Speciality Building">Digital X-Ray Super Speciality Building</option>
+            <option value="Digital X-Ray Emergency">Digital X-Ray Emergency</option>
+            <option value="Manual X-Ray C.C.U">Manual X-Ray C.C.U</option>
+            <option value="X-Ray Pediatrics">X-Ray Pediatrics</option> -->
+        </select>
+      </div>
+
+        <div class="col-md-4 mb-3" >
             <label for="investigation">Investigation :</label>
             <select type="text" id="investigation" class="form-control" name="investigation" >
             <option>Select Investigation</option>
             {% for d in investigations %}
               <option value="{{d.investigation_id}}">{{d.name}}</option>
-              {% endfor %}
+            {% endfor %}
             </select>
         </div>
 
-        <div class="col-md-4 mb-3" >
-            <label for="department_unit">Department  (Unit) :</label>
-            <select type="text" id="department_unit" class="form-control" name="department_unit" >
-                <option>Select Unit</option>
-              <option value="USG">USG</option>
-              <option value="X-Ray">X-Ray</option>
-              <option value="C.T.">C.T.</option>
-            </select>
-        </div>
+
 
         <div class="col-md-4 mb-3" >
             <label for="patient_type">Patient Type :</label>
@@ -93,15 +107,26 @@
             </select>
         </div>
 
-        <div class="col-md-4 mb-3" style="display: none;" >
-            <label for="no_of_plate">No. of Plate:</label>
-            <input type="text" class="form-control" id="no_of_plate" name="no_of_plate"  />
-        </div>
 
         <div class="col-md-4 mb-3" style="display: none;" >
             <label for="plate_size">Plate Size:</label>
-            <input type="text" class="form-control" id="plate_size" name="plate_size"  />
+            <!-- <input type="text" class="form-control" id="plate_size" name="plate_size"  /> -->
+            <select type="text" id="plate_size" class="form-control" name="plate_size" >
+            <option value="" >Select Plate Size</option>
+            <option value='14"x17"'>14"x17"</option>
+            <option value='12"x15"'>12"x15"</option>
+            <option value='10"x12"'>12"x12"</option>
+            <option value="M/B">10"x12"</option>
+            <option value='8"x10"'>8"x10"</option>
+            <option value='6.5"x8.5"'>6.5"x8.5"</option>
+            <option value='10"x14"'>10"x14"</option>
+          </select>
         </div>
+        <div class="col-md-4 mb-3" style="display: none;" >
+          <label for="no_of_plate">No. of Plate:</label>
+          <input type="text" class="form-control" id="no_of_plate" name="no_of_plate"  />
+      </div>
+
         <div class="col-md-4 mb-3">
             <label for="date">Date:</label>
             <input type="date" class="form-control" id="date" name="date" value="{% if request.session.radiology_date %}{{request.session.radiology_date}}{% endif %}" required />
@@ -118,6 +143,36 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("name").focus();
+  });
+</script>
+<script>
+  $(document).ready(function () {
+    $("#regid").on("input", function () {
+      var regid = $(this).val();
+      if (regid) {
+        $.ajax({
+          url: '{% url "fetch_patient_data" %}',
+          type: "GET",
+          data: {
+            regid: regid,
+          },
+          success: function (data) {
+            console.log(data);
+            // Update input fields with fetched data
+            $("#patient_name").val(data.name);
+            
+          },
+          error: function (xhr, status, error) {
+            console.error(xhr.responseText);
+            // Handle error if necessary
+            $("#patient_name").val("");
+          },
+        });
+      } else {
+        // Clear input fields when regid is empty
+        $("#patient_name").val("");
+      }
+    });
   });
 </script>
 <script>
@@ -159,19 +214,43 @@
 <script>
   $(document).ready(function () {
     $("#department_unit").change(function () {
+      var departmentId = $(this).val();
       var unit = $(this).val();
       if (unit === "X-Ray") {
         $("#no_of_plate").parent().show(); // Show the field for No. of Plate
         $("#plate_size").parent().show(); // Show the field for Plate Size
-      } else {
+        $("#sub_unit").parent().show(); // Show the field for Plate Size
+      } 
+      else if(unit === 'C.T.'){
+        $("#no_of_plate").parent().show(); // Show the field for No. of Plate
+        $("#plate_size").parent().show(); 
+      }
+      
+      else {
         $("#no_of_plate").parent().hide(); // Hide the field for No. of Plate
         $("#plate_size").parent().hide(); // Hide the field for Plate Size
+        $("#sub_unit").parent().hide(); // Hide the field for Plate Size
       }
+      $.ajax({
+        url: '{% url "get_investigation_by_department" %}',
+        type: "GET",
+        data: {
+          investigation_unit: departmentId,
+        },
+        success: function (data) {
+          console.log(data);
+          $("#investigation").empty();
+          $.each(data.investigation, function (index, invest) {
+            $("#investigation").append('<option value="' + invest.investigation_id + '">' + invest.name + "</option>");
+          });
+        },
+      });
     });
   });
+
+
+
 </script>
-
-
 <script>
   // Function to handle form submission
   function handleFormSubmission(event) {

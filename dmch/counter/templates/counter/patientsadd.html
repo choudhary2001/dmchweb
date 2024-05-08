@@ -309,6 +309,7 @@
     // if (event.ctrlKey && event.key === "s") {
     if (event.key === "F2") {
       // Ctrl + S pressed, trigger form submission
+      event.preventDefault();
       handleFormSubmission(event);
     }
   }

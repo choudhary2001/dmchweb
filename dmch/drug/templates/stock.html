@@ -36,38 +36,19 @@
           <thead>
             <tr>
               <th>Product Name</th>
-              <th>Mfg By</th>
+              <!-- <th>Mfg By</th>
               <th>Mfg Date</th>
-              <th>Exp Date</th>
+              <th>Exp Date</th> -->
               <th>In Stock</th>
             </tr>
           </thead>
           <tbody>
-            {% for order in purchase %}
-            {% for product in order.products.all %}
-            <tr>
- 
-              <td>
-                
-                <p>{{ product.product_name }}</p>
-
-              </td>
-              <td>
-                <p>{{ product.mfg_name }}</p>
-              </td>
-
-              <td>
-                <p>{{ product.mfg_date }}</p>
-              </td>
-              <td>
-                <p>{{ product.exp_date }}</p>
-              </td>
-              <td>
-                <p>{{ product.stock_quantity }}</p>
-              </td>
-             
-            </tr>
-            {% endfor %}
+            
+            {% for product_name, total_quantity in product_quantities.items %}
+                <tr>
+                    <td>{{ product_name }}</td>
+                    <td>{{ total_quantity }}</td>
+                </tr>
             {% endfor %}
           </tbody>
         </table>

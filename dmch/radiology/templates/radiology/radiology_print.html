@@ -10,15 +10,15 @@
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card py-2" style="display: flex; flex-direction: row; justify-content: space-between; padding-left: 5px; padding-right: 5px">
-      <form action="{% url 'show_radiology_report' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+      <form action="{% url 'print_radiology_report' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
         <div style="flex: 1">
-          <input type="datetime-local" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+          <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
         </div>
         <div style="">
           <span>-</span>
         </div>
         <div style="flex: 1">
-          <input type="datetime-local" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+          <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
         </div>
         <div style="flex: 3">
             <select name="department" class="form-control mb-2 mb-md-0">
@@ -28,6 +28,15 @@
               <option value="{{d.department_id}}">{{d.name}}</option>
               {% endfor %}
             </select>
+        </div>
+        <div style="flex: 2">
+          <select type="text" id="department_unit" class="form-control" name="department_unit" >
+            <option value="All" >Select Unit</option>
+            <option value="All">All</option>
+            <option value="USG">USG</option>
+            <option value="X-Ray">X-Ray</option>
+            <option value="C.T.">C.T.</option>
+          </select>
         </div>
         <div style="flex: 1">
           <button class="btn btn-primary w-100" type="submit">Filter</button>
@@ -40,8 +49,17 @@
         </div>
       </form>
     </div>
-    <div class="card-body">
-      <div class="table-responsive" id="printablecontent">
+    <div class="card-body" id="printablecontent" >
+      <div class="card-header py-3" style="    display: flex;
+      flex-direction: column;
+      align-items: center;">
+          <div><h2>Darbhanga Medical College and Hospital</h2></div>
+          <div><h3>Radiology Department</h3></div>
+          {% if start_date_str != None %}
+          <div><h3>{{start_date_str}}{% if end_date_str != None %}{% if end_date_str != 'None' %} - {{end_date_str}}{% endif %}{% endif %} </h3>  </div>
+          {% endif %}
+      </div>
+      <div class="table-responsive" >
         <table class="table table-bordered" id="" width="100%" cellspacing="0">
           <thead>
             <tr>
@@ -53,8 +71,15 @@
               <th>Investigation Unit</th>
               <th>Patient Type</th>
               <th>Investigation Type</th>
+              {% if investigation_unit != 'None' %}
+              {% if investigation_unit != 'USG' %}
+              <th>No. Of Plate</th>
+              <th>PLate Size</th>        
+              {% endif %}
+              {% else %}
               <th>No. Of Plate</th>
               <th>PLate Size</th>
+              {% endif %}
               <th>Created At</th>
             </tr>
           </thead>
@@ -70,8 +95,15 @@
               <td>{{d.investigation_unit}}</td>
               <td>{{d.patient_type}}</td>
               <td>{{d.investigation_type}}</td>
+              {% if investigation_unit != 'None' %}
+              {% if investigation_unit != 'USG' %}
               <td>{{d.no_of_plate}}</td>
               <td>{{d.plate_size}}</td>
+              {% endif %}
+              {% else %}
+              <td>{{d.no_of_plate}}</td>
+              <td>{{d.plate_size}}</td>
+              {% endif %}
               <td>{{d.created_at}}</td>
             </tr>
             {% endfor %}

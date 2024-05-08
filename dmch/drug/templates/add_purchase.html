@@ -59,6 +59,14 @@
           <input type="date" class="form-control" id="invoice_date" name="invoice_date" required />
         </div>
       </div>
+
+        <!-- Right Column (Order Details) -->
+        <div class="col-md-4 mb-3">
+          <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" class="form-control" name="date" required />
+          </div>
+        </div>
     </div>
 
     <h3>Products</h3>
@@ -133,13 +141,7 @@
           </div>
         </div>
 
-        <!-- Right Column (Order Details) -->
-        <div class="col-md-4 mb-3">
-          <div class="form-group">
-            <label for="date">Date:</label>
-            <input type="date" class="form-control" name="date_1" required />
-          </div>
-        </div>
+      
       </div>
     </div>
 
@@ -264,15 +266,6 @@
 
 
 
-    var dateColumn = document.createElement("div");
-    dateColumn.className = "col-md-4 mb-3";
-    dateColumn.innerHTML = `
-        <div class="form-group">
-          <label for="batchno">Date.:</label>
-          <input type="date" class="form-control" name="date_${productCount}" required />
-        </div>
-      `;
-
     var removeButton = document.createElement("div");
     removeButton.className = "col-md-12 mb-3";
     removeButton.innerHTML = `
@@ -287,7 +280,6 @@
     productRow.appendChild(mfgDateColumn);
     productRow.appendChild(expDatecolumn);
     productRow.appendChild(quantityColumn);
-    productRow.appendChild(dateColumn);
     productRow.appendChild(removeButton);
 
     productFields.appendChild(productRow);

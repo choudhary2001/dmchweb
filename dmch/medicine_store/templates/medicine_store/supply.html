@@ -91,19 +91,6 @@
           </div>
         </div>
 
-        <!-- Right Column (Order Details) -->
-        <div class="col-md-2 exp_date"  style="display:none;">
-          <div class="form-group">
-            <label for="product_name_1" id="product_name_1">Product Name:</label>
-            <select class="form-control" name="product_name_1" required>
-              <option>Select Product Name</option>
-              {% for s in product %}
-              <option value="{{s.product_type_id}}">{{s.name}}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-
         <div class="col-md-3 mb-1" style="padding: 0 !important;">
           <div class="form-group">
             <label for="product_name" id="product_name">Medicine Name:</label>
@@ -460,6 +447,7 @@
           var productId = $(this).val(); // Get the value of the selected option
           console.log(productId)
           $(`#searchMedicine_${productCount}`).val(productName);
+          $(`#product_name_${productCount}`).val(productId);
           $(`#productPopup_${productCount}`).hide();
           // Assign the value of the selected option to a hidden input field or perform any other action as needed
           // $("#selectedProductId").val(productId);
@@ -587,6 +575,7 @@
         var productId = $(this).val(); // Get the value of the selected option
         console.log(productId, productName)
         $("#searchMedicine").val(productName);
+        $(`#product_name_1`).val(productId);
         $("#productPopup").hide();
         // Assign the value of the selected option to a hidden input field or perform any other action as needed
         // $("#selectedProductId").val(productId);

@@ -35,22 +35,29 @@
     {% csrf_token %}
     <div class="row">
       <!-- Left Column (Patient Details) -->
-      <div class="col-md-4 mb-3">
+      <div class="col-md-3 mb-3">
         <div class="form-group">
           <label for="department">Department:</label>
           <input type="text" class="form-control" value="{{request.session.user_role}}" disabled />
         </div>
       </div>
 
-      <div class="col-md-4 mb-3">
+      <div class="col-md-3 mb-3">
         <div class="form-group">
           <label for="department">Send To:</label>
           <input type="text" class="form-control" name="department"  />
         </div>
       </div>
 
+      <div class="col-md-3 mb-3">
+        <div class="form-group">
+          <label for="indent_no">Indent No:</label>
+          <input type="text" class="form-control" name="indent_no"  />
+        </div>
+      </div>
+
       <!-- Right Column (Order Details) -->
-      <div class="col-md-4 ">
+      <div class="col-md-3 ">
         <div class="form-group">
           <label for="date">Date:</label>
           <input type="date" class="form-control" name="date" value="{% if request.session.add_product_date %}{{request.session.add_product_date}}{% endif %}" required />

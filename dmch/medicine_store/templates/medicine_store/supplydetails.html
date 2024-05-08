@@ -53,7 +53,7 @@
               <th>Exp Date</th>
               <th>Quantity</th>
               <th>Supply Time</th>
-              <!-- <th>Action</th> -->
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -102,19 +102,19 @@
                 {% endfor %}
 
               </td>
-              <!-- <td>
-                <a href="/drug/supply/{{ order.supply_id }}/update/" class="btn btn-primary btn-icon-split">
+              <td>
+                <a href="/medicine_store/supply/medicine/{{ order.consumption_id }}/update/" class="btn btn-primary btn-icon-split">
                   <span class="icon text-white-50">
                     <i class="fas fa-arrow-right"></i>
                   </span>
                   <span class="text">Edit</span>
                 </a>
-                <a href="/drug/supply/{{ order.supply_id }}/delete/" class="btn btn-danger btn-icon-split">
+                <a href="/medicine_store/supply/medicine/{{ order.consumption_id }}/delete/" class="btn btn-danger btn-icon-split">
                   <span class="icon text-white-50">
                     <i class="fas fa-trash"></i>
                   </span>
                 </a>
-              </td> -->
+              </td>
             </tr>
             {% endfor %}
           </tbody>

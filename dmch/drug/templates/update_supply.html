@@ -42,6 +42,19 @@
           <input type="text" value="{{supply.indent}}" class="form-control" id="indent" name="indent" required />
         </div>
       </div>
+
+      {% for p in purchase.products.all %}
+      {% if forloop.first %}
+        <!-- Right Column (Order Details) -->
+        <div class="col-md-4 mb-3">
+          <div class="form-group">
+            <label for="date">Date:</label>
+            <input value="{{p.purchase_date|date:'Y-m-d'}}" type="date" class="form-control" name="date_1" required />
+          </div>
+        </div>
+        {% endif %}
+      {% endfor %}
+
     </div>
 
     <h3>Products</h3>
@@ -55,7 +68,7 @@
             <select class="form-control" name="product_type_1" required>
               <option>Select Product Type</option>
               {% for s in unique_p_types %}
-              <option {% if p.product.p_type == s %}selected{% endif %}  value="{{s}}">{{s}}</option>
+              <option {% if p.product.p_type|lower == s|lower %}selected{% endif %}  value="{{s}}">{{s}}</option>
               {% endfor %}
             </select>
           </div>
@@ -124,13 +137,7 @@
           </div>
         </div>
 
-        <!-- Right Column (Order Details) -->
-        <div class="col-md-4 mb-3">
-          <div class="form-group">
-            <label for="date">Date:</label>
-            <input value="{{p.supply_date|date:'Y-m-d'}}" type="date" class="form-control" name="date_1" required />
-          </div>
-        </div>
+
       </div>
       {% endfor %}
     </div>
@@ -286,14 +293,6 @@
           </div>
         `;
 
-    var dateColumn = document.createElement("div");
-    dateColumn.className = "col-md-4 mb-3";
-    dateColumn.innerHTML = `
-          <div class="form-group">
-            <label for="batchno">Date.:</label>
-            <input type="date" class="form-control" name="date_${productCount}" required />
-          </div>
-        `;
 
         var productsdetailsid = document.createElement("div");
     productsdetailsid.className = "col-md-4 mb-3";
@@ -322,7 +321,6 @@
     productRow.appendChild(expDatecolumn);
     productRow.appendChild(quantityColumn);
     productRow.appendChild(amountcolumn);
-    productRow.appendChild(dateColumn);
     productRow.appendChild(removeButton);
 
     productFields.appendChild(productRow);

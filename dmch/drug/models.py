@@ -125,7 +125,6 @@ class ProductSupply(models.Model):
         super(ProductSupply, self).save(*args, **kwargs)
 
 
-
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete = models.SET_NULL,  blank = True, null = True)
     ord_id = models.CharField(max_length=8, unique=True, editable=False, default="")
@@ -174,7 +173,7 @@ class Supply(models.Model):
     quantity = models.IntegerField(blank = True, null = True)
     de = models.CharField(max_length = 100, blank = True, null = True, default=None)
     remarks = models.CharField(max_length = 255, blank = True, null = True, default="")
-    order_date = models.DateTimeField(auto_now_add=True)
+    order_date = models.DateTimeField(auto_now_add=True, blank = True, null = True,)
 
     def save(self, *args, **kwargs):
         if not self.supply_id:

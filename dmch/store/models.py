@@ -31,7 +31,10 @@ class Product(models.Model):
     chalan_no = models.CharField(max_length = 50, blank = True, null = True)
     bill_date = models.DateField(blank=True, null=True)
     chalan_date = models.DateField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add = True)
+    sp_order_no = models.CharField(max_length = 50, blank = True, null = True)
+    sp_order_date = models.DateField(blank=True, null=True)
+    received_date = models.DateField(blank=True, null=True)
+    created_at = models.DateTimeField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.product_id:
@@ -45,6 +48,7 @@ class ProductConsumption(models.Model):
     user = models.ForeignKey(User, on_delete = models.SET_NULL, blank = True, null = True)
     product_id = models.CharField(max_length=8, unique=True, editable=False, default="")
     department = models.CharField(max_length = 255)
+    indent_no = models.CharField(max_length = 255, blank = True, null = True)
     sdepartment = models.ForeignKey(StoreDepartment, on_delete = models.SET_NULL, blank = True, null = True)
     product_name = models.CharField(max_length = 255)
     company_name = models.CharField(max_length = 255)
@@ -54,6 +58,9 @@ class ProductConsumption(models.Model):
     chalan_no = models.CharField(max_length = 50, blank = True, null = True)
     bill_date = models.DateField(blank=True, null=True)
     chalan_date = models.DateField(blank=True, null=True)
+    sp_order_no = models.CharField(max_length = 50, blank = True, null = True)
+    sp_order_date = models.DateField(blank=True, null=True)
+    received_date = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add = True)
 
     def save(self, *args, **kwargs):
@@ -63,3 +70,4 @@ class ProductConsumption(models.Model):
 
     def __str__(self):
         return self.product_id
+

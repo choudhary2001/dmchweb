@@ -34,6 +34,13 @@ def get_doctors_by_department(request):
     doctors = RadiologyDoctor.objects.filter(department=d).values('doctor_id', 'name')
     return JsonResponse({'doctors': list(doctors)})
 
+@csrf_exempt
+def get_investigation_by_department(request):
+    investigation_unit = request.GET.get('investigation_unit')
+    print(investigation_unit)
+    investigation = Investigation.objects.filter(investigation_unit=investigation_unit).values('investigation_id', 'name')
+    return JsonResponse({'investigation': list(investigation)})
+
 
 @login_required
 def departments(request):
@@ -153,10 +160,11 @@ def investigations(request):
     if request.user.is_superuser or request.session['user_role'] == 'Radiology':
         if request.method == "POST":
             name = request.POST['name']
-            d = Investigation(name = name)
+            department_unit = request.POST['department_unit']
+            d = Investigation(name = name, investigation_unit = department_unit)
             d.save()
             messages.success(request, 'Department added successfully.')
-        d = RadiologyDepartment.objects.all().order_by('-created_at')
+        d = Investigation.objects.all().order_by('-created_at')
         context = {
             'investigations' : d,
             'title' : 'Investigations'
@@ -172,14 +180,12 @@ def investigationss_update(request, investigation_id):
         if request.method == "POST":
             d = Investigation.objects.filter(investigation_id =investigation_id).first()
             name = request.POST['name']
-            print(room_no)
-            dc = Investigation.objects.filter(name = name).first()
-            if not dc:
-                d.name = name
-                d.save()
-                messages.success(request, 'Department updated successfully.')
-            else:
-                messages.error(request, 'Department name already exists.')
+            department_unit = request.POST['department_unit']
+ 
+            d.name = name
+            d.investigation_unit = department_unit
+            d.save()
+            messages.success(request, 'Department updated successfully.')
 
         return redirect('radiology_investigations')
     else:
@@ -230,9 +236,32 @@ def add_radiology_report(request):
                 investigation_type = request.POST.get('investigation_type')
                 no_of_plate = request.POST.get('no_of_plate', None)
                 plate_size = request.POST.get('plate_size')
+                sub_unit = request.POST.get('sub_unit')
                 date = request.POST.get('date')
 
+                try:
+                    p = Patient.objects.filter(regid = regid).first()
+                except Exception as e:
+                    print(e)
+                    try:
+                        p = Patient.objects.filter(regnoid = regid).first()
+                    except Exception as e:
+                        print(e)
+                        p = None
 
+                if p is None:
+                    p = Patient.objects.create(
+                        user = request.user,
+                        gender = '',
+                        de = departpment
+                    )
+                    if regid:
+                        p.regnoid = regid
+                    if patient_name:
+                        p.name = patient_name
+                    p.save()
+                print(p)
+                
                 de = RadiologyDepartment.objects.filter(department_id = department).first()
                 d = RadiologyDoctor.objects.filter(doctor_id = doctor).first()
                 ie = Investigation.objects.filter(investigation_id = investigation).first()
@@ -242,6 +271,7 @@ def add_radiology_report(request):
                     patient_name=patient_name,
                     reg_no=regid,
                     doctor=d,
+                    patient=p,
                     department=de,
                     investigation=ie,
                     investigation_unit=department_unit,
@@ -249,6 +279,7 @@ def add_radiology_report(request):
                     investigation_type=investigation_type,
                     no_of_plate=no_of_plate,
                     plate_size=plate_size,
+                    sub_unit = sub_unit,
                     created_at=date
                 )
 
@@ -278,22 +309,14 @@ def show_radiology_report(request):
 
     if request.user.is_superuser or request.session['user_role'] == 'Radiology':
         start_date_str = request.GET.get('start_date', None)
-        end_date_str = request.GET.get('end_date')
+        end_date_str = request.GET.get('end_date', None)
         product_name = request.GET.get('product_name')
         department_id = request.GET.get('department')
+        department_unit = request.GET.get('department_unit')
 
-        if start_date_str:
-            start_date = start_date_str
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d') if start_date_str else None
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1) if end_date_str else None
 
-        else:
-            start_date = None
-
-        if end_date_str:
-            end_date = end_date_str
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M') + timedelta(days=1)  
-        else:
-            end_date = None
         r = Radiology.objects.all().order_by('-created_at')
         if start_date and end_date:
             r = r.filter(created_at__range=(start_date, end_date))
@@ -318,15 +341,24 @@ def show_radiology_report(request):
                     print(r)
                     department = de.name
 
+        investigation_unit = None
+        if department_unit != None:
+            if department_unit != 'All':
+                r = r.filter(investigation_unit = department_unit)
+                print(r)
+                investigation_unit = department_unit
+
+
         ie = Investigation.objects.all().order_by('-created_at')
         de = RadiologyDepartment.objects.all().order_by('-created_at')
         
         context = {
             'departments' : de,
             'investigations' : ie,
-            'title' : "Add Report",
+            'title' : f"Show Report : {len(r)}",
             'current_time_kolkata' : current_time_kolkata,
-            'radiology' : r
+            'radiology' : r,
+            'investigation_unit' : investigation_unit
         }
         return render(request, 'radiology/radiology.html', context=context)       
     else:
@@ -339,22 +371,14 @@ def show_radiology_report(request):
 def print_radiology_report(request):
     if request.user.is_superuser or request.session['user_role'] == 'Radiology':
         start_date_str = request.GET.get('start_date', None)
-        end_date_str = request.GET.get('end_date')
+        end_date_str = request.GET.get('end_date', None)
         product_name = request.GET.get('product_name')
         department_id = request.GET.get('department')
+        department_unit = request.GET.get('department_unit')
 
-        if start_date_str:
-            start_date = start_date_str
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d') if start_date_str else None
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1) if end_date_str else None
 
-        else:
-            start_date = None
-
-        if end_date_str:
-            end_date = end_date_str
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M') + timedelta(days=1)  
-        else:
-            end_date = None
         r = Radiology.objects.all().order_by('-created_at')
         if start_date and end_date:
             r = r.filter(created_at__range=(start_date, end_date))
@@ -379,15 +403,26 @@ def print_radiology_report(request):
                     print(r)
                     department = de.name
 
+        investigation_unit = None
+        if department_unit != None:
+            if department_unit != 'All':
+                r = r.filter(investigation_unit = department_unit)
+                print(r)
+                investigation_unit = department_unit
+
+
         ie = Investigation.objects.all().order_by('-created_at')
         de = RadiologyDepartment.objects.all().order_by('-created_at')
         
         context = {
             'departments' : de,
             'investigations' : ie,
-            'title' : "Add Report",
+            'title' : f"Show Report : {len(r)}",
             'current_time_kolkata' : current_time_kolkata,
-            'radiology' : r
+            'radiology' : r,
+            'investigation_unit' : investigation_unit,
+            'start_date_str' : start_date_str,
+            'end_date_str' : end_date_str
         }
         return render(request, 'radiology/radiology_print.html', context=context)       
     else:

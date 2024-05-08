@@ -17,6 +17,7 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
+              <th>Unit</th>
               <th>Name</th>
               <th>Edit</th>
               <th>Delete</th>
@@ -24,6 +25,7 @@
           </thead>
           <tfoot>
             <tr>
+              <th>Unit</th>
               <th>Name</th>
               <th>Edit</th>
               <th>Delete</th>
@@ -32,6 +34,7 @@
           <tbody>
             {% for d in investigations %}
             <tr>
+              <td>{{d.investigation_unit}}</td>
               <td>{{d.name}}</td>
               <td>
                 <a href="#" class="btn btn-primary btn-icon-split" data-toggle="modal" data-target="#adddepartmentModal_{{d.investigation_id}}">
@@ -49,11 +52,21 @@
                           <span aria-hidden="true">×</span>
                         </button>
                       </div>
-                      <form class="user" method="POST" action="/radilology/update-investigations/{{d.investigation_id}}">
+                      <form class="user" method="POST" action="/radiology/update-investigations/{{d.investigation_id}}">
                         <div class="modal-body">
                           {% csrf_token %}
+                          <div class="form-group" >
+                            <label for="department_unit">Department  (Unit) :</label>
+                            <select type="text" id="department_unit" class="form-control" name="department_unit" >
+                              <option>Select Unit</option>
+                              <option {% if d.investigation_unit == 'USG' %}selected{% endif %} value="USG">USG</option>
+                              <option {% if d.investigation_unit == 'X-Ray' %}selected{% endif %} value="X-Ray">X-Ray</option>
+                              <option {% if d.investigation_unit == 'C.T.' %}selected{% endif %} value="C.T.">C.T.</option>
+                            </select>
+                          </div>
+                  
                           <div class="form-group">
-                            <input type="text" name="department" class="form-control" id="exampleInputEmail" aria-describedby="emailHelp" value="{{d.name}}" placeholder="Enter Name..." />
+                            <input type="text" name="name" class="form-control" id="exampleInputEmail" aria-describedby="emailHelp" value="{{d.name}}" placeholder="Enter Name..." />
                           </div>
                          
                         </div>
@@ -94,9 +107,20 @@
         <form class="user" method="POST" action="{% url 'radiology_investigations' %}">
           <div class="modal-body">
             {% csrf_token %}
+            <div class="form-group" >
+              <label for="department_unit">Department  (Unit) :</label>
+              <select type="text" id="department_unit" class="form-control" name="department_unit" >
+                  <option>Select Unit</option>
+                <option value="USG">USG</option>
+                <option value="X-Ray">X-Ray</option>
+                <option value="C.T.">C.T.</option>
+              </select>
+            </div>
+    
             <div class="form-group">
               <input type="text" name="name" class="form-control" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Name..." />
             </div>
+
            
           </div>
           <div class="modal-footer">
@@ -109,4 +133,4 @@
   </div>
 </div>
 
-{% endblock %} {% block script %} {% endblock %}
+{% endblock %} 

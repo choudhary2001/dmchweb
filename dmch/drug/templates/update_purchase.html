@@ -59,11 +59,23 @@
           <input type="date" value="{{ purchase.invoice_date|date:'Y-m-d' }}" class="form-control" id="invoice_date" name="invoice_date" required />
         </div>
       </div>
+      {% for p in purchase.products.all %}
+      {% if forloop.first %}
+        <!-- Right Column (Order Details) -->
+        <div class="col-md-4 mb-3">
+          <div class="form-group">
+            <label for="date">Date:</label>
+            <input value="{{p.purchase_date|date:'Y-m-d'}}" type="date" class="form-control" name="date_1" required />
+          </div>
+        </div>
+        {% endif %}
+      {% endfor %}
+
     </div>
 
     <h3>Products</h3>
     <div id="productFields">
-        {% for p in purchase.products.all %}
+      {% for p in purchase.products.all %}
       <div class="row product-row">
 
         <!-- Middle Column (Product Details) -->
@@ -73,7 +85,7 @@
             <select class="form-control" name="product_type_1" required>
               <option>Select Product Type</option>
               {% for s in unique_p_types %}
-              <option {% if p.product.p_type == s %}selected{% endif %} value="{{s}}">{{s}}</option>
+              <option {% if p.product.p_type|lower == s|lower %}selected{% endif %} value="{{s}}">{{s}}</option>
               {% endfor %}
             </select>
           </div>
@@ -142,16 +154,10 @@
           </div>
         </div>
 
-        <!-- Right Column (Order Details) -->
-        <div class="col-md-4 mb-3">
-          <div class="form-group">
-            <label for="date">Date:</label>
-            <input value="{{p.purchase_date|date:'Y-m-d'}}" type="date" class="form-control" name="date_1" required />
-          </div>
-        </div>
+
       </div>
+      {% endfor %}
     </div>
-    {% endfor %}
     <input type="hidden" id="productCount" name="product_count" {% if purchase.products.all|length %}value="{{ purchase.products.all|length }}"{% else %}value="1"{% endif %} />
 
     <div class="text-center mt-3">

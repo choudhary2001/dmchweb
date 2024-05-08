@@ -42,6 +42,13 @@
           <input type="text" class="form-control" id="indent" name="indent" />
         </div>
       </div>
+       <!-- Right Column (Order Details) -->
+       <div class="col-md-4 mb-3">
+        <div class="form-group">
+          <label for="date">Date:</label>
+          <input type="date" class="form-control" name="date" required />
+        </div>
+      </div>
     </div>
 
     <h3>Products</h3>
@@ -95,6 +102,14 @@
           </div>
         </div>
 
+          <!-- Middle Column (Product Details) -->
+          <!-- <div class="col-md-4 mb-3">
+            <div class="form-group">
+              <label for="batchno">Supplier Name:</label>
+              <input type="text" class="form-control" name="suppliar_1" disabled required />
+            </div>
+          </div> -->
+
         <!-- Right Column (Order Details) -->
         <div class="col-md-4 mb-3">
           <div class="form-group">
@@ -124,13 +139,7 @@
           </div>
         </div>
 
-        <!-- Right Column (Order Details) -->
-        <div class="col-md-4 mb-3">
-          <div class="form-group">
-            <label for="date">Date:</label>
-            <input type="date" class="form-control" name="date_1" required />
-          </div>
-        </div>
+       
       </div>
     </div>
 
@@ -225,6 +234,15 @@
           </div>
         `;
 
+    var suppliarColumn = document.createElement("div");
+    suppliarColumn.className = "col-md-4 mb-3";
+    suppliarColumn.innerHTML = `
+          <div class="form-group">
+            <label for="batchno">Suppliar Name:</label>
+            <input type="text" class="form-control" name="suppliar_${productCount}" disabled required />
+          </div>
+        `;
+
     var mfgDateColumn = document.createElement("div");
     mfgDateColumn.className = "col-md-4 mb-3";
     mfgDateColumn.innerHTML = `
@@ -261,14 +279,6 @@
           </div>
         `;
 
-    var dateColumn = document.createElement("div");
-    dateColumn.className = "col-md-4 mb-3";
-    dateColumn.innerHTML = `
-          <div class="form-group">
-            <label for="batchno">Date.:</label>
-            <input type="date" class="form-control" name="date_${productCount}" required />
-          </div>
-        `;
 
     var product_type_id_column = document.createElement("div");
     product_type_id_column.className = "col-md-4 mb-3";
@@ -289,12 +299,12 @@
     productRow.appendChild(rightColumn);
     productRow.appendChild(mfgColumn);
     productRow.appendChild(batchColumn);
+    // productRow.appendChild(suppliarColumn);
     productRow.appendChild(mfgDateColumn);
     productRow.appendChild(mfgDateColumn);
     productRow.appendChild(expDatecolumn);
     productRow.appendChild(quantityColumn);
     productRow.appendChild(amountcolumn);
-    productRow.appendChild(dateColumn);
     productRow.appendChild(removeButton);
 
     productFields.appendChild(productRow);

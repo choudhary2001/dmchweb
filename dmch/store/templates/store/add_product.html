@@ -70,6 +70,25 @@
           <input type="date" class="form-control" name="chalan_date"  required />
         </div>
       </div>
+
+      <div class="col-md-3 mb-3">
+        <div class="form-group">
+          <label for="sp_order_no">Order No.:</label>
+          <input type="text" class="form-control" name="sp_order_no" required />
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="form-group">
+          <label for="sp_order_date">Order Date:</label>
+          <input type="date" class="form-control" name="sp_order_date"  required />
+        </div>
+      </div>
+      <div class="col-md-3 mb-3 ">
+        <div class="form-group">
+          <label for="received_date">Received Date:</label>
+          <input type="date" class="form-control" name="received_date" value="{% if request.session.received_date %}{{request.session.received_date}}{% endif %}" required />
+        </div>
+      </div>
       <div class="col-md-3 mb-3 ">
         <div class="form-group">
           <label for="date">Date:</label>

@@ -9,7 +9,7 @@ class Medicine(models.Model):
     medicine_id =  models.CharField(max_length=8, unique=True, editable=False, default="")
     product = models.ForeignKey(ProductSupply, on_delete=models.SET_NULL, blank = True, null = True)
     quantity = models. BigIntegerField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add = True,blank = True, null = True)
+    created_at = models.DateTimeField(blank = True, null = True)
 
 
     def save(self, *args, **kwargs):
@@ -18,7 +18,7 @@ class Medicine(models.Model):
         super(Medicine, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.medicine_id
+        return f"{self.medicine_id} {self.product}"
     
 
 class MedicineConsumption(models.Model):
@@ -35,5 +35,5 @@ class MedicineConsumption(models.Model):
 
 
     def __str__(self):
-        return self.consumption_id
+        return f"{self.consumption_id}  {self.patient}"
     

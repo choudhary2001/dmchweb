@@ -14,19 +14,19 @@
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <form action="{% url 'medicine_supply_details_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+      <form action="{% url 'medicine_receivedsupply_details_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
         <div style="flex: 1">
-          <input type="datetime-local" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+          <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
         </div>
         <div style="">
           <span>-</span>
         </div>
         <div style="flex: 1">
-          <input type="datetime-local" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+          <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
         </div>
 
         <div style="flex: 3">
-          <select class="form-control" name="product_name" id="product_name" required>
+          <select class="form-control" name="product_name" id="product_name" >
             <option value="">Select Medicine Name</option>
             <option value="All">All</option>
             {% for s in productsupply %}
@@ -38,7 +38,7 @@
           <button class="btn btn-primary w-100" type="submit">Filter</button>
         </div>
         <div style="flex: 1">
-          <a href="{% url 'medicine_supply_details_view_print' %}" class="btn btn-primary w-100">Print</a>
+          <a href="{% url 'medicine_receivedsupply_details_print' %}" class="btn btn-primary w-100">Print</a>
         </div>
       </form>
     </div>
@@ -62,6 +62,7 @@
               <th>Exp Date</th>
               <th>Batch No</th>
               <th>Quantity</th>
+              <th>Consumption</th>
               <th>In Stock</th>
               <th>Supply Time</th>
               <th>Remarks</th>
@@ -81,8 +82,9 @@
                     <td>{% if product.exp_date %}{{ product.exp_date }}{% endif %}</td>
                     <td>{{ product.batch_no }}</td>
                     <td>{{ product.quantity }}</td>
+                    <td class="quantity-difference"></td>
                     <td>{{ product.stock_quantity }}</td>
-                    <td >{{ product.supply_date|date:"F j, Y" }}</td>
+                    <td >{{ order.order_date|date:"F j, Y" }}</td>
                     <td rowspan="{{ order.products.count }}">{{ order.remarks }}</td>
                     <td rowspan="{{ order.products.count }}">
                       <a href="/medicine_store/supply/{{ order.supply_id }}/update/" class="btn btn-primary btn-icon-split">
@@ -110,8 +112,9 @@
                     <td>{% if product.exp_date %}{{ product.exp_date }}{% endif %}</td>
                     <td>{{ product.batch_no }}</td>
                     <td>{{ product.quantity }}</td>
+                    <td class="quantity-difference"></td>
                     <td>{{ product.stock_quantity }}</td>
-                    <td >{{ product.supply_date|date:"F j, Y" }}</td>
+                    <td >{{ order.order_date|date:"F j, Y" }}</td>
                   </tr>
                 {% endif %}
               {% endfor %}
@@ -147,4 +150,29 @@
     $("#product_name").select2();
   });
 </script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Get all rows in the table body
+    var rows = document.querySelectorAll("tbody tr");
+
+    // Iterate over each row
+    rows.forEach(function(row) {
+      // Get the cells for quantity and stock quantity
+      var quantityCell = row.querySelector("td:nth-child(8)");
+      var stockQuantityCell = row.querySelector("td:nth-child(10)");
+      var remainingStockCell = row.querySelector(".quantity-difference");
+      console.log(quantityCell, stockQuantityCell, remainingStockCell)
+      // Get the values from the cells
+      var quantity = parseInt(quantityCell.textContent);
+      var stockQuantity = parseInt(stockQuantityCell.textContent);
+
+      // Calculate the remaining stock (difference)
+      var remainingStock = quantity - stockQuantity;
+
+      // Update the remaining stock cell with the calculated remaining stock
+      remainingStockCell.textContent = remainingStock;
+    });
+  });
+</script>
+
 {% endblock %}

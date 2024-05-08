@@ -31,6 +31,8 @@ def home(request):
     return render(request, 'counter/home.html')
 
 def signin(request):
+    logout(request)
+    request.session.clear()
     if request.method == "POST":
         username = request.POST.get('email')
         password = request.POST.get('password')

@@ -14,6 +14,7 @@ urlpatterns = [
     path('delete-doctors/<int:doctor_id>', views.doctors_delete, name="radiology_doctors_delete"),
 
     path('get-doctors-by-department/',views.get_doctors_by_department,name='radiology_get_doctors_by_department'),
+    path('get-investigation-by-department/',views.get_investigation_by_department,name='get_investigation_by_department'),
 
     path('add-investigations/', views.investigations, name="radiology_investigations"),
     path('update-investigations/<int:investigation_id>', views.investigationss_update, name="radiology_investigations_update"),

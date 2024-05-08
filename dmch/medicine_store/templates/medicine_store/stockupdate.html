@@ -82,7 +82,7 @@
           <div class="form-group">
             <label for="product_name" id="product_name">Product Type:</label>
         
-            <input type="text" class="form-control" name="product_type_1" value="{{p.product_type}}" disabled required />
+            <input type="text" class="form-control" name="product_type_{{ forloop.counter }}" value="{{p.product_type}}" disabled required />
 
           </div>
         </div>
@@ -92,7 +92,7 @@
           <div class="form-group">
             <label for="product_type" id="product_type">Product Name:</label>
 
-            <input type="text" class="form-control" name="product_name_1" value="{{p.product_name}}" disabled required />
+            <input type="text" class="form-control" name="product_name_{{ forloop.counter }}" value="{{p.product_name}}" disabled required />
 
           </div>
         </div>
@@ -101,14 +101,14 @@
         <div class="col-md-2 exp_date">
           <div class="form-group">
             <label for="mfgname">Mfg. By:</label>
-            <input value="{{p.mfg_name}}" type="text" class="form-control" name="mfgname_1"  />
+            <input value="{{p.mfg_name}}" type="text" class="form-control" name="mfgname_{{ forloop.counter }}"  />
           </div>
         </div>
 
         <div class="col-md-2 exp_date" style="display: none;">
             <div class="form-group">
               <label for="mfgname">Products Details Id:</label>
-              <input value="{{p.productdetails_id}}" type="text" class="form-control" name="productdetails_id_1" required />
+              <input value="{{p.productdetails_id}}" type="text" class="form-control" name="productdetails_id_{{ forloop.counter }}" required />
             </div>
           </div>
 
@@ -116,7 +116,7 @@
         <div class="col-md-2 exp_date">
           <div class="form-group">
             <label for="batch_no">Batch No.:</label>
-            <input  value="{{p.batch_no}}"  type="text" class="form-control" name="batchno_1"  />
+            <input  value="{{p.batch_no}}"  type="text" class="form-control" name="batchno_{{ forloop.counter }}"  />
           </div>
         </div>
 
@@ -124,13 +124,13 @@
         <div class="col-md-2 exp_date_date">
           <div class="form-group">
             <label for="mfgdate">Mfg Date:</label>
-            <input value="{{p.mfg_date|date:'Y-m-d' }}" type="date" class="form-control" name="mfgdate_1"  />
+            <input value="{{p.mfg_date|date:'Y-m-d' }}" type="date" class="form-control" name="mfgdate_{{ forloop.counter }}"  />
           </div>
         </div>
         <div class="col-md-2 exp_date_date">
           <div class="form-group">
             <label for="expdate">Exp. Date:</label>
-            <input value="{{p.exp_date|date:'Y-m-d'}}" type="date" class="form-control" name="expdate_1"  />
+            <input value="{{p.exp_date|date:'Y-m-d'}}" type="date" class="form-control" name="expdate_{{ forloop.counter }}"  />
           </div>
         </div>
 
@@ -138,14 +138,14 @@
         <div class="col-md-1 quantity_div">
           <div class="form-group">
             <label for="quantity">Quantity:</label>
-            <input value="{{p.quantity}}" type="number" class="form-control" name="quantity_1" required />
+            <input value="{{p.quantity}}" type="number" class="form-control" name="quantity_{{ forloop.counter }}" required />
           </div>
         </div>
 
         <div class="col-md-1 quantity_div">
           <div class="form-group">
             <label for="stock_quantity"> Stock:</label>
-            <input value="{{p.stock_quantity}}" type="number" class="form-control" name="stock_quantity_1" required />
+            <input value="{{p.stock_quantity}}" type="number" class="form-control" name="stock_quantity_{{ forloop.counter }}" required />
           </div>
         </div>
 
@@ -153,7 +153,7 @@
       {% endfor %}
     </div>
 
-    <input type="hidden" id="productCount" name="product_count" value="1" />
+    <input type="hidden" id="productCount" name="product_count" value="{{total}}" />
 
     <!-- <div class="text-center mt-3">
       <button type="button" class="btn btn-primary" id="addProductField">Add Product</button>

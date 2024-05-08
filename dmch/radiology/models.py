@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 import datetime
 import uuid
+from counter.models import *
+
 
 class RadiologyDepartment(models.Model):
     department_id = models.CharField(max_length=8, unique=True, editable=False, default="")
@@ -20,6 +22,7 @@ class RadiologyDepartment(models.Model):
 class Investigation(models.Model):
     investigation_id = models.CharField(max_length=8, unique=True, editable=False, default="")
     name = models.CharField(max_length = 255)
+    investigation_unit = models.CharField(max_length = 255, blank = True, null = True)
     created_at = models.DateTimeField(auto_now_add = True)
 
     def save(self, *args, **kwargs):
@@ -51,11 +54,13 @@ class Radiology(models.Model):
     user = models.ForeignKey(User, on_delete = models.SET_NULL, blank = True, null = True)
     radiology_id = models.CharField(max_length=8, unique=True, editable=False, default="")
     patient_name = models.CharField(max_length = 255, blank = True, null = True)
+    patient = models.ForeignKey(Patient, on_delete = models.SET_NULL, blank = True, null = True)
     reg_no = models.CharField(max_length = 255, blank = True, null = True)
     doctor = models.ForeignKey(RadiologyDoctor, on_delete = models.SET_NULL,  blank = True, null = True)
     department = models.ForeignKey(RadiologyDepartment, on_delete = models.SET_NULL,  blank = True, null = True)
     investigation = models.ForeignKey(Investigation, on_delete = models.SET_NULL,  blank = True, null = True)
     investigation_unit = models.CharField(max_length = 255, blank = True, null = True)
+    sub_unit = models.CharField(max_length = 255, blank = True, null = True)
     patient_type = models.CharField(max_length = 255, blank = True, null = True)
     investigation_type = models.CharField(max_length = 255, blank = True, null = True)
     no_of_plate = models.CharField(max_length = 255, blank = True, null = True)

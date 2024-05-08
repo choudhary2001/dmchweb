@@ -50,69 +50,12 @@
             </tr>
           </thead>
           <tbody>
-            {% for order in purchase %}
-            <tr>
-              <td>{{ order.order_id }}</td>
-              <td>
-                {% for product in order.products.all %}
-                <p>{{ product.product.p_type }}</p>
-
-                {% endfor %}
-              </td>
-              <td>
-                {% for product in order.products.all %}
-                <p>{{ product.product.name }}</p>
-
-                {% endfor %}
-              </td>
-              <td>
-                {% for product in order.products.all %}
-                <p>{{ product.mfg_name }}</p>
-
-                {% endfor %}
-              </td>
-
-              <td>
-                {% for product in order.products.all %}
-                <p>{{ product.mfg_date }}</p>
-
-                {% endfor %}
-              </td>
-              <td>
-                {% for product in order.products.all %}
-                <p>{{ product.exp_date }}</p>
-
-                {% endfor %}
-              </td>
-              <td>
-                {% for product in order.products.all %}
-                <p>{{ product.quantity }}</p>
-                {% endfor %}
-              </td>
-              <td>
-                {% for product in order.products.all %}
-                <p>{{ product.batch_no }}</p>
-
-                {% endfor %}
-              </td>
-              <td>
-                <p>
-                  {{ order.supplier.name }}<br />
-                  Gst : {{ order.gst }}<br />
-                  Mob No. :{{ order.mob_no }}<br />
-                  Email : {{ order.email }}<br />
-                </p>
-              </td>
-              <td>{{ order.invoice_no }}</td>
-              <td>{{ order.invoice_date }}</td>
- 
-
-             
-
-              <td>{{order.purchase_date}}</td>
-            
-              </td>
-            </tr>
+              
+            {% for product_name, total_quantity in product_quantities.items %}
+                <tr>
+                    <td>{{ product_name }}</td>
+                    <td>{{ total_quantity }}</td>
+                </tr>
             {% endfor %}
           </tbody>
         </table>
