@@ -16,8 +16,10 @@
     line-height: 0.5rem;
     align-items: center;
   }
+
   .form-control {
     padding: 0;
+    font-size: 12px;
   }
   .mb-1{
     padding: 0 !important;
@@ -350,15 +352,21 @@
       productFields.appendChild(productRow);
       // $(".product-name-select").select2();
       // Find the current quantity input field and its container
+      // Find the current quantity input field and its container
       var currentQuantityInput = $(this);
       var currentProductRow = currentQuantityInput.closest(".product-row");
 
-      // Find the next product name input field within the same product row
-      var nextProductNameInput = currentProductRow.find("input[name^='product_name']").first();
-      console.log(nextProductNameInput)
-      // Move focus to the next product name input field
-      nextProductNameInput.focus();
+      // Find the next quantity input field within the same product row
+      var nextQuantityInput = currentProductRow.next().find("input[name^='quantity']").first();
 
+      // Move focus to the next quantity input field
+      nextQuantityInput.focus();
+
+      // Find the product type input field in the next row
+      var nextProductTypeInput = currentProductRow.next().find("select[name^='product_type']").first();
+
+      // Move focus to the product type input field in the next row
+      nextProductTypeInput.focus();
       // Show the product popup and update its content based on search input
       $(`#searchMedicine_${productCount}`).on("input", function () {
         var searchValue = $(this).val().trim().toLowerCase();
@@ -519,7 +527,7 @@
         popup.css({
           top: inputHeight + 15,
           left: 0,
-          width: inputWidth + 50,
+          width: inputWidth + 500,
         }).show();
       } else {
         popup.hide(); // Hide the popup if search input is empty
@@ -560,6 +568,32 @@
         }
       }
 
+        var productName = options.eq(currentIndex).text();
+        var productId = options.eq(currentIndex).val(); // Get the value of the selected option
+        console.log(productId, productName)
+        if(productName && productId){
+        // $("#searchMedicine").val(productName);
+        // $(`#product_name_1`).val(productId);
+        // $("#productPopup").hide();
+        // Assign the value of the selected option to a hidden input field or perform any other action as needed
+        // $("#selectedProductId").val(productId);
+        
+        $.ajax({
+          url: '{% url "get_medicine_details" %}',
+          type: "GET",
+          data: {
+            product_name: productId,
+          },
+          success: function (data) {
+            console.log(data.product);
+            $("#mfgname_1").val(data.product.mfg_name);
+            $("#batchno_1").val(data.product.batch_no);
+            $("#mfgdate_1").val(data.product.mfg_date);
+            $("#expdate_1").val(data.product.exp_date);
+            $("#stock_quantity_1").val(data.product.stock_quantity);
+          },
+        });
+      }
     });
 
       // Close the popup when clicking outside of it
@@ -596,7 +630,7 @@
           },
         });
       });
-    });
+  });
 
 
 </script>

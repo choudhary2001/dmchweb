@@ -42,8 +42,8 @@ urlpatterns = [
 
     # Supply URLs
     path('supply/add/', views.supply_add_view, name='supply-add'),
-    path('supply/view/print/', views.supply_details_view_print, name='supply_details_view_print'),
-    path('supply/view/', views.supply_details_view, name='supply_details_view'),
+    path('supply/view/print/', views.supply_details_view_print, name='drug_supply_details_view_print'),
+    path('supply/view/', views.supply_details_view, name='drug_supply_details_view'),
     path('supply/<str:supply_id>/update/', views.supply_update_view, name='supply-update'),
     path('supply/<str:supply_id>/delete/', views.supply_delete_view, name='supply-delete'),
 ]

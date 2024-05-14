@@ -45,6 +45,8 @@ class ProductType(models.Model):
             self.product_type_id = str(uuid.uuid4().int)[:8]
         super(ProductType, self).save(*args, **kwargs)
 
+    def __str__(self):
+        return f"{self.p_type} - {self.name}"
 
 class ProductDetails(models.Model):
     user = models.ForeignKey(User, on_delete = models.SET_NULL,  blank = True, null = True)
@@ -173,7 +175,8 @@ class Supply(models.Model):
     quantity = models.IntegerField(blank = True, null = True)
     de = models.CharField(max_length = 100, blank = True, null = True, default=None)
     remarks = models.CharField(max_length = 255, blank = True, null = True, default="")
-    order_date = models.DateTimeField(auto_now_add=True, blank = True, null = True,)
+    order_date = models.DateTimeField(blank = True, null = True,)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         if not self.supply_id:

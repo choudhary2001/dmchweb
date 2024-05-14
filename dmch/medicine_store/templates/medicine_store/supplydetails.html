@@ -14,7 +14,7 @@
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <form action="{% url 'supply_details_user_view_print' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+      <form action="{% url 'supply_details_user_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
         <div style="flex: 1">
           <input type="datetime-local" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
         </div>
@@ -58,48 +58,38 @@
           </thead>
           <tbody>
             {% for order in supply %}
+            {% for product in order.products.all %}
+
             <tr>
               <td>{% if order.patient.name %}{{ order.patient.name }}{% else %}{{ order.patient.regnoid }}{% endif %}</td>
 
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.product.product_name }}</p>
-                {% endfor %}
               </td>
 
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.product.mfg_name }}</p>
-
-                {% endfor %}
               </td>
 
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.product.mfg_date }}</p>
 
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.product.exp_date }}</p>
 
-                {% endfor %}
               </td>
 
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.quantity }}</p>
-                {% endfor %}
               </td>
 
               <td>
                 
+                <!-- <p>{{ order.created_at }}</p> -->
                 <!-- {{order.created_at|date:"F j, Y"}} -->
-                {% for product in order.products.all %}
-                  <p>{{ product.created_at }}</p>
+                {{product.created_at|date:"F j, Y"}}
 
-                {% endfor %}
 
               </td>
               <td>
@@ -116,6 +106,8 @@
                 </a>
               </td>
             </tr>
+            {% endfor %}
+
             {% endfor %}
           </tbody>
         </table>

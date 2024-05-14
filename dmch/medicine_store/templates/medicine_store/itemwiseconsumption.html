@@ -65,36 +65,34 @@
             {% endif %}
         </div>
       <div class="table-responsive" id="tableContainer">
-        <table class="table table-bordered" width="100%" cellspacing="0">
+        <table class="table table-bordered" width="100%" id="tablee" cellspacing="0">
           <thead>
             <tr>
               <th>Medicine Name</th>
-              <th>Quantity</th>
               <th>Opening</th>
+              <th>Purchase</th>
+              <th>Consumption</th>
               <th>Closing</th>
             </tr>
           </thead>
           <tbody>
-            {% for order in supply %}
+            <!-- {% for order in supply %}
             <tr>
-              <td>{{ order.product }}</td>
+              <td>{{ order.product_name }}</td>
               <td>{% if order.total_quantity == None %}0{% else %}{{ order.total_quantity }}{% endif %}</td>
               <td>{% if order.till_remaining == None %}0{% else %}{{ order.till_remaining }}{% endif %}</td>
               <td>{% if order.till_end == None %}0{% else %}{{ order.till_end }}{% endif %}</td>
 
-              <!-- <td>
-                <a href="/drug/supply/{{ order.supply_id }}/update/" class="btn btn-primary btn-icon-split">
-                  <span class="icon text-white-50">
-                    <i class="fas fa-arrow-right"></i>
-                  </span>
-                  <span class="text">Edit</span>
-                </a>
-                <a href="/drug/supply/{{ order.supply_id }}/delete/" class="btn btn-danger btn-icon-split">
-                  <span class="icon text-white-50">
-                    <i class="fas fa-trash"></i>
-                  </span>
-                </a>
-              </td> -->
+          
+            </tr>
+            {% endfor %} -->
+            {% for product_name, quantities in product_quantities.items %}
+            <tr>
+              <td>{{ product_name }}</td>
+              <td>{{ quantities.remaining_quantity }}</td>
+              <td>{{ quantities.purchase }}</td>
+              <td>{{ quantities.total_quantity }}</td>
+              <td>{{ quantities.remaining_quantityy }}</td>
             </tr>
             {% endfor %}
           </tbody>
@@ -126,5 +124,38 @@
     $("body").html(originalContents);
     window.location.reload();
   }
+</script>
+<script>
+  function sortTableByProductName() {
+    var table, rows, switching, i, x, y, shouldSwitch;
+    table = document.getElementById("tablee");
+    switching = true;
+    // Loop until no switching has been done
+    while (switching) {
+      switching = false;
+      rows = table.rows;
+      // Loop through all table rows (except the first, which contains table headers)
+      for (i = 1; i < (rows.length - 1); i++) {
+        shouldSwitch = false;
+        // Get the two product names to compare
+        x = rows[i].getElementsByTagName("td")[0]; // Product Name column index
+        y = rows[i + 1].getElementsByTagName("td")[0]; // Product Name column index
+        // Check if the two rows should switch places based on alphabetical order
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          // If so, mark as a switch and break the loop
+          shouldSwitch = true;
+          break;
+        }
+      }
+      if (shouldSwitch) {
+        // Perform the switch and mark that a switch has been done
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+      }
+    }
+  }
+  document.addEventListener("DOMContentLoaded", function() {
+    sortTableByProductName();
+  })
 </script>
 {% endblock %}

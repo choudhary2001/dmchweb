@@ -252,10 +252,10 @@ def order_add_view(request):
         s = Suppliar.objects.all().order_by('-created_at')
         d = DrugDepartment.objects.all().order_by('-created_at')
         p = ProductType.objects.all().order_by('-created_at')
-        # unique_p_types = ProductType.objects.values_list('p_type', flat=True).distinct()
-        unique_p_types = ProductType.objects.annotate(
-            normalized_p_type=Trim(Upper('p_type', output_field=CharField()))
-        ).values_list('normalized_p_type', flat=True).distinct()
+        unique_p_types = ProductType.objects.values_list('p_type', flat=True).distinct().order_by('p_type')
+        #unique_p_types = ProductType.objects.annotate(
+         #   normalized_p_type=Trim(Upper('p_type', output_field=CharField()))
+       # ).values_list('normalized_p_type', flat=True).distinct()
 
         context = {
             'title' : 'Add Order',
@@ -536,7 +536,7 @@ def order_update_view(request, order_id):
         s = Suppliar.objects.all().order_by('-created_at')
         d = DrugDepartment.objects.all().order_by('-created_at')
         p = ProductType.objects.all().order_by('-created_at')
-        unique_p_types = ProductType.objects.values_list('p_type', flat=True).distinct()
+        unique_p_types = ProductType.objects.values_list('p_type', flat=True).distinct().order_by('p_type')
         context = {
             'title' : 'Update Order',
             'suppliar' : s,
@@ -650,10 +650,10 @@ def purchase_add_view(request):
         s = Suppliar.objects.all().order_by('-created_at')
         d = DrugDepartment.objects.all().order_by('-created_at')
         p = ProductType.objects.all().order_by('-created_at')
-        # unique_p_types = ProductType.objects.values_list('p_type', flat=True).distinct()
-        unique_p_types = ProductType.objects.annotate(
-            normalized_p_type=Trim(Upper('p_type', output_field=CharField()))
-        ).values_list('normalized_p_type', flat=True).distinct()
+        unique_p_types = ProductType.objects.values_list('p_type', flat=True).distinct().order_by('p_type')
+        #unique_p_types = ProductType.objects.annotate(
+         #   normalized_p_type=Trim(Upper('p_type', output_field=CharField()))
+        #).values_list('normalized_p_type', flat=True).distinct()
 
         context = {
             'title' : 'Add Purchase',
@@ -770,7 +770,7 @@ def purchase_update_view(request,purchase_id):
         p = ProductType.objects.all().order_by('-created_at')
         unique_p_types = ProductType.objects.annotate(
             normalized_p_type=Trim(Upper('p_type', output_field=CharField()))
-        ).values_list('normalized_p_type', flat=True).distinct()
+        ).values_list('normalized_p_type', flat=True).distinct().order_by('p_type')
 
         context = {
             'title' : 'Update Purchase',
@@ -973,7 +973,7 @@ def stock_details_view(request):
 
         # Iterate through unique product names and aggregate their quantities
         for product_name in p.values_list('product_name', flat=True).distinct():
-            total_quantity = ProductPurchase.objects.filter(product_name=product_name).aggregate(total_quantity=Sum('quantity'))['total_quantity']
+            total_quantity = ProductPurchase.objects.filter(product_name=product_name).aggregate(total_quantity=Sum('stock_quantity'))['total_quantity']
             product_quantities[product_name] = total_quantity
 
         d = DrugDepartment.objects.all()
@@ -1075,6 +1075,7 @@ def supply_add_view(request):
                 user = request.user,
                 departpment=department,
                 indent  = indent,
+                order_date = date,
                 de = None
             )
 
@@ -1130,10 +1131,10 @@ def supply_add_view(request):
         s = Suppliar.objects.all().order_by('-created_at')
         d = DrugDepartment.objects.all().order_by('-created_at')
         p = ProductType.objects.all().order_by('-created_at')
-        unique_p_types = ProductType.objects.annotate(
-            normalized_p_type=Trim(Upper('p_type', output_field=CharField()))
-        ).values_list('normalized_p_type', flat=True).distinct()
-
+       # unique_p_types = ProductType.objects.annotate(
+        #    normalized_p_type=Trim(Upper('p_type', output_field=CharField()))
+       # ).values_list('normalized_p_type', flat=True).distinct()
+        unique_p_types = ProductType.objects.values_list('p_type' , flat =True).distinct().order_by('p_type')
         context = {
             'title' : 'Add Supply',
             'suppliar' : s,
@@ -1322,6 +1323,7 @@ def supply_update_view(request, supply_id):
             department = DrugDepartment.objects.filter(department_id=department_id).first()
             supply.department = department
             supply.indent = indent
+            supply.order_date = date
             supply.save()
 
             # Loop through the product form fields
@@ -1400,7 +1402,7 @@ def supply_update_view(request, supply_id):
         s = Suppliar.objects.all().order_by('-created_at')
         d = DrugDepartment.objects.all().order_by('-created_at')
         p = ProductType.objects.all().order_by('-created_at')
-        unique_p_types = ProductType.objects.values_list('p_type', flat=True).distinct()
+        unique_p_types = ProductType.objects.values_list('p_type', flat=True).distinct().order_by('p_type')
         context = {
             'title' : 'Update Supply',
             'suppliar' : s,

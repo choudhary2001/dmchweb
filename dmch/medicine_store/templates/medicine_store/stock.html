@@ -14,7 +14,7 @@
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <form action="{% url 'medicine_receivedsupply_details_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+      <form action="{% url 'medicine_supply_details_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
         <div style="flex: 1">
           <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
         </div>
@@ -38,9 +38,10 @@
           <button class="btn btn-primary w-100" type="submit">Filter</button>
         </div>
         <div style="flex: 1">
-          <a href="{% url 'medicine_receivedsupply_details_print' %}" class="btn btn-primary w-100">Print</a>
+          <a href="{% url 'medicine_supply_details_view_print' %}" class="btn btn-primary w-100">Print</a>
         </div>
       </form>
+   
     </div>
     <div class="card-body" id="printablecontent">
       <!-- <style>
@@ -64,7 +65,9 @@
               <th>Quantity</th>
               <th>Consumption</th>
               <th>In Stock</th>
-              <th>Supply Time</th>
+              <th>Total Stock</th>
+              <th>Supply On Date</th>
+              <th>Created Date/Time</th>
               <th>Remarks</th>
               <th>Action</th>
             </tr>
@@ -72,7 +75,6 @@
           <tbody>
             {% for order in supply %}
               {% for product in order.products.all %}
-                {% if forloop.first %}
                   <tr>
                     <td>{{ order.departpment.name }}</td>
                     <td>{{ product.product_type }}</td>
@@ -84,9 +86,11 @@
                     <td>{{ product.quantity }}</td>
                     <td class="quantity-difference"></td>
                     <td>{{ product.stock_quantity }}</td>
+                    <td></td>
                     <td >{{ order.order_date|date:"F j, Y" }}</td>
-                    <td rowspan="{{ order.products.count }}">{{ order.remarks }}</td>
-                    <td rowspan="{{ order.products.count }}">
+                    <td >{{ order.created_at }}</td>
+                    <td >{{ order.remarks }} </td>
+                    <td >
                       <a href="/medicine_store/supply/{{ order.supply_id }}/update/" class="btn btn-primary btn-icon-split">
                         <span class="icon text-white-50">
                           <i class="fas fa-arrow-right"></i>
@@ -102,21 +106,6 @@
                       {% endif %}
                     </td>
                   </tr>
-                {% else %}
-                  <tr>
-                    <td>{{ order.departpment.name }}</td>
-                    <td>{{ product.product_type }}</td>
-                    <td>{{ product.product_name }}</td>
-                    <td>{{ product.mfg_name }}</td>
-                    <td>{% if product.mfg_date %}{{ product.mfg_date }}{% endif %}</td>
-                    <td>{% if product.exp_date %}{{ product.exp_date }}{% endif %}</td>
-                    <td>{{ product.batch_no }}</td>
-                    <td>{{ product.quantity }}</td>
-                    <td class="quantity-difference"></td>
-                    <td>{{ product.stock_quantity }}</td>
-                    <td >{{ order.order_date|date:"F j, Y" }}</td>
-                  </tr>
-                {% endif %}
               {% endfor %}
             {% endfor %}
           </tbody>
@@ -174,5 +163,95 @@
     });
   });
 </script>
+
+<script>
+  // Function to sort table rows by product name alphabetically
+  function sortTableByProductName() {
+    var table, rows, switching, i, x, y, shouldSwitch;
+    table = document.getElementById("dataTable");
+    switching = true;
+    // Loop until no switching has been done
+    while (switching) {
+      switching = false;
+      rows = table.rows;
+      // Loop through all table rows (except the first, which contains table headers)
+      for (i = 1; i < (rows.length - 1); i++) {
+        shouldSwitch = false;
+        // Get the two product names to compare
+        x = rows[i].getElementsByTagName("td")[2]; // Product Name column index
+        y = rows[i + 1].getElementsByTagName("td")[2]; // Product Name column index
+        // Check if the two rows should switch places based on alphabetical order
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          // If so, mark as a switch and break the loop
+          shouldSwitch = true;
+          break;
+        }
+      }
+      if (shouldSwitch) {
+        // Perform the switch and mark that a switch has been done
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+      }
+    }
+  }
+  document.addEventListener("DOMContentLoaded", function() {
+    sortTableByProductName();
+  })
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Get all rows in the table body
+    var rows = document.querySelectorAll("tbody tr");
+
+    // Object to store total stock for each product name
+    var totalStock = {};
+
+    // Iterate over each row
+    rows.forEach(function(row) {
+      // Get the cells for quantity, product name, and stock quantity
+      var productNameCell = row.querySelector("td:nth-child(3)");
+      var quantityCell = row.querySelector("td:nth-child(8)");
+      var stockQuantityCell = row.querySelector("td:nth-child(10)");
+      var remainingStockCell = row.querySelector(".quantity-difference");
+
+      // Get the values from the cells
+      var productName = productNameCell.textContent.trim();
+      var quantity = parseInt(quantityCell.textContent);
+      var stockQuantity = parseInt(stockQuantityCell.textContent);
+
+      // Calculate the remaining stock (difference)
+      var remainingStock = quantity - stockQuantity;
+
+      // Update the remaining stock cell with the calculated remaining stock
+      remainingStockCell.textContent = remainingStock;
+
+      // Update total stock for the product name
+      if (productName in totalStock) {
+        totalStock[productName] += stockQuantity;
+      } else {
+        totalStock[productName] = stockQuantity;
+      }
+    });
+
+    // Update Total Stock column
+    var uniqueProducts = {}; // To keep track of processed product names
+    rows.forEach(function(row) {
+      var productNameCell = row.querySelector("td:nth-child(3)");
+      var totalStockCell = row.querySelector("td:nth-child(11)");
+
+      var productName = productNameCell.textContent.trim();
+      if (!(productName in uniqueProducts)) {
+        totalStockCell.textContent = totalStock[productName];
+        uniqueProducts[productName] = true;
+      } else {
+        totalStockCell.textContent = ""; // Clear cell for duplicate product names
+        
+      }
+    });
+  });
+</script>
+
+
+
 
 {% endblock %}

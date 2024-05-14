@@ -20,8 +20,8 @@ urlpatterns = [
     path('get/medicine/', views.get_medicine_details, name='get_medicine_details'),
     path('user/medicine/', views.supply_details_user_view, name='supply_details_user_view'),
     path('user/medicine/print/', views.supply_details_user_view_print, name='supply_details_user_view_print'),
-    path('supply/<str:supply_id>/update/', views.supply_update_view, name='supply-update'),
-    path('supply/<str:supply_id>/delete/', views.supply_delete_view, name='medicine_supply-delete'),
+    path('supply/<int:supply_id>/update/', views.supply_update_view, name='medicine-supply-update'),
+    path('supply/<int:supply_id>/delete/', views.supply_delete_view, name='medicine_supply-delete'),
     path('itemwise/consumption/', views.get_consumption_and_remaining_quantity, name='get_consumption_and_remaining_quantity'),
 
 

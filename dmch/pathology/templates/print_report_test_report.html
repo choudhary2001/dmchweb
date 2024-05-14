@@ -47,8 +47,7 @@
           <table class="table"  width="100%" cellspacing="0">
             <thead>
               <tr>
-                <th style="border: none !important;" ></th>
-                <th  style="font-family: sans-serif; color: black; font-size: 1.2rem; padding:3px; border: none !important;; border: none !important;" >SL. No.</th>
+                <th style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px; border: none !important;" >SL. No.</th>
                 <th style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px; text-align:left;">Test</th>
                 <th style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px;  text-align:left;">Result</th>
                 <th style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px;  text-align:left;">Normal Range</th>
@@ -57,7 +56,6 @@
             <tbody id="testReportTableBody">
               {% if test_report.palsma_glucose_fasting %}
               <tr>
-                
                 <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Plasma Glucose Fasting</td>
                 <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.palsma_glucose_fasting}}</td>
                 <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 110 mg/dl</td>
@@ -65,7 +63,6 @@
               {% endif %}
               {% if test_report.palsma_glucose_pp %}
               <tr>
-                
                 <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Plasma Glucose PP</td>
                 <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.palsma_glucose_pp}}</td>
                 <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 150 mg/dl</td>
@@ -73,7 +70,6 @@
               {% endif %}
               {% if test_report.blood_sugar_random %}
               <tr>
-                
                 <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Blood Sugar Random</td>
                 <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.blood_sugar_random}}</td>
                 <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 150 mg/dl</td>
@@ -81,7 +77,6 @@
               {% endif %}
               {% if test_report.blood_ures %}
               <tr>
-                
                 <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Blood Urea</td>
                 <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.blood_ures}}</td>
                 <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">15 - 45 mg/dl</td>
@@ -391,7 +386,6 @@
     </script>
         
     <script>
-
       // Function to print the patient details
       function printPatientDetails() {
         window.print();

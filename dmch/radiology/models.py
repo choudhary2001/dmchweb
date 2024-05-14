@@ -65,7 +65,9 @@ class Radiology(models.Model):
     investigation_type = models.CharField(max_length = 255, blank = True, null = True)
     no_of_plate = models.CharField(max_length = 255, blank = True, null = True)
     plate_size = models.CharField(max_length = 255, blank = True, null = True)
-    created_at = models.DateTimeField(auto_now_add = True)
+    add_time = models.DateTimeField(null = True, blank = True)
+    created_at = models.DateTimeField(auto_now_add = True, null = True, blank = True)
+    # added_time = models.DateTimeField(null = True, blank = True,auto_now_add = True)
 
     def save(self, *args, **kwargs):
         if not self.radiology_id:

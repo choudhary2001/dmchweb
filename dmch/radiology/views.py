@@ -280,7 +280,7 @@ def add_radiology_report(request):
                     no_of_plate=no_of_plate,
                     plate_size=plate_size,
                     sub_unit = sub_unit,
-                    created_at=date
+                    add_time=date
                 )
 
                 request.session['radiology_date'] = date
@@ -391,7 +391,7 @@ def print_radiology_report(request):
             r = r.filter(created_at__gte=start_date, created_at__lt=end_datetime)
             print(r)
         elif end_date:
-            r = r.filter(__lt=end_date)
+            r = r.filter(created_at__lt=end_date)
 
         department = None
         if department_id != None:

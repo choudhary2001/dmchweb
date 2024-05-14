@@ -14,7 +14,7 @@
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <form action="{% url 'medicine_receivedsupply_details_print' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+      <form action="{% url 'medicine_receivedsupply_details_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
         <div style="flex: 1">
           <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
         </div>
@@ -38,7 +38,7 @@
           <button class="btn btn-primary w-100" type="submit">Filter</button>
         </div>
         <div style="flex: 1">
-          <a href="#" onclick="printTable()" class="btn btn-primary" id="printButton">Print</a>
+          <a href="{% url 'medicine_receivedsupply_details_print' %}" class="btn btn-primary w-100">Print</a>
         </div>
       </form>
     </div>
@@ -51,22 +51,7 @@
         }
       </style> -->
       <div class="table-responsive" id="tableContainer">
-        <style>
-            .table td{
-              padding: 0.4rem !important;
-              font-size: 0.8rem !important;
-              
-            }
-          </style>
-          <div class="card-header py-3" style="display: flex; flex-direction: column; align-items: center">
-            <div><h2>Darbhanga Medical College and Hospital</h2></div>
-            <div><h3>{{request.session.user_role}}</h3></div>
-            <div><h3>Stock Report</h3></div>
-            {% if start_date_str != None %}
-            <div><h3>{{start_date_str}}</h3></div>
-            {% endif %}
-          </div>
-        <table class="table table-bordered" id="qwertyuiop" width="100%" cellspacing="0">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
               <th>Department</th>
@@ -83,6 +68,7 @@
               <th>Supply On Date</th>
               <th>Created Date/Time</th>
               <th>Remarks</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -100,11 +86,25 @@
                     <td class="quantity-difference"></td>
                     <td>{{ product.stock_quantity }}</td>
                     <td></td>
-                    <td >{{ product.supply_date|date:"F j, Y" }}</td>
-                    <td >{{ product.created_at }}</td>
-                    <td>{{ order.remarks }}</td>
+                    <td >{{ order.order_date|date:"F j, Y" }}</td>
+                    <td >{{ order.created_at }}</td>
+                    <td >{{ order.remarks }}</td>
+                    <td >
+                      <a href="/medicine_store/supply/{{ order.supply_id }}/update/" class="btn btn-primary btn-icon-split">
+                        <span class="icon text-white-50">
+                          <i class="fas fa-arrow-right"></i>
+                        </span>
+                        <span class="text">Edit</span>
+                      </a>
+                      {% if order.de == request.session.user_role %}
+                        <a href="/medicine_store/supply/{{ order.supply_id }}/delete/" class="btn btn-danger btn-icon-split">
+                          <span class="icon text-white-50">
+                            <i class="fas fa-trash"></i>
+                          </span>
+                        </a>
+                      {% endif %}
+                    </td>
                   </tr>
-            
               {% endfor %}
             {% endfor %}
           </tbody>
@@ -166,7 +166,7 @@
   // Function to sort table rows by product name alphabetically
   function sortTableByProductName() {
     var table, rows, switching, i, x, y, shouldSwitch;
-    table = document.getElementById("qwertyuiop");
+    table = document.getElementById("dataTable");
     switching = true;
     // Loop until no switching has been done
     while (switching) {

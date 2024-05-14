@@ -11,7 +11,7 @@
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <form action="{% url 'supply_details_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+      <form action="{% url 'drug_supply_details_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
         <div style="flex: 1">
           <input type="datetime-local" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
         </div>
@@ -38,7 +38,7 @@
           <button class="btn btn-primary w-100" type="submit">Filter</button>
         </div>
         <div style="flex: 1">
-          <a href="{% url 'supply_details_view_print' %}" class="btn btn-primary w-100">Print</a>
+          <a href="{% url 'drug_supply_details_view_print' %}" class="btn btn-primary w-100">Print</a>
         </div>
       </form>
     </div>
@@ -62,61 +62,45 @@
           </thead>
           <tbody>
             {% for order in supply %}
+            {% for product in order.products.all %}
+
             <tr>
               <td>{{ order.departpment.name }}</td>
 
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.product.p_type }}</p>
 
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.product.name }}</p>
 
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.mfg_name }}</p>
 
-                {% endfor %}
               </td>
 
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.mfg_date }}</p>
 
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.exp_date }}</p>
 
-                {% endfor %}
               </td>
 
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.batch_no }}</p>
 
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.quantity }}</p>
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.stock_quantity }}</p>
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.supply_date }}</p>
-                {% endfor %}
               </td>
               <td>
                 <a href="/drug/supply/{{ order.supply_id }}/update/" class="btn btn-primary btn-icon-split">
@@ -133,6 +117,8 @@
                 </a>
               </td>
             </tr>
+            {% endfor %}
+
             {% endfor %}
           </tbody>
         </table>

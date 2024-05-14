@@ -61,7 +61,7 @@
       <div class="col-md-4 mb-3">
         <div class="form-group">
           <label for="date">Date:</label>
-          <input type="date" class="form-control" name="date" value="{{supply.order_date|date:'Y-m-d'}}" required />
+          <input type="date" class="form-control" name="order_date" value="{{supply.order_date|date:'Y-m-d'}}" required />
         </div>
       </div>
 <!-- 
@@ -81,8 +81,13 @@
         <div class="col-md-2 exp_date">
           <div class="form-group">
             <label for="product_name" id="product_name">Product Type:</label>
-        
-            <input type="text" class="form-control" name="product_type_{{ forloop.counter }}" value="{{p.product_type}}" disabled required />
+            <select class="form-control" name="product_type_{{ forloop.counter }}" required>
+              <option>Select Product Type</option>
+              {% for s in unique_p_types %}
+              <option {% if p.product_type == s %}selected{% endif %} value="{{s}}">{{s}}</option>
+              {% endfor %}
+            </select>
+            <!-- <input type="text" class="form-control" name="product_type_{{ forloop.counter }}" value="{{p.product_type}}" required /> -->
 
           </div>
         </div>
@@ -91,8 +96,13 @@
         <div class="col-md-2 exp_date">
           <div class="form-group">
             <label for="product_type" id="product_type">Product Name:</label>
-
-            <input type="text" class="form-control" name="product_name_{{ forloop.counter }}" value="{{p.product_name}}" disabled required />
+            <select class="form-control" name="product_name_{{ forloop.counter }}" required>
+              <option>Select Product Name</option>
+              {% for s in product %}
+              <option {% if p.product.product_type_id == s.product_type_id  %}selected{% endif %} value="{{s.product_type_id}}">{{s.name}}</option>
+              {% endfor %}
+            </select>
+            <!-- <input type="text" class="form-control" name="product_name_{{ forloop.counter }}" value="{{p.product_name}}" required /> -->
 
           </div>
         </div>

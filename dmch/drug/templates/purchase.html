@@ -52,49 +52,37 @@
           </thead>
           <tbody>
             {% for order in purchase %}
+            {% for product in order.products.all %}
+
             <tr>
               <td>{{ order.order_id }}</td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.product_type }}</p>
 
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.product_name }}</p>
 
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.mfg_name }}</p>
 
-                {% endfor %}
               </td>
 
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.mfg_date }}</p>
 
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.exp_date }}</p>
 
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.quantity }}</p>
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.batch_no }}</p>
 
-                {% endfor %}
               </td>
               <td>
                 <p>
@@ -109,9 +97,7 @@
              
 
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.purchase_date }}</p>
-                {% endfor %}
               </td>
               <td>
                 <a href="/drug/purchase/{{ order.purchase_id }}/update/" class="btn btn-primary btn-icon-split">
@@ -128,6 +114,8 @@
                 </a>
               </td>
             </tr>
+            {% endfor %}
+
             {% endfor %}
           </tbody>
         </table>

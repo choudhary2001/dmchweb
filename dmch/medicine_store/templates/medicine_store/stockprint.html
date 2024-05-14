@@ -25,7 +25,7 @@
           <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
         </div>
 
-        <div style="flex: 3">
+        <!-- <div style="flex: 2">
             <select class="form-control" name="product_name" id="product_name" >
               <option value="">Select Medicine Name</option>
               <option value="All">All</option>
@@ -33,12 +33,19 @@
               <option {% if department == s.productdetails_id %}selected{% endif %} value="{{ s.productdetails_id }}">{{ s.product_name }}</option>
               {% endfor %}
             </select>
+          </div> -->
+
+          <div class="form-group">
+            <input type="text" class="form-control" id="searchInput" placeholder="Search...">
           </div>
         <div style="flex: 1">
           <button class="btn btn-primary w-100" type="submit">Filter</button>
         </div>
         <div style="flex: 1">
           <button class="btn btn-primary w-100" onclick="printTable()">Print Table</button>
+        </div>
+        <div style="flex: 1">
+          <a href="#;" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</a>
         </div>
       </form>
     </div>
@@ -60,7 +67,7 @@
         {% endif %}
       </div>
       <div class="table-responsive" id="tableContainer">
-        <table class="table table-bordered" width="100%" cellspacing="0">
+        <table class="table table-bordered" id="datatablee" width="100%" cellspacing="0">
           <thead>
             <tr>
               <th>Department</th>
@@ -73,8 +80,10 @@
               <th>Quantity</th>
               <th>Consumption</th>
               <th>In Stock</th>
+              <!-- <th>Total Stock</th> -->
               <th>Remarks</th>
-              <th>Supply Time</th>
+              <th>Supply On Date</th>
+              <th>Created Date/Time</th>
             </tr>
           </thead>
           <tbody>
@@ -110,10 +119,12 @@
               <td>
                 <p>{{ product.stock_quantity }}</p>
               </td>
+              <!-- <td></td> -->
               <td>
                 <p>{{ product.remarks }}</p>
               </td>
-              <td>{{product.supply_date|date:"F j, Y"}}</td>
+              <td>{{order.order_date|date:"F j, Y"}}</td>
+              <td>{{order.created_at}}</td>
             </tr>
             {% endfor %}
             {% endfor %}
@@ -125,12 +136,9 @@
 </div>
 
 {% endblock %} {% block script %}
+<!-- JavaScript for Select2 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<script>
-    $(document).ready(function () {
-      $("#product_name").select2();
-    });
-  </script>
+
 <script>
   // Function to print the table
   function printTable() {
@@ -143,8 +151,12 @@
     // Trigger the print dialog
     window.print();
     $("body").html(originalContents);
-    window.location.reload();
   }
+</script>
+<script>
+  $(document).ready(function () {
+    $("#product_name").select2();
+  });
 </script>
 <script>
   document.addEventListener("DOMContentLoaded", function() {
@@ -170,4 +182,199 @@
     });
   });
 </script>
+<script>
+  // Function to sort table rows by product name alphabetically
+  function sortTableByProductName() {
+    var table, rows, switching, i, x, y, shouldSwitch;
+    table = document.getElementById("datatablee");
+    switching = true;
+    // Loop until no switching has been done
+    while (switching) {
+      switching = false;
+      rows = table.rows;
+      // Loop through all table rows (except the first, which contains table headers)
+      for (i = 1; i < (rows.length - 1); i++) {
+        shouldSwitch = false;
+        // Get the two product names to compare
+        x = rows[i].getElementsByTagName("td")[2]; // Product Name column index
+        y = rows[i + 1].getElementsByTagName("td")[2]; // Product Name column index
+        // Check if the two rows should switch places based on alphabetical order
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          // If so, mark as a switch and break the loop
+          shouldSwitch = true;
+          break;
+        }
+      }
+      if (shouldSwitch) {
+        // Perform the switch and mark that a switch has been done
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+      }
+    }
+  }
+  document.addEventListener("DOMContentLoaded", function() {
+    sortTableByProductName();
+  })
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Object to store aggregated data for each product name and batch number combination
+    var aggregatedData = {};
+
+    // Iterate over each row in the table body
+    document.querySelectorAll("tbody tr").forEach(function(row) {
+      // Get the cells for all columns
+      var cells = row.querySelectorAll("td");
+
+      // Extract data from cells
+      var department = cells[0].textContent.trim() || ' ';
+      var productType = cells[1].textContent.trim() || ' ';
+      var productName = cells[2].textContent.trim() || ' ';
+      var mfgBy = cells[3].textContent.trim() || ' ';
+      var mfgDate = cells[4].textContent.trim() || ' ';
+      var expDate = cells[5].textContent.trim() || ' ';
+      var batchNo = cells[6].textContent.trim() || ' ';
+      var quantity = parseInt(cells[7].textContent) || 0;
+      var consumption = parseInt(cells[8].textContent) || 0;
+      var inStock = parseInt(cells[9].textContent) || 0;
+      // var totalStock = parseInt(cells[10].textContent) || 0;
+      var supplyDate = cells[10].textContent.trim() || ' ';
+      var createdDateTime = cells[11].textContent.trim() || ' ';
+      var remarks = cells[12].textContent.trim() || '';
+
+      // Generate a unique key for each product name
+      var key = productName;
+
+      // Update aggregated data for the key
+      if (key in aggregatedData) {
+        // If the key already exists, update the aggregated data
+        aggregatedData[key].quantity += quantity;
+        aggregatedData[key].consumption += consumption;
+        aggregatedData[key].inStock += inStock;
+        // aggregatedData[key].totalStock += inStock; // Add inStock to totalStock
+      } else {
+        // If the key doesn't exist, initialize it with the current data
+        aggregatedData[key] = {
+          department: department,
+          productType: productType,
+          productName: productName,
+          mfgBy: mfgBy,
+          mfgDate: mfgDate,
+          expDate: expDate,
+          batchNo: batchNo,
+          quantity: quantity,
+          consumption: consumption,
+          inStock: inStock,
+          // totalStock: inStock, // Initialize totalStock with inStock
+          supplyDate: supplyDate,
+          createdDateTime: createdDateTime,
+          remarks: remarks
+        };
+      }
+    });
+
+    // Update the table with the aggregated data
+    var tableBody = document.querySelector("tbody");
+    tableBody.innerHTML = ""; // Clear existing table rows
+    Object.keys(aggregatedData).forEach(function(key) {
+      var rowData = aggregatedData[key];
+      // Create a new row with the aggregated data
+      var newRow = document.createElement("tr");
+      newRow.innerHTML = `
+        <td>${rowData.department}</td>
+        <td>${rowData.productType}</td>
+        <td>${rowData.productName}</td>
+        <td>${rowData.mfgBy}</td>
+        <td>${rowData.mfgDate}</td>
+        <td>${rowData.expDate}</td>
+        <td>${rowData.batchNo}</td>
+        <td>${rowData.quantity}</td>
+        <td>${rowData.consumption}</td>
+        <td>${rowData.inStock}</td>
+        <td>${rowData.supplyDate}</td>
+        <td>${rowData.createdDateTime}</td>
+        <td>${rowData.remarks} </td>
+
+      `;
+      tableBody.appendChild(newRow);
+    });
+  });
+</script>
+<!-- <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Get all rows in the table body
+    var rows = document.querySelectorAll("tbody tr");
+
+    // Iterate over each row
+    rows.forEach(function(row) {
+      // Get the cells for quantity and stock quantity
+      var quantityCell = row.querySelector("td:nth-child(8)");
+      var stockQuantityCell = row.querySelector("td:nth-child(10)");
+      var inStockCell = row.querySelector("td:nth-child(10)");
+
+      // Get the values from the cells
+      var quantity = parseInt(quantityCell.textContent);
+      var stockQuantity = parseInt(stockQuantityCell.textContent);
+
+      // Calculate the remaining stock (difference)
+      var remainingStock = quantity - stockQuantity;
+
+      // Update the remaining stock cell with the calculated remaining stock
+      inStockCell.textContent = remainingStock;
+
+      // Change color of "In Stock" cell to red if stock quantity is zero
+      if (stockQuantity === 0) {
+        inStockCell.style.color = "red";
+      }
+    });
+  });
+</script> -->
+
+<script>
+  function exportToExcel() {
+    var location = 'data:application/vnd.ms-excel;base64,';
+    var excelTemplate = '<html> ' +
+      '<head> ' +
+      '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/> ' +
+      '</head> ' +
+      '<body> ' +
+      document.getElementById("printablecontent").innerHTML +
+      '</body> ' +
+      '</html>'
+    window.location.href = location + window.btoa(excelTemplate);
+  }
+</script>
+<script>
+  // Function to filter table rows based on search input
+  function filterTable() {
+    // Get the search input value
+    var filter = document.getElementById("searchInput").value.toUpperCase();
+    // Get the table rows
+    var rows = document.querySelector("#datatablee tbody").rows;
+
+    // Loop through all table rows
+    for (var i = 0; i < rows.length; i++) {
+      var visible = false;
+      // Loop through all cells in the current row
+      for (var j = 0; j < rows[i].cells.length; j++) {
+        var cell = rows[i].cells[j];
+        // Check if the cell text matches the search query
+        if (cell.textContent.toUpperCase().indexOf(filter) > -1) {
+          visible = true;
+          break;
+        }
+      }
+      // Show or hide the row based on visibility
+      if (visible) {
+        rows[i].style.display = "";
+      } else {
+        rows[i].style.display = "none";
+      }
+    }
+  }
+
+  // Add event listener to the search input field
+  document.getElementById("searchInput").addEventListener("keyup", filterTable);
+</script>
+
 {% endblock %}

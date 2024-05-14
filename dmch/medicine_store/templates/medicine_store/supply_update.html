@@ -470,6 +470,32 @@
             } else if (optionTop + optionHeight > popupHeight) {
               popup.scrollTop(popupScrollTop + optionTop + optionHeight - popupHeight);
             }
+
+            var productName = options.eq(currentIndex).text();
+            var productId = options.eq(currentIndex).val(); // Get the value of the selected option
+            console.log(productId, productName)
+            if(productName && productId){
+            // $("#searchMedicine").val(productName);
+            // $(`#product_name_1`).val(productId);
+            // $("#productPopup").hide();
+            // Assign the value of the selected option to a hidden input field or perform any other action as needed
+            // $("#selectedProductId").val(productId);
+            
+            $.ajax({
+              url: '{% url "get_medicine_details" %}',
+              type: "GET",
+              data: {
+                product_name: productId,
+              },
+              success: function (data) {
+                console.log(data.product);
+                $("#mfgname_1").val(data.product.mfg_name);
+                $("#batchno_1").val(data.product.batch_no);
+                $("#mfgdate_1").val(data.product.mfg_date);
+                $("#expdate_1").val(data.product.exp_date);
+                $("#stock_quantity_1").val(data.product.stock_quantity);
+              },
+            });
           }
           
         });
