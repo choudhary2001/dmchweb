@@ -342,39 +342,40 @@ def receivedsupply_details_print(request):
 
 @login_required
 def get_medicine_names_by_type(request):
-    departpment = request.session['user_role']
-    d = DrugDepartment.objects.filter(name = departpment).first()
-    if request.user.is_superuser or request.session['user_role'] == 'Drug' or request.session['user_role_store'] == 'Medicine Store' :
-
-        # Get the selected product type from the AJAX request
+    department = request.session['user_role']
+    d = DrugDepartment.objects.filter(name=department).first()
+    
+    if request.user.is_superuser or request.session['user_role'] == 'Drug' or request.session['user_role_store'] == 'Medicine Store':
         product_type = request.GET.get('product_type')
-
-        # Query the database to retrieve product names based on the selected product type
-
-        # Create a list to store the product names
         product_names = []
 
         unique_p_types = []
         ss = Supply.objects.all()
-        # print(ss)
+        
         for s in ss:
-            # print(s.departpment, d)
-            if s.departpment.name == departpment:
+            if s.departpment.name == department:
                 sp = s.products.all()
                 for ps in sp:
                     if ps.stock_quantity > 0:
-                        print(product_type, ps.product_type)
                         if product_type == ps.product_type:
-                            print("#########")
-                            print(product_type, ps.product_type)
-                            unique_p_types.append({'productdetails_id' : ps.productdetails_id , 'name' : ps.product_name })
-        print(unique_p_types)
+                            unique_p_types.append({
+                                'productdetails_id': ps.productdetails_id,
+                                'product_name': ps.product_name,
+                                'mfg_name': ps.mfg_name,
+                                'batch_no': ps.batch_no,
+                                'mfg_date': ps.mfg_date,
+                                'exp_date': ps.exp_date,
+                                'stock_quantity': ps.stock_quantity
+                            })
 
-        # Return the product names as JSON response
+        # Sort the unique_p_types list alphabetically by product_name
+        unique_p_types = sorted(unique_p_types, key=lambda x: x['product_name'])
+
         return JsonResponse({'products': unique_p_types})
     else:
         logout(request)
-        return redirect('signin') 
+        return redirect('signin')
+
 
 @login_required
 def medicine_supply_add_view(request):
@@ -419,7 +420,7 @@ def medicine_supply_add_view(request):
                 departpment = d
             )
 
-            request.session['supply_date'] = date
+            request.session['supply_date'] = supply_date
 
             for i in range(1, int(request.POST.get('product_count')) + 1):
                 product_name = request.POST.get(f'product_name_{i}')
@@ -469,6 +470,7 @@ def medicine_supply_add_view(request):
                     if ps.stock_quantity > 0:
                         # unique_p_types.append({'productdetails_id' : ps.productdetails_id , 'product_name' : ps.product_name })
                         unique_p_types.append({'productdetails_id' : ps.productdetails_id , 'product_name' : ps.product_name,'mfg_name' : ps.mfg_name, 'batch_no' : ps.batch_no, 'mfg_date' : ps.mfg_date, 'exp_date'  : ps.exp_date, 'stock_quantity' : ps.stock_quantity  })
+
 
         print(unique_p_types)
 
@@ -680,14 +682,14 @@ def supply_details_user_view(request):
 
         # p = MedicineConsumption.objects.filter(user = request.user).order_by('-created_at')
         # Get all profiles with the specified user role
-        profiles = Profile.objects.filter(user_role=departpment).select_related('user')
+        # profiles = Profile.objects.filter(user_role=departpment).select_related('user')
 
         # Extract user IDs from profiles
-        user_ids = [profile.user_id for profile in profiles]
+        # user_ids = [profile.user_id for profile in profiles]
 
         # Filter MedicineConsumption objects for the users with the specified user role
-        p = MedicineConsumption.objects.filter(user_id__in=user_ids).order_by('-created_at')
-        # p = MedicineConsumption.objects.filter(departpment= d).all()
+        # p = MedicineConsumption.objects.filter(user_id__in=user_ids).order_by('-created_at')
+        p = MedicineConsumption.objects.filter(departpment= d).all()
 
         if start_date and end_date:
             p = p.filter(created_at__range=(start_date, end_date))
@@ -1205,107 +1207,193 @@ from django.db.models import Sum
 
 
 
+# @login_required
+# def get_consumption_and_remaining_quantity(request):
+#     department = request.session.get('user_role')
+#     d = DrugDepartment.objects.filter(name=department).first()
+
+#     if request.user.is_superuser or d is not None:
+#         start_date_str = request.GET.get('start_date', None)
+#         end_date_str = request.GET.get('end_date', None)
+#         department_id = request.GET.get('department')
+#         # o = Order.objects.all()
+#         # Convert the date strings to datetime objects
+#         if start_date_str:
+#             # start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
+#             start_date = start_date_str
+#             start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+
+#         else:
+#             start_date = None
+
+#         if end_date_str:
+#             # end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
+#             end_date = end_date_str
+#             end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Add one day to include end_date
+
+#             # Adjust the end date to include all records for that day
+#             # end_date = end_date + timedelta(days=1)  # Include records for the entire day
+#         else:
+#             end_date = None
+#         all_products = []
+#         psd = Supply.objects.filter(de = department).all()
+#         print(psd)
+#         for ps in psd:
+#             p = ps.products.all()
+#             all_products.extend(p)
+#         # p = ProductSupply.objects.filter(department=d).order_by('-supply_date')
+#         # m = MedicineConsumption.objects.filter(department=d).order_by('-supply_date')
+#         # product_quantities = {}
+
+#         #     # end_date = end_date + timedelta(days=1) 
+#         #     # start_date = start_date - timedelta(days=1)
+#         #     p = p.filter(supply_date__range=(start_date, end_date))
+#         # elif start_date:
+#         #     # If only start date is provided, include all records for that day
+#         #     next_day = start_date + timedelta(days=1)
+#         #     start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+#         #     end_datetime = start_datetime + timedelta(days=1)
+
+#         #     p = p.filter(supply_date__gte=start_datetime, supply_date__lt=end_datetime)
+#         # elif end_date:
+#         #     p = p.filter(supply_date__lt=end_date)
+
+#         # Initialize product_quantities as a dictionary
+#         product_quantities = {}
+#         # Initialize an empty list to store unique product names
+#         unique_product_names = []
+
+#         # Iterate over each product in the list of all products
+#         for product in all_products:
+#             # Retrieve the product name
+#             product_name = product.product_name
+            
+#             # Check if the product name is not already in the list of unique product names
+#             if product_name not in unique_product_names:
+#                 # Add the product name to the list of unique product names
+#                 unique_product_names.append(product_name)
+                
+#         if start_date and end_date:
+#             # Iterate through unique product names and aggregate their quantities
+#             for product_name in unique_product_names:
+#                 # Filter ProductSupply objects by department and product name
+#                 product_supplies = all_products.filter(product_name=product_name)
+
+#                 # Aggregate total quantity of ProductSupply for this product
+#                 total_quantity = product_supplies.aggregate(total_quantity=Sum('quantity'))['total_quantity']
+
+#                 # Filter Medicine objects by product and supply date before start_date
+#                 start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+#                 start_datetimee = start_datetime - timedelta(days=1)
+#                 medicine_quantities = Medicine.objects.filter(created_at__lt=start_datetimee, product__in=product_supplies)
+
+#                 # Aggregate total quantity of Medicine for this product
+#                 total_medicine_quantity = medicine_quantities.aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+
+#                 end_datetime = timezone.make_aware(end_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+
+#                 medicine_quantitiess = Medicine.objects.filter(created_at__gte=start_datetime, created_at__lt=end_datetime, product__in=product_supplies)
+
+#                 # Aggregate total quantity of Medicine for this product
+#                 total_medicine_quantityy = medicine_quantitiess.aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+                
+#                 # Calculate remaining quantity
+#                 # Calculate remaining quantity
+#                 remaining_quantity = total_quantity - total_medicine_quantity
+#                 remaining_quantityy = total_quantity - total_medicine_quantity - total_medicine_quantityy
+
+#                 # Store both total quantity and remaining quantity in product_quantities dictionary
+#                 product_quantities[product_name] = {
+#                     'total_quantity': total_medicine_quantityy,
+#                     'remaining_quantity': remaining_quantity,
+#                     'remaining_quantityy': remaining_quantityy,
+#                     'purchase' : total_quantity
+#                 }
+
+#         context = {
+#             'purchase' : p,
+#             'product_quantities': product_quantities,
+#             'title' : f"Total Item Wise Consumption : {len(product_quantities)}",
+#             'start_date_str' : start_date_str,
+#             'end_date_str' : end_date_str
+            
+#         }
+#         return render(request, 'medicine_store/itemwiseconsumption.html', context=context)
+#     else:
+#         logout(request)
+#         return redirect('signin') 
+
+
 @login_required
 def get_consumption_and_remaining_quantity(request):
     department = request.session.get('user_role')
     d = DrugDepartment.objects.filter(name=department).first()
 
-    if request.user.is_superuser or d:
+    if request.user.is_superuser or d is not None:
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
         department_id = request.GET.get('department')
-        # o = Order.objects.all()
-        # Convert the date strings to datetime objects
-        if start_date_str:
-            # start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
-            start_date = start_date_str
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
 
+        if start_date_str:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
         else:
             start_date = None
 
         if end_date_str:
-            # end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
-            end_date = end_date_str
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Add one day to include end_date
-
-            # Adjust the end date to include all records for that day
-            # end_date = end_date + timedelta(days=1)  # Include records for the entire day
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)
         else:
             end_date = None
-        
 
-        p = ProductSupply.objects.filter(department=d).order_by('-supply_date')
-        # m = MedicineConsumption.objects.filter(department=d).order_by('-supply_date')
-        # product_quantities = {}
-
-        #     # end_date = end_date + timedelta(days=1) 
-        #     # start_date = start_date - timedelta(days=1)
-        #     p = p.filter(supply_date__range=(start_date, end_date))
+        all_supplies = Supply.objects.filter(de=department)
+        # print(all_supplies)
+        # if start_date and end_date:
+        #     all_supplies = all_supplies.filter(order_date__range=(start_date, end_date))
         # elif start_date:
-        #     # If only start date is provided, include all records for that day
-        #     next_day = start_date + timedelta(days=1)
-        #     start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
-        #     end_datetime = start_datetime + timedelta(days=1)
-
-        #     p = p.filter(supply_date__gte=start_datetime, supply_date__lt=end_datetime)
+        #     all_supplies = all_supplies.filter(order_date__gte=start_date)
         # elif end_date:
-        #     p = p.filter(supply_date__lt=end_date)
+        #     all_supplies = all_supplies.filter(order_date__lt=end_date)
 
-
-        # Iterate through unique product names and aggregate their quantities
-        # Iterate through unique product names and aggregate their quantities
-        # Initialize product_quantities as a dictionary
         product_quantities = {}
         if start_date and end_date:
-            # Iterate through unique product names and aggregate their quantities
-            for product_name in ProductSupply.objects.filter(department=d).values_list('product_name', flat=True).distinct():
-                # Filter ProductSupply objects by department and product name
-                product_supplies = ProductSupply.objects.filter(department=d, product_name=product_name)
+            for supply in all_supplies:
+                print(supply)
+                products = supply.products.all()
+                print(products)
+                for product in products:
+                    product_name = product.product_name
+                    if product_name not in product_quantities:
+                        product_quantities[product_name] = {
+                            'opening': 0,
+                            'closing': 0,
+                            'remaining_quantity': 0,
+                            'purchase': 0
+                        }
+                    product_quantities[product_name]['opening'] += product.quantity
+                    product_quantities[product_name]['purchase'] += product.quantity
 
-                # Aggregate total quantity of ProductSupply for this product
-                total_quantity = product_supplies.aggregate(total_quantity=Sum('quantity'))['total_quantity']
+            for product_name, quantities in product_quantities.items():
+                total_medicine_quantity = Medicine.objects.filter(
+                    created_at__lt=start_date, product__product_name=product_name
+                ).aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
 
-                # Filter Medicine objects by product and supply date before start_date
-                start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
-                start_datetimee = start_datetime - timedelta(days=1)
-                medicine_quantities = Medicine.objects.filter(created_at__lt=start_datetimee, product__in=product_supplies)
+                total_medicine_quantityy = Medicine.objects.filter(
+                    created_at__gte=start_date, created_at__lt=end_date, product__product_name=product_name
+                ).aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
 
-                # Aggregate total quantity of Medicine for this product
-                total_medicine_quantity = medicine_quantities.aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+                remaining_quantity = quantities['opening'] - total_medicine_quantity
+                remaining_quantityy = quantities['opening']  - total_medicine_quantityy
 
-                end_datetime = timezone.make_aware(end_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+                product_quantities[product_name]['opening'] = remaining_quantity
+                product_quantities[product_name]['closing'] = remaining_quantityy
+                product_quantities[product_name]['remaining_quantity'] = total_medicine_quantityy
 
-                medicine_quantitiess = Medicine.objects.filter(created_at__gte=start_datetime, created_at__lt=end_datetime, product__in=product_supplies)
-
-                # Aggregate total quantity of Medicine for this product
-                total_medicine_quantityy = medicine_quantitiess.aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
-                
-                # Calculate remaining quantity
-                # Calculate remaining quantity
-                remaining_quantity = total_quantity - total_medicine_quantity
-                remaining_quantityy = total_quantity - total_medicine_quantity - total_medicine_quantityy
-
-                # Store both total quantity and remaining quantity in product_quantities dictionary
-                product_quantities[product_name] = {
-                    'total_quantity': total_medicine_quantityy,
-                    'remaining_quantity': remaining_quantity,
-                    'remaining_quantityy': remaining_quantityy,
-                    'purchase' : total_quantity
-                }
-
-
-
-        d = DrugDepartment.objects.all()
         context = {
-            'purchase' : p,
             'product_quantities': product_quantities,
-            'title' : f"Total Item Wise Consumption : {len(product_quantities)}",
-            'start_date_str' : start_date_str,
-            'end_date_str' : end_date_str
-            
+            'title': f"Total Item Wise Consumption: {len(product_quantities)}",
+            'start_date_str': start_date_str,
+            'end_date_str': end_date_str
         }
         return render(request, 'medicine_store/itemwiseconsumption.html', context=context)
     else:
         logout(request)
-        return redirect('signin') 
+        return redirect('signin')

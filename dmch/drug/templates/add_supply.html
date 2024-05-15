@@ -103,12 +103,12 @@
         </div>
 
           <!-- Middle Column (Product Details) -->
-          <!-- <div class="col-md-4 mb-3">
+          <div class="col-md-4 mb-3">
             <div class="form-group">
-              <label for="batchno">Supplier Name:</label>
+              <label for="suppliar_1">Supplier Name:</label>
               <input type="text" class="form-control" name="suppliar_1" disabled required />
             </div>
-          </div> -->
+          </div>
 
         <!-- Right Column (Order Details) -->
         <div class="col-md-4 mb-3">
@@ -225,6 +225,15 @@
           </div>
         `;
 
+        var mfgColumn = document.createElement("div");
+    mfgColumn.className = "col-md-4 mb-3";
+    mfgColumn.innerHTML = `
+          <div class="form-group">
+            <label for="mfgname">Mfg. By:</label>
+            <input type="text" class="form-control" name="mfgname_${productCount}" disabled required />
+          </div>
+        `;
+
     var batchColumn = document.createElement("div");
     batchColumn.className = "col-md-4 mb-3";
     batchColumn.innerHTML = `
@@ -299,7 +308,7 @@
     productRow.appendChild(rightColumn);
     productRow.appendChild(mfgColumn);
     productRow.appendChild(batchColumn);
-    // productRow.appendChild(suppliarColumn);
+    productRow.appendChild(suppliarColumn);
     productRow.appendChild(mfgDateColumn);
     productRow.appendChild(mfgDateColumn);
     productRow.appendChild(expDatecolumn);
@@ -409,6 +418,7 @@
       var container = $(this).closest(".product-row");
       var productTypeSelect = container.find("select[name^='product_type']");
       var mfgNameInput = container.find("input[name^='mfgname']");
+      var msuppliarInput = container.find("input[name^='suppliar']");
       var batchNoInput = container.find("input[name^='batchno']");
       var mfgDateInput = container.find("input[name^='mfgdate']");
       var expDateInput = container.find("input[name^='expdate']");
@@ -423,6 +433,7 @@
         success: function (data) {
           console.log(data.product)
           mfgNameInput.val(data.product.mfg_name);
+          msuppliarInput.val(data.product.supplier_name);
           batchNoInput.val(data.product.batch_no);
           mfgDateInput.val(data.product.mfg_date);
           expDateInput.val(data.product.exp_date);

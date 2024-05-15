@@ -53,6 +53,7 @@
               <th>Exp Date</th>
               <th>Quantity</th>
               <th>Supply Time</th>
+              <th>Created On Date/Time</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -91,6 +92,9 @@
                 {{product.created_at|date:"F j, Y"}}
 
 
+              </td>
+              <td>
+                {{order.created_at}}
               </td>
               <td>
                 <a href="/medicine_store/supply/medicine/{{ order.consumption_id }}/update/" class="btn btn-primary btn-icon-split">
@@ -138,6 +142,20 @@
   $(document).ready(function () {
     $("#product_name").select2();
   });
+
+  $(document).ready(function() {
+    var table = $('#dataTable').DataTable();
+
+    // Custom search function for DataTable
+    $('#dataTable_filter input').on('keyup', function() {
+        var searchTerm = this.value.toUpperCase();
+        table.column(1).search(searchTerm ? '^' + searchTerm : '', true, false).draw();
+    });
+  });
+
+
 </script>
+
+
 
 {% endblock %}

@@ -1,6 +1,60 @@
 {% extends 'counter/base.html' %} {% block css %}
 <!-- CSS for Select2 -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<style>
+  .dataTables_wrapper {
+      position: relative;
+  }
+  
+  .dataTables_scroll {
+      overflow-x: auto;
+  }
+  
+  .dataTables_scrollHead {
+      overflow-x: auto !important;
+      overflow-y: hidden;
+      position: relative;
+      z-index: 2;
+  }
+  
+  .dataTables_scrollBody {
+      overflow-x: auto;
+  }
+  
+  .dataTables_scrollBody::-webkit-scrollbar {
+      height: 12px;
+  }
+  
+  .dataTables_scrollBody::-webkit-scrollbar-thumb {
+      background: #888;
+  }
+  
+  .dataTables_scrollBody::-webkit-scrollbar-thumb:hover {
+      background: #555;
+  }
+
+  .dataTables_scrollTop {
+      overflow-x: auto;
+      height: 12px;
+  }
+
+  .dataTables_scrollTop::-webkit-scrollbar {
+      height: 12px;
+  }
+
+  .dataTables_scrollTop::-webkit-scrollbar-thumb {
+      background: #888;
+  }
+
+  .dataTables_scrollTop::-webkit-scrollbar-thumb:hover {
+      background: #555;
+  }
+
+  td, th {
+    font-size: 12px;
+  }
+</style>
+  
 {% endblock %} {% block content %}
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -52,6 +106,9 @@
         }
       </style> -->
       <div class="table-responsive" id="tableContainer">
+        <div class="dataTables_scrollTop" id="dataTableTopScroll">
+          <div style="width: 1000px;"></div> <!-- Dummy div to force scrollbar -->
+        </div>
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
@@ -250,8 +307,30 @@
     });
   });
 </script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var tableContainer = document.getElementById('tableContainer');
+    var dataTableTopScroll = document.getElementById('dataTableTopScroll');
+
+    dataTableTopScroll.addEventListener('scroll', function() {
+      tableContainer.scrollLeft = dataTableTopScroll.scrollLeft;
+    });
+
+    tableContainer.addEventListener('scroll', function() {
+      dataTableTopScroll.scrollLeft = tableContainer.scrollLeft;
+    });
+  });
+
+  $(document).ready(function() {
+    var table = $('#dataTable').DataTable();
+
+    // Custom search function for DataTable
+    $('#dataTable_filter input').on('keyup', function() {
+        var searchTerm = this.value.toUpperCase();
+        table.column(2).search(searchTerm ? '^' + searchTerm : '', true, false).draw();
+    });
+  });
 
 
-
-
+</script>
 {% endblock %}

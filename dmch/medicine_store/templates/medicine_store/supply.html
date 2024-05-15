@@ -25,15 +25,31 @@
     padding: 0 !important;
   }
   .exp_date{
-    max-width: 11.77% !important;
+    max-width: 8% !important;
+  }
+  .stock_quantity_size{
+    max-width: 5% !important;
   }
 
   .quantity{
     max-width: 5.77% !important;
   }
   .close_button{
-    max-width: 25px !important;
+    max-width: 20px !important;
+    height: 35px !important;
   }
+  .popup-option {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+  }
+
+  .additional-info {
+    color: blue;
+    text-align: right;
+    font-size: 12px;
+  }
+
 </style>
 <style>
   .highlighted {
@@ -46,7 +62,7 @@
   <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
 
   {% endfor %} {% endif %}
-  <form id="orderForm" method="POST" action="{% url 'medicine_supply_add_view' %}">
+  <form id="orderForm" method="POST" action="{% url 'medicine_supply_add_view' %}" autocomplete="off">
     {% csrf_token %}
     <!-- <h3>Supply</h3> -->
     <div class="row">
@@ -70,7 +86,7 @@
        <div class="col-md-4 mb-3">
         <div class="form-group">
           <label for="date">Date:</label>
-          <input type="date" class="form-control" value="{% if request.session.supply_date %}{{request.session.supply_date}}{% endif %}" name="date" required />
+          <input type="date" class="form-control" value="{% if request.session.supply_date %}{{request.session.supply_date}}{% endif %}" name="supply_date" required />
         </div>
       </div>
 
@@ -96,11 +112,19 @@
         <div class="col-md-3 mb-1" style="padding: 0 !important;">
           <div class="form-group">
             <label for="product_name" id="product_name">Medicine Name:</label>
-            <input type="text" class="form-control" id="searchMedicine" placeholder="Search Medicine">
-            <select class="form-control" name="product_name_1" id="product_name_1" style="display: none;" required>
+            <input type="text" class="form-control" id="searchMedicine" placeholder="Search Medicine" autocomplete="off">
+            <select class="form-control" name="product_name_1" id="product_name_1" style="display:none;" required>
               <option value="">Select Medicine Name</option>
-              {% for s in productsupply %}
-                <option value="{{ s.productdetails_id }}">{{ s.product_name }}</option>
+              <!-- {% for s in productsupply %}
+              <option value="{{ s.productdetails_id }}" 
+                      data-product-name="{{ s.product_name }}"
+                      data-batch-no="{{ s.batch_no }}"
+                      data-mfg-name="{{ s.mfg_name }}"
+                      data-mfg-date="{{ s.mfg_date }}"
+                      data-exp-date="{{ s.exp_date }}"
+                      data-stock-quantity="{{ s.stock_quantity }}">
+                {{ s.product_name }} -->
+              </option>
               {% endfor %}
             </select>
             <!-- <div id="productFieldss" ></div> -->
@@ -110,7 +134,7 @@
         </div>
         
 
-        <div class="col-md-2 mb-1" style="padding: 0 !important;">
+        <div class="col-md-3 mb-1" style="padding: 0 !important;">
           <div class="form-group">
             <label for="mfgname">Mfg. By:</label>
             <input type="text" class="form-control" name="mfgname_1" id="mfgname_1" disabled required />
@@ -140,14 +164,14 @@
           </div>
         </div>
 
-        <div class="col-md-2 mb-1" style="padding: 0 !important; max-width: 11.77% !important;">
+        <div class="col-md-2 mb-1 exp_date" style="padding: 0 !important; ">
           <div class="form-group">
             <label for="expdate">Exp. Date:</label>
             <input type="date" class="form-control" name="expdate_1" id="expdate_1" disabled required />
           </div>
         </div>
 
-        <div class="col-md-1 mb-1" style="padding: 0 !important;">
+        <div class="col-md-1 mb-1 stock_quantity_size" style="padding: 0 !important;">
           <div class="form-group">
             <label for="stock_quantity">Stock:</label>
             <input type="number" class="form-control" name="stock_quantity_1" id="stock_quantity_1" disabled required />
@@ -196,8 +220,7 @@
 
   $("#orderForm").on("keydown", function (event) {
     if (event.keyCode === 13) { // Check if Enter key is pressed
-        event.preventDefault(); // Prevent the default behavior of the Enter key
-
+      event.preventDefault(); // Prevent the default behavior of the Enter key
     }
   });
 
@@ -219,7 +242,6 @@
       middleColumn.className = "col-md-1 mb-1";
       middleColumn.innerHTML = `
             <div class="form-group">
-              <label for="product_type_${productCount}" id="product_type_${productCount}" name="product_type">Product Type:</label>
               <select class="form-control" name="product_type_${productCount}" required>
                 <option>Select Product Type</option>
                 {% for s in unique_p_types %}
@@ -233,12 +255,9 @@
       rightColumn.className = "col-md-2 exp_date";
       rightColumn.innerHTML = `
             <div class="form-group" style="display:none;">
-              <label for="product_name_${productCount}" id="product_name_${productCount}" name="product_name">Product Name:</label>
               <select class="form-control" name="product_name_${productCount}" required>
                 <option>Select Product Name</option>
-                {% for s in product %}
-                <option value="{{s.product_type_id}}">{{s.name}}</option>
-                {% endfor %}
+                
               </select>
             </div>
           `;
@@ -248,7 +267,6 @@
       rightColumn.className = "col-md-3 mb-1";
       rightColumn.innerHTML = `
             <div class="form-group">
-              <label for="product_name_${productCount}" id="product_name">Medicine Name:</label>
               <input type="text" class="form-control" id="searchMedicine_${productCount}" placeholder="Search Medicine">
               <select class="form-control product-name-select" name="product_name_${productCount}" id="product_name_${productCount}" style="display:none;" required>
                 <option>Select Medicine Name</option>
@@ -262,10 +280,9 @@
           `;
 
       var mfgColumn = document.createElement("div");
-      mfgColumn.className = "col-md-2 mb-1";
+      mfgColumn.className = "col-md-3 mb-1";
       mfgColumn.innerHTML = `
             <div class="form-group">
-              <label for="mfgname">Mfg. By:</label>
               <input type="text" class="form-control" name="mfgname_${productCount}" id="mfgname_${productCount}" disabled required />
             </div>
           `;
@@ -274,7 +291,6 @@
       batchColumn.className = "col-md-1 mb-1";
       batchColumn.innerHTML = `
             <div class="form-group">
-              <label for="batchno">Batch No.:</label>
               <input type="text" class="form-control" name="batchno_${productCount}" id="batchno_${productCount}" disabled required />
             </div>
           `;
@@ -283,7 +299,6 @@
       mfgDateColumn.className = "col-md-1 mb-1 exp_date";
       mfgDateColumn.innerHTML = `
             <div class="form-group">
-              <label for="batchno">Mfg Date.:</label>
               <input type="date" class="form-control" name="mfgdate_${productCount}" id="mfgdate_${productCount}" disabled required />
             </div>
           `;
@@ -292,7 +307,6 @@
       expDatecolumn.className = "col-md-2 mb-1 exp_date";
       expDatecolumn.innerHTML = `
             <div class="form-group">
-              <label for="batchno">Exp Date.:</label>
               <input type="date" class="form-control" name="expdate_${productCount}" id="expdate_${productCount}" disabled required />
             </div>
           `;
@@ -301,16 +315,14 @@
       quantityColumn.className = "col-md-1 mb-1 quantity";
       quantityColumn.innerHTML = `
           <div class="form-group">
-            <label for="quantity">Quantity:</label>
             <input type="number" class="form-control" name="quantity_${productCount}" id="quantity_${productCount}" required />
           </div>
         `;
 
       var amountcolumn = document.createElement("div");
-      amountcolumn.className = "col-md-1 mb-1";
+      amountcolumn.className = "col-md-1 mb-1 stock_quantity_size";
       amountcolumn.innerHTML = `
             <div class="form-group">
-              <label for="stock_quantity">Stock :</label>
               <input type="number" class="form-control" name="stock_quantity_${productCount}" id="stock_quantity_${productCount}" disabled required />
             </div>
           `;
@@ -321,7 +333,6 @@
       product_type_id_column.className = "col-md-2 mb-1 ";
       product_type_id_column.innerHTML = `
             <div class="form-group" style="display:none;">
-              <label for="batchno">product_type_id_column.:</label>
               <input type="date" class="form-control" name="product_type_id_column_${productCount}" id="product_type_id_column_${productCount}" required />
             </div>
           `;
@@ -332,9 +343,8 @@
       var removeButton = document.createElement("div");
       removeButton.className = "col-md-1 mb-1 close_button";
       removeButton.innerHTML = `
-        <div class="form-group">
-            <label for="">&nbsp;</label>
-            <button type="button" class="btn btn-danger remove-product">x</button>
+        <div class="form-group" style="height:"35px">
+            <button type="button" style="height:"35px" class="btn btn-danger remove-product">x</button>
         </div>
       `;
 
@@ -378,14 +388,22 @@
 
         // Filter select options based on search value
         selectOptions.each(function () {
-          var optionText = $(this).text().toLowerCase();
-          if (optionText.includes(searchValue)) {
-            // Append matching options to the popup
-            var optionClone = $(this).clone();
-            // var optionClone = `<option>${optionText}</option>`;
-            popup.append(optionClone);
+          var productName = $(this).data('product-name') || '';
+          if (productName.toLowerCase().includes(searchValue) && $(this).val() !== "") {
+            var batchNo = $(this).data('batch-no') || 'N/A';
+            var mfgName = $(this).data('mfg-name') || 'N/A';
+            var mfgDate = $(this).data('mfg-date') || 'N/A';
+            var expDate = $(this).data('exp-date') || 'N/A';
+            var stockQuantity = $(this).data('stock-quantity') || 'N/A';
+
+            var formattedOption = `<div class="popup-option" data-product-id="${$(this).val()}">
+              <span style="font-size:14px">${productName}</span>
+              <span class="additional-info"> | ${mfgName}, ${batchNo},  ${mfgDate}, ${expDate}, ${stockQuantity}</span>
+            </div>`;
+            popup.append(formattedOption);
           }
         });
+
 
         // Show the popup
         if (searchValue) {
@@ -396,7 +414,7 @@
           popup.css({
             top: inputHeight + 15,
             left: 0,
-            width: inputWidth + 45,
+            width: inputWidth + 600,
           }).show();
         } else {
           popup.hide(); // Hide the popup if search input is empty
@@ -410,49 +428,50 @@
         }
       });
 
-
-
       $(document).on("keydown", function (event) {
-          var popup = $(`#productPopup_${productCount}`);
-          var options = popup.find("option");
+        var popup = $(`#productPopup_${productCount}`);
+        var options = popup.find(".popup-option");
 
-          if (popup.is(":visible")) {
-            if (event.keyCode === 38) { // Up arrow key
-              currentIndex = Math.max(currentIndex - 1, 0);
-              options.eq(currentIndex).attr("selected", "selected").siblings().removeAttr("selected");
-            } else if (event.keyCode === 40) { // Down arrow key
-              currentIndex = Math.min(currentIndex + 1, options.length - 1);
-              options.eq(currentIndex).attr("selected", "selected").siblings().removeAttr("selected");
-            } else if (event.keyCode === 13) { // Enter key
-              $(`#searchMedicine_${productCount}`).val(options.eq(currentIndex).text());
-              $(`#productPopup_${productCount}`).hide();
-              // Trigger click event on the selected option
+        if (popup.is(":visible")) {
+          if (event.keyCode === 38) { // Up arrow key
+            event.preventDefault();
+            currentIndex = (currentIndex > 0) ? currentIndex - 1 : options.length - 1;
+            options.removeClass("highlighted");
+            options.eq(currentIndex).addClass("highlighted");
+          } else if (event.keyCode === 40) { // Down arrow key
+            event.preventDefault();
+            currentIndex = (currentIndex < options.length - 1) ? currentIndex + 1 : 0;
+            options.removeClass("highlighted");
+            options.eq(currentIndex).addClass("highlighted");
+          } else if (event.keyCode === 13) { // Enter key
+            event.preventDefault();
+            if (currentIndex >= 0) {
               options.eq(currentIndex).trigger("click");
             }
-
-            // Highlight the currently selected option
-            options.removeClass("highlighted").eq(currentIndex).addClass("highlighted");
-
-            // Scroll the popup to show the highlighted option
-            var optionHeight = options.eq(currentIndex).outerHeight();
-            var popupScrollTop = popup.scrollTop();
-            var popupHeight = popup.innerHeight();
-            var optionTop = options.eq(currentIndex).position().top;
-
-            if (optionTop < 0) {
-              popup.scrollTop(popupScrollTop + optionTop);
-            } else if (optionTop + optionHeight > popupHeight) {
-              popup.scrollTop(popupScrollTop + optionTop + optionHeight - popupHeight);
-            }
           }
-          
-        });
+
+          // Highlight the currently selected option
+          options.removeClass("highlighted").eq(currentIndex).addClass("highlighted");
+
+          // Scroll the popup to show the highlighted option
+          var optionHeight = options.eq(currentIndex).outerHeight();
+          var popupScrollTop = popup.scrollTop();
+          var popupHeight = popup.innerHeight();
+          var optionTop = options.eq(currentIndex).position().top;
+
+          if (optionTop < 0) {
+            popup.scrollTop(popupScrollTop + optionTop);
+          } else if (optionTop + optionHeight > popupHeight) {
+            popup.scrollTop(popupScrollTop + optionTop + optionHeight - popupHeight);
+          }
+        }
+        
+      });
 
 
-
-      $(`#productPopup_${productCount}`).on("click", "option", function () {
-          var productName = $(this).text();
-          var productId = $(this).val(); // Get the value of the selected option
+      $(`#productPopup_${productCount}`).on("click", ".popup-option", function () {
+          var productName = $(this).find('span').first().text().trim();
+          var productId = $(this).data('product-id');  // Get the value of the selected option
           console.log(productId)
           $(`#searchMedicine_${productCount}`).val(productName);
           $(`#product_name_${productCount}`).val(productId);
@@ -479,7 +498,6 @@
   
       submitButton.prop("disabled", false);
       }
-
   });
 
   // Function to remove product fields
@@ -497,6 +515,7 @@
 <script>
   $(document).ready(function () {
     var currentIndex = -1;
+
     // Show the product popup and update its content based on search input
     $("#searchMedicine").on("input", function () {
       var searchValue = $(this).val().trim().toLowerCase();
@@ -508,13 +527,19 @@
 
       // Filter select options based on search value
       selectOptions.each(function () {
-        var optionText = $(this).text().toLowerCase();
-        if (optionText.includes(searchValue)) {
-          // Append matching options to the popup
-          var optionClone = $(this).clone();
-          // var optionClone = `<option>${optionText}</option>`;
+        var productName = $(this).data('product-name') || '';
+        if (productName.toLowerCase().includes(searchValue) && $(this).val() !== "") {
+          var batchNo = $(this).data('batch-no') || 'N/A';
+          var mfgName = $(this).data('mfg-name') || 'N/A';
+          var mfgDate = $(this).data('mfg-date') || 'N/A';
+          var expDate = $(this).data('exp-date') || 'N/A';
+          var stockQuantity = $(this).data('stock-quantity') || 'N/A';
 
-          popup.append(optionClone);
+          var formattedOption = `<div class="popup-option" data-product-id="${$(this).val()}">
+            <span style="font-size:14px">${productName}</span>
+            <span class="additional-info"> | ${mfgName}, ${batchNo},  ${mfgDate}, ${expDate}, ${stockQuantity}</span>
+          </div>`;
+          popup.append(formattedOption);
         }
       });
 
@@ -527,33 +552,35 @@
         popup.css({
           top: inputHeight + 15,
           left: 0,
-          width: inputWidth + 500,
+          width: inputWidth + 600,
         }).show();
       } else {
         popup.hide(); // Hide the popup if search input is empty
       }
     });
 
+    // Handle keydown events for navigation
     $(document).on("keydown", function (event) {
       var popup = $("#productPopup");
-      var options = popup.find("option");
+      var options = popup.find(".popup-option");
 
       if (popup.is(":visible")) {
         if (event.keyCode === 38) { // Up arrow key
-          currentIndex = Math.max(currentIndex - 1, 0);
-          options.eq(currentIndex).attr("selected", "selected").siblings().removeAttr("selected");
+          event.preventDefault();
+          currentIndex = (currentIndex > 0) ? currentIndex - 1 : options.length - 1;
+          options.removeClass("highlighted");
+          options.eq(currentIndex).addClass("highlighted");
         } else if (event.keyCode === 40) { // Down arrow key
-          currentIndex = Math.min(currentIndex + 1, options.length - 1);
-          options.eq(currentIndex).attr("selected", "selected").siblings().removeAttr("selected");
+          event.preventDefault();
+          currentIndex = (currentIndex < options.length - 1) ? currentIndex + 1 : 0;
+          options.removeClass("highlighted");
+          options.eq(currentIndex).addClass("highlighted");
         } else if (event.keyCode === 13) { // Enter key
-          $("#searchMedicine").val(options.eq(currentIndex).text());
-          $("#productPopup").hide();
-          // Trigger click event on the selected option
-          options.eq(currentIndex).trigger("click");
+          event.preventDefault();
+          if (currentIndex >= 0) {
+            options.eq(currentIndex).trigger("click");
+          }
         }
-
-        // Highlight the currently selected option
-        options.removeClass("highlighted").eq(currentIndex).addClass("highlighted");
 
         // Scroll the popup to show the highlighted option
         var optionHeight = options.eq(currentIndex).outerHeight();
@@ -567,71 +594,40 @@
           popup.scrollTop(popupScrollTop + optionTop + optionHeight - popupHeight);
         }
       }
-
-        var productName = options.eq(currentIndex).text();
-        var productId = options.eq(currentIndex).val(); // Get the value of the selected option
-        console.log(productId, productName)
-        if(productName && productId){
-        // $("#searchMedicine").val(productName);
-        // $(`#product_name_1`).val(productId);
-        // $("#productPopup").hide();
-        // Assign the value of the selected option to a hidden input field or perform any other action as needed
-        // $("#selectedProductId").val(productId);
-        
-        $.ajax({
-          url: '{% url "get_medicine_details" %}',
-          type: "GET",
-          data: {
-            product_name: productId,
-          },
-          success: function (data) {
-            console.log(data.product);
-            $("#mfgname_1").val(data.product.mfg_name);
-            $("#batchno_1").val(data.product.batch_no);
-            $("#mfgdate_1").val(data.product.mfg_date);
-            $("#expdate_1").val(data.product.exp_date);
-            $("#stock_quantity_1").val(data.product.stock_quantity);
-          },
-        });
-      }
     });
 
-      // Close the popup when clicking outside of it
-      $(document).on("click", function (event) {
-        if (!$(event.target).closest("#productPopup, #searchMedicine").length) {
-          $("#productPopup").hide();
-        }
+    // Handle click event on popup options
+    $("#productPopup").on("click", ".popup-option", function () {
+      var productName = $(this).find('span').first().text().trim();
+      var productId = $(this).data('product-id'); // Get the value of the selected option
+      $("#searchMedicine").val(productName);
+      $("#product_name_1").val(productId);
+      $("#productPopup").hide();
+
+      // Perform any additional action as needed
+      $.ajax({
+        url: '{% url "get_medicine_details" %}',
+        type: "GET",
+        data: {
+          product_name: productId,
+        },
+        success: function (data) {
+          $("#mfgname_1").val(data.product.mfg_name);
+          $("#batchno_1").val(data.product.batch_no);
+          $("#mfgdate_1").val(data.product.mfg_date);
+          $("#expdate_1").val(data.product.exp_date);
+          $("#stock_quantity_1").val(data.product.stock_quantity);
+        },
       });
+    });
 
-
-      $("#productPopup").on("click", "option", function () {
-        var productName = $(this).text();
-        var productId = $(this).val(); // Get the value of the selected option
-        console.log(productId, productName)
-        $("#searchMedicine").val(productName);
-        $(`#product_name_1`).val(productId);
+    // Close the popup when clicking outside of it
+    $(document).on("click", function (event) {
+      if (!$(event.target).closest("#productPopup, #searchMedicine").length) {
         $("#productPopup").hide();
-        // Assign the value of the selected option to a hidden input field or perform any other action as needed
-        // $("#selectedProductId").val(productId);
-        
-        $.ajax({
-          url: '{% url "get_medicine_details" %}',
-          type: "GET",
-          data: {
-            product_name: productId,
-          },
-          success: function (data) {
-            console.log(data.product);
-            $("#mfgname_1").val(data.product.mfg_name);
-            $("#batchno_1").val(data.product.batch_no);
-            $("#mfgdate_1").val(data.product.mfg_date);
-            $("#expdate_1").val(data.product.exp_date);
-            $("#stock_quantity_1").val(data.product.stock_quantity);
-          },
-        });
-      });
+      }
+    });
   });
-
 
 </script>
 
@@ -685,7 +681,16 @@
         success: function (data) {
           productNameSelect.empty();
           $.each(data.products, function (index, product) {
-            productNameSelect.append('<option value="' + product.productdetails_id + '">' + product.name + "</option>");
+            var optionHtml = `<option value="${product.productdetails_id}"
+                               data-product-name="${product.product_name}"
+                               data-batch-no="${product.batch_no}"
+                               data-mfg-name="${product.mfg_name}"
+                               data-mfg-date="${product.mfg_date}"
+                               data-exp-date="${product.exp_date}"
+                               data-stock-quantity="${product.stock_quantity}">
+                             ${product.product_name}
+                           </option>`;
+          productNameSelect.append(optionHtml);
           });
         },
       });

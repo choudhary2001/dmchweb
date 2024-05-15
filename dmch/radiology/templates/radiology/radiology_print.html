@@ -29,6 +29,15 @@
               {% endfor %}
             </select>
         </div>
+        <div style="flex: 3">
+          <select name="doctor" class="form-control mb-2 mb-md-0">
+            <option>Select Doctor</option>
+            <option value="All">All</option>
+            {% for d in doctors %}
+            <option value="{{d.doctor_id}}">{{d.name}}</option>
+            {% endfor %}
+          </select>
+        </div>
         <div style="flex: 2">
           <select type="text" id="department_unit" class="form-control" name="department_unit" >
             <option value="All" >Select Unit</option>
@@ -67,8 +76,8 @@
               <th>Reg No.</th>
               <th>Department</th>
               <th>Refer By</th>
+              <th>Department Unit</th>
               <th>Investigation</th>
-              <th>Investigation Unit</th>
               <th>Patient Type</th>
               <th>Investigation Type</th>
               {% if investigation_unit != 'None' %}
@@ -91,8 +100,8 @@
               <td>{{d.reg_no}}</td>
               <td>{{d.department.name}}</td>
               <td>{{d.doctor.name}}</td>
-              <td>{{d.investigation.name}}</td>
               <td>{{d.investigation_unit}}</td>
+              <td>{{d.investigations}}</td>
               <td>{{d.patient_type}}</td>
               <td>{{d.investigation_type}}</td>
               {% if investigation_unit != 'None' %}

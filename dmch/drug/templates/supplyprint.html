@@ -61,63 +61,49 @@
           </thead>
           <tbody>
             {% for order in supply %}
+            {% for product in order.products.all %}
+
             <tr>
               <td>{{ order.departpment.name }}</td>
 
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.product.p_type }}</p>
 
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.product.name }}</p>
 
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.mfg_name }}</p>
 
-                {% endfor %}
               </td>
 
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.mfg_date }}</p>
 
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.exp_date }}</p>
 
-                {% endfor %}
               </td>
 
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.batch_no }}</p>
 
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.quantity }}</p>
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.stock_quantity }}</p>
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
-                <p>{{ product.supply_date }}</p>
-                {% endfor %}
+                <p>{{ order.order_date }}</p>
               </td>
             </tr>
+                {% endfor %}
+
             {% endfor %}
           </tbody>
         </table>

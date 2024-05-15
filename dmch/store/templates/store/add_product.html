@@ -53,7 +53,7 @@
       <div class="col-md-3 mb-3">
         <div class="form-group">
           <label for="bill_date">Bill Date:</label>
-          <input type="date" class="form-control" name="bill_date"  required />
+          <input type="date" class="form-control" name="bill_date"   />
         </div>
       </div>
 
@@ -61,38 +61,38 @@
       <div class="col-md-3 mb-3">
         <div class="form-group">
           <label for="chalan_no">Chalan No.:</label>
-          <input type="text" class="form-control" name="chalan_no" required />
+          <input type="text" class="form-control" name="chalan_no"  />
         </div>
       </div>
       <div class="col-md-3 mb-3">
         <div class="form-group">
           <label for="chalan_date">Chalan Date:</label>
-          <input type="date" class="form-control" name="chalan_date"  required />
+          <input type="date" class="form-control" name="chalan_date"   />
         </div>
       </div>
 
       <div class="col-md-3 mb-3">
         <div class="form-group">
-          <label for="sp_order_no">Order No.:</label>
-          <input type="text" class="form-control" name="sp_order_no" required />
+          <label for="sp_order_no">Suppritendent Order No.:</label>
+          <input type="text" class="form-control" name="sp_order_no"  />
         </div>
       </div>
       <div class="col-md-3 mb-3">
         <div class="form-group">
-          <label for="sp_order_date">Order Date:</label>
-          <input type="date" class="form-control" name="sp_order_date"  required />
+          <label for="sp_order_date">Suppritendent Order Date:</label>
+          <input type="date" class="form-control" name="sp_order_date"   />
         </div>
       </div>
       <div class="col-md-3 mb-3 ">
         <div class="form-group">
           <label for="received_date">Received Date:</label>
-          <input type="date" class="form-control" name="received_date" value="{% if request.session.received_date %}{{request.session.received_date}}{% endif %}" required />
+          <input type="date" class="form-control" name="received_date" value="{% if request.session.received_date %}{{request.session.received_date}}{% endif %}"  />
         </div>
       </div>
       <div class="col-md-3 mb-3 ">
         <div class="form-group">
           <label for="date">Date:</label>
-          <input type="date" class="form-control" name="date" value="{% if request.session.add_product_date %}{{request.session.add_product_date}}{% endif %}" required />
+          <input type="date" class="form-control" name="date" value="{% if request.session.add_product_date %}{{request.session.add_product_date}}{% endif %}"  />
         </div>
       </div>
     </div>

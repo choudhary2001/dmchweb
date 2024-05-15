@@ -77,9 +77,10 @@
               <th>Mfg Date</th>
               <th>Exp Date</th>
               <th>Batch No</th>
-              <th>Quantity</th>
+              <th>Opening</th>
+              <th>Purchase</th>
               <th>Consumption</th>
-              <th>In Stock</th>
+              <th>Closing</th>
               <!-- <th>Total Stock</th> -->
               <th>Remarks</th>
               <th>Supply On Date</th>
@@ -111,6 +112,9 @@
 
               <td>
                 <p>{{ product.batch_no }}</p>
+              </td>
+              <td>
+                <p>{{ product.quantity }}</p>
               </td>
               <td>
                 <p>{{ product.quantity }}</p>
@@ -166,8 +170,8 @@
     // Iterate over each row
     rows.forEach(function(row) {
       // Get the cells for quantity and stock quantity
-      var quantityCell = row.querySelector("td:nth-child(8)");
-      var stockQuantityCell = row.querySelector("td:nth-child(10)");
+      var quantityCell = row.querySelector("td:nth-child(9)");
+      var stockQuantityCell = row.querySelector("td:nth-child(11)");
       var remainingStockCell = row.querySelector(".quantity-difference");
       console.log(quantityCell, stockQuantityCell, remainingStockCell)
       // Get the values from the cells
@@ -183,39 +187,129 @@
   });
 </script>
 <script>
-  // Function to sort table rows by product name alphabetically
+  document.addEventListener("DOMContentLoaded", function() {
+    // Get all rows in the table body
+    var rows = document.querySelectorAll("tbody tr");
+
+    // Object to store total stock for each product name
+    var totalStock = {};
+
+    // Iterate over each row
+    rows.forEach(function(row) {
+      // Get the cells for quantity, product name, and stock quantity
+      var productNameCell = row.querySelector("td:nth-child(3)");
+      var quantityCell = row.querySelector("td:nth-child(9)");
+      var stockQuantityCell = row.querySelector("td:nth-child(11)");
+      var remainingStockCell = row.querySelector(".quantity-difference");
+
+      // Get the values from the cells
+      var productName = productNameCell.textContent.trim();
+      var quantity = parseInt(quantityCell.textContent);
+      var stockQuantity = parseInt(stockQuantityCell.textContent);
+
+      // Calculate the remaining stock (difference)
+      var remainingStock = quantity - stockQuantity;
+
+      // Update the remaining stock cell with the calculated remaining stock
+      remainingStockCell.textContent = remainingStock;
+
+      // Update total stock for the product name
+      if (productName in totalStock) {
+        totalStock[productName] += stockQuantity;
+      } else {
+        totalStock[productName] = stockQuantity;
+      }
+    });
+
+    // Update Total Stock column
+    var uniqueProducts = {}; // To keep track of processed product names
+    rows.forEach(function(row) {
+      var productNameCell = row.querySelector("td:nth-child(3)");
+      var totalStockCell = row.querySelector("td:nth-child(11)");
+
+      var productName = productNameCell.textContent.trim();
+      if (!(productName in uniqueProducts)) {
+        totalStockCell.textContent = totalStock[productName];
+        uniqueProducts[productName] = true;
+      } else {
+        totalStockCell.textContent = ""; // Clear cell for duplicate product names
+        
+      }
+    });
+  });
+</script>
+
+
+<script>
+  var filterActive = false;
+  var initialTableRows = [];
+
   function sortTableByProductName() {
+    if (filterActive) return;
     var table, rows, switching, i, x, y, shouldSwitch;
     table = document.getElementById("datatablee");
     switching = true;
-    // Loop until no switching has been done
     while (switching) {
       switching = false;
       rows = table.rows;
-      // Loop through all table rows (except the first, which contains table headers)
       for (i = 1; i < (rows.length - 1); i++) {
         shouldSwitch = false;
-        // Get the two product names to compare
-        x = rows[i].getElementsByTagName("td")[2]; // Product Name column index
-        y = rows[i + 1].getElementsByTagName("td")[2]; // Product Name column index
-        // Check if the two rows should switch places based on alphabetical order
+        x = rows[i].getElementsByTagName("td")[2];
+        y = rows[i + 1].getElementsByTagName("td")[2];
         if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-          // If so, mark as a switch and break the loop
           shouldSwitch = true;
           break;
         }
       }
       if (shouldSwitch) {
-        // Perform the switch and mark that a switch has been done
         rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
         switching = true;
       }
     }
   }
+
+  function filterTable() {
+    filterActive = true;
+    var filter = document.getElementById("searchInput").value.toUpperCase();
+    var table = document.getElementById("datatablee");
+    var rows = table.getElementsByTagName("tr");
+
+    for (var i = 1; i < rows.length; i++) {
+      var productNameCell = rows[i].getElementsByTagName("td")[2];
+      var productName = productNameCell ? productNameCell.textContent.toUpperCase() : "";
+      if (productName.startsWith(filter)) {
+        rows[i].style.display = "";
+      } else {
+        rows[i].style.display = "none";
+      }
+    }
+
+    // Reset to initial sorted state if search input is cleared
+    if (!filter) {
+      filterActive = false;
+      resetTableToInitialState();
+    }
+  }
+
+  function resetTableToInitialState() {
+    var table = document.getElementById("datatablee").getElementsByTagName("tbody")[0];
+    table.innerHTML = "";
+    initialTableRows.forEach(function(row) {
+      table.appendChild(row);
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function() {
+    var table = document.getElementById("datatablee");
+    var rows = Array.from(table.getElementsByTagName("tbody")[0].getElementsByTagName("tr"));
+    initialTableRows = rows.slice(); // Store initial sorted state
     sortTableByProductName();
-  })
+  });
+
+  document.getElementById("searchInput").addEventListener("keyup", filterTable);
 </script>
+
+
 <script>
   document.addEventListener("DOMContentLoaded", function() {
     // Object to store aggregated data for each product name and batch number combination
@@ -235,12 +329,12 @@
       var expDate = cells[5].textContent.trim() || ' ';
       var batchNo = cells[6].textContent.trim() || ' ';
       var quantity = parseInt(cells[7].textContent) || 0;
-      var consumption = parseInt(cells[8].textContent) || 0;
-      var inStock = parseInt(cells[9].textContent) || 0;
+      var consumption = parseInt(cells[9].textContent) || 0;
+      var inStock = parseInt(cells[10].textContent) || 0;
       // var totalStock = parseInt(cells[10].textContent) || 0;
-      var supplyDate = cells[10].textContent.trim() || ' ';
-      var createdDateTime = cells[11].textContent.trim() || ' ';
-      var remarks = cells[12].textContent.trim() || '';
+      var supplyDate = cells[11].textContent.trim() || ' ';
+      var createdDateTime = cells[12].textContent.trim() || ' ';
+      var remarks = cells[13].textContent.trim() || '';
 
       // Generate a unique key for each product name
       var key = productName;
@@ -289,6 +383,7 @@
         <td>${rowData.expDate}</td>
         <td>${rowData.batchNo}</td>
         <td>${rowData.quantity}</td>
+        <td>${rowData.quantity}</td>
         <td>${rowData.consumption}</td>
         <td>${rowData.inStock}</td>
         <td>${rowData.supplyDate}</td>
@@ -300,35 +395,7 @@
     });
   });
 </script>
-<!-- <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    // Get all rows in the table body
-    var rows = document.querySelectorAll("tbody tr");
 
-    // Iterate over each row
-    rows.forEach(function(row) {
-      // Get the cells for quantity and stock quantity
-      var quantityCell = row.querySelector("td:nth-child(8)");
-      var stockQuantityCell = row.querySelector("td:nth-child(10)");
-      var inStockCell = row.querySelector("td:nth-child(10)");
-
-      // Get the values from the cells
-      var quantity = parseInt(quantityCell.textContent);
-      var stockQuantity = parseInt(stockQuantityCell.textContent);
-
-      // Calculate the remaining stock (difference)
-      var remainingStock = quantity - stockQuantity;
-
-      // Update the remaining stock cell with the calculated remaining stock
-      inStockCell.textContent = remainingStock;
-
-      // Change color of "In Stock" cell to red if stock quantity is zero
-      if (stockQuantity === 0) {
-        inStockCell.style.color = "red";
-      }
-    });
-  });
-</script> -->
 
 <script>
   function exportToExcel() {
@@ -374,7 +441,7 @@
   }
 
   // Add event listener to the search input field
-  document.getElementById("searchInput").addEventListener("keyup", filterTable);
+  // document.getElementById("searchInput").addEventListener("keyup", filterTable);
 </script>
 
 {% endblock %}

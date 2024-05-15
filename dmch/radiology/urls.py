@@ -20,6 +20,11 @@ urlpatterns = [
     path('update-investigations/<int:investigation_id>', views.investigationss_update, name="radiology_investigations_update"),
     path('delete-investigations/<int:investigation_id>', views.investigations_delete, name="radiology_investigations_delete"),
 
+    path('add-sub-unit/', views.radiology_sub_unit, name="radiology_sub_unit"),
+    path('update-sub-unit/<int:sub_unit_iid>', views.radiology_sub_unit_update, name="radiology_sub_unit_update"),
+    path('delete-sub-unit/<int:sub_unit_iid>', views.radiology_sub_unit_delete, name="radiology_sub_unit_delete"),
+
+
     path('add-report/', views.add_radiology_report, name="add_radiology_report"),
     path('show-report/', views.show_radiology_report, name="show_radiology_report"),
     path('show-report-print/', views.print_radiology_report, name="print_radiology_report"),

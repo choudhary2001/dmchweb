@@ -33,7 +33,19 @@ class Investigation(models.Model):
     def __str__(self):
         return self.name
     
+class SubUnit(models.Model):
+    sub_unit_iid = models.CharField(max_length=8, unique=True, editable=False, default="")
+    name = models.CharField(max_length = 255)
+    sub_unit = models.CharField(max_length = 255, blank = True, null = True)
+    created_at = models.DateTimeField(auto_now_add = True)
 
+    def save(self, *args, **kwargs):
+        if not self.sub_unit_iid:
+            self.sub_unit_iid = str(uuid.uuid4().int)[:8]
+        super(SubUnit, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
 
 class RadiologyDoctor(models.Model):
     doctor_id = models.CharField(max_length=8, unique=True, editable=False, default="")
@@ -68,7 +80,8 @@ class Radiology(models.Model):
     add_time = models.DateTimeField(null = True, blank = True)
     created_at = models.DateTimeField(auto_now_add = True, null = True, blank = True)
     # added_time = models.DateTimeField(null = True, blank = True,auto_now_add = True)
-
+    investigations = models.CharField(max_length=1024, blank=True, null=True) 
+    
     def save(self, *args, **kwargs):
         if not self.radiology_id:
             self.radiology_id = str(uuid.uuid4().int)[:8]

@@ -89,10 +89,10 @@
             {% for product_name, quantities in product_quantities.items %}
             <tr>
               <td>{{ product_name }}</td>
-              <td>{{ quantities.remaining_quantity }}</td>
+              <td>{{ quantities.opening }}</td>
               <td>{{ quantities.purchase }}</td>
-              <td>{{ quantities.total_quantity }}</td>
-              <td>{{ quantities.remaining_quantityy }}</td>
+              <td>{{ quantities.remaining_quantity }}</td>
+              <td>{{ quantities.closing }}</td>
             </tr>
             {% endfor %}
           </tbody>

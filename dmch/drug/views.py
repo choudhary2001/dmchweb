@@ -436,10 +436,10 @@ def get_product_names_by_type_purchase(request):
         logout(request)
         return redirect('signin') 
 
+
 @login_required
 def get_product_details(request):
     if request.user.is_superuser or request.session['user_role'] == 'Drug':
-
         # Get the selected product type from the AJAX request
         product_name = request.GET.get('product_name')
         print(product_name)
@@ -449,18 +449,26 @@ def get_product_details(request):
             print(product_purchase)
             # Check if the ProductPurchase object exists
             if product_purchase:
-                
                 # Convert the model instance to a dictionary
                 product_purchase_dict = model_to_dict(product_purchase)
+                
+                # Get the related purchase and supplier
+                purchase = Purchase.objects.filter(products=product_purchase).first()
+                if purchase and purchase.supplier:
+                    product_purchase_dict['supplier_name'] = purchase.supplier.name
+                else:
+                    product_purchase_dict['supplier_name'] = None
+                print(product_purchase_dict)
                 # Return the dictionary as JSON response
                 return JsonResponse({'product': product_purchase_dict})
+            else:
+                # If no product purchase found, return empty response or appropriate error message
+                return JsonResponse({'error': 'Product purchase not found for the given product name'}, status=404)
         else:
-            # If no product purchase found, return empty response or appropriate error message
-            return JsonResponse({'error': 'Product purchase not found for the given product name'}, status=404)
-
+            return JsonResponse({'error': 'Product name not provided'}, status=400)
     else:
         logout(request)
-        return redirect('signin') 
+        return redirect('signin')
 
 # Update view
 @login_required
@@ -708,6 +716,7 @@ def purchase_update_view(request,purchase_id):
                 mrp = request.POST.get(f'mrp_{i}')
                 purchaserate = request.POST.get(f'purchaserate_{i}')
                 quantity = request.POST.get(f'quantity_{i}')
+                stock_quantity = request.POST.get(f'stock_quantity_{i}')
                 amount = request.POST.get(f'amount_{i}')
                 productdetails_id = request.POST.get(f'productdetails_id_{i}')
 
@@ -726,7 +735,7 @@ def purchase_update_view(request,purchase_id):
                     p.mfg_name = mfg_name
                     p.batch_no = batch_no
                     p.quantity = quantity
-                    p.stock_quantity = quantity
+                    p.stock_quantity = stock_quantity
                     p.mfg_date = mfgdate
                     p.exp_date = expdate
                     p.mrp = mrp
@@ -1067,7 +1076,7 @@ def supply_add_view(request):
             product_type = request.POST.get('product_type')
             mfg_name = request.POST.get('mfg_name')
             batch_no = request.POST.get('batch_no')
-            date = request.POST.get('date')
+            order_date = request.POST.get('order_date')
             department = DrugDepartment.objects.filter(department_id=department_id).first()
 
             # Create a new supply instance
@@ -1075,7 +1084,7 @@ def supply_add_view(request):
                 user = request.user,
                 departpment=department,
                 indent  = indent,
-                order_date = date,
+                order_date = order_date,
                 de = None
             )
 
@@ -1119,7 +1128,7 @@ def supply_add_view(request):
                             mfg_date = p.mfg_date,
                             exp_date = p.exp_date,
                             stock_quantity = quantity,
-                            supply_date = date
+                            supply_date = order_date
                         )
 
                         supply.products.add(product)
@@ -1129,8 +1138,8 @@ def supply_add_view(request):
             messages.success(request, 'Added Successfully')
 
         s = Suppliar.objects.all().order_by('-created_at')
-        d = DrugDepartment.objects.all().order_by('-created_at')
-        p = ProductType.objects.all().order_by('-created_at')
+        d = DrugDepartment.objects.all().order_by('name')
+        p = ProductType.objects.all().order_by('p_type')
        # unique_p_types = ProductType.objects.annotate(
         #    normalized_p_type=Trim(Upper('p_type', output_field=CharField()))
        # ).values_list('normalized_p_type', flat=True).distinct()
@@ -1155,12 +1164,15 @@ def supply_delete_view(request, supply_id):
         supply = get_object_or_404(Supply, supply_id=supply_id)
         try:
             if supply:
-                for p in supply.products:
+                for p in supply.products.all():
+                    pp = ProductPurchase.objects.filter(product_name = pp.product_name, batch_no = batch_no).first()
+                    pp.stock_quantity = pp.stock_quantity + int(p.stock_quantity)
+                    pp.save()
                     p.delete()
         except Exception as e:
             print(e)
         supply.delete()
-        return redirect('supply_details_view')  # Replace 'success-page' with actual URL
+        return redirect('drug_supply_details_view')  # Replace 'success-page' with actual URL
     else:
         logout(request)
         return redirect('signin') 
@@ -1311,6 +1323,7 @@ def supply_update_view(request, supply_id):
         supply = get_object_or_404(Supply, supply_id=supply_id)
         print(supply)
         if request.method == 'POST':
+            print(request.POST)
             # Extract data from the form
             indent = request.POST.get('indent')
             department_id = request.POST.get('department_id')
@@ -1318,12 +1331,12 @@ def supply_update_view(request, supply_id):
             product_type = request.POST.get('product_type')
             mfg_name = request.POST.get('mfg_name')
             batch_no = request.POST.get('batch_no')
-            date = request.POST.get('date')
+            order_date = request.POST.get('order_date')
 
             department = DrugDepartment.objects.filter(department_id=department_id).first()
             supply.department = department
             supply.indent = indent
-            supply.order_date = date
+            supply.order_date = order_date
             supply.save()
 
             # Loop through the product form fields
@@ -1343,9 +1356,10 @@ def supply_update_view(request, supply_id):
 
 
                 print(f"Product Type ID: {product_type_name}, MFG Name: {mfg_name}, Batch No: {batch_no}, Quantity: {quantity}")
-
-                pp = ProductSupply.objects.filter(productdetails_id = product_name).first()
+                product_type_new = ProductType.objects.filter(product_type_id=product_name).first()
+                pp = ProductSupply.objects.filter(productdetails_id = productdetails_id, product = product_type_new).first()
                 if pp:
+                    print("Product Available")
                     product_type = ProductType.objects.filter(product_type_id=pp.product.product_type_id).first()
                     p = ProductPurchase.objects.filter(product = product_type, batch_no = batch_no).first()
                     print(p)
@@ -1363,21 +1377,27 @@ def supply_update_view(request, supply_id):
                             pp.mfg_date = mfgdate
                             pp.exp_date = expdate
                             pp.stock_quantity = quantity
-                            pp.supply_date = date
 
                             pp.save()
 
-                if pp is not None:
+                if pp is None:
+                    print("##################################################Product UN Available")
+
                     try:
-                        product_type = ProductType.objects.filter(product_type_id=pp.product.product_type_id).first()
-                        p = ProductPurchase.objects.filter(product = product_type, batch_no = batch_no).first()
+                        ppp = ProductSupply.objects.filter(productdetails_id = productdetails_id).first()
+
+                        product_type = ProductType.objects.filter(product_type_id=ppp.product.product_type_id).first()
+                        product_type_new = ProductType.objects.filter(product_type_id=product_name).first()
+                        p = ProductPurchase.objects.filter(product = product_type,batch_no =ppp.batch_no ).first()
+                        p_n = ProductPurchase.objects.filter(product = product_type_new, batch_no = batch_no).first()
                         print(p)
                         if p:
                             print(p.stock_quantity, quantity)
-
-                            if int(p.stock_quantity) >= int(quantity):
-                                p.stock_quantity = int(p.stock_quantity) -  int(quantity)
-                                p.save()
+                            p.stock_quantity = int(p.stock_quantity) +  int(ppp.quantity)
+                            p.save()
+                            if int(p_n.stock_quantity) >= int(quantity):
+                                p_n.stock_quantity = int(p_n.stock_quantity) -  int(quantity)
+                                p_n.save()
 
                                 product = ProductSupply.objects.create(
                                     user = request.user,
@@ -1388,16 +1408,18 @@ def supply_update_view(request, supply_id):
                                     mfg_date = mfgdate,
                                     exp_date = expdate,
                                     stock_quantity = stock_quantity,
-                                    supply_date = date
+                                    supply_date = order_date
                                 )
 
                                 supply.products.add(product)
+                                ppp.delete()
                     except Exception as e:
                         print(e)
 
             # Save the order
-            supply.save()
+            # supply.save()
             messages.success(request, 'Updated Successfully')
+        supply = get_object_or_404(Supply, supply_id=supply_id)
 
         s = Suppliar.objects.all().order_by('-created_at')
         d = DrugDepartment.objects.all().order_by('-created_at')
@@ -1410,6 +1432,7 @@ def supply_update_view(request, supply_id):
             'product' : p,
             'unique_p_types' : unique_p_types,
             'supply' : supply,
+            'total' : len(supply.products.all())
         }
         return render(request, 'update_supply.html', context=context)
     else:
