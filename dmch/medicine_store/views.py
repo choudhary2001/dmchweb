@@ -473,14 +473,41 @@ def medicine_supply_add_view(request):
 
 
         print(unique_p_types)
+        supplies = Supply.objects.filter(de=request.session['user_role']).order_by('-order_date')
+        print(supplies)
+        expiring_products = []
 
+        # Loop through each supply
+        for supply in supplies:
+            # Get the related ProductSupply instances for the current supply
+            product_supplies = supply.products.all()
+
+            # Loop through each product supply
+            for product_supply in product_supplies:
+                # Check if the exp_date is less than 3 months from today
+                if product_supply.exp_date is not None and product_supply.exp_date <= timezone.now().date() + timedelta(days=3*30):
+                    # If it is, add relevant details to the expiring_products list
+                    expiring_products.append({
+                        'product_type': product_supply.product_type,
+                        'product_name': product_supply.product_name,
+                        'mfg_name': product_supply.mfg_name,
+                        'mfg_date': product_supply.mfg_date,
+                        'exp_date': product_supply.exp_date,
+                        'batch_no': product_supply.batch_no,
+                        'stock_quantity': product_supply.stock_quantity,
+                        'supply_date': product_supply.supply_date,
+                    })
+
+        print(expiring_products)
         context = {
             'title' : 'Medicine Consumption / Supply',
             'suppliar' : s,
             'department' : d,
             'product' : p,
             'unique_p_types' : unique_p_typess,
-            'productsupply' : unique_p_types
+            'productsupply' : unique_p_types,
+            'expiring_products' : expiring_products
+
         }
         return render(request, 'medicine_store/supply.html', context=context)
     else:
@@ -715,6 +742,7 @@ def supply_details_user_view(request):
                 for ps in sp:
                     unique_p_types.append({'productdetails_id' : ps.productdetails_id , 'product_name' : ps.product_name })
         print(unique_p_types)
+        
         context = {
             'supply' : p,
             'title' : f"Total Medicine Consumption : {len(p)}",
@@ -897,137 +925,6 @@ def supply_update_view(request, supply_id):
         return redirect('signin') 
     
 
-# @login_required
-# def get_consumption_and_remaining_quantity(request):
-#     departpment = request.session['user_role']
-#     d = DrugDepartment.objects.filter(name = departpment).first()
-#     if request.user.is_superuser or d is not None:
-
-#         start_date_str = request.GET.get('start_date', None)
-#         end_date_str = request.GET.get('end_date', None)
-#         product_name = request.GET.get('product_name', None)
-
-#         if start_date_str:
-#             start_date = start_date_str
-#             start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
-#         else:
-#             start_date = None
-
-#         if end_date_str:
-#             end_date = end_date_str
-#             end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)
-#         else:
-#             end_date = None
-#         asu = Supply.objects.filter(departpment=d).order_by('-order_date')
-#         # print(a)
-#         p = []
-
-#         products = []
-#         for ap in asu:
-#             ps = ap.products.all()
-#             department = None
-#             if product_name != None:
-#                 if product_name != 'All':
-#                     ps = ps.filter(productdetails_id = product_name)
-#                     # print(ps)
-#                     if ps:
-#                         department = ps[0].productdetails_id
-            
-#             for a in ps:
-
-#                 if a is not None:
-#                     productt_name = a.product_name
-#                     quantity = a.quantity
-#                     if start_date:
-#                         # Check if the product name is already present in the list
-#                         found_product = next((p for p in products if p['product'] == productt_name), None)
-
-#                         if found_product:
-#                             # If the product is found, add its quantity to the existing entry
-#                             found_product['total_quantity'] += quantity
-#                         else:
-#                             # If the product is not found, add a new entry to the products list
-#                             products.append({
-#                                 'product': product_name,
-#                                 'total_quantity': quantity,
-#                                 'end_total_quantity': 0,
-#                                 'till_remaining': 0,
-#                                 'till_end': 0,
-#                                 'till_today' : 0
-#                             })
-
-#                         if start_date and end_date:
-#                             next_day = end_date + timedelta(days=1)
-#                             prev_day = start_date - timedelta(days=1)
-#                             total_quantity = Medicine.objects.filter(product=a, created_at__lt=prev_day).aggregate(total_quantity=Sum('quantity'))['total_quantity']
-#                             end_total_quantity = Medicine.objects.filter(product=a, created_at__lt=next_day).aggregate(total_quantity=Sum('quantity'))['total_quantity']
-    
-#                             # total_quantity = Medicine.objects.filter(product=a, created_at__lt=start_datetime).aggregate(total_quantity=Sum('quantity'))['total_quantity']
-#                             # end_total_quantity = Medicine.objects.filter(product=a, created_at__lt=end_datetime).aggregate(total_quantity=Sum('quantity'))['total_quantity']
-#                             print("Total Quantity:", total_quantity)
-#                             print("End Total Quantity:", end_total_quantity)
-#                             till_today = 0
-#                             till_remaining = 0
-#                             till_end = 0
-#                             # print(total_quantity, end_total_quantity)
-#                             for info in products:
-#                                 if info['product'] == product_name:
-#                                     if end_total_quantity is None:
-#                                         end_total_quantity = 0
-#                                     if total_quantity is None:
-#                                         total_quantity = 0
-#                                     # till_today = end_total_quantity
-                                    
-#                                     till_remaining = info['total_quantity'] - total_quantity
-#                                     till_end = info['total_quantity'] - end_total_quantity
-#                                     # print(till_today, till_remaining, till_end)
-#                             # if total_quantity > 0:
-#                             p.append({
-#                                 'product': a.product_name,
-#                                 'total_quantity': end_total_quantity - total_quantity,
-#                                 'end_total_quantity': end_total_quantity,
-#                                 'till_remaining': till_remaining,
-#                                 'till_end': till_end,
-#                                 'till_today' : till_today
-#                             })
-                    
-
-
-#                 # elif end_date:
-#                 #     total_quantity = Medicine.objects.filter(product=a, created_at__lt=end_date).aggregate(total_quantity=Sum('quantity'))['total_quantity']
-#                 #     p.append({
-#                 #         'product' : a.product.name,
-#                 #         'total_quantity' : total_quantity
-#                 #     })
-#         # print(p)
-#         # print([p])
-#         d = DrugDepartment.objects.all()
-#         # sp = ProductSupply.objects.values('product_name', 'productdetails_id').distinct()
-#         unique_p_types = []
-#         ss = Supply.objects.all()
-#         # print(ss)
-#         for s in ss:
-#             if s.departpment.name == departpment:
-#                 sp = s.products.all()
-#                 for ps in sp:
-#                     unique_p_types.append({'productdetails_id' : ps.productdetails_id , 'product_name' : ps.product_name })
-#         # print(unique_p_types)
-#         context = {
-#             'supply' : p,
-#             'title' : f"Total Item Wise Consumption : {len(p)}",
-#             'departments' : d,
-#             'department' : product_name,
-#             'productsupply' : unique_p_types,
-#             'start_date_str' : start_date_str,
-#             'end_date_str' : end_date_str
-#         }
-
-#         return render(request, 'medicine_store/itemwiseconsumption.html', context=context)
-
-#     else:
-#         logout(request)
-#         return redirect('signin') 
-    
 @login_required
 def stock_add_view(request):
     departpment = request.session['user_role']
@@ -1397,3 +1294,86 @@ def get_consumption_and_remaining_quantity(request):
     else:
         logout(request)
         return redirect('signin')
+
+
+@login_required
+def store_expired_medicine(request):
+    departpment = request.session['user_role']
+    d = DrugDepartment.objects.filter(name = departpment).first()
+    if request.user.is_superuser or d is not None:
+
+        supplies = Supply.objects.filter(departpment=d).order_by('-order_date')
+
+        # Initialize an empty list to store the expiring products
+        expiring_products = []
+
+        # Loop through each supply
+        for supply in supplies:
+            # Get the related ProductSupply instances for the current supply
+            product_supplies = supply.products.all()
+
+            # Loop through each product supply
+            for product_supply in product_supplies:
+                # Check if the exp_date is less than 3 months from today
+                if product_supply.exp_date is not None and product_supply.exp_date <= timezone.now().date() + timedelta(days=3*30):
+                    # If it is, add relevant details to the expiring_products list
+                    expiring_products.append({
+                        'product_type': product_supply.product_type,
+                        'product_name': product_supply.product_name,
+                        'mfg_name': product_supply.mfg_name,
+                        'mfg_date': product_supply.mfg_date,
+                        'exp_date': product_supply.exp_date,
+                        'batch_no': product_supply.batch_no,
+                        'stock_quantity': product_supply.stock_quantity,
+                        'supply_date': product_supply.supply_date,
+                    })
+        d = DrugDepartment.objects.all()
+        context = {
+            'title' : f"Total Purchase : {len(expiring_products)}",
+            'expiring_products' : expiring_products
+        }
+        return render(request, 'medicine_store/exppired.html', context=context)
+    else:
+        logout(request)
+        return redirect('signin') 
+
+@login_required
+def store_expired_medicine_print(request):
+    departpment = request.session['user_role']
+    d = DrugDepartment.objects.filter(name = departpment).first()
+    if request.user.is_superuser or d is not None:
+
+        supplies = Supply.objects.filter(departpment=d).order_by('-order_date')
+
+        # Initialize an empty list to store the expiring products
+        expiring_products = []
+
+        # Loop through each supply
+        for supply in supplies:
+            # Get the related ProductSupply instances for the current supply
+            product_supplies = supply.products.all()
+
+            # Loop through each product supply
+            for product_supply in product_supplies:
+                # Check if the exp_date is less than 3 months from today
+                if product_supply.exp_date is not None and product_supply.exp_date <= timezone.now().date() + timedelta(days=3*30):
+                    # If it is, add relevant details to the expiring_products list
+                    expiring_products.append({
+                        'product_type': product_supply.product_type,
+                        'product_name': product_supply.product_name,
+                        'mfg_name': product_supply.mfg_name,
+                        'mfg_date': product_supply.mfg_date,
+                        'exp_date': product_supply.exp_date,
+                        'batch_no': product_supply.batch_no,
+                        'stock_quantity': product_supply.stock_quantity,
+                        'supply_date': product_supply.supply_date,
+                    })
+        d = DrugDepartment.objects.all()
+        context = {
+            'title' : f"Total Purchase : {len(expiring_products)}",
+            'expiring_products' : expiring_products
+        }
+        return render(request, 'medicine_store/expired_print.html', context=context)
+    else:
+        logout(request)
+        return redirect('signin') 

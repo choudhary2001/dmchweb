@@ -88,6 +88,7 @@
                               <option {% if d.user_role == 'Drug' %} selected {% endif %}  value="Drug" >Drug</option>
                               <option {% if d.user_role == 'Pathology' %} selected {% endif %}  value="Pathology" >Pathology</option>
                               <option {% if d.user_role == 'Radiology' %} selected {% endif %}  value="Radiology" >Radiology</option>
+                              <option {% if d.user_role == 'Cardiology' %} selected {% endif %}  value="Cardiology" >Cardiology</option>
                               {% for dd in departments %}
                                 <option {% if d.user_role == dd.name %} selected {% endif %}value="{{dd.name}}" >{{dd.name}}</option>
                               {% endfor %}
@@ -160,6 +161,7 @@
                   <option value="Drug" >Drug</option>
                   <option value="Pathology" >Pathology</option>
                   <option value="Radiology" >Radiology</option>
+                  <option value="Cardiology" >Cardiology</option>
                   {% for d in departments %}
                     <option value="{{d.name}}" >{{d.name}}</option>
                   {% endfor %}

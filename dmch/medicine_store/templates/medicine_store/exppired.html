@@ -7,21 +7,12 @@
   <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
 
   {% endfor %} {% endif %}
-  <marquee behavior="scroll" direction="left">
-    <a href="{% url 'expired_medicine' %}" style="color: red;">
-      <ul style="list-style: none; display: flex;" >
-        {% for product in expiring_products %}
-          <li style="color: red;" >{{ product.product_name }} ({{ product.batch_no }} {{ product.exp_date }}) , </li>
-        {% endfor %}
-      </ul>
-    </a>
-  </marquee>
-  
+
   <div style="display: flex"></div>
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <form action="{% url 'purchase_details_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+      <form action="{% url 'store_expired_medicine' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
         <div style="flex: 1">
           <input type="datetime-local" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
         </div>
@@ -36,7 +27,7 @@
           <button class="btn btn-primary w-100" type="submit">Filter</button>
         </div>
         <div style="flex: 1">
-          <a href="{% url 'purchase_details_view_print' %}" class="btn btn-primary w-100">Print</a>
+          <a href="{% url 'store_expired_medicine_print' %}" class="btn btn-primary w-100">Print</a>
         </div>
       </form>
     </div>
@@ -45,7 +36,6 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th>Order No.</th>
               <th>Product Type</th>
               <th>Product Name</th>
               <th>Mfg By</th>
@@ -53,19 +43,13 @@
               <th>Exp Date</th>
               <th>In Stock</th>
               <th>Batch No</th>
-              <th>Supplier Name</th>
-              <th>Invoice No.</th>
-              <th>Invoice Date</th>
               <th>Purchase Time</th>
-              <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {% for order in purchase %}
-            {% for product in order.products.all %}
+            {% for product in expiring_products %}
 
             <tr>
-              <td>{{ order.order_id }}</td>
               <td>
                 <p>{{ product.product_type }}</p>
 
@@ -88,45 +72,21 @@
 
               </td>
               <td>
-                <p>{{ product.quantity }}</p>
+                <p>{{ product.stock_quantity }}</p>
               </td>
               <td>
                 <p>{{ product.batch_no }}</p>
 
               </td>
-              <td>
-                <p>
-                  {{ order.supplier.name }}<br />
-                  Gst : {{ order.gst }}<br />
-                </p>
-              </td>
-              <td>{{ order.invoice_no }}</td>
-              <td>{{ order.invoice_date }}</td>
- 
 
-             
 
               <td>
-                <p>{{ product.purchase_date }}</p>
+                <p>{{ product.supply_date }}</p>
               </td>
-              <td>
-                <a href="/drug/purchase/{{ order.purchase_id }}/update/" class="btn btn-primary btn-icon-split">
-                  <span class="icon text-white-50">
-                    <i class="fas fa-arrow-right"></i>
-                  </span>
-                  <span class="text">Edit</span>
-                </a>
-                <a href="/drug/purchase/{{ order.purchase_id }}/delete/" class="btn btn-danger btn-icon-split">
-                  <span class="icon text-white-50">
-                    <i class="fas fa-trash"></i>
-                  </span>
-                  <!-- <span class="text"></span> -->
-                </a>
-              </td>
+      
             </tr>
             {% endfor %}
 
-            {% endfor %}
           </tbody>
         </table>
       </div>

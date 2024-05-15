@@ -45,7 +45,7 @@ def get_investigation_by_department(request):
 
 @login_required
 def departments(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Radiology':
+    if request.user.is_superuser or request.session['user_role'] == 'Radiology' or request.session['user_role'] == 'Cardiology':
         if request.method == "POST":
             department = request.POST['department']
             room_no = request.POST.get('room_no', None)
@@ -64,7 +64,7 @@ def departments(request):
     
 @login_required
 def departments_update(request, department_id):
-    if request.user.is_superuser or request.session['user_role'] == 'Radiology':
+    if request.user.is_superuser or request.session['user_role'] == 'Radiology' or request.session['user_role'] == 'Cardiology':
         if request.method == "POST":
             d = RadiologyDepartment.objects.filter(department_id =department_id).first()
             department = request.POST['department']
@@ -86,7 +86,7 @@ def departments_update(request, department_id):
     
 @login_required
 def departments_delete(request, department_id):
-    if request.user.is_superuser or request.session['user_role'] == 'Radiology':
+    if request.user.is_superuser or request.session['user_role'] == 'Radiology' or request.session['user_role'] == 'Cardiology':
         d = RadiologyDepartment.objects.filter(department_id =department_id).first()
         d.delete()
         messages.success(request, 'Department deleted successfully.')
@@ -98,7 +98,7 @@ def departments_delete(request, department_id):
 
 @login_required
 def doctors(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Radiology':
+    if request.user.is_superuser or request.session['user_role'] == 'Radiology' or request.session['user_role'] == 'Cardiology':
         if request.method == "POST":
             doctor = request.POST['doctor']
             department = request.POST['department']
@@ -123,7 +123,7 @@ def doctors(request):
 
 @login_required
 def doctors_update(request, doctor_id):
-    if request.user.is_superuser or request.session['user_role'] == 'Radiology':
+    if request.user.is_superuser or request.session['user_role'] == 'Radiology' or request.session['user_role'] == 'Cardiology':
         if request.method == "POST":
             d = RadiologyDoctor.objects.filter(doctor_id =doctor_id).first()
             doctor = request.POST['doctor']
@@ -145,7 +145,7 @@ def doctors_update(request, doctor_id):
 
 @login_required
 def doctors_delete(request, doctor_id):
-    if request.user.is_superuser or request.session['user_role'] == 'Radiology':
+    if request.user.is_superuser or request.session['user_role'] == 'Radiology' or request.session['user_role'] == 'Cardiology':
         d = RadiologyDoctor.objects.filter(doctor_id =doctor_id).first()
         d.delete()
         messages.success(request, 'Doctor updated successfully.')

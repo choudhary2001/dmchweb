@@ -395,7 +395,9 @@ def get_product_names_by_type(request):
         product_type = request.GET.get('product_type')
 
         # Query the database to retrieve product names based on the selected product type
-        products = ProductType.objects.filter(p_type=product_type)
+        # products = ProductType.objects.filter(p_type=product_type)
+        products = ProductType.objects.filter(p_type=product_type).values('name').distinct()
+
 
         # Create a list to store the product names
         product_names = []
@@ -403,7 +405,7 @@ def get_product_names_by_type(request):
         # Iterate over the retrieved products and extract their names
         for product in products:
             product_names.append({'product_type_id': product.product_type_id, 'name': product.name})
-
+        print(product_names)
         # Return the product names as JSON response
         return JsonResponse({'products': product_names})
     else:
@@ -429,7 +431,7 @@ def get_product_names_by_type_purchase(request):
                     if pp.quantity > 0 and pp.stock_quantity > 0:
                         # Create a dictionary to store the product names
                         print(pp.productdetails_id , p.name)
-                        product_names.append({'product_type_id': pp.productdetails_id, 'product_type_id_': p.product_type_id,  'name': p.name})
+                        product_names.append({'product_type_id': pp.productdetails_id, 'product_type_id_': p.product_type_id,  'name': p.name, 'batch' : pp.batch_no})
         # Return the product names as JSON response
         return JsonResponse({'products': product_names})
     else:
@@ -798,7 +800,8 @@ def purchase_update_view(request,purchase_id):
 @login_required
 def purchase_details_view(request):
     if request.user.is_superuser or request.session['user_role'] == 'Drug':
-
+        expiring_products = ProductPurchase.get_expiring_products()
+        print(expiring_products)
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
         department_id = request.GET.get('department')
@@ -847,6 +850,7 @@ def purchase_details_view(request):
         context = {
             'purchase' : p,
             'title' : f"Total Purchase : {len(p)}",
+            'expiring_products' : expiring_products
         }
         return render(request, 'purchase.html', context=context)
     else:
@@ -934,6 +938,7 @@ def purchase_delete_view(request, purchase_id):
 @login_required
 def stock_details_view(request):
     if request.user.is_superuser or request.session['user_role'] == 'Drug':
+        expiring_products = ProductPurchase.get_expiring_products()
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -990,6 +995,7 @@ def stock_details_view(request):
             'purchase' : p,
             'product_quantities': product_quantities,
             'title' : f"Total Purchase : {len(p)}",
+            'expiring_products' : expiring_products
         }
         return render(request, 'stock.html', context=context)
     else:
@@ -1066,6 +1072,7 @@ def stock_details_view_print(request):
 @login_required
 def supply_add_view(request):
     if request.user.is_superuser or request.session['user_role'] == 'Drug':
+        expiring_products = ProductPurchase.get_expiring_products()
 
         if request.method == 'POST':
             # Extract data from the form
@@ -1149,7 +1156,8 @@ def supply_add_view(request):
             'suppliar' : s,
             'department' : d,
             'product' : p,
-            'unique_p_types' : unique_p_types
+            'unique_p_types' : unique_p_types,
+            'expiring_products' : expiring_products
         }
         return render(request, 'add_supply.html', context=context)
     else:
@@ -1180,6 +1188,7 @@ def supply_delete_view(request, supply_id):
 @login_required
 def supply_details_view(request):
     if request.user.is_superuser or request.session['user_role'] == 'Drug':
+        expiring_products = ProductPurchase.get_expiring_products()
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -1239,7 +1248,8 @@ def supply_details_view(request):
         context = {
             'supply' : p,
             'title' : f"Total Supply : {len(p)}",
-            'departments' : d
+            'departments' : d,
+            'expiring_products' : expiring_products
         }
         return render(request, 'supply.html', context=context)
     else:
@@ -1439,3 +1449,34 @@ def supply_update_view(request, supply_id):
         logout(request)
         return redirect('signin') 
     
+@login_required
+def expired_medicine(request):
+    if request.user.is_superuser or request.session['user_role'] == 'Drug':
+        expiring_products = ProductPurchase.get_expiring_products()
+        print(expiring_products)
+
+        d = DrugDepartment.objects.all()
+        context = {
+            'title' : f"Total Purchase : {len(expiring_products)}",
+            'expiring_products' : expiring_products
+        }
+        return render(request, 'exppired.html', context=context)
+    else:
+        logout(request)
+        return redirect('signin') 
+
+@login_required
+def expired_medicine_print(request):
+    if request.user.is_superuser or request.session['user_role'] == 'Drug':
+        expiring_products = ProductPurchase.get_expiring_products()
+        print(expiring_products)
+
+        d = DrugDepartment.objects.all()
+        context = {
+            'title' : f"Total Purchase : {len(expiring_products)}",
+            'expiring_products' : expiring_products
+        }
+        return render(request, 'expired_print.html', context=context)
+    else:
+        logout(request)
+        return redirect('signin') 

@@ -19,6 +19,15 @@
   <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
 
   {% endfor %} {% endif %}
+  <marquee behavior="scroll" direction="left">
+    <a href="{% url 'expired_medicine' %}" style="color: red;">
+      <ul style="list-style: none; display: flex;" >
+        {% for product in expiring_products %}
+          <li style="color: red;" >{{ product.product_name }} ({{ product.batch_no }} {{ product.exp_date }}) , </li>
+        {% endfor %}
+      </ul>
+    </a>
+  </marquee>
   <form id="orderForm" method="POST" action="{% url 'supply-add' %}">
     {% csrf_token %}
     <h3>Supply</h3>

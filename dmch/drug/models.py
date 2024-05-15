@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 import datetime
 import uuid
 from counter.models import *
+from django.utils import timezone
+from datetime import timedelta
 
 class DrugDepartment(models.Model):
     department_id = models.CharField(max_length=8, unique=True, editable=False, default="")
@@ -97,6 +99,23 @@ class ProductPurchase(models.Model):
         if not self.productdetails_id:
             self.productdetails_id = str(uuid.uuid4().int)[:8]
         super(ProductPurchase, self).save(*args, **kwargs)
+
+    def is_expiring_soon(self):
+        """
+        Check if the product is expiring within 3 months from today.
+        """
+        today = timezone.now().date()
+        three_months_from_today = today + timedelta(days=3*30)  # Assuming a month has 30 days
+        return self.exp_date is not None and today <= self.exp_date <= three_months_from_today
+
+    @staticmethod
+    def get_expiring_products():
+        """
+        Get a queryset of products that are expiring within 3 months from today.
+        """
+        today = timezone.now().date()
+        three_months_from_today = today + timedelta(days=3*30)  # Assuming a month has 30 days
+        return ProductPurchase.objects.filter(exp_date__isnull=False, exp_date__range=(today, three_months_from_today))
 
 
 class ProductSupply(models.Model):

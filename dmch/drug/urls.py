@@ -46,4 +46,8 @@ urlpatterns = [
     path('supply/view/', views.supply_details_view, name='drug_supply_details_view'),
     path('supply/<str:supply_id>/update/', views.supply_update_view, name='supply-update'),
     path('supply/<str:supply_id>/delete/', views.supply_delete_view, name='supply-delete'),
+
+    path('expired/medicine/', views.expired_medicine, name='expired_medicine'),
+    path('expired/medicine/print/', views.expired_medicine_print, name='expired_medicine_print'),
+
 ]
