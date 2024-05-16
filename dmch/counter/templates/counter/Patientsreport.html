@@ -31,6 +31,15 @@
           <option value="ChildEOPD">ChildEOPD</option> -->
         </select>
       </div>
+      <div style="flex: 2">
+        <select name="user_id" class="form-control mb-2 mb-md-0">
+          <option value="All"  >Select Staff</option>
+          <option value="All">All</option>
+          {% for d in registration_users %}
+          <option value="{{d.id}}">{{d.first_name}} {{d.last_name}}</option>
+          {% endfor %}
+        </select>
+      </div>
       <div style="flex: 1">
         <button class="btn btn-primary w-100" type="submit">Filter</button>
       </div>
@@ -69,6 +78,7 @@
         <table class="table table-bordered" width="100%" cellspacing="0">
           <thead>
             <tr>
+              <th>Staff</th>
               <th>Reg No.</th>
               <th>Department</th>
               <th>Card Type</th>
@@ -83,6 +93,7 @@
           <tbody>
             {% for d in patients %}
             <tr>
+              <td>{{d.user.first_name}}  {{d.user.last_name}}</td>
               <td>{{d.regid}}</td>
               <td>{{d.department}}</td>
               <td>{% if d.redcardtype == 'Red Card' %}Red Card{% endif %}</td>

@@ -27,38 +27,45 @@
   {% endfor %} {% endif %}
 
   <!-- Page Heading -->
-  <form id="patientForm" method="POST" action="{% url 'add_radiology_report' %}">
+  <form id="patientForm" method="POST" action="/radiology/edit-report/{{radiology.radiology_id}}/">
     {% csrf_token %}
 
     <div class="row">
         <!-- Left Column (Patient Details) -->
+
+        <div class="col-md-4 mb-3">
+          <label for="date">Date:</label>
+          <input type="date" class="form-control" id="date" name="date" value="{% if radiology.add_time %}{{radiology.add_time|date:'Y-m-d' }}{% endif %}" required />
+        </div>
+
         <div class="col-md-4 mb-3">
             <label for="regid">Reg No.:</label>
-            <input type="text" class="form-control" id="regid" name="regid" required />
+            <input type="text" class="form-control" id="regid" value="{% if radiology.patient %}{% if radiology.patient.de == 'Radiology' %}{{radiology.patient.regnoid}}{% else %}{{radiology.patient.regid}}{% endif %}{% endif %}"  name="regid" required />
 
         </div>
 
         <div class="col-md-4 mb-3">
             <label for="patient_name">Patient Name :</label>
-            <input type="text" class="form-control" id="patient_name" name="patient_name" required  />
+            <input type="text" class="form-control" id="patient_name" name="patient_name"  value="{{radiology.patient.name}}"  required  />
         </div>
 
         <div class="col-md-4 mb-3">
           <label for="gender">Gender:</label>
           <select type="text" id="gender" class="form-control" name="gender" style="">
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Prefer not to say">Prefer not to say</option>
-            <option value="Non-binary">Non-binary</option>
-            <option value="Transgender">Transgender</option>
-            <option value="Genderqueer">Genderqueer</option>
-            <option value="Agender">Agender</option>
+            <option value="Male" {% if radiology.patient.gender == 'Male' %} selected {% endif %}>Male</option>
+            <option value="Female" {% if radiology.patient.gender == 'Female' %} selected {% endif %}>Female</option>
+            <option value="Other" {% if radiology.patient.gender == 'Other' %} selected {% endif %}>Other</option>
+            <option value="Prefer not to say" {% if radiology.patient.gender == 'Prefer not to say' %} selected {% endif %}>Prefer not to say</option>
+            <option value="Non-binary" {% if radiology.patient.gender == 'Non-binary' %} selected {% endif %}>Non-binary</option>
+            <option value="Transgender" {% if radiology.patient.gender == 'Transgender' %} selected {% endif %}>Transgender</option>
+            <option value="Genderqueer" {% if radiology.patient.gender == 'Genderqueer' %} selected {% endif %}>Genderqueer</option>
+            <option value="Agender" {% if radiology.patient.gender == 'Agender' %} selected {% endif %}>Agender</option>
           </select>
         </div>
 
         <div class="col-md-4 mb-3">
             <label for="age">Age:</label>
-            <input type="text" class="form-control" id="age" name="age"  />
+            <input type="text" class="form-control" id="age" value="{% if radiology.patient.year %}{{radiology.patient.year}}Y{% endif %} {% if radiology.patient.month %}{{radiology.patient.month}}M{% endif %} {% if radiology.patient.days %}{{radiology.patient.days}}D{% endif %}" name="age"  />
         </div>
 
         <div class="col-md-4 mb-3">
@@ -66,7 +73,7 @@
             <select type="text" id="department" class="form-control" name="department" required style="" required>
                 <option>Select Department</option>
                 {% for d in departments %}
-                <option value="{{d.department_id}}">{{d.name}}</option>
+                <option {% if radiology.department.department_id == d.department_id %} selected {% endif %}  value="{{d.department_id}}">{{d.name}}</option>
                 {% endfor %}
             </select>
         </div>
@@ -85,9 +92,9 @@
           <label for="department_unit">Department  (Unit) :</label>
           <select type="text" id="department_unit" class="form-control" name="department_unit" >
               <option>Select Unit</option>
-            <option value="USG">USG</option>
-            <option value="X-Ray">X-Ray</option>
-            <option value="C.T.">C.T.</option>
+            <option {% if radiology.investigation_unit == 'USG' %}selected{% endif %} value="USG">USG</option>
+            <option {% if radiology.investigation_unit == 'X-Ray' %}selected{% endif %} value="X-Ray">X-Ray</option>
+            <option {% if radiology.investigation_unit == 'C.T.' %}selected{% endif %} value="C.T.">C.T.</option>
           </select>
         </div>
 
@@ -101,38 +108,42 @@
             <option value="X-Ray Pediatrics">X-Ray Pediatrics</option> -->
         </select>
       </div>
-
-        <div class="col-md-4 mb-3" >
-            <label for="investigation">Investigation :</label>
-            <select type="text" id="investigation" class="form-control" name="investigation" multiple="multiple">
+      <div class="col-md-4 mb-3">
+        <label for="investigation">Investigation :</label>
+        <select type="text" id="investigation" class="form-control" name="investigation" multiple="multiple">
             <option>Select Investigation</option>
             {% for d in investigations %}
-              <option value="{{d.investigation_id}}">{{d.name}}</option>
+                {% if d.name in selected_investigations %}
+                    <option value="{{ d.investigation_id }}" selected>{{ d.name }}</option>
+                  {% else %}
+                  <option value="{{ d.investigation_id }}">{{ d.name }}</option>
+                  
+                  {% endif %}
             {% endfor %}
-            </select>
-        </div>
-
+        </select>
+    </div>
+    
 
 
         <div class="col-md-4 mb-3" >
             <label for="patient_type">Patient Type :</label>
             <select type="text" id="patient_type" class="form-control" name="patient_type" >
-                <option>Select Unit</option>
-              <option value="O.P.D">O.P.D</option>
-              <option value="I.P.D">I.P.D</option>
+              <option>Select Unit</option>
+              <option {% if radiology.patient_type == 'O.P.D' %}selected{% endif %}  value="O.P.D">O.P.D</option>
+              <option {% if radiology.patient_type == 'I.P.D' %}selected{% endif %}  value="I.P.D">I.P.D</option>
             </select>
         </div>
 
         <div class="col-md-4 mb-3" >
             <label for="investigation_type">Investigation Type :</label>
             <select type="text" id="investigation_type" class="form-control" name="investigation_type" >
-                <option>Select Unit</option>
-              <option value="General">General</option>
-              <option value="FWB">FWB</option>
-              <option value="Special">Special</option>
-              <option value="M/B">M/B</option>
-              <option value="M/L">M/L</option>
-              <option value="P/C">P/C</option>
+              <option>Select Unit</option>
+              <option {% if radiology.investigation_type == 'General' %}selected{% endif %}  value="General">General</option>
+              <option {% if radiology.investigation_type == 'FWB' %}selected{% endif %}  value="FWB">FWB</option>
+              <option {% if radiology.investigation_type == 'Special' %}selected{% endif %}  value="Special">Special</option>
+              <option {% if radiology.investigation_type == 'M/B' %}selected{% endif %}  value="M/B">M/B</option>
+              <option {% if radiology.investigation_type == 'M/L' %}selected{% endif %}  value="M/L">M/L</option>
+              <option {% if radiology.investigation_type == 'P/C' %}selected{% endif %}  value="P/C">P/C</option>
             </select>
         </div>
 
@@ -140,7 +151,7 @@
         <div class="col-md-4 mb-3" style="display: none;" >
             <label for="plate_size">Plate Size:</label>
             <!-- <input type="text" class="form-control" id="plate_size" name="plate_size"  /> -->
-            <select id="plate_size" class="form-control" name="plate_size" multiple="multiple">
+            <select id="plate_size" class="form-control" name="plate_size" value="{{radiology.plate_size}}" multiple="multiple">
               <option value='14"x17"'>14"x17"</option>
               <option value='12"x15"'>12"x15"</option>
               <option value='12"x12"'>12"x12"</option>
@@ -153,13 +164,10 @@
         </div>
         <div class="col-md-4 mb-3" style="display: none;" >
           <label for="no_of_plate">No. of Plate:</label>
-          <input type="text" class="form-control" id="no_of_plate" name="no_of_plate"  />
+          <input type="text" value="{{radiology.no_of_plate}}" class="form-control" id="no_of_plate" name="no_of_plate"  />
       </div>
 
-        <div class="col-md-4 mb-3">
-            <label for="date">Date:</label>
-            <input type="date" class="form-control" id="date" name="date" value="{% if request.session.radiology_date %}{{request.session.radiology_date}}{% endif %}" required />
-        </div>
+
     </div>
 
 
@@ -171,9 +179,10 @@
 {% endblock %} {% block script %}
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("name").focus();
+    document.getElementById("regid").focus();
   });
 </script>
+
 <script>
   $(document).ready(function () {
     $("#regid").on("input", function () {
@@ -245,6 +254,89 @@
 </script>
 <script>
   $(document).ready(function () {
+      $.ajax({
+        url: '{% url "radiology_get_doctors_by_department" %}',
+        type: "GET",
+        data: {
+          department_id: {{radiology.department.department_id}},
+        },
+        success: function (data) {
+          console.log(data);
+          $("#doctor").empty();
+          $.each(data.doctors, function (index, doctor) {
+            $("#doctor").append('<option value="' + doctor.doctor_id + '">' + doctor.name + "</option>");
+          });
+        },
+      });
+  });
+
+  $(document).ready(function () {
+    $("#redcardid").hide();
+    $("#redcardtype").change(function () {
+      var redcardId = $(this).val();
+      console.log(redcardId);
+      if (redcardId === "select") {
+        $("#redcardid").hide();
+      } else {
+        $("#redcardid").show();
+      }
+    });
+  });
+
+
+</script>
+<script>
+  $(document).ready(function () {
+    // $("#department_unit").change(function () {
+      var departmentId = $("#department_unit").val();
+      var unit = $("#department_unit").val();
+      if (unit === "X-Ray") {
+        $("#no_of_plate").parent().show(); // Show the field for No. of Plate
+        $("#plate_size").parent().show(); // Show the field for Plate Size
+        $("#sub_unit").parent().show(); // Show the field for Plate Size
+      } 
+      else if(unit === 'C.T.'){
+        $("#no_of_plate").parent().show(); // Show the field for No. of Plate
+        $("#plate_size").parent().show(); 
+      }
+      
+      else {
+        $("#no_of_plate").parent().hide(); // Hide the field for No. of Plate
+        $("#plate_size").parent().hide(); // Hide the field for Plate Size
+        $("#sub_unit").parent().hide(); // Hide the field for Plate Size
+      }
+      $.ajax({
+        url: '{% url "get_investigation_by_department" %}',
+        type: "GET",
+        data: {
+          investigation_unit: departmentId,
+        },
+        success: function (data) {
+          console.log(data);
+          $("#investigation").empty();
+          $.each(data.investigation, function (index, invest) {
+            $("#investigation").append('<option value="' + invest.investigation_id + '" {% if radiology.investigation_id == ' + invest.investigation_id + ' %}selected{% endif %}  >' + invest.name + "</option>");
+          });
+
+          // $("#investigation").val({{selected_investigations}});
+
+
+          $("#sub_unit").empty();
+          $.each(data.unit, function (index, t) {
+            $("#sub_unit").append('<option value="' + t.sub_unit_iid + '">' + t.name + "</option>");
+          });
+
+
+        },
+      });
+    // });
+  });
+
+
+
+</script>
+<script>
+  $(document).ready(function () {
     $("#department_unit").change(function () {
       var departmentId = $(this).val();
       var unit = $(this).val();
@@ -275,6 +367,8 @@
           $.each(data.investigation, function (index, invest) {
             $("#investigation").append('<option value="' + invest.investigation_id + '">' + invest.name + "</option>");
           });
+
+          // $("#investigation").val({{selected_investigations}});
 
           $("#sub_unit").empty();
           $.each(data.unit, function (index, t) {
@@ -357,4 +451,21 @@
       });
   });
 </script>
+
+<script>
+  // Get the select element
+  var select = document.getElementById('plate_size');
+
+  // Array of selected plate sizes
+  var selectedPlateSizes = {{ radiology.plate_size|safe }};
+
+  // Loop through the options and select those that match the selected plate sizes
+  for (var i = 0; i < select.options.length; i++) {
+      if (selectedPlateSizes.includes(select.options[i].value)) {
+          select.options[i].selected = true;
+      }
+  }
+</script>
+
+
 {% endblock %}

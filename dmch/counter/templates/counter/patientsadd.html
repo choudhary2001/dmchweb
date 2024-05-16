@@ -194,6 +194,14 @@
     });
   });
 
+  document.getElementById("patientForm").addEventListener("submit", function(event) {
+    // Disable the submit button
+    document.getElementById("submitBtn").disabled = true;
+
+    // Optional: Add a loading spinner or message
+    // document.getElementById("submitBtn").innerText = "Submitting...";
+  });
+
   $(document).ready(function () {
     $("#redcardid").hide();
     $("#redcardtype").change(function () {

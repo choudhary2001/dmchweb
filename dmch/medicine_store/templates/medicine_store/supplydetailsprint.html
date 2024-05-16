@@ -92,7 +92,7 @@
               </td>
 
               <td>{% for product in order.products.all %}
-                {{product.created_at|date:"F j, Y"}}
+                {{product.created_at|date:"j-m-Y"}}
 
                 {% endfor %}
               </td>

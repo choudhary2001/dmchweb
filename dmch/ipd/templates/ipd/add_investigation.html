@@ -1,0 +1,291 @@
+{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<style>
+  label {
+    width: 230px;
+  }
+  .form-group {
+    margin-bottom: 0.2rem;
+    line-height: 0.5rem;
+    align-items: center;
+  }
+  .form-control {
+    padding: ".15rem .75rem";
+  }
+</style>
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <form id="patientForm" method="POST" action="{% url 'ipd_add_patient' %}">
+    {% csrf_token %}
+
+
+
+    <div class="row">
+
+    
+      <div class="col-md-4 mb-3">
+        <label for="regid">Reg No.:</label>
+        <input type="text" class="form-control" id="regid" name="regid" required />
+
+    </div>
+
+
+
+    <div class="col-md-4 mb-3">
+        <label for="name">Patient Name :</label>
+        <input type="tel" class="form-control" id="name" name="name" required />
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <label for="age">Gender :</label>
+      <select type="text" id="gender" class="form-control" name="gender" required style="">
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Prefer not to say">Prefer not to say</option>
+        <option value="Non-binary">Non-binary</option>
+        <option value="Transgender">Transgender</option>
+        <option value="Genderqueer">Genderqueer</option>
+        <option value="Agender">Agender</option>
+      </select>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <label for="age">Age:</label>
+        <div style="display: flex;" >
+          <input type="number" class="form-control" id="year" name="year" style="width: 33%" placeholder="Year" /> &nbsp; <input type="number" class="form-control" id="month" name="month" style="width: 33%" placeholder="Month" /> &nbsp;
+          <input type="number" class="form-control" id="days" name="days" style="width: 33%" placeholder="Days" />
+        </div>
+    </div>
+
+    <div class="col-md-8 mb-3">
+      <label for="guardianname">Guardian's Name :</label>
+      <div style="display: flex; width: 100%">
+        <select class="form-control" id="guardiannametitle" name="guardiannametitle" style="width: 25%" required>
+          <option value="Self">Self</option>
+          <option value="S/O">S/O (Son of)</option>
+          <option value="D/O">D/O (Daughter of)</option>
+          <option value="W/O">W/O (Wife of)</option>
+          <option value="H/O">H/O (Husband of)</option>
+          <option value="F/O">F/O (Father of)</option>
+          <option value="M/O">M/O (Mother of)</option>
+          <option value="G/O">G/O (Guardian of)</option>
+        </select>
+        &nbsp; &nbsp;
+        <input type="text" class="form-control" id="guardianname" name="guardianname" style="width: 74%" required />
+      </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <label for="mobile">Mobile No. :</label>
+      <input type="text" class="form-control" id="mobile" name="mobile" />
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <label for="address">Address :</label>
+      <input type="text" class="form-control" id="address" required name="address" />
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <label for="policest">Police Station :</label>
+      <input type="text" class="form-control" id="policest" required name="policest" />
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <label for="district">District :</label>
+      <input type="text" class="form-control" id="district" name="district" />
+    </div>
+
+    <!-- <div class="col-md-4 mb-3">
+      <label for="state">State :</label>
+      <input type="text" class="form-control" id="state" name="state" />
+    </div> -->
+
+    <div class="col-md-4 mb-3">
+      <label for="pincode">Pin Code :</label>
+      <input type="text" class="form-control" id="pincode" name="pincode" />
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <label for="department">Departments :</label>
+
+      <select type="text" id="department" class="form-control" name="department" required style="">
+        <option>Select Department</option>
+        {% for d in departments %}
+        <option value="{{d.department_id}}">{{d.name}}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <label for="doctor">Doctors :</label>
+      <div style="display: flex;" >
+        <select type="text" id="doctor" class="form-control" name="doctor"></select>
+      </div>
+    </div>
+
+
+    <div class="col-md-4 mb-3">
+      <label for="disease">Disease :</label>
+      <input type="text" class="form-control" id="disease" name="disease" />
+    </div>
+
+    <!-- <div class="col-md-4 mb-3">
+      <label for="death">Death :</label>
+      <input type="checkbox" class="form-control" id="death" name="death" />
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <label for="lama">Lama :</label>
+      <input type="checkbox" class="form-control" id="lama" name="lama" />
+    </div> -->
+
+    <div class="col-md-4 mb-3">
+      <label for="admit_date">Admit Date :</label>
+      <input type="datetime-local" class="form-control" id="admit_date" name="admit_date" />
+    </div>
+
+
+    <div class="col-md-12 mb-3">
+
+      <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+  </form>
+</div>
+
+<!-- End of Main Content -->
+{% endblock %} {% block script %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("regid").focus();
+  });
+</script>
+<script>
+  $(document).ready(function () {
+    $("#department").change(function () {
+      var departmentId = $(this).val();
+      $.ajax({
+        url: '{% url "get_ipd_doctors_by_department" %}',
+        type: "GET",
+        data: {
+          department_id: departmentId,
+        },
+        success: function (data) {
+          console.log(data);
+          $("#doctor").empty();
+          $.each(data.doctors, function (index, doctor) {
+            $("#doctor").append('<option value="' + doctor.doctor_id + '">' + doctor.name + "</option>");
+          });
+        },
+      });
+    });
+  });
+
+
+
+</script>
+
+<script>
+  $(document).ready(function () {
+    $("#regid").on("input", function () {
+      var regid = $(this).val();
+      if (regid) {
+        $.ajax({
+          url: '{% url "fetch_ipd_patient_data" %}',
+          type: "GET",
+          data: {
+            regid: regid,
+          },
+          success: function (data) {
+            console.log(data)
+            data = data.patient;
+            // Update input fields with fetched data
+            $("#name").val(data.name);
+            $("#guardiannametitle").val(data.guardiannametitle);
+            $("#guardianname").val(data.guardianname);
+            $("#gender").val(data.gender);
+            $("#year").val(data.year);
+            $("#month").val(data.month);
+            $("#days").val(data.days);
+            $("#mobile").val(data.mobno);
+            $("#address").val(data.address);
+            $("#district").val(data.district);
+            $("#policest").val(data.policest);
+            $("#state").val(data.state);
+            $("#pincode").val(data.pincode);
+          },
+          error: function (xhr, status, error) {
+            console.error(xhr.responseText);
+            // Handle error if necessary
+            $("#name").val('');
+            $("#gender").val('');
+            $("#age").val('');
+            $("#mob_no").val('');
+          },
+        });
+      } else {
+        // Clear input fields when regid is empty
+        $("#name").val('');
+        $("#gender").val('');
+        $("#age").val('');
+        $("#mob_no").val('');
+      }
+    });
+  });
+</script>
+
+
+
+
+<script>
+  // Function to handle form submission
+  function handleFormSubmission(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Your additional logic for form validation or processing goes here
+
+    // Select all input fields in the form
+    const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
+
+    // Flag to keep track of form validity
+    let isValid = true;
+
+    // Loop through each input field
+    inputs.forEach(function (input) {
+      // Check if the input field is required and does not have a value
+      if (input.hasAttribute("required") && !input.value.trim()) {
+        // If a required field is empty, set isValid to false
+        isValid = false;
+        // Highlight the empty field (you can customize this part)
+        input.style.border = "1px solid red";
+      } else {
+        // Remove any previous highlighting
+        input.style.border = "";
+      }
+    });
+
+    // If the form is valid, submit it
+    if (isValid) {
+      document.getElementById("patientForm").submit();
+    } else {
+      // If the form is invalid, display an alert (you can customize this part)
+      //   alert("Please fill out all required fields.");
+    }
+  }
+
+  // Function to handle keyboard shortcuts
+  function handleShortcut(event) {
+    // if (event.ctrlKey && event.key === "s") {
+    if (event.key === "F2") {
+      // Ctrl + S pressed, trigger form submission
+      event.preventDefault();
+      handleFormSubmission(event);
+    }
+  }
+
+  // Attach event listener for form submission
+  document.getElementById("patientForm").addEventListener("submit", handleFormSubmission);
+
+  // Attach event listener for keyboard shortcuts
+  document.addEventListener("keydown", handleShortcut);
+</script>
+{% endblock %}

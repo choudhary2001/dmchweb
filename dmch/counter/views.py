@@ -272,7 +272,8 @@ def add_patient(request):
             except Exception as e:
                 print(e)
                 messages.error(request, 'Some error occured please fill correctly')
-
+                return redirect('add_patient')
+                
         de = Department.objects.all().order_by('-created_at')
         context = {
             'patient' : p,
@@ -502,6 +503,11 @@ def show_patients_data(request):
                 'appointment_date': patient.appointment_date,
             })
 
+        p = Profile.objects.filter(user_role = 'Registration').all()
+        registration_profiles = Profile.objects.filter(user_role='Registration')
+    
+        # Get the associated User instances
+        registration_users = User.objects.filter(profile__in=registration_profiles)
         # Prepare data for JSON response
         data = {
             'patients': patients_data,
@@ -511,6 +517,7 @@ def show_patients_data(request):
             'recordsTotal': paginator.count,  # Total records without filtering
             'recordsFiltered': paginator.count,  # Total records after filtering (for now)
             'data': patients_data,
+            'registration_users': registration_users,
         }
         return JsonResponse(data)
     else:
@@ -599,6 +606,7 @@ def show_patients_report(request):
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
         department_id = request.GET.get('department')
+        user_id = request.GET.get('user_id')
 
         # Convert the date strings to datetime objects
         if start_date_str:
@@ -649,6 +657,16 @@ def show_patients_report(request):
                     print(patients)
                     department = de.name
 
+        # users = None
+        if user_id != None:
+            if user_id != 'All':
+                ue = User.objects.filter(id = user_id).first()
+                print(ue)
+                if ue:
+                    patients = patients.filter(user = ue)
+                    print(patients)
+                    # department = de.name
+
         # Count the total number of patients
         non_price = 0
         red_card_total = 0
@@ -689,6 +707,13 @@ def show_patients_report(request):
         print(min_appointment_date, max_appointment_date)
         if start_date_str or end_date_str or department_id:
             show_patients = patients
+
+        p = Profile.objects.filter(user_role = 'Registration').all()
+        registration_profiles = Profile.objects.filter(user_role='Registration')
+        
+        # Get the associated User instances
+        registration_users = User.objects.filter(profile__in=registration_profiles)
+    
         context = {
             'patients': show_patients,
             'title': f'Total Patients: {total}',
@@ -704,7 +729,8 @@ def show_patients_report(request):
             'start_date' : min_appointment_date,
             'end_date' : max_appointment_date,
             'free_total' : free_total,
-            'revisit_total' : revisit_total
+            'revisit_total' : revisit_total,
+            'registration_users': registration_users,
         }
         return render(request, 'counter/Patientsreport.html', context=context)
     else:

@@ -33,6 +33,10 @@
     <div class="row">
         <!-- Left Column (Patient Details) -->
         <div class="col-md-4 mb-3">
+          <label for="date">Date:</label>
+          <input type="date" class="form-control" id="date" name="date" value="{% if request.session.radiology_date %}{{request.session.radiology_date}}{% endif %}" required />
+      </div>
+        <div class="col-md-4 mb-3">
             <label for="regid">Reg No.:</label>
             <input type="text" class="form-control" id="regid" name="regid" required />
 
@@ -144,7 +148,7 @@
               <option value='14"x17"'>14"x17"</option>
               <option value='12"x15"'>12"x15"</option>
               <option value='12"x12"'>12"x12"</option>
-              <option value='"10"x"12"'>10"x12"</option>
+              <option value='10"x12"'>10"x12"</option>
               <option value='8"x10"'>8"x10"</option>
               <option value='6.5"x8.5"'>6.5"x8.5"</option>
               <option value='10"x14"'>10"x14"</option>
@@ -156,10 +160,7 @@
           <input type="text" class="form-control" id="no_of_plate" name="no_of_plate"  />
       </div>
 
-        <div class="col-md-4 mb-3">
-            <label for="date">Date:</label>
-            <input type="date" class="form-control" id="date" name="date" value="{% if request.session.radiology_date %}{{request.session.radiology_date}}{% endif %}" required />
-        </div>
+
     </div>
 
 
@@ -171,7 +172,7 @@
 {% endblock %} {% block script %}
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("name").focus();
+    document.getElementById("regid").focus();
   });
 </script>
 <script>

@@ -29,6 +29,7 @@ urlpatterns = [
     path('store/', include('store.urls')),
     path('radiology/', include('radiology.urls')),
     path('cardiology/', include('cardiology.urls')),
+    path('ipd/', include('ipd.urls')),
 
 
 ]

@@ -28,6 +28,7 @@ urlpatterns = [
     path('add-report/', views.add_radiology_report, name="add_radiology_report"),
     path('show-report/', views.show_radiology_report, name="show_radiology_report"),
     path('show-report-print/', views.print_radiology_report, name="print_radiology_report"),
+    path('edit-report/<int:radiology_id>/', views.update_radiology_report, name="update_radiology_report"),
     path('delete-report/<int:radiology_id>/', views.delete_radiology_report, name="delete_radiology_report"),
 
 ]

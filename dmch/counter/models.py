@@ -6,8 +6,16 @@ import uuid
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete = models.SET_NULL, blank = True, null =True)
     user_role = models.CharField(max_length = 255)
+    main_department = models.CharField(max_length = 255, blank = True, null = True)
+    data_add = models.CharField(max_length = 255, blank = True, null = True, default = 'false')
+    data_view = models.CharField(max_length = 255, blank = True, null = True,  default = 'false')
+    data_edit = models.CharField(max_length = 255, blank = True, null = True,  default = 'false')
+    data_delete = models.CharField(max_length = 255, blank = True, null = True,  default = 'false')
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.user.first_name} {self.user.last_name} "
+    
 class Department(models.Model):
     department_id = models.CharField(max_length=8, unique=True, editable=False, default="")
     name = models.CharField(max_length = 255)

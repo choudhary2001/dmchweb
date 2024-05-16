@@ -561,6 +561,53 @@
 
         {% endif %} 
 
+
+        {% if request.session.user_role == 'CANCER' or request.session.user_role == 'Admin' %}
+        <hr class="sidebar-divider" />
+        <!-- Heading -->
+        <div class="sidebar-heading">I. P. D.</div>
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'ipd_departments' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>I. P. D Departments</span></a
+          >
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'ipd_doctors' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>I.P.D Doctors</span></a
+          >
+        </li>
+
+  
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'ipd_add_patient' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Add Patient</span></a
+          >
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'ipd_discharge_patient' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Discharge Patient</span></a
+          >
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'show_ipd_patients_report' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Show Report</span></a
+          >
+        </li>
+
+
+        {% endif %} 
+
         <!-- Divider -->
         <!-- <hr class="sidebar-divider" /> -->
 

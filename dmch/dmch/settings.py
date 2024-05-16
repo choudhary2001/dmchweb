@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'medicine_store',
     'store',
     'radiology',
-    'cardiology'
+    'cardiology',
+    'ipd'
 ]
 
 MIDDLEWARE = [
