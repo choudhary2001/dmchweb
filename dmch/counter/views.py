@@ -467,7 +467,7 @@ def show_patients_data(request):
             patients = paginator.page(1)
         except EmptyPage:
             patients = paginator.page(paginator.num_pages)
-
+        print(patients)
         # Serialize patients data
         patients_data = []
         for patient in patients:
@@ -506,9 +506,6 @@ def show_patients_data(request):
         p = Profile.objects.filter(user_role = 'Registration').all()
         registration_profiles = Profile.objects.filter(user_role='Registration')
     
-        # Get the associated User instances
-        registration_users = User.objects.filter(profile__in=registration_profiles)
-        # Prepare data for JSON response
         data = {
             'patients': patients_data,
             'has_next': patients.has_next(),
@@ -516,8 +513,7 @@ def show_patients_data(request):
             'draw': request.GET.get('draw'),  # Echo back the draw parameter
             'recordsTotal': paginator.count,  # Total records without filtering
             'recordsFiltered': paginator.count,  # Total records after filtering (for now)
-            'data': patients_data,
-            'registration_users': registration_users,
+            'data': patients_data
         }
         return JsonResponse(data)
     else:
@@ -607,6 +603,7 @@ def show_patients_report(request):
         end_date_str = request.GET.get('end_date')
         department_id = request.GET.get('department')
         user_id = request.GET.get('user_id')
+        location = request.GET.get('location')
 
         # Convert the date strings to datetime objects
         if start_date_str:
@@ -666,6 +663,20 @@ def show_patients_report(request):
                     patients = patients.filter(user = ue)
                     print(patients)
                     # department = de.name
+
+        if location:
+            if location != 'All':
+                l_u_p = Profile.objects.filter(main_department=location).all()
+            
+                # Get the associated User instances
+                l_u = User.objects.filter(profile__in=l_u_p)
+
+                # Convert the queryset to a list of user IDs
+                user_ids = l_u.values_list('id', flat=True)
+
+                if user_ids:
+                    patients = patients.filter(user_id__in=user_ids)
+                    print(patients)
 
         # Count the total number of patients
         non_price = 0
