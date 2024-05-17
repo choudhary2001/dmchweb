@@ -46,6 +46,7 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
+              <th>Reg No.</th>
               <th>Patient</th>
               <th>Medicine Name</th>
               <th>Mfg By</th>
@@ -62,7 +63,21 @@
             {% for product in order.products.all %}
 
             <tr>
-              <td>{% if order.patient.name %}{{ order.patient.name }}{% else %}{{ order.patient.regnoid }}{% endif %}</td>
+              <td>
+                {% if order.patient %}
+                  {% if order.patient.regnoid %}{{ order.patient.regnoid }}{% endif %}
+                {% else %}
+                  {{ order.patient_name }}
+                {% endif %}
+              </td>
+              
+              <td>
+                {% if order.patient %}
+                  {% if order.patient.name %}{{ order.patient.name }}{% else %}{{ order.patient.regnoid }}{% endif %}
+                {% else %}
+                  {{ order.regno }}
+                {% endif %}
+              </td>
 
               <td>
                 <p>{{ product.product.product_name }}</p>

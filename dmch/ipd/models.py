@@ -58,8 +58,8 @@ class Patient_Admission(models.Model):
 
     disease = models.TextField()
     discharge = models.BooleanField(default=False)
-    death = models.BooleanField(default=False)
-    lama = models.BooleanField(default=False)
+    death = models.CharField(max_length=20, blank = True, null = True)
+    lama = models.CharField(max_length=20, blank = True, null = True)
 
     appointment_date = models.DateTimeField(blank = True, null = True)
     discharge_date = models.DateTimeField(blank = True, null = True)

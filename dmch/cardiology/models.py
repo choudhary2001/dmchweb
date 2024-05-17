@@ -12,6 +12,8 @@ class Cardiology(models.Model):
     patient_name = models.CharField(max_length = 255, blank = True, null = True)
     patient = models.ForeignKey(Patient, on_delete = models.SET_NULL, blank = True, null = True)
     reg_no = models.CharField(max_length = 255, blank = True, null = True)
+    gender = models.CharField(max_length = 255, blank = True, null = True)
+    age = models.CharField(max_length = 255, blank = True, null = True)
     doctor = models.ForeignKey(RadiologyDoctor, on_delete = models.SET_NULL,  blank = True, null = True)
     department = models.ForeignKey(RadiologyDepartment, on_delete = models.SET_NULL,  blank = True, null = True)
     patient_type = models.CharField(max_length = 255, blank = True, null = True)

@@ -86,7 +86,14 @@
                     <td class="quantity-difference"></td>
                     <td>{{ product.stock_quantity }}</td>
                     <td></td>
-                    <td >{{ order.order_date|date:"j-m-Y" }}</td>
+                    <td >
+                      {% if order.order_date %}
+                      <p>{{ order.order_date|date:"j-m-Y" }}</p>
+                      {% else %}
+                      <p>{{ product.order_date|date:"j-m-Y" }}</p>
+                      {% endif %}
+                    
+                    </td>
                     <td >{{ order.created_at }}</td>
                     <td >{{ order.remarks }}</td>
                     <td >

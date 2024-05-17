@@ -31,6 +31,8 @@ class MedicineConsumption(models.Model):
     departpment = models.ForeignKey(DrugDepartment, on_delete = models.SET_NULL,  blank = True, null = True)
     patient = models.ForeignKey(Patient, on_delete = models.SET_NULL, blank = True, null = True)
     products = models.ManyToManyField(Medicine, related_name='medicineconsumption_medicine')
+    regno = models.CharField(max_length = 255, blank = True, null = True)
+    patient_name = models.CharField(max_length = 255, blank = True, null = True)
     created_at = models.DateTimeField(auto_now_add = True)
 
     def save(self, *args, **kwargs):

@@ -393,30 +393,33 @@ def medicine_supply_add_view(request):
             try:
                 p = Patient.objects.filter(regid = regid).first()
             except Exception as e:
-                print(e)
+                # print(e)
                 try:
                     p = Patient.objects.filter(regnoid = regid).first()
                 except Exception as e:
-                    print(e)
+                    # print(e)
                     p = None
 
-            if p is None:
-                p = Patient.objects.create(
-                    user = request.user,
-                    gender = '',
-                    de = departpment
-                )
-                if regid:
-                    p.regnoid = regid
-                if patient_name:
-                    p.name = patient_name
-                p.save()
-            print(p)
+            # if p is None:
+            #     p = Patient.objects.create(
+            #         user = request.user,
+            #         name = patient_name,
+            #         gender = '',
+            #         de = departpment
+            #     )
+            #     if regid:
+            #         p.regnoid = regid
+            #     # if patient_name:
+            #     #     p.name = patient_name
+            #     p.save()
+            # print(p)
             
             # Create a new supply instance
             m = MedicineConsumption.objects.create(
                 user = request.user,
                 patient=p,
+                patient_name = patient_name, 
+                regno = regid,
                 departpment = d
             )
 
@@ -434,7 +437,7 @@ def medicine_supply_add_view(request):
                 ps = ProductSupply.objects.filter(productdetails_id = product_name).first()
                 print(ps)
                 if ps:
-                    if int(ps.stock_quantity) >= int(quantity):
+                    if int(ps.stock_quantity) >= int(quantity) and supply_date < ps.exp_date and supply_date > ps.supply_date:
                         ps.stock_quantity = int(ps.stock_quantity) -  int(quantity)
                         ps.save()
                         product = Medicine.objects.create(
@@ -461,7 +464,7 @@ def medicine_supply_add_view(request):
 
         unique_p_types = []
         ss = Supply.objects.all()
-        print(ss)
+        # print(ss)
         for s in ss:
             print(s.departpment, d)
             if s.departpment.name == departpment:
@@ -473,6 +476,7 @@ def medicine_supply_add_view(request):
 
 
         print(unique_p_types)
+
         supplies = Supply.objects.filter(de=request.session['user_role']).order_by('-order_date')
         print(supplies)
         expiring_products = []
@@ -499,6 +503,7 @@ def medicine_supply_add_view(request):
                     })
 
         print(expiring_products)
+
         context = {
             'title' : 'Medicine Consumption / Supply',
             'suppliar' : s,

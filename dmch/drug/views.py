@@ -281,7 +281,7 @@ def order_details_view(request):
         if start_date_str:
             # start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
             start_date = start_date_str
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
 
         else:
             start_date = None
@@ -289,7 +289,7 @@ def order_details_view(request):
         if end_date_str:
             # end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
             end_date = end_date_str
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M') + timedelta(days=1)  # Add one day to include end_date
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Add one day to include end_date
 
             # Adjust the end date to include all records for that day
             # end_date = end_date + timedelta(days=1)  # Include records for the entire day
@@ -340,7 +340,7 @@ def order_details_view_print(request):
         if start_date_str:
             # start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
             start_date = start_date_str
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
 
         else:
             start_date = None
@@ -348,7 +348,7 @@ def order_details_view_print(request):
         if end_date_str:
             # end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
             end_date = end_date_str
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M') + timedelta(days=1)  # Add one day to include end_date
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Add one day to include end_date
 
             # Adjust the end date to include all records for that day
             # end_date = end_date + timedelta(days=1)  # Include records for the entire day
@@ -594,7 +594,7 @@ def purchase_add_view(request):
             total_amount = request.POST.get('total_amount')
             paid = request.POST.get('paid')
             due = request.POST.get('due')
-            date = request.POST.get('date')
+            purchase_date = request.POST.get('purchase_date')
             # Create a new purchase instance
             suppliar = Suppliar.objects.filter(suppliar_id=supplier_id).first()
 
@@ -646,7 +646,7 @@ def purchase_add_view(request):
                     mrp = mrp, 
                     purchase_rate = purchaserate,
                     purchase_amount = amount,
-                    purchase_date = date
+                    purchase_date = purchase_date
                 )
 
                 purchase.products.add(product)
@@ -696,7 +696,7 @@ def purchase_update_view(request,purchase_id):
             total_amount = request.POST.get('total_amount')
             paid = request.POST.get('paid')
             due = request.POST.get('due')
-            date = request.POST.get('date')
+            purchase_date = request.POST.get('purchase_date')
             suppliar = Suppliar.objects.filter(suppliar_id=supplier_id).first()
 
             purchase.suppliar = suppliar
@@ -742,7 +742,7 @@ def purchase_update_view(request,purchase_id):
                     p.exp_date = expdate
                     p.mrp = mrp
                     p.purchase_rate = purchaserate
-                    p.purchase_date = date
+                    p.purchase_date = purchase_date
                     p.save()
                 
                 if p is None:
@@ -810,7 +810,7 @@ def purchase_details_view(request):
         if start_date_str:
             # start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
             start_date = start_date_str
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
 
         else:
             start_date = None
@@ -818,7 +818,7 @@ def purchase_details_view(request):
         if end_date_str:
             # end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
             end_date = end_date_str
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M') + timedelta(days=1)  # Add one day to include end_date
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Add one day to include end_date
 
             # Adjust the end date to include all records for that day
             # end_date = end_date + timedelta(days=1)  # Include records for the entire day
@@ -869,7 +869,7 @@ def purchase_details_view_print(request):
         if start_date_str:
             # start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
             start_date = start_date_str
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
 
         else:
             start_date = None
@@ -877,7 +877,7 @@ def purchase_details_view_print(request):
         if end_date_str:
             # end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
             end_date = end_date_str
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M') + timedelta(days=1)  # Add one day to include end_date
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Add one day to include end_date
 
             # Adjust the end date to include all records for that day
             # end_date = end_date + timedelta(days=1)  # Include records for the entire day
@@ -948,7 +948,7 @@ def stock_details_view(request):
         if start_date_str:
             # start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
             start_date = start_date_str
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
 
         else:
             start_date = None
@@ -956,7 +956,7 @@ def stock_details_view(request):
         if end_date_str:
             # end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
             end_date = end_date_str
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M') + timedelta(days=1)  # Add one day to include end_date
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Add one day to include end_date
 
             # Adjust the end date to include all records for that day
             # end_date = end_date + timedelta(days=1)  # Include records for the entire day
@@ -986,9 +986,11 @@ def stock_details_view(request):
         product_quantities = {}
 
         # Iterate through unique product names and aggregate their quantities
-        for product_name in p.values_list('product_name', flat=True).distinct():
-            total_quantity = ProductPurchase.objects.filter(product_name=product_name).aggregate(total_quantity=Sum('stock_quantity'))['total_quantity']
-            product_quantities[product_name] = total_quantity
+        for product in p.values('product_name', 'product_type').distinct():
+            product_name = product['product_name']
+            product_type = product['product_type']
+            total_quantity = ProductPurchase.objects.filter(product_name=product_name, product_type=product_type).aggregate(total_quantity=Sum('stock_quantity'))['total_quantity']
+            product_quantities[(product_name, product_type)] = total_quantity
 
         d = DrugDepartment.objects.all()
         context = {
@@ -1006,6 +1008,8 @@ def stock_details_view(request):
 def stock_details_view_print(request):
     if request.user.is_superuser or request.session['user_role'] == 'Drug':
 
+        expiring_products = ProductPurchase.get_expiring_products()
+
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
         department_id = request.GET.get('department')
@@ -1014,7 +1018,7 @@ def stock_details_view_print(request):
         if start_date_str:
             # start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
             start_date = start_date_str
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
 
         else:
             start_date = None
@@ -1022,7 +1026,7 @@ def stock_details_view_print(request):
         if end_date_str:
             # end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
             end_date = end_date_str
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M') + timedelta(days=1)  # Add one day to include end_date
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Add one day to include end_date
 
             # Adjust the end date to include all records for that day
             # end_date = end_date + timedelta(days=1)  # Include records for the entire day
@@ -1031,36 +1035,39 @@ def stock_details_view_print(request):
         
         # Filter patients based on the provided date range
         if request.user.is_superuser:
-            p = Purchase.objects.all().order_by('-order_date')
+            p = ProductPurchase.objects.all().order_by('-purchase_date')
         else:
-            p = Purchase.objects.filter(user=request.user).order_by('-order_date')
+            p = ProductPurchase.objects.filter(user=request.user).order_by('-purchase_date')
 
         if start_date and end_date:
             # end_date = end_date + timedelta(days=1) 
             # start_date = start_date - timedelta(days=1)
-            p = p.filter(order_date__range=(start_date, end_date))
+            p = p.filter(purchase_date__range=(start_date, end_date))
         elif start_date:
             # If only start date is provided, include all records for that day
             next_day = start_date + timedelta(days=1)
             start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
             end_datetime = start_datetime + timedelta(days=1)
 
-            p = p.filter(order_date__gte=start_datetime, order_date__lt=end_datetime)
+            p = p.filter(purchase_date__gte=start_datetime, purchase_date__lt=end_datetime)
         elif end_date:
-            p = p.filter(order_date__lt=end_date)
+            p = p.filter(purchase_date__lt=end_date)
 
         product_quantities = {}
 
         # Iterate through unique product names and aggregate their quantities
-        for product_name in p.values_list('product_name', flat=True).distinct():
-            total_quantity = ProductPurchase.objects.filter(product_name=product_name).aggregate(total_quantity=Sum('quantity'))['total_quantity']
-            product_quantities[product_name] = total_quantity
+        for product in p.values('product_name', 'product_type').distinct():
+            product_name = product['product_name']
+            product_type = product['product_type']
+            total_quantity = ProductPurchase.objects.filter(product_name=product_name, product_type=product_type).aggregate(total_quantity=Sum('stock_quantity'))['total_quantity']
+            product_quantities[(product_name, product_type)] = total_quantity
+
         d = DrugDepartment.objects.all()
         context = {
             'purchase' : p,
             'product_quantities': product_quantities,
-
             'title' : f"Total Purchase : {len(p)}",
+            'expiring_products' : expiring_products
         }
         return render(request, 'stockprint.html', context=context)
     else:
@@ -1198,7 +1205,7 @@ def supply_details_view(request):
         if start_date_str:
             # start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
             start_date = start_date_str
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
 
         else:
             start_date = None
@@ -1206,7 +1213,7 @@ def supply_details_view(request):
         if end_date_str:
             # end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
             end_date = end_date_str
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M') + timedelta(days=1)  # Add one day to include end_date
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Add one day to include end_date
 
             # Adjust the end date to include all records for that day
             # end_date = end_date + timedelta(days=1)  # Include records for the entire day
@@ -1268,7 +1275,7 @@ def supply_details_view_print(request):
         if start_date_str:
             # start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
             start_date = start_date_str
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
 
         else:
             start_date = None
@@ -1276,7 +1283,7 @@ def supply_details_view_print(request):
         if end_date_str:
             # end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
             end_date = end_date_str
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M') + timedelta(days=1)  # Add one day to include end_date
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Add one day to include end_date
 
             # Adjust the end date to include all records for that day
             # end_date = end_date + timedelta(days=1)  # Include records for the entire day

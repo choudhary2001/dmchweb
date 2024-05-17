@@ -12,19 +12,27 @@
   <div class="card shadow mb-4">
     <div class="card-header py-3">
       <form action="{% url 'stock_details_view_print' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
-        <div style="flex: 1">
-          <input type="datetime-local" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+        <!-- <div style="flex: 1">
+          <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
         </div>
         <div style="">
           <span>-</span>
         </div>
         <div style="flex: 1">
-          <input type="datetime-local" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
-        </div>
+          <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+        </div> -->
 
         <div style="flex: 1">
-          <button class="btn btn-primary w-100" type="submit">Filter</button>
+          <select id="quantity_filter" class="form-control mb-2 mb-md-0">
+            <option value="all">Show All</option>
+            <option value="more_than_0">More than 0</option>
+            <option value="equal_0">Equal to 0</option>
+          </select>
         </div>
+
+        <!-- <div style="flex: 1">
+          <button class="btn btn-primary w-100" type="submit">Filter</button>
+        </div> -->
         <div style="flex: 1">
           <button class="btn btn-primary w-100" onclick="printTable()">Print Table</button>
         </div>
@@ -32,30 +40,26 @@
     </div>
     <div class="card-body" id="printablecontent">
       <div class="table-responsive">
-        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <table class="table table-bordered" id="" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th>Order No.</th>
+              <td>SL. No.</td>
               <th>Product Type</th>
               <th>Product Name</th>
+              <!-- <th>Mfg By</th>
               <th>Mfg Date</th>
-              <th>Exp Date</th>
+              <th>Exp Date</th> -->
               <th>In Stock</th>
-              <th>Mfg By</th>
-              <th>Batch No</th>
-              <th>Supplier Name</th>
-              <th>Invoice No.</th>
-              <th>Invoice Date</th>
-              <th>Purchase Time</th>
             </tr>
           </thead>
-          <tbody>
-              
-            {% for product_name, total_quantity in product_quantities.items %}
-                <tr>
-                    <td>{{ product_name }}</td>
-                    <td>{{ total_quantity }}</td>
-                </tr>
+          <tbody id="testReportTableBody">
+            
+            {% for product, quantity in product_quantities.items %}
+            <tr>
+              <td>{{ product.1 }}</td>
+                <td>{{ product.0 }}</td>
+                <td>{{ quantity }}</td>
+            </tr>
             {% endfor %}
           </tbody>
         </table>
@@ -66,6 +70,55 @@
 
 {% endblock %} {% block script %}
 <script>
+  // Get all the <tr> elements within the table body
+  var tableBody = document.getElementById('testReportTableBody');
+  var trElements = tableBody.querySelectorAll('tr');
+
+  // Loop through each <tr> element and add numbering
+  for (var i = 0; i < trElements.length; i++) {
+    // Create a new <td> element to hold the numbering
+    var tdNumber = document.createElement('td');
+    // tdNumber.style.fontFamily = 'sans-serif';
+    // tdNumber.style.color = 'black';
+    // tdNumber.style.fontSize = '1.2rem';
+    // tdNumber.style.padding = '3px';
+    // tdNumber.style.border = 'none';
+    // Add the numbering to the <td> element
+    tdNumber.textContent = i + 1 + ".";
+    // Insert the <td> element as the first child of the <tr>
+    trElements[i].insertBefore(tdNumber, trElements[i].firstChild);
+  }
+
+  document.getElementById('quantity_filter').addEventListener('change', function() {
+    var filterValue = this.value;
+
+    for (var i = 0; i < trElements.length; i++) {
+      var totalQuantity = parseInt(trElements[i].children[2].textContent.trim(), 10);
+      
+      if (filterValue === 'all') {
+        trElements[i].style.display = '';
+      } else if (filterValue === 'more_than_0' && totalQuantity > 0) {
+        trElements[i].style.display = '';
+      } else if (filterValue === 'equal_0' && totalQuantity === 0) {
+        trElements[i].style.display = '';
+      } else {
+        trElements[i].style.display = 'none';
+      }
+    }
+  });
+
+
+</script>
+<script>
+    $(document).ready(function() {
+        $(document).keydown(function(event) {
+            if (event.ctrlKey && event.key === 'p') {
+                event.preventDefault();  // Prevent the default print dialog
+                printTable();  // Call the custom print function
+            }
+        });
+    });
+    
   // Function to print the table
   function printTable() {
     // Show the hidden print content
@@ -77,6 +130,7 @@
     // Trigger the print dialog
     window.print();
     $("body").html(originalContents);
+    window.location.reload();
   }
 </script>
 {% endblock %}

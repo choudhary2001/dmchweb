@@ -92,6 +92,8 @@
               <th>Death</th>
               <th>Lama</th>
               <th>Date</th>
+              <th>Edit</th>
+              <!-- <th>Delete</th> -->
             </tr>
           </thead>
  
@@ -115,6 +117,21 @@
               <td>{{d.death}}</td>
               <td>{{d.lama}}</td>
               <td>{{d.created_at}}</td>
+              <td>
+                <a href="/ipd/update-patient/{{ d.patient_dmission_id }}/" class="btn btn-primary btn-icon-split">
+                  <span class="icon text-white-50">
+                    <i class="fas fa-arrow-right"></i>
+                  </span>
+                  <span class="text">Edit</span>
+                </a>
+              </td>
+              <!-- <td>
+                <a href="/drug/order/{{ order.ord_id }}/delete/" class="btn btn-danger btn-icon-split">
+                  <span class="icon text-white-50">
+                    <i class="fas fa-trash"></i>
+                  </span>
+                </a>
+              </td> -->
             </tr>
             {% endfor %}
           </tbody>

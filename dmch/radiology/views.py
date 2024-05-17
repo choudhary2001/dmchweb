@@ -302,31 +302,31 @@ def add_radiology_report(request):
                     print(e)
                     p = None
 
-            if p is None:
-                try:
-                    years, months, days = extract_duration(age)
+            # if p is None:
+            #     try:
+            #         years, months, days = extract_duration(age)
 
-                    p = Patient.objects.create(
-                        user = request.user,
-                        de = 'Radiology',
-                        gender = gender,
-                        year = years,
-                        month = months,
-                        days = days,
-                    )
-                except Exception as e:
-                    print(e)
-                    p = Patient.objects.create(
-                        user = request.user,
-                        de = 'Radiology',
-                        gender = gender
-                    )
-                if regid:
-                    p.regnoid = regid
-                if patient_name:
-                    p.name = patient_name
-                p.save()
-            print(p)
+            #         p = Patient.objects.create(
+            #             user = request.user,
+            #             de = 'Radiology',
+            #             gender = gender,
+            #             year = years,
+            #             month = months,
+            #             days = days,
+            #         )
+            #     except Exception as e:
+            #         print(e)
+            #         p = Patient.objects.create(
+            #             user = request.user,
+            #             de = 'Radiology',
+            #             gender = gender
+            #         )
+            #     if regid:
+            #         p.regnoid = regid
+            #     if patient_name:
+            #         p.name = patient_name
+            #     p.save()
+            # print(p)
             
             de = RadiologyDepartment.objects.filter(department_id = department).first()
             d = RadiologyDoctor.objects.filter(doctor_id = doctor).first()
@@ -662,17 +662,17 @@ def update_radiology_report(request, radiology_id):
                     print(e)
                     p = None
 
-            if p is not None:
-                p.name = patient_name
-                p.gender = gender
-                try:
-                    years, months, days = extract_duration(age)
-                    p.year = years
-                    p.month = months
-                    p.days = days
-                except Exception as e:
-                    print(e)
-                p.save()
+            # if p is not None:
+            #     p.name = patient_name
+            #     p.gender = gender
+            #     try:
+            #         years, months, days = extract_duration(age)
+            #         p.year = years
+            #         p.month = months
+            #         p.days = days
+            #     except Exception as e:
+            #         print(e)
+            #     p.save()
             # if p is None:
             #     try:
             #         years, months, days = extract_duration(age)

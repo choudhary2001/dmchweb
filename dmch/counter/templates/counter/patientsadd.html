@@ -162,7 +162,7 @@
       <input type="text" class="form-control" id="remarks" name="remarks" />
     </div>
 
-    <button type="submit" class="btn btn-primary">Save</button>
+    <button type="submit"  id="submitBtn" class="btn btn-primary">Save</button>
   </form>
 </div>
 
@@ -194,13 +194,9 @@
     });
   });
 
-  document.getElementById("patientForm").addEventListener("submit", function(event) {
-    // Disable the submit button
-    document.getElementById("submitBtn").disabled = true;
 
-    // Optional: Add a loading spinner or message
-    // document.getElementById("submitBtn").innerText = "Submitting...";
-  });
+
+
 
   $(document).ready(function () {
     $("#redcardid").hide();
@@ -235,6 +231,14 @@
   //     $("#redcardid").hide();
   //   }
   // }
+
+  document.getElementById("patientForm").addEventListener("submit", function(event) {
+      event.preventDefault(); // Prevent default form submission
+      const submitBtn = document.getElementById("submitBtn");
+      submitBtn.disabled = true; // Disable the submit button
+      this.submit(); // Submit the form
+    });
+    
 </script>
 
 <script>

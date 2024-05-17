@@ -66,31 +66,31 @@ def add_cardiology_report(request):
                     print(e)
                     p = None
 
-            if p is None:
-                try:
-                    years, months, days = extract_duration(age)
+            # if p is None:
+            #     try:
+            #         years, months, days = extract_duration(age)
 
-                    p = Patient.objects.create(
-                        user = request.user,
-                        de = 'Crdiology',
-                        gender = gender,
-                        year = years,
-                        month = months,
-                        days = days,
-                    )
-                except Exception as e:
-                    print(e)
-                    p = Patient.objects.create(
-                        user = request.user,
-                        de = 'Crdiology',
-                        gender = gender
-                    )
-                if regid:
-                    p.regnoid = regid
-                if patient_name:
-                    p.name = patient_name
-                p.save()
-            print(p)
+            #         p = Patient.objects.create(
+            #             user = request.user,
+            #             de = 'Crdiology',
+            #             gender = gender,
+            #             year = years,
+            #             month = months,
+            #             days = days,
+            #         )
+            #     except Exception as e:
+            #         print(e)
+            #         p = Patient.objects.create(
+            #             user = request.user,
+            #             de = 'Crdiology',
+            #             gender = gender
+            #         )
+            #     if regid:
+            #         p.regnoid = regid
+            #     if patient_name:
+            #         p.name = patient_name
+            #     p.save()
+            # print(p)
             
             de = RadiologyDepartment.objects.filter(department_id = department).first()
             d = RadiologyDoctor.objects.filter(doctor_id = doctor).first()
@@ -99,6 +99,8 @@ def add_cardiology_report(request):
                 user = request.user,
                 patient_name=patient_name,
                 reg_no=regid,
+                gender = gender,
+                age = age,
                 doctor=d,
                 patient=p,
                 department=de,

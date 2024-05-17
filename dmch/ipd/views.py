@@ -281,6 +281,114 @@ def fetch_ipd_decharge_patient_data(request):
         return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
+
+
+@login_required
+def update_ipd_patient(request, patient_dmission_id):
+    if request.user.is_superuser or request.session['user_role'] == 'IPD':
+        pa = Patient_Admission.objects.filter(patient_dmission_id = patient_dmission_id).first()
+
+        if request.method == "POST":
+
+            regid = request.POST.get('regid')
+            name = request.POST.get('name')
+            guardiannametitle = request.POST.get('guardiannametitle')
+            guardianname = request.POST.get('guardianname')
+            year = request.POST.get('year', 0)
+            month = request.POST.get('month', 0)
+            days = request.POST.get('days', 0)
+            gender = request.POST.get('gender')
+            mobno = request.POST.get('mobile')
+            address = request.POST.get('address')
+            policest = request.POST.get('policest')
+            district = request.POST.get('district')
+            pincode = request.POST.get('pincode')
+            doctor = request.POST.get('doctor')
+            department = request.POST.get('department')
+            disease = request.POST.get('disease')
+            admit_date = request.POST.get('admit_date')
+            discharge_date = request.POST.get('discharge_date')
+            discharge = request.POST.get('discharge')
+            death = request.POST.get('death')
+            lama = request.POST.get('lama')
+
+            if year.isdigit() :
+                year = int(year)
+            else:
+                year = 0
+
+            if month.isdigit():
+                month = int(month)
+            else:
+                month = 0
+            
+            if days.isdigit():
+                days = int(days)
+            else:
+                days = 0
+
+            p = Patient.objects.filter(regid = regid).first()
+
+
+            de = IpdDepartment.objects.filter(department_id = department).first()
+            d = IpdDoctor.objects.filter(doctor_id = doctor).first()
+            
+            pa.patient = p
+            pa.regno = regid
+            pa.name=name
+            pa.guardiannametitle=guardiannametitle
+            pa.guardianname=guardianname
+            pa.year=year
+            pa.month=month
+            pa.days=days
+            pa.gender=gender
+            pa.mobno=mobno
+            pa.address=address
+            pa.policest=policest
+            pa.district=district
+            pa.pincode=pincode
+            pa.disease=disease
+            pa.referby=d
+            pa.department=de
+            pa.appointment_date = admit_date
+            pa.discharge_date = discharge_date
+            pa.death = death
+            pa.lama = lama
+            
+            # Save the updated patient object
+            p.save()
+
+            messages.success(request, 'Patient Updated Successfully')
+
+            return redirect(f'/ipd/update-patient/{pa.patient_dmission_id}/')
+
+        ide = IpdDepartment.objects.all().order_by('-created_at')
+        
+        context = {
+            'patient' : pa,
+            'departments' : ide,
+            'title' : 'Update Patient Details'
+        }
+        print(context)
+        return render(request, 'ipd/investigationedit.html', context= context)
+    else:
+        logout(request)
+        return redirect('signin') 
+
+@login_required
+def delete_patients(request, pk):
+    if request.user.is_superuser:
+        p = Patient_Admission.objects.filter(regid = pk, de = None).first()
+        if p is not None:
+            p.delete()
+        return redirect('show_patients')
+    else:
+        logout(request)
+        return redirect('signin') 
+
+
+
+
 @login_required
 def ipd_discharge_patient(request):
     if request.user.is_superuser or request.session['user_role'] == 'IPD':
@@ -296,10 +404,9 @@ def ipd_discharge_patient(request):
                 p = Patient.objects.filter(regid = regid).first()
                 pd = Patient_Admission.objects.filter(regno = regid).order_by('-appointment_date').first()
                 pd.discharge_date = discharge_date
-                if lama == 'on':
-                    pd.lama= True
-                if death == 'on':
-                    pd.death = True
+               
+                pd.lama= lama
+                pd.death = death
                 pd.save()
 
                 messages.success(request, 'Patient Discharged Successfully')

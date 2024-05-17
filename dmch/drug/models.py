@@ -106,7 +106,7 @@ class ProductPurchase(models.Model):
         """
         today = timezone.now().date()
         three_months_from_today = today + timedelta(days=3*30)  # Assuming a month has 30 days
-        return self.exp_date is not None and today <= self.exp_date <= three_months_from_today
+        return self.exp_date is not None and today <= self.exp_date <= three_months_from_today and self.stock_quantity > 0
 
     @staticmethod
     def get_expiring_products():
@@ -115,7 +115,14 @@ class ProductPurchase(models.Model):
         """
         today = timezone.now().date()
         three_months_from_today = today + timedelta(days=3*30)  # Assuming a month has 30 days
-        return ProductPurchase.objects.filter(exp_date__isnull=False, exp_date__range=(today, three_months_from_today))
+        # return ProductPurchase.objects.filter(exp_date__isnull=False, exp_date__range=(today, three_months_from_today))
+
+        return ProductPurchase.objects.filter(
+            exp_date__isnull=False,
+            exp_date__range=(today, three_months_from_today),
+            stock_quantity__gt=0
+        )
+
 
 
 class ProductSupply(models.Model):

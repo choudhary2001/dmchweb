@@ -15,7 +15,7 @@
 </style>
 <div class="container-fluid">
   <!-- Page Heading -->
-  <form id="patientForm" method="POST" action="{% url 'ipd_discharge_patient' %}">
+  <form id="patientForm" method="POST" action="/ipd/update-patient/{{patient.patient_dmission_id}}/">
     {% csrf_token %}
 
 
@@ -25,7 +25,7 @@
     
       <div class="col-md-4 mb-3">
         <label for="regid">Reg No.:</label>
-        <input type="text" class="form-control" id="regid" name="regid" required  />
+        <input type="text" class="form-control" id="regid" name="regid" value="{{patient.regno}}" required  />
 
     </div>
 
@@ -33,66 +33,73 @@
 
     <div class="col-md-4 mb-3">
         <label for="name">Patient Name :</label>
-        <input type="tel" class="form-control" id="name" name="name" required disabled />
+        <input type="tel" class="form-control" id="name" name="name" value="{{patient.name}}" required  />
     </div>
 
     <div class="col-md-4 mb-3">
       <label for="age">Gender :</label>
-      <select type="text" id="gender" class="form-control" name="gender" required style="" disabled>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-        <option value="Prefer not to say">Prefer not to say</option>
-        <option value="Non-binary">Non-binary</option>
-        <option value="Transgender">Transgender</option>
-        <option value="Genderqueer">Genderqueer</option>
-        <option value="Agender">Agender</option>
+      <select type="text" id="gender" class="form-control" name="gender" required style=""  >
+        <option value="Male" {% if patient.gender == 'Male' %} selected {% endif %}>Male</option>
+        <option value="Female" {% if patient.gender == 'Female' %} selected {% endif %}>Female</option>
+        <option value="Other" {% if patient.gender == 'Other' %} selected {% endif %}>Other</option>
+        <option value="Prefer not to say" {% if patient.gender == 'Prefer not to say' %} selected {% endif %}>Prefer not to say</option>
+        <option value="Non-binary" {% if patient.gender == 'Non-binary' %} selected {% endif %}>Non-binary</option>
+        <option value="Transgender" {% if patient.gender == 'Transgender' %} selected {% endif %}>Transgender</option>
+        <option value="Genderqueer" {% if patient.gender == 'Genderqueer' %} selected {% endif %}>Genderqueer</option>
+        <option value="Agender" {% if patient.gender == 'Agender' %} selected {% endif %}>Agender</option>
       </select>
+      
     </div>
 
     <div class="col-md-4 mb-3">
         <label for="age">Age:</label>
         <div style="display: flex;" >
-          <input type="number" class="form-control" id="year" name="year" style="width: 33%" placeholder="Year" disabled/> &nbsp; <input type="number" class="form-control" id="month" name="month" style="width: 33%" placeholder="Month" disabled /> &nbsp;
-          <input type="number" class="form-control" id="days" name="days" style="width: 33%" placeholder="Days" disabled />
+          <input type="number" class="form-control" id="year" name="year" style="width: 33%" placeholder="Year" value="{{patient.year}}"   /> &nbsp; <input type="number" class="form-control" id="month" name="month" style="width: 33%" placeholder="Month" value="{{patient.month}}"   /> &nbsp;
+          <input type="number" class="form-control" id="days" name="days" style="width: 33%" placeholder="Days" value="{{patient.days}}"  />
         </div>
     </div>
 
     <div class="col-md-8 mb-3">
       <label for="guardianname">Guardian's Name :</label>
       <div style="display: flex; width: 100%">
-        <select class="form-control" id="guardiannametitle" name="guardiannametitle" style="width: 25%" required disabled>
-          <option value="Self">Self</option>
-          <option value="S/O">S/O (Son of)</option>
-          <option value="D/O">D/O (Daughter of)</option>
-          <option value="W/O">W/O (Wife of)</option>
-          <option value="H/O">H/O (Husband of)</option>
-          <option value="F/O">F/O (Father of)</option>
-          <option value="M/O">M/O (Mother of)</option>
-          <option value="G/O">G/O (Guardian of)</option>
-        </select>
+        <select class="form-control" id="guardiannametitle" name="guardiannametitle" style="width: 25%" required   >
+            <option value="Self" {% if patient.guardiannametitle == 'Self' %} selected {% endif %}>Self</option>
+            <option value="S/O" {% if patient.guardiannametitle == 'S/O' %} selected {% endif %}>S/O (Son of)</option>
+            <option value="D/O" {% if patient.guardiannametitle == 'D/O' %} selected {% endif %}>D/O (Daughter of)</option>
+            <option value="W/O" {% if patient.guardiannametitle == 'W/O' %} selected {% endif %}>W/O (Wife of)</option>
+            <option value="H/O" {% if patient.guardiannametitle == 'H/O' %} selected {% endif %}>H/O (Husband of)</option>
+            <option value="F/O" {% if patient.guardiannametitle == 'F/O' %} selected {% endif %}>F/O (Father of)</option>
+            <option value="M/O" {% if patient.guardiannametitle == 'M/O' %} selected {% endif %}>M/O (Mother of)</option>
+            <option value="G/O" {% if patient.guardiannametitle == 'G/O' %} selected {% endif %}>G/O (Guardian of)</option>
+          </select>
+          
         &nbsp; &nbsp;
-        <input type="text" class="form-control" id="guardianname" name="guardianname" style="width: 74%" required disabled/>
+        <input type="text" class="form-control" id="guardianname" name="guardianname" style="width: 74%" value="{{patient.guardianname}}" required    />
       </div>
     </div>
 
     <div class="col-md-4 mb-3">
       <label for="mobile">Mobile No. :</label>
-      <input type="text" class="form-control" id="mobile" name="mobile" disabled />
+      <input type="text" class="form-control" id="mobile" value="{{patient.mobno}}" name="mobile"   />
+
     </div>
 
     <div class="col-md-4 mb-3">
       <label for="address">Address :</label>
-      <input type="text" class="form-control" id="address" required name="address" disabled />
+      <input type="text" class="form-control" id="address" required name="address" value="{{patient.address}}"  />
+
     </div>
 
     <div class="col-md-4 mb-3">
       <label for="policest">Police Station :</label>
-      <input type="text" class="form-control" id="policest" required name="policest" disabled />
+      <input type="text" class="form-control" id="policest" required name="policest" value="{{patient.policest}}"   />
+
     </div>
 
     <div class="col-md-4 mb-3">
       <label for="district">District :</label>
-      <input type="text" class="form-control" id="district" name="district" disabled />
+      <input type="text" class="form-control" id="district" name="district" value="{{patient.district}}"   />
+
     </div>
 
     <!-- <div class="col-md-4 mb-3">
@@ -102,42 +109,48 @@
 
     <div class="col-md-4 mb-3">
       <label for="pincode">Pin Code :</label>
-      <input type="text" class="form-control" id="pincode" name="pincode" disabled/>
+      <input type="text" class="form-control" id="pincode" name="pincode" value="{{patient.pincode}}"   />
+
     </div>
 
     <div class="col-md-4 mb-3">
       <label for="department">Departments :</label>
 
-      <input type="text" class="form-control" id="department" name="department" disabled />
-
+      <select type="text" id="department" class="form-control" name="department" value="{{patient.department.department_id}}" required style=""  >
+        <option>Select Department</option>
+        {% for d in departments %}
+          <option value="{{d.department_id}}" {% if patient.department.department_id == d.department_id %} selected {% endif %}>{{d.name}}</option>
+        {% endfor %}
+      </select>
     </div>
 
     <div class="col-md-4 mb-3">
       <label for="doctor">Doctors :</label>
-      <input type="text" class="form-control" id="doctor" name="doctor" disabled />
+      <select type="text" id="doctor" class="form-control" name="doctor"  style="" value="{{patient.doctor.doctor_id}}"  >
+        <option>Select Doctor</option>
+      </select>
 
     </div>
 
 
     <div class="col-md-4 mb-3">
       <label for="disease">Disease :</label>
-      <input type="text" class="form-control" id="disease" name="disease" disabled />
+      <input type="text" class="form-control" id="disease" value="{{patient.disease}}" name="disease"  />
     </div>
 
 
 
     <div class="col-md-4 mb-3">
       <label for="admit_date">Admit Date :</label>
-      <input type="datetime-local" class="form-control" id="admit_date" name="admit_date" disabled />
+      <input type="datetime-local" class="form-control" id="admit_date" value="{{patient.appointment_date|date:'Y-m-d\\TH:i'}}" name="admit_date"  />
     </div>
 
     <div class="col-md-4 mb-3">
       <label for="death">Death :</label>
-      <input type="checkbox" class="form-control" id="death" name="death" />
       <select class="form-control" id="death" name="death"  >
         <option value="">Select</option>
-        <option value="Yes">Yes</option>
-        <option value="No">No</option>
+        <option {% if patient.death == 'Yes' %}selected{% endif %} value="Yes">Yes</option>
+        <option  {% if patient.death == 'No' %}selected{% endif %} value="No">No</option>
       </select>
     </div>
 
@@ -145,15 +158,15 @@
       <label for="lama">Lama :</label>
       <select class="form-control" id="lama" name="lama"  >
         <option value="">Select</option>
-        <option value="Yes">Yes</option>
-        <option value="No">No</option>
-        </select>
+        <option {% if patient.lama == 'Yes' %}selected{% endif %} value="Yes">Yes</option>
+        <option  {% if patient.lama == 'No' %}selected{% endif %} value="No">No</option>
+      </select>
         
     </div>
 
     <div class="col-md-4 mb-3">
         <label for="admit_date">Discharge Date :</label>
-        <input type="datetime-local" class="form-control" id="discharge_date" name="discharge_date" />
+        <input type="datetime-local" class="form-control" id="discharge_date" value="{{patient.discharge_date|date:'Y-m-d\\TH:i'}}" name="discharge_date" />
     </div>
 
 

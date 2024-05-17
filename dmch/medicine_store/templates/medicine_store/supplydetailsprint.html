@@ -44,6 +44,7 @@
         <table class="table table-bordered" width="100%" cellspacing="0">
           <thead>
             <tr>
+              <th>Reg No.</th>
               <th>Patient</th>
               <th>Medicine Name</th>
               <th>Mfg By</th>
@@ -56,46 +57,49 @@
           </thead>
           <tbody>
             {% for order in supply %}
+            {% for product in order.products.all %}
+
             <tr>
-              <td>{{ order.patient.name }}</td>
+              <td>
+                {% if order.patient %}
+                  {% if order.patient.regnoid %}{{ order.patient.regnoid }}{% endif %}
+                {% else %}
+                  {{ order.patient_name }}
+                {% endif %}
+              </td>
+              
+              <td>
+                {% if order.patient %}
+                  {% if order.patient.name %}{{ order.patient.name }}{% else %}{{ order.patient.regnoid }}{% endif %}
+                {% else %}
+                  {{ order.regno }}
+                {% endif %}
+              </td>
 
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.product.product_name }}</p>
-                {% endfor %}
               </td>
 
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.product.mfg_name }}</p>
-
-                {% endfor %}
               </td>
 
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.product.mfg_date }}</p>
-
-                {% endfor %}
               </td>
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.product.exp_date }}</p>
-
-                {% endfor %}
               </td>
 
               <td>
-                {% for product in order.products.all %}
                 <p>{{ product.quantity }}</p>
-                {% endfor %}
               </td>
 
-              <td>{% for product in order.products.all %}
+              <td>
                 {{product.created_at|date:"j-m-Y"}}
 
-                {% endfor %}
               </td>
+              {% endfor %}
               
               <!-- <td>
                 <a href="/drug/supply/{{ order.supply_id }}/update/" class="btn btn-primary btn-icon-split">

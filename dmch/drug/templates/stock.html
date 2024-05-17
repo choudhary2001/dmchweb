@@ -21,20 +21,14 @@
   <div class="card shadow mb-4">
     <div class="card-header py-3">
       <form action="{% url 'stock_details_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
-        <div style="flex: 1">
-          <input type="datetime-local" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
-        </div>
-        <div style="">
-          <span>-</span>
-        </div>
-        <div style="flex: 1">
-          <input type="datetime-local" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
-        </div>
-
-        <div style="flex: 1">
-          <button class="btn btn-primary w-100" type="submit">Filter</button>
-        </div>
-        <div style="flex: 1">
+        <!-- <div style="flex: 1">
+          <select id="quantity_filter" class="form-control mb-2 mb-md-0">
+            <option value="all">Show All</option>
+            <option value="more_than_0">More than 0</option>
+            <option value="equal_0">Equal to 0</option>
+          </select>
+        </div> -->
+        <div >
           <a href="{% url 'stock_details_view_print' %}" class="btn btn-primary w-100">Print</a>
         </div>
       </form>
@@ -45,6 +39,7 @@
           <thead>
             <tr>
               <td>SL. No.</td>
+              <th>Product Type</th>
               <th>Product Name</th>
               <!-- <th>Mfg By</th>
               <th>Mfg Date</th>
@@ -54,11 +49,12 @@
           </thead>
           <tbody id="testReportTableBody">
             
-            {% for product_name, total_quantity in product_quantities.items %}
-                <tr>
-                    <td>{{ product_name }}</td>
-                    <td>{{ total_quantity }}</td>
-                </tr>
+            {% for product, quantity in product_quantities.items %}
+            <tr>
+              <td>{{ product.1 }}</td>
+                <td>{{ product.0 }}</td>
+                <td>{{ quantity }}</td>
+            </tr>
             {% endfor %}
           </tbody>
         </table>
@@ -88,5 +84,26 @@
     // Insert the <td> element as the first child of the <tr>
     trElements[i].insertBefore(tdNumber, trElements[i].firstChild);
   }
+
+
+  document.getElementById('quantity_filter').addEventListener('change', function() {
+    var filterValue = this.value;
+
+    for (var i = 0; i < trElements.length; i++) {
+      var totalQuantity = parseInt(trElements[i].children[2].textContent.trim(), 10);
+      
+      if (filterValue === 'all') {
+        trElements[i].style.display = '';
+      } else if (filterValue === 'more_than_0' && totalQuantity > 0) {
+        trElements[i].style.display = '';
+      } else if (filterValue === 'equal_0' && totalQuantity === 0) {
+        trElements[i].style.display = '';
+      } else {
+        trElements[i].style.display = 'none';
+      }
+    }
+  });
+
+
 </script>
 {% endblock %}
