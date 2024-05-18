@@ -453,7 +453,7 @@ def medicine_supply_add_view(request):
             messages.success(request, 'Added Successfully')
 
         s = Suppliar.objects.all().order_by('-created_at')
-        d = DrugDepartment.objects.all().order_by('-created_at')
+        dd = DrugDepartment.objects.all().order_by('-created_at')
         p = ProductType.objects.all().order_by('-created_at')
         sp = ProductSupply.objects.all().order_by('-created_at')
 
@@ -466,7 +466,7 @@ def medicine_supply_add_view(request):
         ss = Supply.objects.all()
         # print(ss)
         for s in ss:
-            print(s.departpment, d)
+            print(s.departpment, dd)
             if s.departpment.name == departpment:
                 sp = s.products.all()
                 for ps in sp:
@@ -476,14 +476,42 @@ def medicine_supply_add_view(request):
 
 
         print(unique_p_types)
+        suppliesss = Supply.objects.filter(departpment=d).order_by('-order_date')
+        print(suppliesss)
+        # Initialize an empty list to store the expiring products
+        expiring_productss = []
+
+        # Loop through each supply
+        for supplys in suppliesss:
+            # Get the related ProductSupply instances for the current supply
+            product_supplies = supplys.products.all()
+            print(product_supplies)
+            # Loop through each product supply
+            for product_supplyy in product_supplies:
+                print(product_supplyy)
+                # Check if the exp_date is less than 3 months from today
+                if product_supplyy.exp_date is not None and product_supplyy.exp_date <= timezone.now().date() + timedelta(days=3*30) and product_supplyy.stock_quantity > 0:
+                    # If it is, add relevant details to the expiring_products list
+                    print('###')
+                    expiring_productss.append({
+                        'product_type': product_supplyy.product_type,
+                        'product_name': product_supplyy.product_name,
+                        'mfg_name': product_supplyy.mfg_name,
+                        'mfg_date': product_supplyy.mfg_date,
+                        'exp_date': product_supplyy.exp_date,
+                        'batch_no': product_supplyy.batch_no,
+                        'stock_quantity': product_supplyy.stock_quantity,
+                        'supply_date': product_supplyy.supply_date,
+                    })
 
         context = {
             'title' : 'Medicine Consumption / Supply',
             'suppliar' : s,
-            'department' : d,
+            'department' : dd,
             'product' : p,
             'unique_p_types' : unique_p_typess,
             'productsupply' : unique_p_types,
+            'expiring_products' : expiring_productss
 
         }
         return render(request, 'medicine_store/supply.html', context=context)
