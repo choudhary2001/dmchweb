@@ -124,6 +124,8 @@ class ProductPurchase(models.Model):
         )
 
 
+    def __str__(self):
+        return f"{self.product_type} - {self.product_name}"
 
 class ProductSupply(models.Model):
     user = models.ForeignKey(User, on_delete = models.SET_NULL, blank = True, null = True)

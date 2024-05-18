@@ -685,6 +685,7 @@ def purchase_update_view(request,purchase_id):
         purchase = get_object_or_404(Purchase, purchase_id=purchase_id)
 
         if request.method == 'POST':
+            print(request.POST)
             # Extract data from the form
             order_id = request.POST.get('order_id')
             supplier_id = request.POST.get('suppliar')
@@ -727,10 +728,11 @@ def purchase_update_view(request,purchase_id):
                 print(department_name, product_type_name, product_name, mfg_name, batch_no)
                 department = DrugDepartment.objects.filter(department_id=department_name).first()
                 product_type = ProductType.objects.filter(product_type_id=product_name).first()
-
                 p = ProductPurchase.objects.filter(productdetails_id = productdetails_id).first()
 
                 if p:
+                    print(p.product_type)
+                    print(product_type.name , product_type.p_type)
                     p.product_name=product_type.name,
                     p.product_type=product_type.p_type,
                     p.product = product_type
@@ -769,12 +771,14 @@ def purchase_update_view(request,purchase_id):
                             purchase.products.add(product)
                     except Exception as e:
                         print(e)
+            
             messages.success(request, 'Product Updated Successfully.')
 
             # Save the order
             purchase.save()
             messages.success(request, 'Update Successfully')
 
+            return redirect(f"/drug/purchase/{purchase.purchase_id}/update/")
 
         s = Suppliar.objects.all().order_by('-created_at')
         d = DrugDepartment.objects.all().order_by('-created_at')
@@ -826,10 +830,12 @@ def purchase_details_view(request):
             end_date = None
         
         # Filter patients based on the provided date range
-        if request.user.is_superuser:
-            p = Purchase.objects.all().order_by('-order_date')
-        else:
-            p = Purchase.objects.filter(user=request.user).order_by('-order_date')
+        # if request.user.is_superuser:
+        #     p = Purchase.objects.all().order_by('-order_date')
+        # else:
+        #     p = Purchase.objects.filter(user=request.user).order_by('-order_date')
+
+        p = Purchase.objects.all().order_by('-order_date')
 
         if start_date and end_date:
             # end_date = end_date + timedelta(days=1) 
@@ -883,12 +889,14 @@ def purchase_details_view_print(request):
             # end_date = end_date + timedelta(days=1)  # Include records for the entire day
         else:
             end_date = None
+
+        p = Purchase.objects.all().order_by('-order_date')
         
         # Filter patients based on the provided date range
-        if request.user.is_superuser:
-            p = Purchase.objects.all().order_by('-order_date')
-        else:
-            p = Purchase.objects.filter(user=request.user).order_by('-order_date')
+        # if request.user.is_superuser:
+        #     p = Purchase.objects.all().order_by('-order_date')
+        # else:
+        #     p = Purchase.objects.filter(user=request.user).order_by('-order_date')
 
         if start_date and end_date:
             # end_date = end_date + timedelta(days=1) 
@@ -964,10 +972,12 @@ def stock_details_view(request):
             end_date = None
         
         # Filter patients based on the provided date range
-        if request.user.is_superuser:
-            p = ProductPurchase.objects.all().order_by('-purchase_date')
-        else:
-            p = ProductPurchase.objects.filter(user=request.user).order_by('-purchase_date')
+        # if request.user.is_superuser:
+        #     p = ProductPurchase.objects.all().order_by('-purchase_date')
+        # else:
+        #     p = ProductPurchase.objects.filter(user=request.user).order_by('-purchase_date')
+
+        p = ProductPurchase.objects.all().order_by('-purchase_date')
 
         if start_date and end_date:
             # end_date = end_date + timedelta(days=1) 
@@ -991,6 +1001,10 @@ def stock_details_view(request):
             product_type = product['product_type']
             total_quantity = ProductPurchase.objects.filter(product_name=product_name, product_type=product_type).aggregate(total_quantity=Sum('stock_quantity'))['total_quantity']
             product_quantities[(product_name, product_type)] = total_quantity
+            
+        print(product_quantities)
+
+        p = Purchase.objects.all().order_by('-order_date')
 
         d = DrugDepartment.objects.all()
         context = {
@@ -1034,10 +1048,11 @@ def stock_details_view_print(request):
             end_date = None
         
         # Filter patients based on the provided date range
-        if request.user.is_superuser:
-            p = ProductPurchase.objects.all().order_by('-purchase_date')
-        else:
-            p = ProductPurchase.objects.filter(user=request.user).order_by('-purchase_date')
+        # if request.user.is_superuser:
+        #     p = ProductPurchase.objects.all().order_by('-purchase_date')
+        # else:
+        #     p = ProductPurchase.objects.filter(user=request.user).order_by('-purchase_date')
+        p = ProductPurchase.objects.all().order_by('-purchase_date')
 
         if start_date and end_date:
             # end_date = end_date + timedelta(days=1) 
@@ -1061,6 +1076,8 @@ def stock_details_view_print(request):
             product_type = product['product_type']
             total_quantity = ProductPurchase.objects.filter(product_name=product_name, product_type=product_type).aggregate(total_quantity=Sum('stock_quantity'))['total_quantity']
             product_quantities[(product_name, product_type)] = total_quantity
+
+        p = Purchase.objects.all().order_by('-order_date')
 
         d = DrugDepartment.objects.all()
         context = {

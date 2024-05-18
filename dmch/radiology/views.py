@@ -386,7 +386,7 @@ def show_radiology_report(request):
         plate_size_input = request.GET.getlist('plate_size', None)
         print(plate_size_input)
         start_date = datetime.strptime(start_date_str, '%Y-%m-%d') if start_date_str else None
-        end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1) if end_date_str else None
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d') if end_date_str else None
 
         r = Radiology.objects.all().order_by('-add_time')
         
@@ -400,7 +400,7 @@ def show_radiology_report(request):
             r = r.filter(add_time__gte=start_date, add_time__lt=end_datetime)
             print(r)
         elif end_date:
-            r = r.filter(__lt=end_date)
+            r = r.filter(add_time__lt=end_date)
 
         department = None
         if department_id != None:
@@ -502,7 +502,7 @@ def print_radiology_report(request):
         plate_size_input = request.GET.getlist('plate_size', None)
         print(plate_size_input)
         start_date = datetime.strptime(start_date_str, '%Y-%m-%d') if start_date_str else None
-        end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1) if end_date_str else None
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d') if end_date_str else None
 
         r = Radiology.objects.all().order_by('-add_time')
         
@@ -516,7 +516,7 @@ def print_radiology_report(request):
             r = r.filter(add_time__gte=start_date, add_time__lt=end_datetime)
             print(r)
         elif end_date:
-            r = r.filter(__lt=end_date)
+            r = r.filter(add_time__lt=end_date)
 
         department = None
         if department_id != None:

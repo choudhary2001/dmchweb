@@ -482,11 +482,11 @@ def product_add_consumption(request):
 
             messages.success(request, 'Added Successfully')
 
-        d = StoreDepartment.objects.all().order_by('-created_at')
-        p = Product.objects.all().order_by('-created_at')
+        sd = StoreDepartment.objects.all().order_by('-created_at')
+        p = Product.objects.filter(sdepartment = d).order_by('-created_at')
         context = {
             'title' : 'Transfer Product',
-            'department' : d,
+            'department' : sd,
             'product' : p,
         }
         return render(request, 'store/add_consumption.html', context=context)

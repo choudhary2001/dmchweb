@@ -437,7 +437,7 @@ def medicine_supply_add_view(request):
                 ps = ProductSupply.objects.filter(productdetails_id = product_name).first()
                 print(ps)
                 if ps:
-                    if int(ps.stock_quantity) >= int(quantity) and supply_date < ps.exp_date and supply_date > ps.supply_date:
+                    if int(ps.stock_quantity) >= int(quantity) :
                         ps.stock_quantity = int(ps.stock_quantity) -  int(quantity)
                         ps.save()
                         product = Medicine.objects.create(
@@ -477,33 +477,6 @@ def medicine_supply_add_view(request):
 
         print(unique_p_types)
 
-        supplies = Supply.objects.filter(de=request.session['user_role']).order_by('-order_date')
-        print(supplies)
-        expiring_products = []
-
-        # Loop through each supply
-        for supply in supplies:
-            # Get the related ProductSupply instances for the current supply
-            product_supplies = supply.products.all()
-
-            # Loop through each product supply
-            for product_supply in product_supplies:
-                # Check if the exp_date is less than 3 months from today
-                if product_supply.exp_date is not None and product_supply.exp_date <= timezone.now().date() + timedelta(days=3*30):
-                    # If it is, add relevant details to the expiring_products list
-                    expiring_products.append({
-                        'product_type': product_supply.product_type,
-                        'product_name': product_supply.product_name,
-                        'mfg_name': product_supply.mfg_name,
-                        'mfg_date': product_supply.mfg_date,
-                        'exp_date': product_supply.exp_date,
-                        'batch_no': product_supply.batch_no,
-                        'stock_quantity': product_supply.stock_quantity,
-                        'supply_date': product_supply.supply_date,
-                    })
-
-        print(expiring_products)
-
         context = {
             'title' : 'Medicine Consumption / Supply',
             'suppliar' : s,
@@ -511,7 +484,6 @@ def medicine_supply_add_view(request):
             'product' : p,
             'unique_p_types' : unique_p_typess,
             'productsupply' : unique_p_types,
-            'expiring_products' : expiring_products
 
         }
         return render(request, 'medicine_store/supply.html', context=context)

@@ -54,12 +54,15 @@
           </thead>
           <tbody id="testReportTableBody">
             
-            {% for product, quantity in product_quantities.items %}
+            {% for order in purchase %}
+            {% for product in order.products.all %}
             <tr>
-              <td>{{ product.1 }}</td>
-                <td>{{ product.0 }}</td>
-                <td>{{ quantity }}</td>
+              <td>{{ product.product_type }}</td>
+              <td>{{ product.product_name }}</td>
+              <td>{{ product.stock_quantity }}</td>
             </tr>
+            {% endfor %}
+
             {% endfor %}
           </tbody>
         </table>
@@ -74,20 +77,7 @@
   var tableBody = document.getElementById('testReportTableBody');
   var trElements = tableBody.querySelectorAll('tr');
 
-  // Loop through each <tr> element and add numbering
-  for (var i = 0; i < trElements.length; i++) {
-    // Create a new <td> element to hold the numbering
-    var tdNumber = document.createElement('td');
-    // tdNumber.style.fontFamily = 'sans-serif';
-    // tdNumber.style.color = 'black';
-    // tdNumber.style.fontSize = '1.2rem';
-    // tdNumber.style.padding = '3px';
-    // tdNumber.style.border = 'none';
-    // Add the numbering to the <td> element
-    tdNumber.textContent = i + 1 + ".";
-    // Insert the <td> element as the first child of the <tr>
-    trElements[i].insertBefore(tdNumber, trElements[i].firstChild);
-  }
+
 
   document.getElementById('quantity_filter').addEventListener('change', function() {
     var filterValue = this.value;
@@ -108,6 +98,44 @@
   });
 
 
+</script>
+<script>
+  // Get all the <tr> elements within the table body
+  var tableBody = document.getElementById('testReportTableBody');
+  var trElements = tableBody.querySelectorAll('tr');
+
+  // Create an object to store combined products
+  var combinedProducts = {};
+
+  // Loop through each <tr> element
+  for (var i = 0; i < trElements.length; i++) {
+    // Get product type, name, and quantity
+    var productType = trElements[i].children[0].textContent.trim();
+    var productName = trElements[i].children[1].textContent.trim();
+    var stockQuantity = parseInt(trElements[i].children[2].textContent.trim(), 10);
+
+    // Create a unique key for each product based on its name and quantity
+    var key = productName + '|' + productType;
+
+    // If the product exists in combinedProducts, update its quantity
+    if (combinedProducts.hasOwnProperty(key)) {
+      combinedProducts[key].stockQuantity += stockQuantity;
+    } else {  // Otherwise, add it to combinedProducts
+      combinedProducts[key] = { productType: productType, productName: productName, stockQuantity: stockQuantity };
+    }
+  }
+
+  // Remove existing table rows
+  tableBody.innerHTML = '';
+
+  // Loop through combined products and add them to the table
+  var index = 1;
+  for (var key in combinedProducts) {
+    var product = combinedProducts[key];
+    var newRow = document.createElement('tr');
+    newRow.innerHTML = '<td>' + index++ + '.</td><td>' + product.productType + '</td><td>' + product.productName + '</td><td>' + product.stockQuantity + '</td>';
+    tableBody.appendChild(newRow);
+  }
 </script>
 <script>
     $(document).ready(function() {
