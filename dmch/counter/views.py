@@ -1236,16 +1236,15 @@ def department_wise_report(request):
         total_patient_count_non_price = 0
         total_patient_amount_count = 0
 
-        total_patient_count_date = 0
-        total_patient_count_non_price_date = 0
-        total_patient_amount_count_date = 0
+
 
         if start_date or end_date or department_id:
             for department in unique_departments:
                 total_patient = 0
                 total_patient_amount = 0
-                total_patient_date = 0
-                total_patient_amount_date = 0
+                total_patient_count_date = 0
+                total_patient_count_non_price_date = 0
+                total_patient_amount_count_date = 0
                 users_in_department = User.objects.filter(profile__main_department=department)
                 patients_in_department = Patient.objects.filter(user__in=users_in_department, de=None)
 
@@ -1284,6 +1283,8 @@ def department_wise_report(request):
                 if start_date and end_date:
                     current_date = start_date
                     while current_date <= end_date:
+                        total_patient_date = 0
+                        total_patient_amount_date = 0
                         next_date = current_date + timedelta(days=1)
                         patients_on_date = patients_in_department.filter(appointment_date__date=current_date)
                                         # Calculate statistics
@@ -1312,8 +1313,10 @@ def department_wise_report(request):
                 # Store the results in the dictionary
                 department_data.append({
                     'main_department': department,
-                    'total_patients': total,
-                    'total_amount': total_amount,
+                    'total_patients': total_patient_count_date,
+                    'total_amount' : total_patient_count_date * 5,
+                    'total_patient_count_non_price' : total_patient_count_non_price_date,
+                    'total_patient_amount_count': total_patient_amount_count_date,
                     'date_wise_data': date_wise_data,
                 })
 
