@@ -16,6 +16,12 @@ from django.forms.models import model_to_dict
 # Get the current time in UTC
 current_time_utc = timezone.now()
 from django.db.models import Q
+from django.http import JsonResponse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from urllib.parse import urlparse, parse_qs, unquote_plus
+from collections import Counter
+from django.db.models import Count
+from collections import defaultdict
 # Get the Kolkata timezone
 kolkata_timezone = pytz.timezone('Asia/Kolkata')
 
@@ -309,9 +315,10 @@ def create_patient_registration(request):
 def patient_registration_view(request):
     if request.user.is_superuser or request.session['user_role'] == 'Pathology':
 
-        start_date_str = request.GET.get('start_date')
-        end_date_str = request.GET.get('end_date')
-        department = request.GET.get('department')
+        start_date_str = request.GET.get('start_date', None)
+        end_date_str = request.GET.get('end_date', None)
+        department_id = request.GET.get('department')
+        total = 0
 
         # Convert the date strings to datetime objects
         if start_date_str:
@@ -326,64 +333,153 @@ def patient_registration_view(request):
         else:
             end_date = None
         
-        # Filter patients based on the provided date range
-        if request.user.is_superuser:
-            patients = Patient_registration.objects.all().order_by('-created_at')
+        if start_date_str or end_date_str or department_id:
+            # Filter patients based on the provided date range
+            if request.user.is_superuser:
+                patients = Patient_registration.objects.all().order_by('-created_at')
+            else:
+                patients = Patient_registration.objects.filter(user = request.user).order_by('-created_at')
+
+
+            if start_date and end_date:
+                # end_date = end_date + timedelta(days=1) 
+                # start_date = start_date - timedelta(days=1)
+                patients = patients.filter(created_at__range=(start_date, end_date))
+            elif start_date:
+                # If only start date is provided, include all records for that day
+                next_day = start_date + timedelta(days=1)
+                patients = patients.filter(created_at__gte=start_date, created_at__lt=next_day)
+            elif end_date:
+                patients = patients.filter(created_at__lt=end_date)
+            
+            # Count the total number of patients
+            if department_id != None:
+                depart = PathologyDepartment.objects.filter(department_id =department_id).first()
+                if department_id != 'All':
+                    patients = patients.filter(department=depart)
+                    
+            total = patients.count()
+            
         else:
-            patients = Patient_registration.objects.filter(user = request.user).order_by('-created_at')
-
-
-        if start_date and end_date:
-            # end_date = end_date + timedelta(days=1) 
-            # start_date = start_date - timedelta(days=1)
-            patients = patients.filter(created_at__range=(start_date, end_date))
-        elif start_date:
-            # If only start date is provided, include all records for that day
-            next_day = start_date + timedelta(days=1)
-            patients = patients.filter(created_at__gte=start_date, created_at__lt=next_day)
-        elif end_date:
-            patients = patients.filter(created_at__lt=end_date)
-        
-        
-        non_price = 0
-        red_card_total = 0
-        rb_case_total = 0
-        unkown_total = 0
-        # for p in patients:
-        #     if p.visittype == 'Unknown':
-        #         unkown_total += 1
-        #     if p.redcard in [True, 'true']:  
-        #         if p.redcardtype == 'Red Card':
-        #             red_card_total += 1
-        #         if p.redcardtype == 'RB Case':
-        #             rb_case_total += 1
-
-
-        non_price = red_card_total + rb_case_total + unkown_total
-        # Count the total number of patients
-        total = patients.count()
-
-        total_amount = (int(total) * 5) - (non_price * 5)
+            patients = {}
 
 
         context = {
             'patients': patients,
-            'title': f'Total Patients: {total}',
-            'total_amount' : total_amount,
+            'title': f'Total Patients: {len(Patient_registration.objects.all())}',
+            'end_date_str' : end_date_str,
+            'start_date_str' : start_date_str,
+            'departments' : PathologyDepartment.objects.all().order_by('name')
+
         }
         return render(request, 'patientdata.html', context=context)
     else:
         logout(request)
         return redirect('signin') 
 
+@login_required
+def patient_registration_view_data(request):
+    if request.user.is_superuser or request.session.get('user_role') == 'Registration':
+        start_date_str = request.GET.get('start_date')
+        end_date_str = request.GET.get('end_date')
+        department = request.GET.get('department')
+
+        # Convert the date strings to datetime objects
+        if start_date_str:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+        else:
+            start_date = None
+
+        if end_date_str:
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Include records for the entire day
+        else:
+            end_date = None
+
+        tr = Patient_registration.objects.all().order_by('-created_at')
+
+        search_query = request.GET.get('searchValue')
+
+        # Date range filter
+        if start_date and end_date:
+            tr = tr.filter(created_at__range=(start_date, end_date))
+        elif start_date:
+            next_day = start_date + timedelta(days=1)
+            tr = tr.filter(created_at__gte=start_date, created_at__lt=next_day)
+        elif end_date:
+            tr = tr.filter(created_at__lt=end_date)
+
+        # Count the total number of records
+        total = tr.count()
+
+        # Search filter
+        if search_query:
+            tr = tr.filter(
+                Q(patient_name__icontains=search_query) |
+                Q(reg_no__regid__icontains=search_query) |
+                Q(reg_no__regnoid__icontains=search_query) |
+                Q(reg_no__mobno__icontains=search_query) |
+                Q(bill_no__icontains=search_query) |
+                Q(test_name__icontains=search_query) |
+                Q(lab_no__icontains=search_query) |
+                Q(referby__name__icontains=search_query) |
+                Q(department__name__icontains=search_query)
+            )
+
+        # Pagination
+        page = request.GET.get('draw', 1)
+        print(page)
+        paginator = Paginator(tr, 10)  # Show 10 records per page
+        try:
+            patients = paginator.page(page)
+        except PageNotAnInteger:
+            patients = paginator.page(1)
+        except EmptyPage:
+            patients = paginator.page(paginator.num_pages)
+
+        # Serialize patients data
+        patients_data = []
+        for patient in patients:
+            patient_doctor = patient.referby.name if patient.referby else ''
+            patient_department = patient.department.name if patient.department else ''
+            patient_mobile = patient.reg_no.mobno if patient.reg_no else ''
+            patient_reg_no = patient.reg_no.regnoid if patient.reg_no and patient.reg_no.de == 'Pathology' else patient.reg_no.regid
+
+            patients_data.append({
+                'id': patient.id,
+                'regid': patient_reg_no,
+                'name': patient.patient_name,
+                'mobile': patient_mobile,
+                'test_name': patient.test_name,
+                'bill_no': patient.bill_no,
+                'lab_no': patient.lab_no,
+                'department': patient_department,
+                'refer_by': patient_doctor,
+                'date': patient.created_at,
+            })
+
+
+        data = {
+            'patients': patients_data,
+            'has_next': patients.has_next(),
+            'has_prev': patients.has_previous(),
+            'draw': request.GET.get('draw'),  # Echo back the draw parameter
+            'recordsTotal': total,  # Total records without filtering
+            'recordsFiltered': paginator.count,  # Total records after filtering (for now)
+            
+        }
+        return JsonResponse(data)
+    else:
+        logout(request)
+        return redirect('signin')
+
 
 @login_required
 def patient_registration_view_print(request):
     if request.user.is_superuser or request.session['user_role'] == 'Pathology':
 
-        start_date_str = request.GET.get('start_date')
-        end_date_str = request.GET.get('end_date')
-        department = request.GET.get('department')
+        start_date_str = request.GET.get('start_date', None)
+        end_date_str = request.GET.get('end_date', None)
+        department_id = request.GET.get('department', None)
 
         # Convert the date strings to datetime objects
         if start_date_str:
@@ -397,51 +493,42 @@ def patient_registration_view_print(request):
             end_date = end_date + timedelta(days=1)  # Include records for the entire day
         else:
             end_date = None
+
+        if start_date_str or end_date_str or department_id:
         
-        # Filter patients based on the provided date range
-        if request.user.is_superuser:
-            patients = Patient_registration.objects.all().order_by('-created_at')
+            # Filter patients based on the provided date range
+            if request.user.is_superuser:
+                patients = Patient_registration.objects.all().order_by('-created_at')
+            else:
+                patients = Patient_registration.objects.filter(user = request.user).order_by('-created_at')
+
+
+            if start_date and end_date:
+                # end_date = end_date + timedelta(days=1) 
+                # start_date = start_date - timedelta(days=1)
+                patients = patients.filter(created_at__range=(start_date, end_date))
+            elif start_date:
+                # If only start date is provided, include all records for that day
+                next_day = start_date + timedelta(days=1)
+                patients = patients.filter(created_at__gte=start_date, created_at__lt=next_day)
+            elif end_date:
+                patients = patients.filter(created_at__lt=end_date)
+            if department_id != None:
+                depart = PathologyDepartment.objects.filter(department_id =department_id).first()
+                if department_id != 'All':
+                    patients = patients.filter(department=depart)
+        
+            total = patients.count()
+            
         else:
-            patients = Patient_registration.objects.filter(user = request.user).order_by('-created_at')
-
-
-        if start_date and end_date:
-            # end_date = end_date + timedelta(days=1) 
-            # start_date = start_date - timedelta(days=1)
-            patients = patients.filter(created_at__range=(start_date, end_date))
-        elif start_date:
-            # If only start date is provided, include all records for that day
-            next_day = start_date + timedelta(days=1)
-            patients = patients.filter(created_at__gte=start_date, created_at__lt=next_day)
-        elif end_date:
-            patients = patients.filter(created_at__lt=end_date)
-        
-        
-        non_price = 0
-        red_card_total = 0
-        rb_case_total = 0
-        unkown_total = 0
-        # for p in patients:
-        #     if p.visittype == 'Unknown':
-        #         unkown_total += 1
-        #     if p.redcard in [True, 'true']:  
-        #         if p.redcardtype == 'Red Card':
-        #             red_card_total += 1
-        #         if p.redcardtype == 'RB Case':
-        #             rb_case_total += 1
-
-
-        non_price = red_card_total + rb_case_total + unkown_total
-        # Count the total number of patients
-        total = patients.count()
-
-        total_amount = (int(total) * 5) - (non_price * 5)
-
+            patients = {}
 
         context = {
             'patients': patients,
             'title': f'Total Patients: {total}',
-            'total_amount' : total_amount,
+            'start_date_str' : start_date_str,
+            'end_date_str' : end_date_str,
+            'departments' : PathologyDepartment.objects.all().order_by('name')
         }
         return render(request, 'print_patientdata.html', context=context)
 
@@ -780,9 +867,11 @@ def create_test_report(request):
 def create_test_report_view(request):
     if request.user.is_superuser or request.session['user_role'] == 'Pathology':
 
-        start_date_str = request.GET.get('start_date')
-        end_date_str = request.GET.get('end_date')
+        start_date_str = request.GET.get('start_date', None)
+        end_date_str = request.GET.get('end_date', None)
         department_id = request.GET.get('department')
+        department = None
+        total = 0
 
         # Convert the date strings to datetime objects
         if start_date_str:
@@ -796,51 +885,54 @@ def create_test_report_view(request):
             end_date = end_date + timedelta(days=1)  # Include records for the entire day
         else:
             end_date = None
+
+        if start_date_str or end_date_str or department_id:
         
-        # Filter patients based on the provided date range
-        if request.user.is_superuser:
-            tr = Test_report.objects.all().order_by('-created_at')
+            # Filter patients based on the provided date range
+            if request.user.is_superuser:
+                tr = Test_report.objects.all().order_by('-created_at')
+            else:
+                tr = Test_report.objects.filter(user = request.user).order_by('-created_at')
+
+
+            if start_date and end_date:
+                tr = tr.filter(created_at__range=(start_date, end_date))
+            elif start_date:
+                next_day = start_date + timedelta(days=1)
+                tr = tr.filter(created_at__gte=start_date, created_at__lt=next_day)
+            elif end_date:
+                tr = tr.filter(created_at__lt=end_date)
+            
+            
+            # Count the total number of patients
+            total = tr.count()
+            
+            
+            if department_id != None:
+                if department_id != 'All':
+                    de = PathologyDepartment.objects.filter(department_id = department_id).first()
+                    pr = Patient_registration.objects.filter(department = de).all()
+                    print(de)
+                    if de:
+                        # tr = tr.filter(department = de, de = None)
+                        # print(tr)
+                        # department = de.name
+                        tr = tr.filter(patient__department=de)
+                        department = de.name
+
         else:
-            tr = Test_report.objects.filter(user = request.user).order_by('-created_at')
-
-
-        if start_date and end_date:
-            # end_date = end_date + timedelta(days=1) 
-            # start_date = start_date - timedelta(days=1)
-            tr = tr.filter(created_at__range=(start_date, end_date))
-        elif start_date:
-            # If only start date is provided, include all records for that day
-            next_day = start_date + timedelta(days=1)
-            tr = tr.filter(created_at__gte=start_date, created_at__lt=next_day)
-        elif end_date:
-            tr = tr.filter(created_at__lt=end_date)
-        
-        
-        # Count the total number of patients
-        total = tr.count()
-        
-        
-        department = None
-        if department_id != None:
-            if department_id != 'All':
-                de = PathologyDepartment.objects.filter(department_id = department_id).first()
-                pr = Patient_registration.objects.filter(department = de).all()
-                print(de)
-                if de:
-                    # tr = tr.filter(department = de, de = None)
-                    # print(tr)
-                    # department = de.name
-                    tr = tr.filter(patient__department=de)
-                    department = de.name
+            tr = {}
 
         d = PathologyDepartment.objects.all()
 
 
         context = {
             'patients': tr,
-            'title' : f'Test Report :  {total}',
+            'title' : f'Test Report :  {len(Test_report.objects.all())}',
             'department' : department,
             'departments' : d,
+            'end_date_str' : end_date_str,
+            'start_date_str' : start_date_str
         }
         return render(request, 'test_report_data.html', context=context)
     else:
@@ -848,14 +940,115 @@ def create_test_report_view(request):
         return redirect('signin') 
 
 
+
+@login_required
+def create_test_report_view_data(request):
+    if request.user.is_superuser or request.session.get('user_role') == 'Registration':
+        start_date_str = request.GET.get('start_date')
+        end_date_str = request.GET.get('end_date')
+        department = request.GET.get('department')
+
+        # Convert the date strings to datetime objects
+        if start_date_str:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+        else:
+            start_date = None
+
+        if end_date_str:
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Include records for the entire day
+        else:
+            end_date = None
+
+        tr = Test_report.objects.all().order_by('-created_at')
+
+        search_query = request.GET.get('searchValue')
+
+        # Date range filter
+        if start_date and end_date:
+            tr = tr.filter(created_at__range=(start_date, end_date))
+        elif start_date:
+            next_day = start_date + timedelta(days=1)
+            tr = tr.filter(created_at__gte=start_date, created_at__lt=next_day)
+        elif end_date:
+            tr = tr.filter(created_at__lt=end_date)
+
+        # Count the total number of records
+        total = tr.count()
+
+        # Search filter
+        if search_query:
+            tr = tr.filter(
+                Q(patient__patient_name__icontains=search_query) |
+                Q(patient__bill_no__icontains=search_query) |
+                Q(patient__test_name__icontains=search_query) |
+                Q(patient__lab_no__icontains=search_query) |
+                Q(patient__referby__name__icontains=search_query) |
+                Q(patient__department__name__icontains=search_query)
+            )
+
+        # Pagination
+        page = request.GET.get('draw', 1)
+        print(page)
+        paginator = Paginator(tr, 10)  # Show 10 records per page
+        try:
+            patients = paginator.page(page)
+        except PageNotAnInteger:
+            patients = paginator.page(1)
+        except EmptyPage:
+            patients = paginator.page(paginator.num_pages)
+
+        # Serialize patients data
+        patients_data = []
+        for patient in patients:
+            patient_doctor = patient.patient.referby.name if patient.patient.referby else ''
+            patient_department = patient.patient.department.name if patient.patient.department else ''
+            patient_reg_no = patient.reg_no.regnoid if patient.reg_no and patient.reg_no.de == 'Pathology' else patient.reg_no.regid
+
+            patients_data.append({
+                'test_report_id': patient.test_report_id,
+                'id': patient.id,
+                'regid': patient_reg_no,
+                'name': patient.patient.patient_name,
+                'test_name': patient.patient.test_name,
+                'bill_no': patient.patient.bill_no,
+                'lab_no': patient.patient.lab_no,
+                'department': patient_department,
+                'refer_by': patient_doctor,
+                'plasma_glucode_fasting': patient.palsma_glucose_fasting,
+                'plasma_glucose_pp': patient.palsma_glucose_pp,
+                'blood_sugar_random': patient.blood_sugar_random,
+                'blood_ures': patient.blood_ures,
+                'serum_creainine': patient.serun_creatinine,
+                'date': patient.created_at,
+            })
+
+        data = {
+            'patients': patients_data,
+            'has_next': patients.has_next(),
+            'has_prev': patients.has_previous(),
+            'draw': request.GET.get('draw'),  # Echo back the draw parameter
+            'recordsTotal': total,  # Total records without filtering
+            'recordsFiltered': paginator.count,  # Total records after filtering (for now)
+        }
+        return JsonResponse(data)
+    else:
+        logout(request)
+        return redirect('signin')
+
 @login_required
 def create_test_report_view_print(request):
     if request.user.is_superuser or request.session['user_role'] == 'Pathology':
 
-        start_date_str = request.GET.get('start_date')
-        end_date_str = request.GET.get('end_date')
+        start_date_str = request.GET.get('start_date', None)
+        end_date_str = request.GET.get('end_date', None)
         department_id = request.GET.get('department')
-
+        non_price = 0
+        red_card_total = 0
+        rb_case_total = 0
+        unkown_total = 0
+        department = None
+        total = 0
+        total_amount = 0
         # Convert the date strings to datetime objects
         if start_date_str:
             start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
@@ -869,49 +1062,43 @@ def create_test_report_view_print(request):
         else:
             end_date = None
         
-        # Filter patients based on the provided date range
-        if request.user.is_superuser:
-            tr = Test_report.objects.all().order_by('-created_at')
+        if start_date_str or end_date_str or department_id:
+            # Filter patients based on the provided date range
+            if request.user.is_superuser:
+                tr = Test_report.objects.all().order_by('-created_at')
+            else:
+                tr = Test_report.objects.filter(user = request.user).order_by('-created_at')
+
+            if start_date and end_date:
+                tr = tr.filter(created_at__range=(start_date, end_date))
+            elif start_date:
+                # If only start date is provided, include all records for that day
+                next_day = start_date + timedelta(days=1)
+                tr = tr.filter(created_at__gte=start_date, created_at__lt=next_day)
+            elif end_date:
+                tr = tr.filter(created_at__lt=end_date)
+            
+            
+            non_price = red_card_total + rb_case_total + unkown_total
+            # Count the total number of patients
+            total = tr.count()
+
+            total_amount = (int(total) * 5) - (non_price * 5)
+            
+            if department_id != None:
+                if department_id != 'All':
+                    de = PathologyDepartment.objects.filter(department_id = department_id).first()
+                    pr = Patient_registration.objects.filter(department = de).all()
+                    print(de)
+                    if de:
+                        # tr = tr.filter(department = de, de = None)
+                        # print(tr)
+                        # department = de.name
+                        tr = tr.filter(patient__department=de)
+                        department = de.name
+
         else:
-            tr = Test_report.objects.filter(user = request.user).order_by('-created_at')
-
-
-        if start_date and end_date:
-            # end_date = end_date + timedelta(days=1) 
-            # start_date = start_date - timedelta(days=1)
-            tr = tr.filter(created_at__range=(start_date, end_date))
-        elif start_date:
-            # If only start date is provided, include all records for that day
-            next_day = start_date + timedelta(days=1)
-            tr = tr.filter(created_at__gte=start_date, created_at__lt=next_day)
-        elif end_date:
-            tr = tr.filter(created_at__lt=end_date)
-        
-        
-        non_price = 0
-        red_card_total = 0
-        rb_case_total = 0
-        unkown_total = 0
-
-
-        non_price = red_card_total + rb_case_total + unkown_total
-        # Count the total number of patients
-        total = tr.count()
-
-        total_amount = (int(total) * 5) - (non_price * 5)
-        
-        department = None
-        if department_id != None:
-            if department_id != 'All':
-                de = PathologyDepartment.objects.filter(department_id = department_id).first()
-                pr = Patient_registration.objects.filter(department = de).all()
-                print(de)
-                if de:
-                    # tr = tr.filter(department = de, de = None)
-                    # print(tr)
-                    # department = de.name
-                    tr = tr.filter(patient__department=de)
-                    department = de.name
+            tr = {}
 
         d = PathologyDepartment.objects.all()
 
@@ -2022,3 +2209,216 @@ def find_user_report(request):
         return render(request, 'counter/test_report.html', context=context)
     else:
         return redirect('/home/')
+
+
+categories = [
+    {
+        "category": "Immuno Assay (Thyroid)",
+        "subcategories": [
+            "TSH", "T3", "T4", "FT3", "FT4", "LH", "FSH",
+            "Prolectin", "CA-125", "PSA", "Anti CCP",
+            "Vitamin B12", "Vitamin D3", "AMH"
+        ]
+    },
+    {
+        "category": "Hematology",
+        "subcategories": ["CBC", "HbA1c", "ESR", "BT", "CT", "MP"]
+    },
+    {
+        "category": "Serology",
+        "subcategories": [
+            "HIV", "HBSAg", "HCV", "Widal", "Malaria",
+            "Dengue Test", "Typhoid Test", "VDRL", "RPR"
+        ]
+    },
+    {
+        "category": "Cytopathology",
+        "subcategories": ["PAP Smear", "FNAC", "CSF", "Pleural Fluid", "Ascitic Fluid"]
+    },
+    {
+        "category": "Histopathology",
+        "subcategories": ["Biopsy"]
+    },
+    {
+        "category": "Bio-Chemistry",
+        "subcategories": [
+            "Sugar", "B. Urea", "S. Creatinine", "S. Uric Acid",
+            "D. Bilirubin", "T. Bilirubin", "SGPT (ALT)",
+            "SGOT (AST)", "T. Protein", "Albumin", "ALP", "GGT",
+            "Cholesterol", "TGL", "HDL", "LDL", "VLDL", "CRP",
+            "ASO", "RA Factor", "Amylase", "Lipase", "HbA1c",
+            "Calcium", "S. Electrolytes", "Ferritin", "Acid Phosphatase",
+            "Iron", "TIBC (Total Iron Binding Capacity)",
+            "Magnesium", "Phosphorous", "CPK", "CK-MB", "CK-NAC", "LFT", "KFT", "TLP"
+        ]
+    }
+]
+
+# Create the test name to category mapping
+test_to_category = {}
+for category in categories:
+    for subcategory in category["subcategories"]:
+        test_to_category[subcategory] = category["category"]
+
+@login_required
+def pathology_report(request):
+    if request.user.is_superuser or request.session.get('user_role') == 'Pathology':
+        start_date_str = request.GET.get('start_date', None)
+        end_date_str = request.GET.get('end_date', None)
+
+        if start_date_str:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+        else:
+            start_date = None
+
+        if end_date_str:
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Include records for the entire end day
+        else:
+            end_date = None
+
+        print("Start Date:", start_date)
+        print("End Date:", end_date)
+
+        # Retrieve all test names
+        all_test_names = Patient_registration.objects.values_list('test_name', flat=True)
+    
+        # Initialize an empty set to store unique test names
+        unique_test_names = set()
+        
+        for test_names in all_test_names:
+            if test_names:
+                # Split the test names by spaces and add to the set
+                test_name_list = test_names.split()
+                unique_test_names.update(test_name_list)
+        
+        print("Unique test names:", unique_test_names)
+        
+        # Initialize a nested dictionary to store counts by date, department, and test name
+        report_data = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+
+        # Filter Test_reports by date range
+        test_reports = Test_report.objects.all()
+        if start_date and end_date:
+            test_reports = test_reports.filter(created_at__range=(start_date, end_date))
+        elif start_date:
+            test_reports = test_reports.filter(created_at__gte=start_date)
+        elif end_date:
+            test_reports = test_reports.filter(created_at__lte=end_date)
+        
+        print("Filtered test reports:", test_reports)
+
+        if start_date_str or end_date_str:
+
+            for test_report in test_reports:
+                report_date = test_report.created_at.strftime('%Y-%m-%d')
+                report_date_datetime = datetime.strptime(report_date, '%Y-%m-%d')
+                
+                if start_date is None or report_date_datetime >= start_date:
+                    report_department = test_report.patient.department.name if test_report.patient.department else 'Unknown'
+                    test_names = test_report.patient.test_name.split() if test_report.patient.test_name else []
+                    
+                    for test_name in test_names:
+                        report_data[report_date][report_department][test_name] += 1
+            
+            
+            print("Report data:")
+            for date, departments in report_data.items():
+                for department, tests in departments.items():
+                    for test, count in tests.items():
+                        print(f"Date: {date}, Department: {department}, Test: {test}, Count: {count}")
+                    
+            prepared_report_data = []
+            for date, departments in report_data.items():
+                for department, tests in departments.items():
+                    for test, count in tests.items():
+                        category = test_to_category.get(test, "Unknown")
+                        prepared_report_data.append({
+                            'date': date,
+                            'department': department,
+                            'test_name': test,
+                            'count': count,
+                            'category': category
+                        })
+            
+            print("Prepared report data:", prepared_report_data)
+            prepared_report_data.sort(key=lambda x: (x['date'], x['department'], x['category']))
+        else:
+            prepared_report_data = {}
+        return render(request, 'pathology_report.html', {'report_data': prepared_report_data, 'title': 'Pathology Report'})
+    else:
+        logout(request)
+        return redirect('signin')
+
+
+@login_required
+def pathology_report_location_wise(request):
+    if request.user.is_superuser or request.session.get('user_role') == 'Pathology':
+        start_date_str = request.GET.get('start_date')
+        end_date_str = request.GET.get('end_date')
+
+        if start_date_str:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+        else:
+            start_date = None
+
+        if end_date_str:
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Include records for the entire end day
+        else:
+            end_date = None
+
+        print("Start Date:", start_date)
+        print("End Date:", end_date)
+
+        # Initialize a nested dictionary to store counts by date, department, and category
+        report_data = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+
+        # Filter Test_reports by date range
+        test_reports = Test_report.objects.all()
+        if start_date and end_date:
+            test_reports = test_reports.filter(created_at__range=(start_date, end_date))
+        elif start_date:
+            test_reports = test_reports.filter(created_at__gte=(start_date))
+        elif end_date:
+            test_reports = test_reports.filter(created_at__lte=(end_date))
+        
+        print("Filtered test reports:", test_reports)
+
+        if start_date_str or end_date_str:
+            # Aggregate counts
+            for test_report in test_reports:
+                report_date = test_report.created_at.strftime('%Y-%m-%d')
+                report_date_datetime = datetime.strptime(report_date, '%Y-%m-%d')
+                
+                if start_date is None or report_date_datetime >= start_date:
+                    report_department = test_report.patient.department.name if test_report.patient.department else 'Unknown'
+                    test_names = test_report.patient.test_name.split() if test_report.patient.test_name else []
+                    
+                    for test_name in test_names:
+                        category = test_to_category.get(test_name, "Unknown")
+                        report_data[report_date][report_department][category] += 1
+            
+            print("Report data:")
+            for date, departments in report_data.items():
+                for department, categories in departments.items():
+                    for category, count in categories.items():
+                        print(f"Date: {date}, Department: {department}, Category: {category}, Count: {count}")
+            
+            prepared_report_data = []
+            for date, departments in report_data.items():
+                for department, categories in departments.items():
+                    for category, count in categories.items():
+                        prepared_report_data.append({
+                            'date': date,
+                            'department': department,
+                            'category': category,
+                            'count': count
+                        })
+            
+            print("Prepared report data:", prepared_report_data)
+            prepared_report_data.sort(key=lambda x: (x['date'], x['department'], x['category']))
+        else:
+            prepared_report_data = {}
+        return render(request, 'pathology_report_location.html', {'report_data': prepared_report_data, 'title': 'Pathology Report'})
+    else:
+        logout(request)
+        return redirect('signin')

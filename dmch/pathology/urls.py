@@ -23,12 +23,14 @@ urlpatterns = [
     # URL patterns for patient_registration model
     path('create_patient_registration/', views.create_patient_registration, name='create_patient_registration'),
     path('patient_patient_registration/', views.patient_registration_view, name='patient_registration_view'),
+    path('patient_registration_view_data/', views.patient_registration_view_data, name='patient_registration_view_data'),
     path('patient_registration_view_print/', views.patient_registration_view_print, name='patient_registration_view_print'),
     path('update_patient_registration/<int:pk>/', views.update_patient_registration, name='update_patient_registration'),
     path('delete_patient_registration/<int:pk>/', views.delete_patient_registration, name='delete_patient_registration'),
 
     # URL patterns for test_report model
     path('create_test_report/', views.create_test_report, name='create_test_report'),
+    path('create_test_report_view_data/', views.create_test_report_view_data, name='create_test_report_view_data'),
     # path('create_test_report_view/', views.create_test_report_view, name='create_test_report_view_print'),
     path('create_test_report_view/', views.create_test_report_view, name='create_test_report_view'),
     path('create_test_report_view_print/', views.create_test_report_view_print, name='create_test_report_view_print'),
@@ -76,5 +78,9 @@ urlpatterns = [
     path('delete_urine_test/<int:pk>/', views.delete_urine_test, name='delete_urine_test'),
 
     path('find_user_report/', views.find_user_report, name='find_user_report'),
+
+    path('report/', views.pathology_report, name='pathology_report'),
+    path('pathology_report_category_wise/', views.pathology_report_location_wise, name='pathology_report_location_wise'),
+
 
 ]

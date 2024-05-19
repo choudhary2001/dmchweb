@@ -16,13 +16,13 @@
     <div class="card-header py-3">
       <form action="{% url 'supply_details_user_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
         <div style="flex: 1">
-          <input type="datetime-local" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+          <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
         </div>
         <div style="">
           <span>-</span>
         </div>
         <div style="flex: 1">
-          <input type="datetime-local" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+          <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
         </div>
 
         <!-- <div style="flex: 3">
@@ -64,18 +64,18 @@
 
             <tr>
               <td>
-                {% if order.patient %}
-                  {% if order.patient.regnoid %}{{ order.patient.regnoid }}{% endif %}
+                {% if order.regno %}
+                {{ order.regno }}
                 {% else %}
-                  {{ order.patient_name }}
+                  {% if order.patient.regnoid %}{{ order.patient.regnoid }}{% endif %}
                 {% endif %}
               </td>
               
               <td>
-                {% if order.patient %}
-                  {% if order.patient.name %}{{ order.patient.name }}{% else %}{{ order.patient.regnoid }}{% endif %}
+                {% if order.patient_name %}
+                {{ order.patient_name }}
                 {% else %}
-                  {{ order.regno }}
+                {% if order.patient.name %}{{ order.patient.name }}{% else %}{{ order.patient.regnoid }}{% endif %}
                 {% endif %}
               </td>
 

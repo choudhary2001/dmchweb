@@ -525,6 +525,7 @@ def medicine_supply_update_view(request, consumption_id):
     departpment = request.session['user_role']
     d = DrugDepartment.objects.filter(name = departpment).first()
     if request.user.is_superuser or d is not None:
+        m = MedicineConsumption.objects.filter(consumption_id = consumption_id).first()
 
         if request.method == 'POST':
             # Extract data from the form
@@ -562,7 +563,6 @@ def medicine_supply_update_view(request, consumption_id):
             #     patient=p,
             #     created_at = date
             # )
-            m = MedicineConsumption.objects.filter(consumption_id = consumption_id).first()
 
             request.session['supply_date'] = date
 
@@ -624,6 +624,13 @@ def medicine_supply_update_view(request, consumption_id):
                     if ps.stock_quantity > 0:
                         unique_p_types.append({'productdetails_id' : ps.productdetails_id , 'product_name' : ps.product_name })
         # print(unique_p_types)
+        
+        first_medicine_date = None
+        first_medicine = m.products.order_by('created_at').first()
+        print(first_medicine)
+        if first_medicine:
+            first_medicine_date = first_medicine.created_at
+        print(first_medicine_date)
 
         context = {
             'title' : 'Medicine Consumption / Supply',
@@ -633,7 +640,8 @@ def medicine_supply_update_view(request, consumption_id):
             'unique_p_types' : unique_p_typess,
             'productsupply' : unique_p_types,
             'medicine' : medicine,
-            'total' : len(medicine.products.all())
+            'total' : len(medicine.products.all()),
+            'first_medicine_date': first_medicine_date,
         }
         return render(request, 'medicine_store/supply_update.html', context=context)
     else:
@@ -701,13 +709,13 @@ def supply_details_user_view(request):
 
         if start_date_str:
             start_date = start_date_str
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
         else:
             start_date = None
 
         if end_date_str:
             end_date = end_date_str
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M') + timedelta(days=1)
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)
         else:
             end_date = None
         # pr = Profile.objects.filter(user_role = departpment).all()
@@ -723,17 +731,27 @@ def supply_details_user_view(request):
         # p = MedicineConsumption.objects.filter(user_id__in=user_ids).order_by('-created_at')
         p = MedicineConsumption.objects.filter(departpment= d).all()
 
-        if start_date and end_date:
-            p = p.filter(created_at__range=(start_date, end_date))
+        # if start_date and end_date:
+        #     p = p.filter(created_at__range=(start_date, end_date))
 
+        # elif start_date:
+        #     next_day = start_date + timedelta(days=1)
+        #     start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+        #     end_datetime = start_datetime + timedelta(days=1)
+        #     p = p.filter(created_at__gte=start_datetime, created_at__lt=end_datetime)
+
+        # elif end_date:
+        #     p = p.filter(created_at__lt=end_date)
+
+        if start_date and end_date:
+            p = p.filter(products__created_at__range=(start_date, end_date))
         elif start_date:
             next_day = start_date + timedelta(days=1)
             start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
             end_datetime = start_datetime + timedelta(days=1)
-            p = p.filter(created_at__gte=start_datetime, created_at__lt=end_datetime)
-
+            p = p.filter(products__created_at__gte=start_datetime, products__created_at__lt=end_datetime)
         elif end_date:
-            p = p.filter(created_at__lt=end_date)
+            p = p.filter(products__created_at__lt=end_date)
 
         d = DrugDepartment.objects.all()
         # sp = ProductSupply.objects.values('product_name', 'productdetails_id').distinct()
@@ -750,7 +768,7 @@ def supply_details_user_view(request):
         
         context = {
             'supply' : p,
-            'title' : f"Total Medicine Consumption : {len(p)}",
+            'title' : f"Total Medicine Consumption",
             'departments' : d,
             'productsupply' : unique_p_types
 
@@ -774,13 +792,13 @@ def supply_details_user_view_print(request):
 
         if start_date_str:
             start_date = start_date_str
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
         else:
             start_date = None
 
         if end_date_str:
             end_date = end_date_str
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M') + timedelta(days=1)
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)
         else:
             end_date = None
 
@@ -794,16 +812,15 @@ def supply_details_user_view_print(request):
         p = MedicineConsumption.objects.filter(departpment = d).order_by('-created_at')
 
         if start_date and end_date:
-            p = p.filter(created_at__range=(start_date, end_date))
-
+            p = p.filter(products__created_at__range=(start_date, end_date))
         elif start_date:
             next_day = start_date + timedelta(days=1)
             start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
             end_datetime = start_datetime + timedelta(days=1)
-            p = p.filter(created_at__gte=start_datetime, created_at__lt=end_datetime)
-
+            p = p.filter(products__created_at__gte=start_datetime, products__created_at__lt=end_datetime)
         elif end_date:
-            p = p.filter(created_at__lt=end_date)
+            p = p.filter(products__created_at__lt=end_date)
+
 
         d = DrugDepartment.objects.all()
         # sp = ProductSupply.objects.all().order_by('-created_at')
@@ -818,7 +835,7 @@ def supply_details_user_view_print(request):
         print(unique_p_types)
         context = {
             'supply' : p,
-            'title' : f"Total Medicine Consumption : {len(p)}",
+            'title' : f"Total Medicine Consumption",
             'departments' : d,
             'productsupply' : unique_p_types
 

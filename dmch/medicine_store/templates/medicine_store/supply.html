@@ -368,6 +368,7 @@
           </div>
         `;
 
+    
     var removeButton = document.createElement("div");
     removeButton.className = "col-md-1 mb-1 close_button";
     removeButton.innerHTML = `
@@ -442,9 +443,13 @@
           left: 0,
           width: inputWidth + 600,
         }).show();
+
       } else {
         popup.hide(); // Hide the popup if search input is empty
       }
+      var productFieldss = $("#productFields");
+      productFieldss.scrollTop(productFieldss.prop("scrollHeight"));
+
     });
 
     // Close the popup when clicking outside of it

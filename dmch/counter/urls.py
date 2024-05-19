@@ -21,9 +21,11 @@ urlpatterns = [
     path('show-patients-data/', views.show_patients_data, name="show_patients_data"),
     path('report-patients/', views.show_patients_report, name="show_patients_report"),
     path('report-patients-user/', views.show_patients_report_userwise, name="show_patients_report_userwise"),
+    path('report-patients-location/', views.location_wise_report, name="location_wise_report"),
     path('get-doctors-by-department/',views.get_doctors_by_department,name='get_doctors_by_department'),
     # path('delete-patients/<int:pk>', views.delete_patients, name="delete_patients"),
     path('update-patients/<int:pk>', views.update_patients, name="update_patients"),
 
+    path('show-department-report/', views.department_wise_report, name="department_wise_report")
     # path('opd-patients/', views.OPDPatientListCreateView.as_view(), name='opd-patient-list-create'),
 ]

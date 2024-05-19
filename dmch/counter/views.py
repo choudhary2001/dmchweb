@@ -15,6 +15,11 @@ from django.utils import timezone
 import pytz
 from drug.models import *
 from store.models import *
+from django.db.models import Count, Sum
+from django.http import JsonResponse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from urllib.parse import urlparse, parse_qs, unquote_plus
+
 # Get the current time in UTC
 current_time_utc = timezone.now()
 from django.db.models import Q
@@ -224,6 +229,22 @@ def add_patient(request):
                 else:
                     days = 0
 
+                # Check for duplicates
+                try:
+                    duplicate_patient = Patient.objects.filter(
+                        name=name,
+                        mobno=mobno,
+                        guardianname=guardianname,
+                        address = address,
+                        de=None
+                    ).exists()
+
+                    if duplicate_patient:
+                        messages.error(request, 'Duplicate patient found. Please check the details and try again.')
+                        return redirect('add_patient')
+                except Exception as e:
+                    print(e)
+
                 de = Department.objects.filter(department_id = department).first()
                 d = Doctor.objects.filter(doctor_id = doctor).first()
 
@@ -386,9 +407,6 @@ def show_patients(request):
         logout(request)
         return redirect('signin') 
 
-from django.http import JsonResponse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from urllib.parse import urlparse, parse_qs, unquote_plus
 
 @login_required
 def show_patients_data(request):
@@ -413,11 +431,16 @@ def show_patients_data(request):
         else:
             end_date = None
 
-        
-        
         # Filter patients based on the provided date range
         if request.user.is_superuser:
-            patients = Patient.objects.filter(de=None).order_by('-appointment_date')
+            # patients = Patient.objects.filter(de=None).order_by('-appointment_date')
+            unique_departments = Profile.objects.exclude(main_department__isnull=True).values_list('main_department', flat=True).distinct()
+
+            # Step 2: Find users that have those main_department values
+            users_in_departments = User.objects.filter(profile__main_department__in=unique_departments)
+
+            # Step 3: Find all Patient instances associated with those users
+            patients = Patient.objects.filter(user__in=users_in_departments)
         else:
             patients = Patient.objects.filter(user = request.user, de = None).order_by('-appointment_date')
 
@@ -521,79 +544,6 @@ def show_patients_data(request):
         return redirect('signin')
 
 
-# @login_required
-# def show_patients_data(request):
-#     if request.user.is_superuser or request.session['user_role'] == 'Registration':
-#         # Your existing code here
-#         start_date_str = request.GET.get('start_date')
-#         end_date_str = request.GET.get('end_date')
-#         department = request.GET.get('department')
-
-#         # Convert the date strings to datetime objects
-#         if start_date_str:
-#             start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
-#         else:
-#             start_date = None
-
-#         if end_date_str:
-#             end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
-#             # Adjust the end date to include all records for that day
-#             end_date = end_date + timedelta(days=1)  # Include records for the entire day
-#         else:
-#             end_date = None
-        
-#         # Filter patients based on the provided date range
-#         if request.user.is_superuser:
-#             patients = Patient.objects.filter(de=None).order_by('-appointment_date')
-#         else:
-#             patients = Patient.objects.filter(user = request.user, de = None).order_by('-appointment_date')
-
-
-#         if start_date and end_date:
-#             # end_date = end_date + timedelta(days=1) 
-#             # start_date = start_date - timedelta(days=1)
-#             patients = patients.filter(appointment_date__range=(start_date, end_date))
-#         elif start_date:
-#             # If only start date is provided, include all records for that day
-#             next_day = start_date + timedelta(days=1)
-#             patients = patients.filter(appointment_date__gte=start_date, appointment_date__lt=next_day)
-#         elif end_date:
-#             patients = patients.filter(appointment_date__lt=end_date)
-        
-#         # Pagination
-#         page = request.GET.get('page', 1)
-#         paginator = Paginator(patients, 10)  # Show 10 patients per page
-#         try:
-#             patients = paginator.page(page)
-#         except PageNotAnInteger:
-#             patients = paginator.page(1)
-#         except EmptyPage:
-#             patients = paginator.page(paginator.num_pages)
-
-#         # Serialize patients data
-#         patients_data = []
-#         for patient in patients:
-#             patients_data.append({
-#                 'regid': patient.regid,
-#                 'name': patient.name,
-#                 'address': patient.address,
-#                 'doctor': patient.doctor.name,
-#                 'doctor': patient.doctor.name,
-#                 'doctor': patient.doctor.name,
-#                 # Add other fields as needed
-#             })
-
-#         # Prepare data for JSON response
-#         data = {
-#             'patients': patients_data,
-#             'has_next': patients.has_next(),
-#             'has_prev': patients.has_previous(),
-#         }
-#         return JsonResponse(data)
-#     else:
-#         logout(request)
-#         return redirect('signin')
-
 
 # @login_required
 def show_patients_report(request):
@@ -627,6 +577,14 @@ def show_patients_report(request):
         # Filter patients based on the provided date range
         if request.user.is_superuser:
             patients = Patient.objects.filter(de=None).order_by('-appointment_date')
+            # unique_departments = Profile.objects.values_list('main_department', flat=True).distinct()
+            unique_departments = Profile.objects.exclude(main_department__isnull=True).values_list('main_department', flat=True).distinct()
+
+            # Step 2: Find users that have those main_department values
+            users_in_departments = User.objects.filter(profile__main_department__in=unique_departments)
+
+            # Step 3: Find all Patient instances associated with those users
+            patients = Patient.objects.filter(user__in=users_in_departments)
         else:
             patients = Patient.objects.filter(user=request.user, de = None).order_by('-appointment_date')
 
@@ -752,15 +710,15 @@ def show_patients_report(request):
 @login_required
 def show_patients_report_userwise(request):
     if request.user.is_superuser:
-        start_date_str = request.GET.get('start_date')
-        end_date_str = request.GET.get('end_date')
+        start_date_str = request.GET.get('start_date', None)
+        end_date_str = request.GET.get('end_date', None)
         department_id = request.GET.get('department')
 
         # Convert the date strings to datetime objects
         if start_date_str:
             # start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
             start_date = start_date_str
-            start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+            start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
 
         else:
             start_date = None
@@ -768,7 +726,7 @@ def show_patients_report_userwise(request):
         if end_date_str:
             # end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
             end_date = end_date_str
-            end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%dT%H:%M')  # Add one day to include end_date
+            end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')  # Add one day to include end_date
 
             # Adjust the end date to include all records for that day
             # end_date = end_date + timedelta(days=1)  # Include records for the entire day
@@ -784,70 +742,79 @@ def show_patients_report_userwise(request):
 
         total_patient = 0
         total_patient_amount = 0
+        total_patient_count = 0
+        total_patient_amount_count = 0
 
         users_with_patients = []
-        for user in users:
-            patients = Patient.objects.filter(user=user, de = None).order_by('-appointment_date')
+        if start_date_str or end_date_str:
+            for user in users:
+                pr = Profile.objects.filter(user = user).first()
+                if pr:
+                    if pr.user_role == 'Registration':
+                        patients = Patient.objects.filter(user=user, de = None).order_by('-appointment_date')
 
-            if start_date and end_date:
-                patients = patients.filter(appointment_date__range=(start_date, end_date))
-            elif start_date:
-                next_day = start_date + timedelta(days=1)
-                start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
-                end_datetime = start_datetime + timedelta(days=1)
-                patients = patients.filter(appointment_date__gte=start_datetime, appointment_date__lt=end_datetime)
-            elif end_date:
-                patients = patients.filter(appointment_date__lt=end_date)
+                        if start_date and end_date:
+                            patients = patients.filter(appointment_date__range=(start_date, end_date))
+                        elif start_date:
+                            next_day = start_date + timedelta(days=1)
+                            start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+                            end_datetime = start_datetime + timedelta(days=1)
+                            patients = patients.filter(appointment_date__gte=start_datetime, appointment_date__lt=end_datetime)
+                        elif end_date:
+                            patients = patients.filter(appointment_date__lt=end_date)
 
-            department = None
-            if department_id and department_id != 'All':
-                department = Department.objects.filter(department_id=department_id).first()
-                if department:
-                    patients = patients.filter(department=department)
+                        department = None
+                        if department_id and department_id != 'All':
+                            department = Department.objects.filter(department_id=department_id).first()
+                            if department:
+                                patients = patients.filter(department=department)
 
-            # Calculate statistics
-            red_card_total = patients.filter(redcard=True, redcardtype='Red Card').count()
-            rb_case_total = patients.filter(redcard=True, redcardtype='RB Case').count()
-            unknown_total = patients.filter(visittype='Unknown').count()
-            free_total = patients.filter(visittype='Free').count()
-            revisit_total = patients.filter(revisit='Revisit').count()
-            total = patients.count()
-            non_price = red_card_total + rb_case_total + unknown_total + revisit_total
-            total_amount = (total * 5) - (non_price * 5)
-            total_patient =  total_patient + total
-            total_patient_amount =  total_patient_amount + total_amount
-            # Get visit type counts
-            visittype_counts = patients.values('visittype').annotate(total_count=Count('visittype')).order_by()
+                        # Calculate statistics
+                        red_card_total = patients.filter(redcard=True, redcardtype='Red Card').count()
+                        rb_case_total = patients.filter(redcard=True, redcardtype='RB Case').count()
+                        unknown_total = patients.filter(visittype='Unknown').count()
+                        free_total = patients.filter(visittype='Free').count()
+                        revisit_total = patients.filter(revisit='Revisit').count()
+                        total = patients.count()
+                        non_price = red_card_total + rb_case_total + unknown_total + revisit_total
+                        total_amount = (total * 5) - (non_price * 5)
+                        total_patient =  total_patient + total
+                        total_patient_count =  total_patient_count + total
+                        total_patient_amount =  total_patient_amount + total_amount
+                        total_patient_amount_count =  total_patient_amount_count + total_amount
+                        # Get visit type counts
+                        visittype_counts = patients.values('visittype').annotate(total_count=Count('visittype')).order_by()
 
-            min_appointment_date = patients.aggregate(Min('appointment_date'))['appointment_date__min']
-            max_appointment_date = patients.aggregate(Max('appointment_date'))['appointment_date__max']
-            p = Profile.objects.filter(user = user).first()
-            if p is not None:
-                if p.user_role == 'Registration':
-                    if total_amount > 0:
-                        users_with_patients.append({
-                            'user': user,
-                            'patients': patients,
-                            'total': total,
-                            'redcard': red_card_total,
-                            'rbcase': rb_case_total,
-                            'unknown': unknown_total,
-                            'total_amount': total_amount,
-                            'visittype_counts': visittype_counts,
-                            'date_range': (start_date, end_date),
-                            'department': department,
-                            'start_date' : min_appointment_date,
-                            'end_date' : max_appointment_date,
-                            'free_total' : free_total,
-                            'revisit_total':revisit_total
-                        })
+                        min_appointment_date = patients.aggregate(Min('appointment_date'))['appointment_date__min']
+                        max_appointment_date = patients.aggregate(Max('appointment_date'))['appointment_date__max']
+                        p = Profile.objects.filter(user = user).first()
+                        if p is not None:
+                            if p.user_role == 'Registration':
+                                if total_amount > 0:
+                                    users_with_patients.append({
+                                        'user': user,
+                                        'patients': patients,
+                                        'total': total,
+                                        'redcard': red_card_total,
+                                        'rbcase': rb_case_total,
+                                        'unknown': unknown_total,
+                                        'total_amount': total_amount,
+                                        'visittype_counts': visittype_counts,
+                                        'date_range': (start_date, end_date),
+                                        'department': department,
+                                        'start_date' : min_appointment_date,
+                                        'end_date' : max_appointment_date,
+                                        'free_total' : free_total,
+                                        'revisit_total':revisit_total
+                                    })
+                
         d = Department.objects.all()
         context = {
             'users_with_patients': users_with_patients,
             'title': f'Patient Report',
             'departments' : d,
-            'total_patient' : total_patient,
-            'total_patient_amount' : total_patient_amount
+            'total_patient' : total_patient_count,
+            'total_patient_amount' : total_patient_amount_count
         }
         return render(request, 'counter/Patientsreportuserwise.html', context = context)
     else:
@@ -1149,7 +1116,225 @@ def dataentryoperator_delete(request, pk):
     else:
         logout(request)
         return redirect('signin') 
+
+
+def location_wise_report(request):
+    if request.user.is_superuser:
+        start_date_str = request.GET.get('start_date')
+        end_date_str = request.GET.get('end_date')
+        department_id = request.GET.get('department')
+
+        # Convert the date strings to datetime objects
+        if start_date_str:
+            start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
+
+        else:
+            start_date = None
+
+        if end_date_str:
+            end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')  # Add one day to include end_date
+
+        else:
+            end_date = None
+        
+
+        # unique_departments = Profile.objects.filter(main_department).values_list('main_department', flat=True).distinct()
+        unique_departments = Profile.objects.exclude(main_department__isnull=True).values_list('main_department', flat=True).distinct()
+        # Step 2: Create a dictionary to store results
+        department_data = []
+        total_patient_count = 0
+        total_patient_count_non_price = 0
+        total_patient_amount_count = 0
+        # Step 3: Iterate over each department and perform aggregations
+        if start_date_str or end_date_str or department_id:
+            for department in unique_departments:
+                total_patient = 0
+                total_patient_amount = 0
+                users_in_department = User.objects.filter(profile__main_department=department)
+                patients_in_department = Patient.objects.filter(user__in=users_in_department, de = None)
+                
+                if start_date and end_date:
+                    patients_in_department = patients_in_department.filter(appointment_date__range=(start_date, end_date))
+                elif start_date:
+                    next_day = start_date + timedelta(days=1)
+                    start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+                    end_datetime = start_datetime + timedelta(days=1)
+                    patients_in_department = patients_in_department.filter(appointment_date__gte=start_datetime, appointment_date__lt=end_datetime)
+                elif end_date:
+                    patients_in_department = patients_in_department.filter(appointment_date__lt=end_date)
+
+                # Calculate statistics
+                red_card_total = patients_in_department.filter(redcard=True, redcardtype='Red Card').count()
+                rb_case_total = patients_in_department.filter(redcard=True, redcardtype='RB Case').count()
+                unknown_total = patients_in_department.filter(visittype='Unknown').count()
+                free_total = patients_in_department.filter(visittype='Free').count()
+                revisit_total = patients_in_department.filter(revisit='Revisit').count()
+                total = patients_in_department.count()
+                non_price = red_card_total + rb_case_total + unknown_total + revisit_total
+                total_patient_count_non_price = total_patient_count_non_price + non_price
+                total_amount = (total * 5) - (non_price * 5)
+                total_patient_count =  total_patient_count + total
+                total_patient_amount_count =  total_patient_amount_count + total_amount
+                # Get visit type counts
+                visittype_counts = patients_in_department.values('visittype').annotate(total_count=Count('visittype')).order_by()
+
+
+                # Count total patients
+                total_patients = patients_in_department.count()
+                
+
+                # Store the results in the dictionary
+                department_data.append({
+                    'main_department': department,
+                    'total_patients': total,
+                    'total_amount': total_amount,
+                    'patients': list(patients_in_department.values('name', 'regno', 'uhidno', 'doctor__name', 'department__name', 'appointment_date'))
+                })
+
+        # Print or use the department_data as needed
+        print(department_data)
+        context = {
+            'users_with_patients': department_data,
+            'title': f'Patient Report',
+            # # 'departments' : d,
+            'total_patient' : total_patient_count,
+            'total_patient_amount' : total_patient_amount_count,
+            'total_patient_count_non_price' : total_patient_count_non_price,
+            'start_date_str' : start_date_str,
+            'end_date_str' : end_date_str
+        }
+        return render(request, 'counter/Patientsreportlocationwise.html', context = context)
+    else:
+        logout(request)
+        return redirect('signin') 
     
+
+
+
+@login_required
+def department_wise_report(request):
+    if request.user.is_superuser:
+        start_date_str = request.GET.get('start_date')
+        end_date_str = request.GET.get('end_date')
+        department_id = request.GET.get('department')
+
+        # Convert the date strings to datetime objects
+        if start_date_str:
+            start_date = timezone.datetime.strptime(start_date_str, '%Y-%m-%d')
+        else:
+            start_date = None
+
+        if end_date_str:
+            end_date = timezone.datetime.strptime(end_date_str, '%Y-%m-%d')   # Add one day to include end_date
+        else:
+            end_date = None
+
+        unique_departments = Profile.objects.exclude(main_department__isnull=True).values_list('main_department', flat=True).distinct()
+
+        department_data = []
+        total_patient_count = 0
+        total_patient_count_non_price = 0
+        total_patient_amount_count = 0
+
+        total_patient_count_date = 0
+        total_patient_count_non_price_date = 0
+        total_patient_amount_count_date = 0
+
+        if start_date or end_date or department_id:
+            for department in unique_departments:
+                total_patient = 0
+                total_patient_amount = 0
+                total_patient_date = 0
+                total_patient_amount_date = 0
+                users_in_department = User.objects.filter(profile__main_department=department)
+                patients_in_department = Patient.objects.filter(user__in=users_in_department, de=None)
+
+                if start_date and end_date:
+                    patients_in_department = patients_in_department.filter(appointment_date__range=(start_date, end_date))
+                elif start_date:
+                    start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+                    end_datetime = start_datetime + timedelta(days=1)
+                    patients_in_department = patients_in_department.filter(appointment_date__gte=start_datetime, appointment_date__lt=end_datetime)
+                elif end_date:
+                    start_datetime = timezone.make_aware(end_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+                    end_datetime = start_datetime + timedelta(days=1)
+                    patients_in_department = patients_in_department.filter(appointment_date__lt=end_date)
+
+                # Calculate statistics
+                red_card_total = patients_in_department.filter(redcard=True, redcardtype='Red Card').count()
+                rb_case_total = patients_in_department.filter(redcard=True, redcardtype='RB Case').count()
+                unknown_total = patients_in_department.filter(visittype='Unknown').count()
+                free_total = patients_in_department.filter(visittype='Free').count()
+                revisit_total = patients_in_department.filter(revisit='Revisit').count()
+                total = patients_in_department.count()
+                non_price = red_card_total + rb_case_total + unknown_total + revisit_total
+                total_patient_count_non_price += non_price
+                total_amount = (total * 5) - (non_price * 5)
+                total_patient_count += total
+                total_patient_amount_count += total_amount
+
+                # Get visit type counts
+                visittype_counts = patients_in_department.values('visittype').annotate(total_count=Count('visittype')).order_by()
+
+                # Count total patients
+                total_patients = patients_in_department.count()
+
+                # Create date-wise data
+                date_wise_data = []
+                if start_date and end_date:
+                    current_date = start_date
+                    while current_date <= end_date:
+                        next_date = current_date + timedelta(days=1)
+                        patients_on_date = patients_in_department.filter(appointment_date__date=current_date)
+                                        # Calculate statistics
+                        red_card_total_date = patients_on_date.filter(redcard=True, redcardtype='Red Card').count()
+                        rb_case_total_date = patients_on_date.filter(redcard=True, redcardtype='RB Case').count()
+                        unknown_total_date = patients_on_date.filter(visittype='Unknown').count()
+                        free_total_date = patients_on_date.filter(visittype='Free').count()
+                        revisit_total_date = patients_on_date.filter(revisit='Revisit').count()
+                        total_date = patients_on_date.count()
+                        non_price_date = red_card_total + rb_case_total_date + unknown_total_date + revisit_total_date
+                        total_patient_count_non_price_date += non_price_date
+                        total_amount_date = (total_date * 5) - (non_price_date * 5)
+                        total_patient_count_date += total_date
+                        total_patient_amount_count_date += total_amount_date
+
+                        date_wise_data.append({
+                            'date': current_date,
+                            'total_patients': total_date,
+                            'total_amount' : 5 * total_date,
+                            'unpaid_patients' : non_price_date,
+                            'total_paid' : total_amount_date
+
+                        })
+                        current_date = next_date
+
+                # Store the results in the dictionary
+                department_data.append({
+                    'main_department': department,
+                    'total_patients': total,
+                    'total_amount': total_amount,
+                    'date_wise_data': date_wise_data,
+                })
+
+        print(department_data)
+
+        context = {
+            'report_data': department_data,
+            'title': 'Patient Report',
+            'total_patient': total_patient_count,
+            'total_patient_amount': total_patient_amount_count,
+            'total_patient_count_non_price': total_patient_count_non_price,
+            'start_date_str': start_date_str,
+            'end_date_str': end_date_str
+        }
+        return render(request, 'counter/departmentreport.html', context=context)
+    else:
+        logout(request)
+        return redirect('signin')
+
+
+
 def signout(request):
     logout(request)
     request.session.clear()

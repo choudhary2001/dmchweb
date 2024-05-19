@@ -28,6 +28,19 @@
         <div style="flex: 1">
           <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
         </div>
+
+        <div style="flex: 3">
+          <select name="department" class="form-control mb-2 mb-md-0">
+            <option>Select Department</option>
+            <option value="All">All</option>
+            {% for d in departments %}
+            <option value="{{d.department_id}}">{{d.name}}</option>
+            {% endfor %}
+            <!-- <option value="MOPD">MOPD</option>
+            <option value="EOPD">EOPD</option>
+            <option value="ChildEOPD">ChildEOPD</option> -->
+          </select>
+        </div>
        
         <div style="flex: 1">
           <button class="btn btn-primary w-100" type="submit">Filter</button>
@@ -46,12 +59,12 @@
             <tr>
               <th>Reg No.</th>
               <th>Name</th>
+              <th>Test Name</th>
               <th>Mobile</th>
               <th>Bill No.</th>
               <th>Lab No.</th>
               <th>Department</th>
               <th>Refer By</th>
-              <th>Test Name</th>
               <th>Date</th>
               {% if request.user.is_superuser %}
               <th>Edit</th>
@@ -65,12 +78,12 @@
             <tr>
                 <th>Reg No.</th>
                 <th>Name</th>
+                <th>Test Name</th>
                 <th>Mobile</th>
                 <th>Bill No.</th>
                 <th>Lab No.</th>
                 <th>Department</th>
                 <th>Refer By</th>
-                <th>Test Name</th>
                 <th>Date</th>
               {% if request.user.is_superuser %}
               <th>Edit</th>
@@ -85,12 +98,12 @@
             <tr>
               <td>{% if d.reg_no %}{% if d.reg_no.de == 'Pathology' %}{{d.reg_no.regnoid}}{% else %}{{d.reg_no.regid}}{% endif %}{% endif %}</td>
               <td>{{d.reg_no.name}}</td>
+              <td>{% if d.test_name %}{{d.test_name}}{% endif %}</td>
               <td>{{d.reg_no.mobno}}</td>
               <td>{{d.bill_no}}</td>
               <td>{{d.lab_no}}</td>
               <td>{{d.department.name}}</td>
               <td>{{d.referby.name}}</td>
-              <td>{% if d.test_name %}{{d.test_name}}{% endif %}</td>
               <td>{{d.date}}</td>
               {% if request.user.is_superuser %}
               <td>
@@ -122,10 +135,89 @@
             </tr>
             {% endfor %}
           </tbody>
+
         </table>
       </div>
     </div>
   </div>
 </div>
+
+{% if end_date_str == None or start_date_str == None %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.min.js"></script>
+<script>
+  $(document).ready(function() {
+    if (!$.fn.DataTable.isDataTable('#dataTable')) {
+      var table = $('#dataTable').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+          "url": "{% url 'patient_registration_view_data' %}",
+          "type": "GET",
+          "dataSrc": "patients",
+          "data": function(d) {
+                d.searchValue = $('#dataTable_filter input').val(); 
+                d.start_date = $('#start_date').val();
+                d.end_date = $('#end_date').val();
+            }
+        },
+        "columns": [
+          {"data": "regid"},
+          {"data": "name"},
+          {"data": "test_name"},
+          {"data": "mobile"},
+          {"data": "bill_no"},
+          {"data": "lab_no"},
+          {"data": "department"},
+          {"data": "refer_by"},
+          {"data": "date"},
+          {% if request.user.is_superuser %}
+            {"data": "edit_link", "orderable": false, "searchable": false},
+            {"data": "delete_link", "orderable": false, "searchable": false}
+          {% else %}
+            {"data": "view_link", "orderable": false, "searchable": false}
+          {% endif %}
+        ],
+        "columnDefs": [
+        {% if request.user.is_superuser %}
+
+          {
+            "targets": 9,
+            "render": function(data, type, row, meta) {
+              return '<a href="/pathology/update_patient_registration/' + row.id + '/" class="btn btn-primary btn-icon-split"><span class="icon text-white-50"><i class="fas fa-arrow-right"></i></span><span class="text">Edit</span></a>';
+            }
+          },
+          {
+            "targets": 10,
+            "render": function(data, type, row, meta) {
+              return '<a href="/pathology/delete_patient_registration/' + row.id + '/" class="btn btn-danger btn-icon-split"><span class="icon text-white-50"><i class="fas fa-trash"></i></span><span class="text">Delete</span></a>';
+            }
+          },
+          {% else %}
+          {
+            "targets": 9,
+            "render": function(data, type, row, meta) {
+              return '<a href="/pathology/update_patient_registration/' + row.id + '/" class="btn btn-primary btn-icon-split"><span class="icon text-white-50"><i class="fas fa-arrow-right"></i></span><span class="text">Edit</span></a>';
+            }
+          },
+
+          {% endif %}
+
+        ],
+        "paging": true,
+        "searching": true,
+        "lengthChange": false,
+        "dom": 'lfrtip',
+        "buttons": ['copy', 'excel', 'pdf', 'print'],
+      });
+      $('#search_input').on('keyup', function() {
+        table.search(this.value).draw();
+      });
+
+     
+    }
+  });
+</script>
+{% endif %}
 
 {% endblock %} {% block script %} {% endblock %}

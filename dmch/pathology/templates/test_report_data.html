@@ -55,6 +55,7 @@
             <tr>
                 <th>Reg No.</th>
                 <th>Name</th>
+                <th>Test Name</th>
                 <th>Bill No.</th>
                 <th>Lab No.</th>
                 <th>Department</th>
@@ -62,7 +63,7 @@
                 <th>Plasma Glucose Fasting</th>
                 <th>Plasma Glucose PP</th>
                 <th>Blood Sugar Random</th>
-                <th>Blood Users</th>
+                <th>Blood Urea</th>
                 <th>Serum Creainine</th>
 
               <th>Date</th>
@@ -78,6 +79,7 @@
             <tr>
                 <th>Reg No.</th>
                 <th>Name</th>
+                <th>Test Name</th>
                 <th>Bill No.</th>
                 <th>Lab No.</th>
                 <th>Department</th>
@@ -85,7 +87,7 @@
                 <th>Plasma Glucose Fasting</th>
                 <th>Plasma Glucose PP</th>
                 <th>Blood Sugar Random</th>
-                <th>Blood Users</th>
+                <th>Blood Urea</th>
                 <th>Serum Creainine</th>
 
                 <th>Date</th>
@@ -97,6 +99,7 @@
               {% endif %}
             </tr>
           </tfoot>
+          {% if end_date_str != None or start_date_str != None %}
           <tbody>
             {% for d in patients %}
             <tr>
@@ -104,6 +107,7 @@
               <td>{{d.reg_no.name}}</td>
               <td>{{d.patient.bill_no}}</td>
               <td>{{d.patient.lab_no}}</td>
+              <td>{{d.patient.test_name}}</td>
               <td>{{d.patient.department.name}}</td>
               <td>{{d.patient.referby.name}}</td>
               <td>{{d.palsma_glucose_fasting}}</td>
@@ -142,10 +146,94 @@
             </tr>
             {% endfor %}
           </tbody>
+          {% endif %}
         </table>
       </div>
     </div>
   </div>
 </div>
+
+{% if end_date_str == None or start_date_str == None %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.min.js"></script>
+<script>
+  $(document).ready(function() {
+    if (!$.fn.DataTable.isDataTable('#dataTable')) {
+      var table = $('#dataTable').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+          "url": "{% url 'create_test_report_view_data' %}",
+          "type": "GET",
+          "dataSrc": "patients",
+          "data": function(d) {
+                d.searchValue = $('#dataTable_filter input').val(); 
+                d.start_date = $('#start_date').val();
+                d.end_date = $('#end_date').val();
+            }
+        },
+        "columns": [
+          {"data": "regid"},
+          {"data": "name"},
+          {"data": "test_name"},
+          {"data": "bill_no"},
+          {"data": "lab_no"},
+          {"data": "department"},
+          {"data": "refer_by"},
+          {"data": "plasma_glucode_fasting"},
+          {"data": "plasma_glucose_pp"},
+          {"data": "blood_sugar_random"},
+          {"data": "blood_ures"},
+          {"data": "serum_creainine"},
+          {"data": "date"},
+          {% if request.user.is_superuser %}
+            {"data": "edit_link", "orderable": false, "searchable": false},
+            {"data": "delete_link", "orderable": false, "searchable": false}
+          {% else %}
+            {"data": "view_link", "orderable": false, "searchable": false}
+          {% endif %}
+        ],
+        "columnDefs": [
+        {% if request.user.is_superuser %}
+
+          {
+            "targets": 13,
+            "render": function(data, type, row, meta) {
+              return '<a href="/pathology/update_test_report/' + row.id + '/" class="btn btn-primary btn-icon-split"><span class="icon text-white-50"><i class="fas fa-arrow-right"></i></span><span class="text">Edit</span></a>';
+            }
+          },
+          {
+            "targets": 14,
+            "render": function(data, type, row, meta) {
+              return '<a href="/pathology/delete_test_report/' + row.id + '/" class="btn btn-danger btn-icon-split"><span class="icon text-white-50"><i class="fas fa-trash"></i></span><span class="text">Delete</span></a>';
+            }
+          },
+          {% else %}
+          {
+            "targets": 13,
+            "render": function(data, type, row, meta) {
+              return '<a href="/pathology/update_test_report/' + row.id + '/" class="btn btn-primary btn-icon-split"><span class="icon text-white-50"><i class="fas fa-arrow-right"></i></span><span class="text">Edit</span></a>';
+            }
+          },
+
+          {% endif %}
+
+        ],
+        "paging": true,
+        "searching": true,
+        "lengthChange": false,
+        "dom": 'lfrtip',
+        "buttons": ['copy', 'excel', 'pdf', 'print'],
+      });
+      $('#search_input').on('keyup', function() {
+        table.search(this.value).draw();
+      });
+
+     
+    }
+  });
+</script>
+{% endif %}
+
 
 {% endblock %} {% block script %} {% endblock %}

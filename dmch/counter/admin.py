@@ -30,7 +30,7 @@ export_to_excel.short_description = "Export to Excel"
 
 class PatientAdmin(admin.ModelAdmin):
     list_display = ('regid', 'user', 'name', 'gender', 'year', 'month', 'days', 'mobno', 'address', 'district', 'policest', 'pincode', 'department', 'doctor', 'visittype', 'revisit', 'revisitid', 'redcardid', 'redcardtype', 'appointment_date', 'custom_visit_charge', 'de')  
-    list_filter = ('name', 'gender', 'mobno', 'address', 'district', 'policest', 'pincode', 'de', 'revisit', 'visittype', 'appointment_date')  
+    list_filter = ('name', 'user', 'gender', 'mobno', 'address', 'district', 'policest', 'pincode', 'de', 'revisit', 'visittype', 'appointment_date')  
     search_fields = ('name','regid')  
     actions = [export_to_excel]  
 

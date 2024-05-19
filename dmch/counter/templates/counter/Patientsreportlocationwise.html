@@ -1,0 +1,100 @@
+{% extends 'counter/base.html' %}
+{% block css %}
+{% endblock %}
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  {% if messages %}
+  {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+  {% endfor %}
+  {% endif %}
+
+  <div class="card py-2" style="display: flex; flex-direction: row; justify-content: space-between; padding-left: 5px; padding-right: 5px">
+    <form action="{% url 'location_wise_report' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+      <div style="flex: 1">
+        <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+      </div>
+      <div style="">
+        <span>-</span>
+      </div>
+      <div style="flex: 1">
+        <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+      </div>
+
+      <div style="flex: 1">
+        <button class="btn btn-primary w-100" type="submit">Filter</button>
+      </div>
+      <div style="flex: 1">
+        <a href="#;" class="btn btn-primary" id="printButton">Print</a>
+      </div>
+    </form>
+  </div>
+
+
+  <div class="card shadow mb-4" id="printablecontent">
+    <div class="card-header py-3" style="    display: flex;
+    flex-direction: column;
+    align-items: center;">
+        <div><h2>Darbhanga Medical College and Hospital</h2></div>
+        <div><h3>Laherisarai Darbhanga</h3></div>
+        <div><h3>Registration Counter</h3></div>
+        {% if start_date_str != None %}
+        <div><h3>Date : {{ start_date_str }}{% if end_date_str != None %}{% if end_date_str != 'None' %} - {{end_date_str}}{% endif %}{% endif %} </h3>  </div>
+        {% endif %}
+    </div>
+
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>Sl No.</th>
+              <th>Department</th>
+              <th>Total Patients</th>
+              <th>Total Amount</th>
+             
+            </tr>
+          </thead>
+          <tbody>
+            {% for user_data in users_with_patients %}
+            <tr>
+             <td>{{forloop.counter}}</td>
+              <td>{% if user_data.main_department %}{{ user_data.main_department }}{% endif %}</td>
+              <td>{{ user_data.total_patients }}</td>
+              <td>Rs {{ user_data.total_amount }} /-</td>
+            </tr>
+              {% endfor %}
+          </tbody>
+        </table>
+        
+        <div class="card-footer py-3" style="">
+            <div><h4>Total Patient : {{total_patient}}</h4></div>
+            <div><h4>Unpaid Patient : {{total_patient_count_non_price}}</h4></div>
+            <div><h4>Total Amount : Rs {{total_patient_amount}}/-</h4></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+{% block script %}
+<script>
+  $(document).ready(function () {
+    // Function to handle printing
+    $("#printButton").click(function () {
+      // Show the hidden print content
+      // Print only the content inside the printContent div
+      var printContents = $("#printablecontent").html();
+      var originalContents = $("body").html();
+      $("body").empty().html(printContents);
+
+      // Trigger the print dialog
+      window.print();
+      $("body").html(originalContents);
+    });
+  });
+</script>
+{% endblock %}

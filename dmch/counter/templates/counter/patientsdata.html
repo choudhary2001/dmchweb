@@ -56,10 +56,10 @@
               <th>Re Visit</th>
               <th>Appointment Date</th>
               {% if request.user.is_superuser %}
-              <th>Edit</th>
-              <th>Delete</th>
+                <th>Edit</th>
+                <th>Delete</th>
               {% else %}
-              <th>View</th>
+                <th>View</th>
               {% endif %}
             </tr>
           </thead>
@@ -83,7 +83,6 @@
             </tr>
           </tfoot>
           {% if end_date_str != None or start_date_str != None %}
-
           <tbody>
             {% for d in patients %}
             <tr>
@@ -127,7 +126,6 @@
             {% endfor %}
           </tbody>
           {% endif %}
-  
         </table>
       </div>
     </div>

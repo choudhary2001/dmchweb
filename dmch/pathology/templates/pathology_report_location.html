@@ -1,4 +1,11 @@
-{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+{% extends 'counter/base.html' %} {% block css %} 
+<style>
+    td, tr {
+        font-size: 0.75rem !important;
+        line-height: 0.5rem;
+    }
+</style>
+{% endblock %} {% block content %}
 <!-- Begin Page Content -->
 <div class="container-fluid">
   <!-- Page Heading -->
@@ -18,7 +25,7 @@
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <form action="{% url 'patient_registration_view_print' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+      <form action="{% url 'pathology_report' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
         <div style="flex: 1">
           <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
         </div>
@@ -29,19 +36,6 @@
           <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
         </div>
 
-        <div style="flex: 3">
-          <select name="department" class="form-control mb-2 mb-md-0">
-            <option>Select Department</option>
-            <option value="All">All</option>
-            {% for d in departments %}
-            <option value="{{d.department_id}}">{{d.name}}</option>
-            {% endfor %}
-            <!-- <option value="MOPD">MOPD</option>
-            <option value="EOPD">EOPD</option>
-            <option value="ChildEOPD">ChildEOPD</option> -->
-          </select>
-        </div>
-       
         <div style="flex: 1">
           <button class="btn btn-primary w-100" type="submit">Filter</button>
         </div>
@@ -52,49 +46,33 @@
       </form>
     </div>
     <div class="card-body" id="printablecontent">
+        <div class="card-header py-3" style="    display: flex;
+        flex-direction: column;
+        align-items: center;">
+            <div><h2>Darbhanga Medical College and Hospital</h2></div>
+            <div><h3>Pathology Department</h3></div>
+            
+        </div>
       <div class="table-responsive">
         <table class="table table-bordered"  width="100%" cellspacing="0">
           <thead>
-            <tr>
-              <th>Reg No.</th>
-              <th>Name</th>
-              <th>Bill No.</th>
-              <th>Lab No.</th>
-              <th>Department</th>
-              <th>Refer By</th>
-              <th>Test Name</th>
-              <th>Date</th>
-            
-            </tr>
-          </thead>
-          <tfoot>
-            <tr>
-                <th>Reg No.</th>
-                <th>Name</th>
-                <th>Bill No.</th>
-                <th>Lab No.</th>
-                <th>Department</th>
-                <th>Refer By</th>
-                <th>Test Name</th>
-                <th>Date</th>
-             
-            </tr>
-          </tfoot>
-          <tbody>
-            {% for d in patients %}
-            <tr>
-              <td>{% if d.reg_no %}{% if d.reg_no.de == 'Pathology' %}{{d.reg_no.regnoid}}{% else %}{{d.reg_no.regid}}{% endif %}{% endif %}</td>
-              <td>{{d.reg_no.name}}</td>
-              <td>{{d.bill_no}}</td>
-              <td>{{d.lab_no}}</td>
-              <td>{{d.department.name}}</td>
-              <td>{{d.referby.name}}</td>
-              <td>{% if d.test_name %}{{d.test_name}}{% endif %}</td>
-              <td>{{d.date}}</td>
-              
-            </tr>
-            {% endfor %}
-          </tbody>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Department</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in report_data %}
+                    <tr>
+                        <td>{{ report.date }}</td>
+                        <td>{{ report.department }}</td>
+                        <td>{{ report.category }}</td>
+                        <td>{{ report.count }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
         </table>
       </div>
     </div>
