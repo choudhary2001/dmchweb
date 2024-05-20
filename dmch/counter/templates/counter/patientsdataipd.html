@@ -24,7 +24,7 @@
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <form action="{% url 'show_patients' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+      <form action="" method="get" style="display: flex; flex-wrap: wrap; gap: 10px" id="filterForm" >
         <div style="flex: 1">
           <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
         </div>
@@ -137,7 +137,10 @@
         table.search(this.value).draw();
       });
 
-     
+      $('#filterForm').on('submit', function(e) {
+        e.preventDefault();
+        table.ajax.reload();
+      });
     }
   });
 </script>

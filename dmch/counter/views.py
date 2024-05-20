@@ -485,6 +485,34 @@ def show_patients_data(request):
         elif end_date:
             patients = patients.filter(appointment_date__lt=end_date)
         
+                
+        non_price = 0
+        red_card_total = 0
+        rb_case_total = 0
+        unkown_total = 0
+        free_total = 0
+        revisit_total = 0
+        for p in patients:
+            if p.visittype == 'Unknown':
+                unkown_total += 1
+            if p.visittype == 'Free':
+                free_total += 1
+            if p.redcard in [True, 'true']:  
+                if p.redcardtype == 'Red Card':
+                    red_card_total += 1
+                if p.redcardtype == 'RB Case':
+                    rb_case_total += 1
+            if p.revisit == 'Revisit':
+                revisit_total += 1
+
+
+        non_price = red_card_total + rb_case_total + unkown_total + free_total + revisit_total
+        # Count the total number of patients
+        total = patients.count()
+
+        total_amount = (int(total) * 5) - (non_price * 5)
+
+
         # Pagination
         page = request.GET.get('draw', 1)
         paginator = Paginator(patients, 10)  # Show 10 patients per page
@@ -532,6 +560,7 @@ def show_patients_data(request):
 
         p = Profile.objects.filter(user_role = 'Registration').all()
         registration_profiles = Profile.objects.filter(user_role='Registration')
+        visittype_counts = patients.values('visittype').annotate(total_count=Count('visittype')).order_by()
     
         data = {
             'patients': patients_data,
@@ -540,7 +569,17 @@ def show_patients_data(request):
             'draw': request.GET.get('draw'),  # Echo back the draw parameter
             'recordsTotal': paginator.count,  # Total records without filtering
             'recordsFiltered': paginator.count,  # Total records after filtering (for now)
-            'data': patients_data
+            'data': patients_data,
+            'total_amount' : total_amount,
+            'current_time_kolkata' : current_time_kolkata,
+            'redcard' : red_card_total,
+            'rbcase': rb_case_total,
+            'free_total' : free_total,
+            'revisit_total' : revisit_total,
+            'start_date_str' : start_date_str,
+            'end_date_str' : end_date_str,
+            'visittype_counts': visittype_counts,
+
         }
         return JsonResponse(data)
     else:
@@ -1214,8 +1253,6 @@ def location_wise_report(request):
         logout(request)
         return redirect('signin') 
     
-
-
 
 @login_required
 def department_wise_report(request):

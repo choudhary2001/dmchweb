@@ -55,6 +55,7 @@
             <tr>
                 <th>Reg No.</th>
                 <th>Name</th>
+                <th>Test Name</th>
                 <th>Bill No.</th>
                 <th>Lab No.</th>
                 <th>Department</th>
@@ -71,6 +72,7 @@
             <tr>
                 <th>Reg No.</th>
                 <th>Name</th>
+                <th>Test Name</th>
                 <th>Bill No.</th>
                 <th>Lab No.</th>
                 <th>Department</th>
@@ -88,6 +90,7 @@
             <tr>
               <td>{% if d.reg_no %}{% if d.reg_no.de == 'Pathology' %}{{d.reg_no.regnoid}}{% else %}{{d.reg_no.regid}}{% endif %}{% endif %}</td>
               <td>{{d.reg_no.name}}</td>
+              <td>{{d.patient.test_name}}</td>
               <td>{{d.patient.bill_no}}</td>
               <td>{{d.patient.lab_no}}</td>
               <td>{{d.patient.department.name}}</td>

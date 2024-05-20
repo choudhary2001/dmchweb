@@ -395,7 +395,13 @@ def patient_registration_view_data(request):
         else:
             end_date = None
 
-        tr = Patient_registration.objects.all().order_by('-created_at')
+        if request.user.is_superuser:
+            tr = Patient_registration.objects.all().order_by('-created_at')
+        else:
+            tr = Patient_registration.objects.filter(user = request.user).order_by('-created_at')
+
+
+        # tr = Patient_registration.objects.all().order_by('-created_at')
 
         search_query = request.GET.get('searchValue')
 
@@ -2260,11 +2266,107 @@ for category in categories:
     for subcategory in category["subcategories"]:
         test_to_category[subcategory] = category["category"]
 
+# @login_required
+# def pathology_report(request):
+#     if request.user.is_superuser or request.session.get('user_role') == 'Pathology':
+#         start_date_str = request.GET.get('start_date', None)
+#         end_date_str = request.GET.get('end_date', None)
+#         department_id = request.GET.get('department', None)
+#         test_name_id = request.GET.get('test_name', None)
+
+#         if start_date_str:
+#             start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+#         else:
+#             start_date = None
+
+#         if end_date_str:
+#             end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Include records for the entire end day
+#         else:
+#             end_date = None
+
+#         print("Start Date:", start_date)
+#         print("End Date:", end_date)
+
+#         # Retrieve all test names
+#         all_test_names = Patient_registration.objects.values_list('test_name', flat=True)
+    
+#         # Initialize an empty set to store unique test names
+#         unique_test_names = set()
+        
+#         for test_names in all_test_names:
+#             if test_names:
+#                 # Split the test names by spaces and add to the set
+#                 test_name_list = test_names.split()
+#                 unique_test_names.update(test_name_list)
+        
+#         print("Unique test names:", unique_test_names)
+        
+#         # Initialize a nested dictionary to store counts by date, department, and test name
+#         report_data = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+
+#         # Filter Test_reports by date range
+#         test_reports = Test_report.objects.all()
+#         if start_date and end_date:
+#             test_reports = test_reports.filter(created_at__range=(start_date, end_date))
+#         elif start_date:
+#             test_reports = test_reports.filter(created_at__gte=start_date)
+#         elif end_date:
+#             test_reports = test_reports.filter(created_at__lte=end_date)
+        
+#         print("Filtered test reports:", test_reports)
+
+#         if start_date_str or end_date_str or department_id or test_name_id:
+
+#             for test_report in test_reports:
+#                 report_date = test_report.created_at.strftime('%Y-%m-%d')
+#                 report_date_datetime = datetime.strptime(report_date, '%Y-%m-%d')
+                
+#                 if start_date is None or report_date_datetime >= start_date:
+#                     report_department = test_report.patient.department.name if test_report.patient.department else 'Unknown'
+#                     test_names = test_report.patient.test_name.split() if test_report.patient.test_name else []
+                    
+#                     for test_name in test_names:
+#                         report_data[report_date][report_department][test_name] += 1
+            
+            
+#             print("Report data:")
+#             for date, departments in report_data.items():
+#                 for department, tests in departments.items():
+#                     for test, count in tests.items():
+#                         print(f"Date: {date}, Department: {department}, Test: {test}, Count: {count}")
+                    
+#             prepared_report_data = []
+#             for date, departments in report_data.items():
+#                 for department, tests in departments.items():
+#                     for test, count in tests.items():
+#                         category = test_to_category.get(test, "Unknown")
+#                         prepared_report_data.append({
+#                             'date': date,
+#                             'department': department,
+#                             'test_name': test,
+#                             'count': count,
+#                             'category': category
+#                         })
+            
+#             print("Prepared report data:", prepared_report_data)
+#             prepared_report_data.sort(key=lambda x: (x['date'], x['department'], x['category']))
+#         else:
+#             prepared_report_data = {}
+#         pd = PathologyDepartment.objects.all().order_by('name')
+#         return render(request, 'pathology_report.html', {'report_data': prepared_report_data, 'title': 'Pathology Report', 'unique_test_names':unique_test_names, 'departments' : pd})
+#     else:
+#         logout(request)
+#         return redirect('signin')
+
+
+
 @login_required
 def pathology_report(request):
     if request.user.is_superuser or request.session.get('user_role') == 'Pathology':
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
+        department_id = request.GET.get('department', None)
+        test_name_id = request.GET.get('test_name', None)
 
         if start_date_str:
             start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
@@ -2288,7 +2390,7 @@ def pathology_report(request):
         for test_names in all_test_names:
             if test_names:
                 # Split the test names by spaces and add to the set
-                test_name_list = test_names.split()
+                test_name_list = test_names.lower().split()
                 unique_test_names.update(test_name_list)
         
         print("Unique test names:", unique_test_names)
@@ -2304,10 +2406,16 @@ def pathology_report(request):
             test_reports = test_reports.filter(created_at__gte=start_date)
         elif end_date:
             test_reports = test_reports.filter(created_at__lte=end_date)
-        
-        print("Filtered test reports:", test_reports)
 
-        if start_date_str or end_date_str:
+        if department_id and department_id != 'All':
+            test_reports = test_reports.filter(patient__department__department_id=department_id)
+        
+        if test_name_id and test_name_id != 'All':
+            test_reports = test_reports.filter(patient__test_name__icontains=test_name_id)
+
+        print("Filtered test reports:", test_reports)
+        total = 0
+        if start_date_str or end_date_str or department_id or test_name_id:
 
             for test_report in test_reports:
                 report_date = test_report.created_at.strftime('%Y-%m-%d')
@@ -2315,11 +2423,17 @@ def pathology_report(request):
                 
                 if start_date is None or report_date_datetime >= start_date:
                     report_department = test_report.patient.department.name if test_report.patient.department else 'Unknown'
-                    test_names = test_report.patient.test_name.split() if test_report.patient.test_name else []
+                    
+                    test_names = test_report.patient.test_name.lower().split() if test_report.patient.test_name else []
                     
                     for test_name in test_names:
-                        report_data[report_date][report_department][test_name] += 1
-            
+                        if test_name_id and test_name_id != 'All':
+                            if test_name_id == test_name:
+                                report_data[report_date][report_department][test_name] += 1
+                                total += 1
+                        else:
+                            report_data[report_date][report_department][test_name] += 1
+                            total += 1
             
             print("Report data:")
             for date, departments in report_data.items():
@@ -2344,7 +2458,8 @@ def pathology_report(request):
             prepared_report_data.sort(key=lambda x: (x['date'], x['department'], x['category']))
         else:
             prepared_report_data = {}
-        return render(request, 'pathology_report.html', {'report_data': prepared_report_data, 'title': 'Pathology Report'})
+        pd = PathologyDepartment.objects.all().order_by('name')
+        return render(request, 'pathology_report.html', {'report_data': prepared_report_data, 'title': 'Pathology Report', 'unique_test_names':unique_test_names, 'departments' : pd, 'total' : total, 'start_date_str' : start_date_str, 'end_date_str' : end_date_str})
     else:
         logout(request)
         return redirect('signin')
@@ -2355,6 +2470,8 @@ def pathology_report_location_wise(request):
     if request.user.is_superuser or request.session.get('user_role') == 'Pathology':
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
+        department_id = request.GET.get('department', None)
+        category_id = request.GET.get('category', None)
 
         if start_date_str:
             start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
@@ -2369,6 +2486,19 @@ def pathology_report_location_wise(request):
         print("Start Date:", start_date)
         print("End Date:", end_date)
 
+        all_test_names = Patient_registration.objects.values_list('test_name', flat=True)
+    
+        # Initialize an empty set to store unique test names
+        unique_test_names = set()
+        
+        for test_names in all_test_names:
+            if test_names:
+                # Split the test names by spaces and add to the set
+                test_name_list = test_names.lower().split()
+                unique_test_names.update(test_name_list)
+        
+        print("Unique test names:", unique_test_names)
+        
         # Initialize a nested dictionary to store counts by date, department, and category
         report_data = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
 
@@ -2377,26 +2507,93 @@ def pathology_report_location_wise(request):
         if start_date and end_date:
             test_reports = test_reports.filter(created_at__range=(start_date, end_date))
         elif start_date:
-            test_reports = test_reports.filter(created_at__gte=(start_date))
+            test_reports = test_reports.filter(created_at__gte=start_date)
         elif end_date:
-            test_reports = test_reports.filter(created_at__lte=(end_date))
+            test_reports = test_reports.filter(created_at__lte=end_date)
         
-        print("Filtered test reports:", test_reports)
+        if department_id and department_id != 'All':
+            test_reports = test_reports.filter(patient__department__department_id=department_id)
+        
+        # Define the categories and subcategories
+        categories = [
+            {
+                "category": "Immuno Assay (Thyroid)",
+                "subcategories": [
+                    "TSH", "T3", "T4", "FT3", "FT4", "LH", "FSH",
+                    "Prolectin", "CA-125", "PSA", "Anti CCP",
+                    "Vitamin B12", "Vitamin D3", "AMH"
+                ]
+            },
+            {
+                "category": "Hematology",
+                "subcategories": ["CBC", "HbA1c", "ESR", "BT", "CT", "MP"]
+            },
+            {
+                "category": "Serology",
+                "subcategories": [
+                    "HIV", "HBSAg", "HCV", "Widal", "Malaria",
+                    "Dengue Test", "Typhoid Test", "VDRL", "RPR"
+                ]
+            },
+            {
+                "category": "Cytopathology",
+                "subcategories": ["PAP Smear", "FNAC", "CSF", "Pleural Fluid", "Ascitic Fluid"]
+            },
+            {
+                "category": "Histopathology",
+                "subcategories": ["Biopsy"]
+            },
+            {
+                "category": "Bio-Chemistry",
+                "subcategories": [
+                    "Sugar", "B. Urea", "S. Creatinine", "S. Uric Acid",
+                    "D. Bilirubin", "T. Bilirubin", "SGPT (ALT)",
+                    "SGOT (AST)", "T. Protein", "Albumin", "ALP", "GGT",
+                    "Cholesterol", "TGL", "HDL", "LDL", "VLDL", "CRP",
+                    "ASO", "RA Factor", "Amylase", "Lipase", "HbA1c",
+                    "Calcium", "S. Electrolytes", "Ferritin", "Acid Phosphatase",
+                    "Iron", "TIBC (Total Iron Binding Capacity)",
+                    "Magnesium", "Phosphorous", "CPK", "CK-MB", "CK-NAC", "LFT", "KFT", "TLP"
+                ]
+            }
+        ]
 
-        if start_date_str or end_date_str:
+        # Create a dictionary mapping test names to categories
+        test_to_category = {}
+        for category in categories:
+            for subcategory in category["subcategories"]:
+                test_to_category[subcategory.lower()] = category["category"].lower()
+
+        print("Filtered test reports:", test_reports)
+        total = 0
+        if start_date_str or end_date_str or department_id or category_id:
+            # Normalize category_id to lowercase
+            category_id = category_id.lower() if category_id else None
+
             # Aggregate counts
             for test_report in test_reports:
                 report_date = test_report.created_at.strftime('%Y-%m-%d')
                 report_date_datetime = datetime.strptime(report_date, '%Y-%m-%d')
                 
                 if start_date is None or report_date_datetime >= start_date:
-                    report_department = test_report.patient.department.name if test_report.patient.department else 'Unknown'
-                    test_names = test_report.patient.test_name.split() if test_report.patient.test_name else []
-                    
+                    report_department = test_report.patient.department.name if test_report.patient.department else ''
+                    test_names = test_report.patient.test_name.lower().split() if test_report.patient.test_name else []
+
+                    # Track if any test name in the report matches the category
+                    category_matched = False
                     for test_name in test_names:
-                        category = test_to_category.get(test_name, "Unknown")
-                        report_data[report_date][report_department][category] += 1
-            
+                        category = test_to_category.get(test_name, "unknown")
+                        if category_id and category_id != 'all':
+                            if category_id == category:
+                                category_matched = True
+                        else:
+                            report_data[report_date][report_department][category] += 1
+                            total += 1
+                    
+                    if category_matched:
+                        report_data[report_date][report_department][category_id] += 1
+                        total += 1
+
             print("Report data:")
             for date, departments in report_data.items():
                 for department, categories in departments.items():
@@ -2418,7 +2615,9 @@ def pathology_report_location_wise(request):
             prepared_report_data.sort(key=lambda x: (x['date'], x['department'], x['category']))
         else:
             prepared_report_data = {}
-        return render(request, 'pathology_report_location.html', {'report_data': prepared_report_data, 'title': 'Pathology Report'})
+        pd = PathologyDepartment.objects.all().order_by('name')
+        
+        return render(request, 'pathology_report_location.html', {'report_data': prepared_report_data, 'title': 'Pathology Report', 'departments' : pd, 'total' : int(total), 'start_date_str' : start_date_str, 'end_date_str' : end_date_str})
     else:
         logout(request)
         return redirect('signin')

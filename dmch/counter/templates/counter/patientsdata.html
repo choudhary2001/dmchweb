@@ -24,7 +24,8 @@
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <form action="{% url 'show_patients' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+      <!-- id="filterForm" -->
+      <form action="{% url 'show_patients' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px"  >
         <div style="flex: 1">
           <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
         </div>
@@ -132,6 +133,7 @@
   </div>
 </div>
 
+
 {% if end_date_str == None or start_date_str == None %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery -->
 <script src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.min.js"></script> <!-- Include DataTables -->
@@ -147,10 +149,10 @@
           "type": "GET",
           "dataSrc": "patients",
           "data": function(d) {
-                d.searchValue = $('#dataTable_filter input').val(); 
-                d.start_date = $('#start_date').val(); // Get start date value
-                d.end_date = $('#end_date').val(); // Get search value from DataTable search input
-            }// Key containing the array of data objects
+            d.searchValue = $('#dataTable_filter input').val(); 
+            d.start_date = $('#start_date').val(); // Get start date value
+            d.end_date = $('#end_date').val(); // Get end date value
+          }
         },
         "columns": [
           {"data": "regid"},
@@ -171,35 +173,26 @@
         ],
         "columnDefs": [
         {% if request.user.is_superuser %}
-
           {
-            // Define the column index for the edit link
-            "targets": 9, // Assuming the edit link is at index 7 (adjust as needed)
+            "targets": 9, 
             "render": function(data, type, row, meta) {
-              // Render the edit link
               return '<a href="/update-patients/' + row.regid + '" class="btn btn-primary btn-icon-split"><span class="icon text-white-50"><i class="fas fa-arrow-right"></i></span><span class="text">Edit</span></a>';
             }
           },
           {
-            // Define the column index for the edit link
-            "targets": 10, // Assuming the edit link is at index 7 (adjust as needed)
+            "targets": 10, 
             "render": function(data, type, row, meta) {
-              // Render the edit link
               return '<a href="/delete-patients/' + row.regid + '" class="btn btn-danger btn-icon-split"><span class="icon text-white-50"><i class="fas fa-trash"></i></span><span class="text">Delete</span></a>';
             }
           },
           {% else %}
           {
-            // Define the column index for the edit link
-            "targets": 9, // Assuming the edit link is at index 7 (adjust as needed)
+            "targets": 9, 
             "render": function(data, type, row, meta) {
-              // Render the edit link
-              return '<a href="/update-patients/' + row.regid + '" class="btn btn-primary btn-icon-split"><span class="icon text-white-50"><i class="fas fa-arrow-right"></i></span><span class="text">Edit</span></a>';
+              return '<a href="/update-patients/' + row.regid + '" class="btn btn-primary btn-icon-split"><span class="icon text-white-50"><i class="fas fa-arrow-right"></i></span><span class="text">View</span></a>';
             }
           },
-
           {% endif %}
-
         ],
         "paging": true, // Enable pagination
         "searching": true, // Enable search feature
@@ -210,11 +203,13 @@
       $('#search_input').on('keyup', function() {
         table.search(this.value).draw();
       });
-
      
+      $('#filterForm').on('submit', function(e) {
+        e.preventDefault();
+        table.ajax.reload();
+      });
     }
   });
 </script>
 {% endif %}
-
 {% endblock %} {% block script %} {% endblock %}
