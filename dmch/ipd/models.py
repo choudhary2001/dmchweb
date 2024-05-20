@@ -42,6 +42,7 @@ class Patient_Admission(models.Model):
     patient = models.ForeignKey(Patient, on_delete = models.SET_NULL, blank = True, null =True)
 
     regno = models.CharField(max_length=100, unique = True)
+    dr_reg_no = models.CharField(max_length = 255, blank = True, null = True, unique= True)
     name = models.CharField(max_length=255,blank = True, null = True)
     guardiannametitle = models.CharField(max_length=100,blank = True, null = True)
     guardianname = models.CharField(max_length=255)
@@ -60,6 +61,8 @@ class Patient_Admission(models.Model):
     discharge = models.BooleanField(default=False)
     death = models.CharField(max_length=20, blank = True, null = True)
     lama = models.CharField(max_length=20, blank = True, null = True)
+
+    remark = models.CharField(max_length = 355, blank = True, null = True)
 
     appointment_date = models.DateTimeField(blank = True, null = True)
     discharge_date = models.DateTimeField(blank = True, null = True)

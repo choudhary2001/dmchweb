@@ -10,7 +10,7 @@
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card py-2" style="display: flex; flex-direction: row; justify-content: space-between; padding-left: 5px; padding-right: 5px">
-      <form action="{% url 'product_consumption_details_view_print' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+      <form action="{% url 'product_details_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
         <div style="flex: 1">
           <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
         </div>
@@ -41,41 +41,28 @@
       </form>
     </div>
     <div class="card-body" id="printablecontent">
+        <div class="card-header py-3" style="    display: flex;
+        flex-direction: column;
+        align-items: center;">
+            <div><h2>Darbhanga Medical College and Hospital</h2></div>
+            <div><h3>{{request.session.user_role}}</h3></div>
+            <div><h3>Stock Report</h3></div>
+          
+        </div>
       <div class="table-responsive">
         <table class="table table-bordered" width="100%" cellspacing="0">
           <thead>
             <tr>
-                <th>Department</th>
-                <th>Transfer To</th>
-                <th>Name</th>
-                <th>Company Name</th>
-                <th>Quantity</th>
-                <!-- <th>In Stock</th> -->
-                <th>Created At</th>
+              <th>Name</th>
+              <th>Quantity</th>
             </tr>
           </thead>
-          <tfoot>
-            <tr>
-              <th>Department</th>
-              <th>Transfer To</th>
-              <th>Name</th>
-              <th>Company Name</th>
-              <th>Quantity</th>
-              <!-- <th>In Stock</th> -->
-              <th>Created At</th>
-            </tr>
-          </tfoot>
+
           <tbody>
             {% for d in products %}
             <tr>
-              <td>{{d.sdepartment.name}}</td>
-              <td>{{d.department}}</td>
               <td>{{d.product_name}}</td>
-              <td>{{d.company_name}}</td>
               <td>{{d.quantity}}</td>
-              <!-- <td>{{d.stock_quantity}}</td> -->
-              <td>{{d.created_at}}</td>
-              
             </tr>
             {% endfor %}
           </tbody>

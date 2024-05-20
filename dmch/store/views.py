@@ -91,14 +91,14 @@ def product_add_view(request):
         if request.method == 'POST':
             # Extract data from the form
             print(request.POST)
-            date = request.POST.get('date')
-            bill_no = request.POST.get('bill_no')
-            chalan_no = request.POST.get('chalan_no')
-            bill_date = request.POST.get('bill_date')
-            chalan_date = request.POST.get('chalan_date')
-            sp_order_no = request.POST.get('sp_order_no')
-            sp_order_date = request.POST.get('sp_order_date')
-            received_date = request.POST.get('received_date')
+            date = request.POST.get('date', None)
+            bill_no = request.POST.get('bill_no', None)
+            chalan_no = request.POST.get('chalan_no', None)
+            bill_date = request.POST.get('bill_date', None)
+            chalan_date = request.POST.get('chalan_date', None)
+            sp_order_no = request.POST.get('sp_order_no', None)
+            sp_order_date = request.POST.get('sp_order_date', None)
+            received_date = request.POST.get('received_date', None)
 
 
             # Loop through the product form fields
@@ -111,19 +111,25 @@ def product_add_view(request):
                 product = Product.objects.create(
                     user = request.user,
                     sdepartment=d,
-                    created_at = date,
                     product_name = product_name,
                     company_name=company_name,
                     quantity=quantity,
                     stock_quantity = quantity,
                     bill_no = bill_no,
                     chalan_no = chalan_no,
-                    bill_date = bill_date,
-                    chalan_date = chalan_date,
                     sp_order_no = sp_order_no,
-                    sp_order_date = sp_order_date,
-                    received_date = received_date,
                 )
+                if date:
+                    product.created_at = date
+                if bill_date:
+                    product.bill_date = bill_date
+                if chalan_date:
+                    product.chalan_date = chalan_date
+                if sp_order_date:
+                    product.sp_order_date = sp_order_date
+                if received_date:
+                    product.received_date = received_date
+                product.save()
             request.session['add_product_date'] = date
             request.session['received_date'] = received_date
             
@@ -142,6 +148,72 @@ def product_add_view(request):
         logout(request)
         return redirect('signin') 
 
+@login_required
+def product_update_view(request, product_id):
+    departpment = request.session['user_role']
+    d = StoreDepartment.objects.filter(name = departpment).first()
+    if request.user.is_superuser or d is not None:
+        supply = get_object_or_404(Product, product_id=product_id)
+        if request.method == 'POST':
+            # Extract data from the form
+            print(request.POST)
+            date = request.POST.get('date', None)
+            bill_no = request.POST.get('bill_no', None)
+            chalan_no = request.POST.get('chalan_no', None)
+            bill_date = request.POST.get('bill_date', None)
+            chalan_date = request.POST.get('chalan_date', None)
+            sp_order_no = request.POST.get('sp_order_no', None)
+            sp_order_date = request.POST.get('sp_order_date', None)
+            received_date = request.POST.get('received_date', None)
+
+
+            # Loop through the product form fields
+            for i in range(1, int(request.POST.get('product_count')) + 1):
+                product_id = request.POST.get(f'product_id_{i}')
+                product_name = request.POST.get(f'product_name_{i}')
+                company_name = request.POST.get(f'company_name_{i}')
+                quantity = request.POST.get(f'quantity_{i}')
+                stock_quantity = request.POST.get(f'stock_quantity_{i}')
+
+
+                product = Product.objects.filter(product_id = product_id).first()
+                product.product_name = product_name
+                product.company_name=company_name
+                product.quantity=quantity
+                product.stock_quantity = stock_quantity
+                product.bill_no = bill_no
+                product.chalan_no = chalan_no
+                product.sp_order_no = sp_order_no
+                
+                if date:
+                    product.created_at = date
+                if bill_date:
+                    product.bill_date = bill_date
+                if chalan_date:
+                    product.chalan_date = chalan_date
+                if sp_order_date:
+                    product.sp_order_date = sp_order_date
+                if received_date:
+                    product.received_date = received_date
+                product.save()
+            request.session['add_product_date'] = date
+            request.session['received_date'] = received_date
+            
+
+            messages.success(request, 'Updated Successfully')
+            return redirect(f'/store/update-products/{product.product_id}/')
+
+        d = StoreDepartment.objects.all().order_by('-created_at')
+        p = Product.objects.all().order_by('-created_at')
+        context = {
+            'title' : 'Update Product',
+            'department' : d,
+            'product' : supply,
+        }
+        return render(request, 'store/update_product.html', context=context)
+    else:
+        logout(request)
+        return redirect('signin') 
 
 @login_required
 def product_delete_view(request, product_id):
@@ -170,7 +242,7 @@ def product_details_view(request):
         if start_date_str:
             # start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
             start_date = start_date_str
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
 
         else:
             start_date = None
@@ -178,7 +250,7 @@ def product_details_view(request):
         if end_date_str:
             # end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
             end_date = end_date_str
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M') + timedelta(days=1)  # Add one day to include end_date
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Add one day to include end_date
 
             # Adjust the end date to include all records for that day
             # end_date = end_date + timedelta(days=1)  # Include records for the entire day
@@ -189,7 +261,7 @@ def product_details_view(request):
         if request.user.is_superuser:
             p = Product.objects.all().order_by('-created_at')
         else:
-            p = Product.objects.filter(user=request.user, sdepartment = d).order_by('-created_at')
+            p = Product.objects.filter(sdepartment = d).order_by('-created_at')
 
         if start_date and end_date:
             # end_date = end_date + timedelta(days=1) 
@@ -241,7 +313,7 @@ def supply_details_view_print(request):
         if start_date_str:
             # start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
             start_date = start_date_str
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
 
         else:
             start_date = None
@@ -249,7 +321,7 @@ def supply_details_view_print(request):
         if end_date_str:
             # end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
             end_date = end_date_str
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M') + timedelta(days=1)  # Add one day to include end_date
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Add one day to include end_date
 
             # Adjust the end date to include all records for that day
             # end_date = end_date + timedelta(days=1)  # Include records for the entire day
@@ -260,7 +332,7 @@ def supply_details_view_print(request):
         if request.user.is_superuser:
             p = Product.objects.all().order_by('-created_at')
         else:
-            p = Product.objects.filter(user=request.user, sdepartment = d).order_by('-created_at')
+            p = Product.objects.filter( sdepartment = d).order_by('-created_at')
 
         if start_date and end_date:
             # end_date = end_date + timedelta(days=1) 
@@ -294,6 +366,79 @@ def supply_details_view_print(request):
             'departments' : d
         }
         return render(request, 'store/products_print.html', context=context)
+
+    else:
+        logout(request)
+        return redirect('signin') 
+
+
+@login_required
+def product_stock_view_print(request):
+    departpment = request.session['user_role']
+    d = StoreDepartment.objects.filter(name = departpment).first()
+    if request.user.is_superuser or d is not None:
+
+        start_date_str = request.GET.get('start_date')
+        end_date_str = request.GET.get('end_date')
+        department_id = request.GET.get('department')
+        # o = Order.objects.all()
+        # Convert the date strings to datetime objects
+        if start_date_str:
+            # start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
+            start_date = start_date_str
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+
+        else:
+            start_date = None
+
+        if end_date_str:
+            # end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
+            end_date = end_date_str
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Add one day to include end_date
+
+            # Adjust the end date to include all records for that day
+            # end_date = end_date + timedelta(days=1)  # Include records for the entire day
+        else:
+            end_date = None
+        
+        # Filter patients based on the provided date range
+        if request.user.is_superuser:
+            p = Product.objects.all().order_by('-created_at')
+        else:
+            p = Product.objects.filter( sdepartment = d).order_by('-created_at')
+
+        if start_date and end_date:
+            # end_date = end_date + timedelta(days=1) 
+            # start_date = start_date - timedelta(days=1)
+            p = p.filter(created_at__range=(start_date, end_date))
+        elif start_date:
+            # If only start date is provided, include all records for that day
+            next_day = start_date + timedelta(days=1)
+            start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+            end_datetime = start_datetime + timedelta(days=1)
+
+            p = p.filter(created_at__gte=start_datetime, created_at__lt=end_datetime)
+        elif end_date:
+            p = p.filter(created_at__lt=end_date)
+
+        department = None
+        if department_id != None:
+            if department_id != 'All':
+                de = StoreDepartment.objects.filter(department_id = department_id).first()
+                print(de)
+                if de:
+                    p = p.filter(sdepartment = de)
+                    print(p)
+                    department = de.name
+
+
+        d = StoreDepartment.objects.all()
+        context = {
+            'products' : p,
+            'title' : f"Total Supply : {len(p)}",
+            'departments' : d
+        }
+        return render(request, 'store/product_stock.html', context=context)
 
     else:
         logout(request)
@@ -522,7 +667,7 @@ def product_consumption_details_view(request):
         if start_date_str:
             # start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
             start_date = start_date_str
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
 
         else:
             start_date = None
@@ -530,7 +675,7 @@ def product_consumption_details_view(request):
         if end_date_str:
             # end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
             end_date = end_date_str
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M') + timedelta(days=1)  # Add one day to include end_date
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Add one day to include end_date
 
             # Adjust the end date to include all records for that day
             # end_date = end_date + timedelta(days=1)  # Include records for the entire day
@@ -541,7 +686,7 @@ def product_consumption_details_view(request):
         if request.user.is_superuser:
             p = ProductConsumption.objects.all().order_by('-created_at')
         else:
-            p = ProductConsumption.objects.filter(user=request.user, sdepartment = d).order_by('-created_at')
+            p = ProductConsumption.objects.filter(sdepartment = d).order_by('-created_at')
 
         if start_date and end_date:
             # end_date = end_date + timedelta(days=1) 
@@ -593,7 +738,7 @@ def product_consumption_details_view_print(request):
         if start_date_str:
             # start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
             start_date = start_date_str
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M')
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
 
         else:
             start_date = None
@@ -601,7 +746,7 @@ def product_consumption_details_view_print(request):
         if end_date_str:
             # end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
             end_date = end_date_str
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M') + timedelta(days=1)  # Add one day to include end_date
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)  # Add one day to include end_date
 
             # Adjust the end date to include all records for that day
             # end_date = end_date + timedelta(days=1)  # Include records for the entire day
@@ -612,7 +757,7 @@ def product_consumption_details_view_print(request):
         if request.user.is_superuser:
             p = ProductConsumption.objects.all().order_by('-created_at')
         else:
-            p = ProductConsumption.objects.filter(user=request.user, sdepartment = d).order_by('-created_at')
+            p = ProductConsumption.objects.filter( sdepartment = d).order_by('-created_at')
 
         if start_date and end_date:
             # end_date = end_date + timedelta(days=1) 

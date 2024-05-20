@@ -90,7 +90,7 @@ def departments_update(request, department_id):
     
 @login_required
 def departments_delete(request, department_id):
-    if request.user.is_superuser or request.session['user_role'] == 'IPD' :
+    if request.user.is_superuser :
         d = IpdDepartment.objects.filter(department_id =department_id).first()
         d.delete()
         messages.success(request, 'Department deleted successfully.')
@@ -149,7 +149,7 @@ def doctors_update(request, doctor_id):
 
 @login_required
 def doctors_delete(request, doctor_id):
-    if request.user.is_superuser or request.session['user_role'] == 'IPD':
+    if request.user.is_superuser:
         d = IpdDoctor.objects.filter(doctor_id =doctor_id).first()
         d.delete()
         messages.success(request, 'Doctor updated successfully.')
@@ -171,10 +171,20 @@ def get_ipd_doctors_by_department(request):
 @login_required
 def ipd_add_patient(request):
     if request.user.is_superuser or request.session['user_role'] == 'IPD':
+        current_time_utc = timezone.now()
+        # request.session['user_role'] = 'Registration'
+
+        # Get the Kolkata timezone
+        kolkata_timezone = pytz.timezone('Asia/Kolkata')
+
+        # Convert the current time to Kolkata timezone
+        current_time_kolkata = current_time_utc.astimezone(kolkata_timezone)
+        current_date = current_time_kolkata.date()
 
         if request.method == 'POST':
             try:
                 regid = request.POST.get('regid')
+                drregid = request.POST.get('drregid')
                 name = request.POST.get('name')
                 guardiannametitle = request.POST.get('guardiannametitle')
                 guardianname = request.POST.get('guardianname')
@@ -215,6 +225,7 @@ def ipd_add_patient(request):
                     user = request.user,
                     patient = p,
                     regno = regid,
+                    dr_reg_no = drregid,
                     name=name,
                     guardiannametitle=guardiannametitle,
                     guardianname=guardianname,
@@ -392,12 +403,21 @@ def delete_patients(request, pk):
 @login_required
 def ipd_discharge_patient(request):
     if request.user.is_superuser or request.session['user_role'] == 'IPD':
+        current_time_utc = timezone.now()
+        # request.session['user_role'] = 'Registration'
 
+        # Get the Kolkata timezone
+        kolkata_timezone = pytz.timezone('Asia/Kolkata')
+
+        # Convert the current time to Kolkata timezone
+        current_time_kolkata = current_time_utc.astimezone(kolkata_timezone)
+        current_date = current_time_kolkata.date()
         if request.method == 'POST':
             try:
                 regid = request.POST.get('regid')
                 death = request.POST.get('death')
                 lama = request.POST.get('lama')
+                refers = request.POST.get('refers')
                 discharge_date = request.POST.get('discharge_date')
                 print(death, lama, discharge_date)
 
@@ -407,6 +427,7 @@ def ipd_discharge_patient(request):
                
                 pd.lama= lama
                 pd.death = death
+                pd.remark = refers
                 pd.save()
 
                 messages.success(request, 'Patient Discharged Successfully')

@@ -416,7 +416,7 @@
       // Filter select options based on search value
       selectOptions.each(function () {
         var productName = $(this).data('product-name') || '';
-        if (productName.toLowerCase().includes(searchValue) && $(this).val() !== "") {
+        if (productName.toLowerCase().startsWith(searchValue) && $(this).val() !== "") {
           var batchNo = $(this).data('batch-no') || 'N/A';
           var mfgName = $(this).data('mfg-name') || 'N/A';
           var mfgDate = $(this).data('mfg-date') || 'N/A';
@@ -558,7 +558,7 @@
       // Filter select options based on search value
       selectOptions.each(function () {
         var productName = $(this).data('product-name') || '';
-        if (productName.toLowerCase().includes(searchValue) && $(this).val() !== "") {
+        if (productName.toLowerCase().startsWith(searchValue) && $(this).val() !== "") {
           var batchNo = $(this).data('batch-no') || 'N/A';
           var mfgName = $(this).data('mfg-name') || 'N/A';
           var mfgDate = $(this).data('mfg-date') || 'N/A';

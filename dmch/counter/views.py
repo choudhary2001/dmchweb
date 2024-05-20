@@ -63,6 +63,9 @@ def signin(request):
 
                 if p.user_role == 'Radiology':
                     return redirect('/radiology/add-report/')
+
+                if p.user_role == 'IPD':
+                    return redirect('/ipd/add-patients/')
                     
                 if d is not None:
                     request.session['user_role_store'] = "Medicine Store"
@@ -236,8 +239,9 @@ def add_patient(request):
                         mobno=mobno,
                         guardianname=guardianname,
                         address = address,
+                        appointment_date = current_date,
                         de=None
-                    ).exists()
+                    ).first()
 
                     if duplicate_patient:
                         messages.error(request, 'Duplicate patient found. Please check the details and try again.')
@@ -410,7 +414,7 @@ def show_patients(request):
 
 @login_required
 def show_patients_data(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Registration':
+    if request.user.is_superuser or request.session['user_role'] == 'Registration' or request.session['user_role'] == 'IPD':
         # Your existing code here
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -440,7 +444,7 @@ def show_patients_data(request):
             users_in_departments = User.objects.filter(profile__main_department__in=unique_departments)
 
             # Step 3: Find all Patient instances associated with those users
-            patients = Patient.objects.filter(user__in=users_in_departments)
+            patients = Patient.objects.filter(user__in=users_in_departments, de = None)
         else:
             patients = Patient.objects.filter(user = request.user, de = None).order_by('-appointment_date')
 
@@ -576,7 +580,7 @@ def show_patients_report(request):
         
         # Filter patients based on the provided date range
         if request.user.is_superuser:
-            patients = Patient.objects.filter(de=None).order_by('-appointment_date')
+            # patients = Patient.objects.filter(de=None).order_by('-appointment_date')
             # unique_departments = Profile.objects.values_list('main_department', flat=True).distinct()
             unique_departments = Profile.objects.exclude(main_department__isnull=True).values_list('main_department', flat=True).distinct()
 
@@ -584,7 +588,7 @@ def show_patients_report(request):
             users_in_departments = User.objects.filter(profile__main_department__in=unique_departments)
 
             # Step 3: Find all Patient instances associated with those users
-            patients = Patient.objects.filter(user__in=users_in_departments)
+            patients = Patient.objects.filter(user__in=users_in_departments, de = None)
         else:
             patients = Patient.objects.filter(user=request.user, de = None).order_by('-appointment_date')
 
@@ -1154,12 +1158,15 @@ def location_wise_report(request):
                 patients_in_department = Patient.objects.filter(user__in=users_in_department, de = None)
                 
                 if start_date and end_date:
-                    patients_in_department = patients_in_department.filter(appointment_date__range=(start_date, end_date))
+                    start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+                    end_datetimee = timezone.make_aware(end_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+ 
+                    patients_in_department = patients_in_department.filter(appointment_date__range=(start_datetime, end_datetimee))
                 elif start_date:
                     next_day = start_date + timedelta(days=1)
                     start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
                     end_datetime = start_datetime + timedelta(days=1)
-                    patients_in_department = patients_in_department.filter(appointment_date__gte=start_datetime, appointment_date__lt=end_datetime)
+                    patients_in_department = patients_in_department.filter(appointment_date__gte=start_datetime, appointment_date__lt=end_date)
                 elif end_date:
                     patients_in_department = patients_in_department.filter(appointment_date__lt=end_date)
 
@@ -1188,7 +1195,6 @@ def location_wise_report(request):
                     'main_department': department,
                     'total_patients': total,
                     'total_amount': total_amount,
-                    'patients': list(patients_in_department.values('name', 'regno', 'uhidno', 'doctor__name', 'department__name', 'appointment_date'))
                 })
 
         # Print or use the department_data as needed
@@ -1249,14 +1255,19 @@ def department_wise_report(request):
                 patients_in_department = Patient.objects.filter(user__in=users_in_department, de=None)
 
                 if start_date and end_date:
-                    patients_in_department = patients_in_department.filter(appointment_date__range=(start_date, end_date))
+                    start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+                    end_datetimee = timezone.make_aware(end_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+
+                    patients_in_department = patients_in_department.filter(appointment_date__range=(start_datetime, end_datetimee))
                 elif start_date:
                     start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
-                    end_datetime = start_datetime + timedelta(days=1)
+                    end_datetimee = timezone.make_aware(end_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+
+                    end_datetime = end_datetimee + timedelta(days=1)
                     patients_in_department = patients_in_department.filter(appointment_date__gte=start_datetime, appointment_date__lt=end_datetime)
                 elif end_date:
                     start_datetime = timezone.make_aware(end_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
-                    end_datetime = start_datetime + timedelta(days=1)
+                    end_datetime = start_datetime 
                     patients_in_department = patients_in_department.filter(appointment_date__lt=end_date)
 
                 # Calculate statistics
@@ -1282,7 +1293,7 @@ def department_wise_report(request):
                 date_wise_data = []
                 if start_date and end_date:
                     current_date = start_date
-                    while current_date <= end_date:
+                    while current_date < end_date:
                         total_patient_date = 0
                         total_patient_amount_date = 0
                         next_date = current_date + timedelta(days=1)
@@ -1335,6 +1346,229 @@ def department_wise_report(request):
     else:
         logout(request)
         return redirect('signin')
+
+
+@login_required
+def show_patients_data_ipd(request):
+    if request.user.is_superuser or request.session['user_role'] == 'Registration' or request.session['user_role'] == 'IPD':
+        # Your existing code here
+        start_date_str = request.GET.get('start_date')
+        end_date_str = request.GET.get('end_date')
+        department = request.GET.get('department')
+        # start_date = request.GET.get('start_date', None)
+        # end_date = request.GET.get('end_date', None)
+
+        # Convert the date strings to datetime objects
+        if start_date_str:
+            start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
+        else:
+            start_date = None
+
+        if end_date_str:
+            end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
+            # Adjust the end date to include all records for that day
+            end_date = end_date + timedelta(days=1)  # Include records for the entire day
+        else:
+            end_date = None
+
+        # Filter patients based on the provided date range
+        # if request.user.is_superuser:
+            # patients = Patient.objects.filter(de=None).order_by('-appointment_date')
+        unique_departments = Profile.objects.exclude(main_department__isnull=True).values_list('main_department', flat=True).distinct()
+
+        # Step 2: Find users that have those main_department values
+        users_in_departments = User.objects.filter(profile__main_department__in=unique_departments)
+
+        # Step 3: Find all Patient instances associated with those users
+        patients = Patient.objects.filter(user__in=users_in_departments)
+        # else:
+        #     patients = Patient.objects.filter(user = request.user, de = None).order_by('-appointment_date')
+
+        search_query = request.GET.get('searchValue')
+
+
+
+        url = search_query
+        parsed_url = urlparse(url)
+        query_string = parsed_url.query
+        query_params = parse_qs(query_string)
+        search_value_encoded = query_params.get('search', [''])[0]
+        search_value_decoded = unquote_plus(search_value_encoded)
+
+        print("Decoded search value:", search_value_decoded)
+
+        # Filter patients based on search query
+        if search_query:
+            patients = patients.filter(
+                Q(name__icontains=search_query) |
+                Q(regid__icontains=search_query) |
+                Q(address__icontains=search_query) |
+                Q(doctor__name__icontains=search_query) |
+                Q(department__name__icontains=search_query) |
+                Q(visittype__icontains=search_query) |
+                Q(revisit__icontains=search_query) |
+                Q(redcardtype__icontains=search_query)
+            )
+
+        if start_date and end_date:
+            # end_date = end_date + timedelta(days=1) 
+            # start_date = start_date - timedelta(days=1)
+            patients = patients.filter(appointment_date__range=(start_date, end_date))
+        elif start_date:
+            # If only start date is provided, include all records for that day
+            next_day = start_date + timedelta(days=1)
+            patients = patients.filter(appointment_date__gte=start_date, appointment_date__lt=next_day)
+        elif end_date:
+            patients = patients.filter(appointment_date__lt=end_date)
+        
+        # Pagination
+        page = request.GET.get('draw', 1)
+        paginator = Paginator(patients, 10)  # Show 10 patients per page
+        try:
+            patients = paginator.page(page)
+        except PageNotAnInteger:
+            patients = paginator.page(1)
+        except EmptyPage:
+            patients = paginator.page(paginator.num_pages)
+        print(patients)
+        # Serialize patients data
+        patients_data = []
+        for patient in patients:
+            if patient.doctor: 
+                patient_doctor = patient.doctor.name 
+            else: 
+                patient_doctor = ''
+
+            if patient.department: 
+                patient_department = patient.department.name 
+            else : 
+                patient_department = ''
+
+            if patient.redcardtype == 'Red Card': 
+                patient_redcardtype = 'Red Card'
+            else : 
+                patient_redcardtype = ''
+
+            if patient.revisit == 'Revisit': 
+                patient_revisit = 'Re Visit'
+            else : 
+                patient_revisit = ''
+            
+            patients_data.append({
+                'regid': patient.regid,
+                'name': patient.name,
+                'address': patient.address,
+                'doctor': patient_doctor,
+                'department': patient_department,
+                'visittype': patient.visittype,
+                'redcardtype': patient_redcardtype,
+                'revisittype': patient_revisit,
+                'appointment_date': patient.appointment_date,
+            })
+
+        p = Profile.objects.filter(user_role = 'Registration').all()
+        registration_profiles = Profile.objects.filter(user_role='Registration')
+    
+        data = {
+            'patients': patients_data,
+            'has_next': patients.has_next(),
+            'has_prev': patients.has_previous(),
+            'draw': request.GET.get('draw'),  # Echo back the draw parameter
+            'recordsTotal': paginator.count,  # Total records without filtering
+            'recordsFiltered': paginator.count,  # Total records after filtering (for now)
+            'data': patients_data
+        }
+        return JsonResponse(data)
+    else:
+        logout(request)
+        return redirect('signin')
+
+
+
+
+@login_required
+def show_patients_ipd(request):
+    if request.user.is_superuser or request.session['user_role'] == 'IPD':
+
+        start_date_str = request.GET.get('start_date', None)
+        end_date_str = request.GET.get('end_date', None)
+        department = request.GET.get('department')
+
+        # Convert the date strings to datetime objects
+        if start_date_str:
+            start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
+        else:
+            start_date = None
+
+        if end_date_str:
+            end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
+            # Adjust the end date to include all records for that day
+            end_date = end_date + timedelta(days=1)  # Include records for the entire day
+        else:
+            end_date = None
+        
+        # Filter patients based on the provided date range
+        patients = Patient.objects.filter(de=None).order_by('-appointment_date')
+   
+        if start_date and end_date:
+            # end_date = end_date + timedelta(days=1) 
+            # start_date = start_date - timedelta(days=1)
+            patients = patients.filter(appointment_date__range=(start_date, end_date))
+        elif start_date:
+            # If only start date is provided, include all records for that day
+            next_day = start_date + timedelta(days=1)
+            patients = patients.filter(appointment_date__gte=start_date, appointment_date__lt=next_day)
+        elif end_date:
+            patients = patients.filter(appointment_date__lt=end_date)
+        
+        
+        non_price = 0
+        red_card_total = 0
+        rb_case_total = 0
+        unkown_total = 0
+        free_total = 0
+        revisit_total = 0
+        for p in patients:
+            if p.visittype == 'Unknown':
+                unkown_total += 1
+            if p.visittype == 'Free':
+                free_total += 1
+            if p.redcard in [True, 'true']:  
+                if p.redcardtype == 'Red Card':
+                    red_card_total += 1
+                if p.redcardtype == 'RB Case':
+                    rb_case_total += 1
+            if p.revisit == 'Revisit':
+                revisit_total += 1
+
+
+        non_price = red_card_total + rb_case_total + unkown_total + free_total + revisit_total
+        # Count the total number of patients
+        total = patients.count()
+
+        total_amount = (int(total) * 5) - (non_price * 5)
+
+        # Get visit type counts for filtered patients
+        visittype_counts = patients.values('visittype').annotate(total_count=Count('visittype')).order_by()
+
+        context = {
+            'patients': patients,
+            'title': f'Total Patients: {total}',
+            'visittype_counts': visittype_counts,
+            'total_amount' : total_amount,
+            'current_time_kolkata' : current_time_kolkata,
+            'redcard' : red_card_total,
+            'rbcase': rb_case_total,
+            'free_total' : free_total,
+            'revisit_total' : revisit_total,
+            'start_date_str' : start_date_str,
+            'end_date_str' : end_date_str
+        }
+        print(context)
+        return render(request, 'counter/patientsdataipd.html', context=context)
+    else:
+        logout(request)
+        return redirect('signin') 
 
 
 

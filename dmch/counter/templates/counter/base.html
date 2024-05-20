@@ -467,10 +467,22 @@
         <li class="nav-item active">
           <a class="nav-link" href="{% url 'product_details_view' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Products Report</span></a
+          >
+        </li>
+        {% endif %}
+
+        {% if request.session.user_role_store == 'Store' or request.session.user_role == 'Admin' %}
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'product_stock_view_print' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Products Stock</span></a
           >
         </li>
         {% endif %}
+
 
         {% if request.session.user_role_store == 'Store' %}
 
@@ -588,7 +600,7 @@
         {% endif %} 
 
 
-        {% if request.session.user_role == 'CANCER' or request.session.user_role == 'Admin' %}
+        {% if request.session.user_role == 'IPD' or request.session.user_role == 'Admin' %}
         <hr class="sidebar-divider" />
         <!-- Heading -->
         <div class="sidebar-heading">I. P. D.</div>
@@ -608,7 +620,13 @@
           >
         </li>
 
-  
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'show_patients_ipd' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>ALL Patient</span></a
+          >
+        </li>
+
 
         <li class="nav-item active">
           <a class="nav-link" href="{% url 'ipd_add_patient' %}">

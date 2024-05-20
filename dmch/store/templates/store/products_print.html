@@ -12,13 +12,13 @@
     <div class="card py-2" style="display: flex; flex-direction: row; justify-content: space-between; padding-left: 5px; padding-right: 5px">
       <form action="{% url 'product_details_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
         <div style="flex: 1">
-          <input type="datetime-local" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+          <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
         </div>
         <div style="">
           <span>-</span>
         </div>
         <div style="flex: 1">
-          <input type="datetime-local" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+          <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
         </div>
         <!-- <div style="flex: 3">
           <select name="department" class="form-control mb-2 mb-md-0">
@@ -46,17 +46,17 @@
           <thead>
             <tr>
               <th>Department</th>
-                <th>Name</th>
-                <th>Company Name</th>
-                <th>Quantity</th>
-                <th>In Stock</th>
-                <th>Order No.</th>
-                <th>Order Date</th>
-                <th>Bill No.</th>
-                <th>Bill Date</th>
-                <th>Chalan no</th>
-                <th>Chalan Date</th>
-                <th>Created At</th>
+              <th>Name</th>
+              <th>Company Name</th>
+              <th>Quantity</th>
+              <th>In Stock</th>
+              <th>Bill No.</th>
+              <th>Bill Date</th>
+              <th>Chalan no</th>
+              <th>Chalan Date</th>
+              <th>Superintendent Order no</th>
+              <th>Superintendent Order Date</th>
+              <th>Received Date</th>
             </tr>
           </thead>
           <tfoot>
@@ -66,13 +66,13 @@
               <th>Company Name</th>
               <th>Quantity</th>
               <th>In Stock</th>
-              <th>Order No.</th>
-              <th>Order Date</th>
               <th>Bill No.</th>
               <th>Bill Date</th>
               <th>Chalan no</th>
               <th>Chalan Date</th>
-              <th>Created At</th>
+              <th>Suppritendent Order no</th>
+              <th>Suppritendent Order Date</th>
+              <th>Received Date</th>
             </tr>
           </tfoot>
           <tbody>
@@ -83,13 +83,13 @@
               <td>{{d.company_name}}</td>
               <td>{{d.quantity}}</td>
               <td>{{d.stock_quantity}}</td>
-              <td>{{d.sp_order_no}}</td>
-              <td>{{d.sp_order_date}}</td>
               <td>{{d.bill_no}}</td>
               <td>{{d.chalan_no}}</td>
               <td>{{d.bill_date}}</td>
               <td>{{d.chalan_date}}</td>
-              <td>{{d.created_at}}</td>
+              <td>{{d.sp_order_no}}</td>
+              <td>{{d.sp_order_date}}</td>
+              <td>{{d.received_date}}</td>
               
             </tr>
             {% endfor %}

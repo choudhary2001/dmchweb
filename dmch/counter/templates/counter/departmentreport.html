@@ -6,7 +6,7 @@
         width: 100%;
         border-collapse: collapse;
     }
-    table, th, td {
+     th, td {
         border: 1px solid black;
     }
     th, td {
@@ -15,6 +15,12 @@
     }
     th {
         background-color: #f2f2f2;
+    }
+    .reportcard {
+        width: 310mm;
+        height: 445mm;
+        padding: 25px;
+        margin: auto;
     }
 </style>
 {% endblock %}
@@ -38,7 +44,7 @@
     <div style="flex: 1">
       <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
     </div>
-    <div style="flex: 3">
+    <!-- <div style="flex: 3">
       <select name="department" class="form-control mb-2 mb-md-0">
         <option>Select Department</option>
         <option value="All">All</option>
@@ -46,7 +52,7 @@
         <option value="{{ d.department_id }}">{{ d.name }}</option>
         {% endfor %}
       </select>
-    </div>
+    </div> -->
     <div style="flex: 1">
       <button class="btn btn-primary w-100" type="submit">Filter</button>
     </div>
@@ -61,56 +67,56 @@
     <!-- Page Heading -->
     {% if report_data %}
     {% for report in report_data %}
-    <div class="card" style="padding:45px;" >
-    <h1 style="text-align: center;">DARBHANGA MEDICAL COLLEGE & HOSPITAL, (LAHERIASARAI,DARBHANGA)</h1>
-    <h2 style="text-align: center;">{{report.main_department}}</h2>
-    <h3 style="text-align: center;">DATE: {{ start_date_str }} TO {{ end_date_str }}</h3>
+    <div class="card reportcard" style="" >
+        <h1 style="text-align: center;">DARBHANGA MEDICAL COLLEGE & HOSPITAL, (LAHERIASARAI,DARBHANGA)</h1>
+        <h2 style="text-align: center;">{{report.main_department}}</h2>
+        <h3 style="text-align: center;">DATE: {{ start_date_str }} TO {{ end_date_str }}</h3>
 
-    <table>
-        <thead>
-            <tr>
-                <th>DATE</th>
-                <th>LOCATION</th>
-                <th>TOTAL PATIENTS</th>
-                <th>Amt</th>
-                <th>TOTAL AMOUNT</th>
-                <th>UNPAID Patients</th>
-                <th>PAID</th>
-            </tr>
-        </thead>
-        <tbody>
-                {% for r in report.date_wise_data %}
-                    <tr>
-                        <td>{{ r.date }}</td>
-                        <td>{{ report.main_department }}</td>
-                        <td>{{ r.total_patients }}</td>
-                        <td>5</td>
-                        <td>{{ r.total_amount }}</td>
-                        <td>{{ r.unpaid_patients }}</td>
-                        <td>{{ r.total_paid }}</td>
-                    </tr>
-                {% endfor %}
+        <table>
+            <thead>
                 <tr>
-                    <td colspan="2"><strong>Total</strong></td>
-                    <td><strong>{{ report.total_patients }}</strong></td>
-                    <td></td>
-                    <td><strong>{{ report.total_amount }}</strong></td>
-                    <td><strong>{{ report.total_patient_count_non_price }}</strong></td>
-                    <td><strong>{{ report.total_patient_amount_count }}</strong></td>
+                    <th>DATE</th>
+                    <th>LOCATION</th>
+                    <th>TOTAL PATIENTS</th>
+                    <th>Amt</th>
+                    <th>TOTAL AMOUNT</th>
+                    <th>UNPAID Patients</th>
+                    <th>PAID</th>
                 </tr>
+            </thead>
+            <tbody>
+                    {% for r in report.date_wise_data %}
+                        <tr>
+                            <td>{{ r.date|date:"j-m-Y" }}</td>
+                            <td>{{ report.main_department }}</td>
+                            <td>{{ r.total_patients }}</td>
+                            <td>5</td>
+                            <td>{{ r.total_amount }}</td>
+                            <td>{{ r.unpaid_patients }}</td>
+                            <td>{{ r.total_paid }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="2"><strong>Total</strong></td>
+                        <td><strong>{{ report.total_patients }}</strong></td>
+                        <td></td>
+                        <td><strong>{{ report.total_amount }}</strong></td>
+                        <td><strong>{{ report.total_patient_count_non_price }}</strong></td>
+                        <td><strong>{{ report.total_patient_amount_count }}</strong></td>
+                    </tr>
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
 
-    <br><br><br>
-    <div style="text-align: right; padding-right: 100px;">
-        <p><strong>AUTHORISED</strong></p>
-        <br><br>
-        <p>Ramuk Kumar Chaudhary</p>
-        <br><br>
-        <p><strong>SIGNATURE</strong></p>
+        <br><br><br>
+        <div style="text-align: right; padding-right: 100px;">
+            <p><strong>AUTHORISED</strong></p>
+            <br><br>
+            <p>Ramuk Kumar Chaudhary</p>
+            <br><br>
+            <p><strong>SIGNATURE</strong></p>
+        </div>
     </div>
-</div>
     {% endfor %}
     {% endif %}
 

@@ -26,6 +26,9 @@ urlpatterns = [
     # path('delete-patients/<int:pk>', views.delete_patients, name="delete_patients"),
     path('update-patients/<int:pk>', views.update_patients, name="update_patients"),
 
-    path('show-department-report/', views.department_wise_report, name="department_wise_report")
+    path('show-department-report/', views.department_wise_report, name="department_wise_report"),
+    path('show-patients-ipd-data/', views.show_patients_data_ipd, name="show_patients_data_ipd"),
+
+    path('show-patient-ipd/', views.show_patients_ipd, name="show_patients_ipd")
     # path('opd-patients/', views.OPDPatientListCreateView.as_view(), name='opd-patient-list-create'),
 ]

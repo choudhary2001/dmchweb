@@ -1,0 +1,146 @@
+
+
+
+{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+
+  {% endfor %} {% endif %}
+  <!-- <div>Total Amount : Rs {{total_amount}} /-</div>
+  <div style="display: flex">
+    <div class="card" style="width: 15%; padding: 15px">Red Card - {{redcard}}</div>
+    <div class="card" style="width: 15%; padding: 15px">RB Case - {{rbcase}}</div>
+    <div class="card" style="width: 15%; padding: 15px">ANC Free - {{free_total}}</div>
+    <div class="card" style="width: 15%; padding: 15px">Re Visit - {{revisit_total}}</div>
+
+    {% for v in visittype_counts %}
+    <div class="card" style="width: 15%; padding: 15px">{{v.visittype}} - {{v.total_count}}</div>
+    {% endfor %}
+  </div> -->
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <form action="{% url 'show_patients' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+        <div style="flex: 1">
+          <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+        </div>
+        <div style="">
+          <span>-</span>
+        </div>
+        <div style="flex: 1">
+          <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+        </div>
+       
+        <div style="flex: 1">
+          <button class="btn btn-primary w-100" type="submit">Filter</button>
+        </div>
+    
+      </form>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>Reg No.</th>
+              <th>Name</th>
+              <th>Address</th>
+              <th>Doctor</th>
+              <th>Department</th>
+              <th>Visit Type</th>
+              <th>Card Type</th>
+              <th>Re Visit</th>
+              <th>Appointment Date</th>
+   
+            </tr>
+          </thead>
+          <tfoot>
+            <tr>
+              <th>Reg No.</th>
+              <th>Name</th>
+              <th>Address</th>
+              <th>Doctor</th>
+              <th>Department</th>
+              <th>Visit Type</th>
+              <th>Card Type</th>
+              <th>Re Visit</th>
+              <th>Appointment Date</th>
+    
+            </tr>
+          </tfoot>
+          {% if end_date_str != None or start_date_str != None %}
+          <tbody>
+            {% for d in patients %}
+            <tr>
+              <td {% if d.redcard == True %}style="color:red;"{% endif %} >{{d.regid}}</td>
+              <td>{{d.name}}</td>
+              <td>{{d.address}}</td>
+              <td>{{d.doctor.name}}</td>
+              <td>{{d.department.name}}</td>
+              <td>{{d.visittype}}</td>
+              <td>{% if d.redcard == True %}{{d.redcardtype}}{% endif %}</td>
+              <td>{% if d.revisit == 'Revisit' %}{{d.revisit}}{% endif %}</td>
+              <td>{{d.appointment_date}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          {% endif %}
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if end_date_str == None or start_date_str == None %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery -->
+<script src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.min.js"></script> <!-- Include DataTables -->
+<script>
+  $(document).ready(function() {
+    // Initialize DataTable if not already initialized
+    if (!$.fn.DataTable.isDataTable('#dataTable')) {
+      var table = $('#dataTable').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+          "url": "{% url 'show_patients_data_ipd' %}",
+          "type": "GET",
+          "dataSrc": "patients",
+          "data": function(d) {
+                d.searchValue = $('#dataTable_filter input').val(); 
+                d.start_date = $('#start_date').val(); // Get start date value
+                d.end_date = $('#end_date').val(); // Get search value from DataTable search input
+            }// Key containing the array of data objects
+        },
+        "columns": [
+          {"data": "regid"},
+          {"data": "name"},
+          {"data": "address"},
+          {"data": "doctor"},
+          {"data": "department"},
+          {"data": "visittype"},
+          {"data": "redcardtype"},
+          {"data": "revisittype"},
+          {"data": "appointment_date"},
+        ],
+
+        "paging": true, // Enable pagination
+        "searching": true, // Enable search feature
+        "lengthChange": false, // Disable page length change
+        "dom": 'lfrtip', // Position of the feature elements
+        "buttons": ['copy', 'excel', 'pdf', 'print'],
+      });
+      $('#search_input').on('keyup', function() {
+        table.search(this.value).draw();
+      });
+
+     
+    }
+  });
+</script>
+{% endif %}
+
+{% endblock %} {% block script %} {% endblock %}

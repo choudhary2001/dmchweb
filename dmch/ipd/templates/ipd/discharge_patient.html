@@ -29,7 +29,10 @@
 
     </div>
 
-
+    <div class="col-md-4 mb-3">
+      <label for="regid">Dr. Reg No.:</label>
+      <input type="text" class="form-control" id="drregid" name="drregid" disabled  />
+    </div>
 
     <div class="col-md-4 mb-3">
         <label for="name">Patient Name :</label>
@@ -49,7 +52,7 @@
       </select>
     </div>
 
-    <div class="col-md-4 mb-3">
+    <div class="col-md-8 mb-3">
         <label for="age">Age:</label>
         <div style="display: flex;" >
           <input type="number" class="form-control" id="year" name="year" style="width: 33%" placeholder="Year" disabled/> &nbsp; <input type="number" class="form-control" id="month" name="month" style="width: 33%" placeholder="Month" disabled /> &nbsp;
@@ -133,7 +136,6 @@
 
     <div class="col-md-4 mb-3">
       <label for="death">Death :</label>
-      <input type="checkbox" class="form-control" id="death" name="death" />
       <select class="form-control" id="death" name="death"  >
         <option value="">Select</option>
         <option value="Yes">Yes</option>
@@ -151,9 +153,16 @@
         
     </div>
 
+
+    <div class="col-md-4 mb-3">
+      <label for="name">Refer By:</label>
+      <input type="tel" class="form-control" id="refers" name="refers"  />
+    </div>
+
+
     <div class="col-md-4 mb-3">
         <label for="admit_date">Discharge Date :</label>
-        <input type="datetime-local" class="form-control" id="discharge_date" name="discharge_date" />
+        <input type="date" class="form-control" id="discharge_date" name="discharge_date" value='{{current_time_kolkata|date:"Y-m-d"}}' />
     </div>
 
 
@@ -214,6 +223,7 @@
             var formattedDate = date.toISOString().slice(0, 16);
             // Update input fields with fetched data
             $("#name").val(data.name);
+            $("#drregid").val(data.dr_reg_no);
             $("#guardiannametitle").val(data.guardiannametitle);
             $("#guardianname").val(data.guardianname);
             $("#gender").val(data.gender);

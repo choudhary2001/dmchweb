@@ -4,8 +4,14 @@ from django.http import HttpResponse
 from django.utils.encoding import smart_str
 from .models import *
 
-# admin.site.register(Patient)
-admin.site.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'user_role', 'main_department', 'created_at')
+    list_filter = ('user', 'user_role', 'main_department', 'created_at')
+    search_fields = ('user', 'user_role', 'main_department', 'created_at')
+
+
+admin.site.register(Profile, ProfileAdmin)
+
 admin.site.register(Department)
 admin.site.register(Doctor)
 

@@ -14,13 +14,13 @@
   <div class="card py-2" style="display: flex; flex-direction: row; justify-content: space-between; padding-left: 5px; padding-right: 5px">
     <form action="{% url 'show_patients_report_userwise' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
       <div style="flex: 1">
-        <input type="datetime-local" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+        <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
       </div>
       <div style="">
         <span>-</span>
       </div>
       <div style="flex: 1">
-        <input type="datetime-local" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+        <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
       </div>
       <div style="flex: 3">
         <select name="department" class="form-control mb-2 mb-md-0">
@@ -77,7 +77,7 @@
           <tbody>
             {% for user_data in users_with_patients %}
             <tr>
-              <td>{{ user_data.user.first_name }} {{ user_data.user.last_name }}</td>
+              <td>{{ user_data.user.first_name }} {{ user_data.user.last_name }} ({{user_data.user}})</td>
               <td>{% if user_data.department %}{{ user_data.department }}{% else %} All {% endif %}</td>
               <td>{{ user_data.total }}</td>
               <td>Rs {{ user_data.total_amount }} /-</td>

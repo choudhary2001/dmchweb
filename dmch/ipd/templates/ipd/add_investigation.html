@@ -26,9 +26,12 @@
       <div class="col-md-4 mb-3">
         <label for="regid">Reg No.:</label>
         <input type="text" class="form-control" id="regid" name="regid" required />
+      </div>
 
-    </div>
-
+      <div class="col-md-4 mb-3">
+        <label for="regid">Dr. Reg No.:</label>
+        <input type="text" class="form-control" id="drregid" name="drregid"  />
+      </div>
 
 
     <div class="col-md-4 mb-3">
@@ -49,7 +52,7 @@
       </select>
     </div>
 
-    <div class="col-md-4 mb-3">
+    <div class="col-md-8 mb-3">
         <label for="age">Age:</label>
         <div style="display: flex;" >
           <input type="number" class="form-control" id="year" name="year" style="width: 33%" placeholder="Year" /> &nbsp; <input type="number" class="form-control" id="month" name="month" style="width: 33%" placeholder="Month" /> &nbsp;
@@ -141,7 +144,7 @@
 
     <div class="col-md-4 mb-3">
       <label for="admit_date">Admit Date :</label>
-      <input type="datetime-local" class="form-control" id="admit_date" name="admit_date" />
+      <input type="date" class="form-control" id="admit_date" name="admit_date" value='{{current_time_kolkata|date:"Y-m-d"}}' />
     </div>
 
 
@@ -199,6 +202,8 @@
             console.log(data)
             data = data.patient;
             // Update input fields with fetched data
+            // var date = new Date(data.appointment_date);
+            // var formattedDate = date.toISOString().slice(0, 16);
             $("#name").val(data.name);
             $("#guardiannametitle").val(data.guardiannametitle);
             $("#guardianname").val(data.guardianname);

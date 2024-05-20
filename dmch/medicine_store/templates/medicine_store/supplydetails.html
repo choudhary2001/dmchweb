@@ -158,15 +158,15 @@
     $("#product_name").select2();
   });
 
-  $(document).ready(function() {
-    var table = $('#dataTable').DataTable();
+  // $(document).ready(function() {
+  //   var table = $('#dataTable').DataTable();
 
-    // Custom search function for DataTable
-    $('#dataTable_filter input').on('keyup', function() {
-        var searchTerm = this.value.toUpperCase();
-        table.column(1).search(searchTerm ? '^' + searchTerm : '', true, false).draw();
-    });
-  });
+  //   // Custom search function for DataTable
+  //   $('#dataTable_filter input').on('keyup', function() {
+  //       var searchTerm = this.value.toUpperCase();
+  //       table.column(1).search(searchTerm ? '^' + searchTerm : '', true, false).draw();
+  //   });
+  // });
 
 
 </script>

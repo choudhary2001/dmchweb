@@ -379,7 +379,7 @@ def patient_registration_view(request):
 
 @login_required
 def patient_registration_view_data(request):
-    if request.user.is_superuser or request.session.get('user_role') == 'Registration':
+    if request.user.is_superuser or request.session.get('user_role') == 'Pathology':
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
         department = request.GET.get('department')
@@ -943,7 +943,7 @@ def create_test_report_view(request):
 
 @login_required
 def create_test_report_view_data(request):
-    if request.user.is_superuser or request.session.get('user_role') == 'Registration':
+    if request.user.is_superuser or request.session.get('user_role') == 'Pathology':
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
         department = request.GET.get('department')

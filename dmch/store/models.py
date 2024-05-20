@@ -24,7 +24,7 @@ class Product(models.Model):
     product_id = models.CharField(max_length=8, unique=True, editable=False, default="")
     sdepartment = models.ForeignKey(StoreDepartment, on_delete = models.SET_NULL, blank = True, null = True)
     product_name = models.CharField(max_length = 255)
-    company_name = models.CharField(max_length = 255)
+    company_name = models.CharField(max_length = 255, blank = True, null = True)
     quantity = models.BigIntegerField(blank=True, null=True)
     stock_quantity = models.BigIntegerField(blank=True, null=True)
     bill_no = models.CharField(max_length = 50, blank = True, null = True)
@@ -42,7 +42,7 @@ class Product(models.Model):
         super(Product, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.product_id
+        return f"{self.product_id}  "
 
 class ProductConsumption(models.Model):
     user = models.ForeignKey(User, on_delete = models.SET_NULL, blank = True, null = True)
