@@ -105,6 +105,7 @@ def product_add_view(request):
             for i in range(1, int(request.POST.get('product_count')) + 1):
                 product_name = request.POST.get(f'product_name_{i}')
                 company_name = request.POST.get(f'company_name_{i}')
+                company_address = request.POST.get(f'company_address_{i}')
                 quantity = request.POST.get(f'quantity_{i}')
 
 
@@ -113,6 +114,7 @@ def product_add_view(request):
                     sdepartment=d,
                     product_name = product_name,
                     company_name=company_name,
+                    company_address = company_address,
                     quantity=quantity,
                     stock_quantity = quantity,
                     bill_no = bill_no,
@@ -598,10 +600,11 @@ def product_add_consumption(request):
             for i in range(1, int(request.POST.get('product_count')) + 1):
                 product_name = request.POST.get(f'product_name_{i}')
                 quantity = request.POST.get(f'quantity_{i}')
+                print(product_name, quantity)
                 p = Product.objects.filter(product_id = product_name).first()
                 print(p, p.product_name)
                 if p is not None:
-                    if int(quantity) < p.stock_quantity:
+                    if int(quantity) <= p.stock_quantity:
                         product = ProductConsumption.objects.create(
                             user = request.user,
                             sdepartment=d,

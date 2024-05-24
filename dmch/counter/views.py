@@ -66,6 +66,9 @@ def signin(request):
 
                 if p.user_role == 'IPD':
                     return redirect('/ipd/add-patients/')
+
+                if p.user_role == 'Blood Bank':
+                    return redirect('/blood-bank/issue-blood/')
                     
                 if d is not None:
                     request.session['user_role_store'] = "Medicine Store"
@@ -329,7 +332,7 @@ def show_patients(request):
 
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
-        department = request.GET.get('department')
+        department_id = request.GET.get('department')
 
         # Convert the date strings to datetime objects
         if start_date_str:
@@ -363,6 +366,16 @@ def show_patients(request):
             patients = patients.filter(appointment_date__lt=end_date)
         
         
+        department = None
+        if department_id != None:
+            if department_id != 'All':
+                de = Department.objects.filter(department_id = department_id).first()
+                print(de)
+                if de:
+                    patients = patients.filter(department = de, de = None)
+                    print(patients)
+                    department = de.name
+
         non_price = 0
         red_card_total = 0
         rb_case_total = 0
@@ -391,7 +404,8 @@ def show_patients(request):
 
         # Get visit type counts for filtered patients
         visittype_counts = patients.values('visittype').annotate(total_count=Count('visittype')).order_by()
-
+        d = Department.objects.all()
+        
         context = {
             'patients': patients,
             'title': f'Total Patients: {total}',
@@ -403,7 +417,9 @@ def show_patients(request):
             'free_total' : free_total,
             'revisit_total' : revisit_total,
             'start_date_str' : start_date_str,
-            'end_date_str' : end_date_str
+            'end_date_str' : end_date_str,
+            'departments' : d,
+
         }
         print(context)
         return render(request, 'counter/patientsdata.html', context=context)
@@ -560,7 +576,7 @@ def show_patients_data(request):
 
         p = Profile.objects.filter(user_role = 'Registration').all()
         registration_profiles = Profile.objects.filter(user_role='Registration')
-        visittype_counts = patients.values('visittype').annotate(total_count=Count('visittype')).order_by()
+        # visittype_counts = patients.values('visittype').annotate(total_count=Count('visittype')).order_by()
     
         data = {
             'patients': patients_data,
@@ -578,7 +594,7 @@ def show_patients_data(request):
             'revisit_total' : revisit_total,
             'start_date_str' : start_date_str,
             'end_date_str' : end_date_str,
-            'visittype_counts': visittype_counts,
+            # 'visittype_counts': visittype_counts,
 
         }
         return JsonResponse(data)
@@ -819,7 +835,7 @@ def show_patients_report_userwise(request):
                         free_total = patients.filter(visittype='Free').count()
                         revisit_total = patients.filter(revisit='Revisit').count()
                         total = patients.count()
-                        non_price = red_card_total + rb_case_total + unknown_total + revisit_total
+                        non_price = red_card_total + rb_case_total + unknown_total + revisit_total + free_total
                         total_amount = (total * 5) - (non_price * 5)
                         total_patient =  total_patient + total
                         total_patient_count =  total_patient_count + total
@@ -1199,7 +1215,7 @@ def location_wise_report(request):
                 if start_date and end_date:
                     start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
                     end_datetimee = timezone.make_aware(end_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
- 
+                    end_datetimee += timedelta(days=1)
                     patients_in_department = patients_in_department.filter(appointment_date__range=(start_datetime, end_datetimee))
                 elif start_date:
                     next_day = start_date + timedelta(days=1)
@@ -1216,7 +1232,7 @@ def location_wise_report(request):
                 free_total = patients_in_department.filter(visittype='Free').count()
                 revisit_total = patients_in_department.filter(revisit='Revisit').count()
                 total = patients_in_department.count()
-                non_price = red_card_total + rb_case_total + unknown_total + revisit_total
+                non_price = red_card_total + rb_case_total + unknown_total + revisit_total + free_total
                 total_patient_count_non_price = total_patient_count_non_price + non_price
                 total_amount = (total * 5) - (non_price * 5)
                 total_patient_count =  total_patient_count + total
@@ -1294,6 +1310,7 @@ def department_wise_report(request):
                 if start_date and end_date:
                     start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
                     end_datetimee = timezone.make_aware(end_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+                    end_datetimee += timedelta(days=1)
 
                     patients_in_department = patients_in_department.filter(appointment_date__range=(start_datetime, end_datetimee))
                 elif start_date:
@@ -1314,7 +1331,7 @@ def department_wise_report(request):
                 free_total = patients_in_department.filter(visittype='Free').count()
                 revisit_total = patients_in_department.filter(revisit='Revisit').count()
                 total = patients_in_department.count()
-                non_price = red_card_total + rb_case_total + unknown_total + revisit_total
+                non_price = red_card_total + rb_case_total + unknown_total + revisit_total + free_total
                 total_patient_count_non_price += non_price
                 total_amount = (total * 5) - (non_price * 5)
                 total_patient_count += total
@@ -1330,7 +1347,7 @@ def department_wise_report(request):
                 date_wise_data = []
                 if start_date and end_date:
                     current_date = start_date
-                    while current_date < end_date:
+                    while current_date <= end_date:
                         total_patient_date = 0
                         total_patient_amount_date = 0
                         next_date = current_date + timedelta(days=1)

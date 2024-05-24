@@ -421,11 +421,12 @@
           var mfgName = $(this).data('mfg-name') || 'N/A';
           var mfgDate = $(this).data('mfg-date') || 'N/A';
           var expDate = $(this).data('exp-date') || 'N/A';
+          var orderDate = $(this).data('order-date') || 'N/A';
           var stockQuantity = $(this).data('stock-quantity') || 'N/A';
 
           var formattedOption = `<div class="popup-option" data-product-id="${$(this).val()}">
             <span style="font-size:14px">${productName}</span>
-            <span class="additional-info"> | ${mfgName}, ${batchNo},  ${mfgDate}, ${expDate}, ${stockQuantity}</span>
+            <span class="additional-info"> | ${mfgName}, ${batchNo},  ${mfgDate}, ${expDate}, ${stockQuantity} | ${orderDate}</span>
           </div>`;
           popup.append(formattedOption);
         }
@@ -563,11 +564,12 @@
           var mfgName = $(this).data('mfg-name') || 'N/A';
           var mfgDate = $(this).data('mfg-date') || 'N/A';
           var expDate = $(this).data('exp-date') || 'N/A';
+          var orderDate = $(this).data('order-date') || 'N/A';
           var stockQuantity = $(this).data('stock-quantity') || 'N/A';
 
           var formattedOption = `<div class="popup-option" data-product-id="${$(this).val()}">
             <span style="font-size:14px">${productName}</span>
-            <span class="additional-info"> | ${mfgName}, ${batchNo},  ${mfgDate}, ${expDate}, ${stockQuantity}</span>
+            <span class="additional-info"> | ${mfgName}, ${batchNo},  ${mfgDate}, ${expDate}, ${stockQuantity} | ${orderDate}</span>
           </div>`;
           popup.append(formattedOption);
         }
@@ -719,6 +721,7 @@
                                data-mfg-name="${product.mfg_name}"
                                data-mfg-date="${product.mfg_date}"
                                data-exp-date="${product.exp_date}"
+                               data-order-date="${product.order_date}"
                                data-stock-quantity="${product.stock_quantity}">
                              ${product.product_name}
                            </option>`;

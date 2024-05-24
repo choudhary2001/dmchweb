@@ -1,0 +1,187 @@
+{% extends 'counter/base.html' %} {% block css %} 
+<style>
+    th, td, tr {
+        font-size: 0.8 rem;
+    }
+</style>
+{% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+
+  {% endfor %} {% endif %}
+
+  <div class="card py-2" style="display: flex; flex-direction: row; justify-content: space-between; padding-left: 5px; padding-right: 5px">
+    <form action="{% url 'donate_blood_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+      <div style="flex: 1">
+        <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+      </div>
+      <div style="">
+        <span>-</span>
+      </div>
+      <div style="flex: 1">
+        <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+      </div>
+      <!-- <div style="flex: 3">
+        <select name="department" class="form-control mb-2 mb-md-0">
+          <option>Select Department</option>
+          <option value="All">All</option>
+          {% for d in departments %}
+          <option value="{{d.department_id}}">{{d.name}}</option>
+          {% endfor %}
+        </select>
+      </div> -->
+      <!-- <div style="flex: 2">
+        <select name="user_id" class="form-control mb-2 mb-md-0">
+          <option value="All"  >Select Staff</option>
+          <option value="All">All</option>
+          {% for d in registration_users %}
+          <option value="{{d.id}}">{{d.first_name}} {{d.last_name}}</option>
+          {% endfor %}
+        </select>
+      </div> -->
+      <div style="flex: 3">
+
+        <input type="search"  id="search" class="form-control mb-2 mb-md-0" placeholder="Search .." />
+      </div>
+      <div style="flex: 1">
+        <button class="btn btn-primary w-100" type="submit">Filter</button>
+      </div>
+      <div style="flex: 1">
+        <a href="#;" class="btn btn-primary" id="printButton">Print</a>
+      </div>
+       <div style="flex: 3">
+        <a href="#;" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4" id="printablecontent">
+    <!-- <div class="card-header d-flex flex-wrap">
+      <div class="d-flex flex-wrap">
+        <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">Date Range : {% if start_date %}{{ start_date }}{% endif %} {% if end_date %}{{ end_date }}{% endif %}</div>
+
+        <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">Department : {% if department %}{{ department }}{% else %} All {% endif %}</div>
+        <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">Total Patient : {{ total_p }}</div>
+        <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">Total Amount : Rs {{ total_amount }} /-</div>
+      </div>
+      <div class="d-flex flex-wrap">
+        <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">Red Card - {{ redcard }}</div>
+        <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">RB Case - {{ rbcase }}</div>
+        <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">ANC Free - {{ free_total }}</div>
+        <div class="card" style="width: 15%; padding: 15px">Re Visit - {{revisit_total}}</div>
+        {% for v in visittype_counts %}
+        <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">{{ v.visittype }} - {{ v.total_count }}</div>
+        {% endfor %}
+      </div>
+    </div> -->
+
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" id="" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>Sl No.</th>
+              <th>Patient Name</th>
+              <th>Father Name</th>
+              <th>Age</th>
+              <th>Gender</th>
+              <th>Address</th>
+              <th>District</th>
+              <th>Mob No.</th>
+              <th>VD</th>
+              <th>VD Camp Name</th>
+              <th>Segment No.</th>
+              <th>Bag No.</th>
+              <th>Blood Group</th>
+              <th>Bag Type</th>
+              <th>Donate Date</th>
+              <th>Edit</th>
+            </tr>
+          </thead>
+ 
+          <tbody>
+            {% for d in blood %}
+            <tr>
+              <td>{{d.id}}</td>
+              <td>{{d.patient_name}}</td>
+              <td>{{d.father_name}}</td>
+              <td>{% if d.age %}{{d.age}}{% endif %}</td>
+              <td>{{d.gender}}</td>
+              <td>{{d.address}}</td>
+              <td>{{d.district}}</td>
+              <td>{{d.mob_no}}</td>
+              <td>{{d.vd}}</td>
+              <td>{{d.vd_camp_name}}</td>
+              <td>{{d.segment_no}}</td>
+              <td>{{d.bag_no}}</td>
+              <td>{{d.blood_group}}</td>
+              <td>{{d.bag_type}}</td>
+              <td>{{d.add_date}}</td>
+              <td>
+                <a href="/blood-bank/update-data/{{ d.id }}/" class="btn btn-primary btn-icon-split">
+                  <span class="icon text-white-50">
+                    <i class="fas fa-arrow-right"></i>
+                  </span>
+                  <span class="text">Edit</span>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block script %}
+<script>
+
+  $(document).ready(function () {
+    // Function to handle printing
+    $("#printButton").click(function () {
+      // Show the hidden print content
+      // Print only the content inside the printContent div
+      var printContents = $("#printablecontent").html();
+      var originalContents = $("body").html();
+      $("body").empty().html(printContents);
+
+      // Trigger the print dialog
+      window.print();
+      $("body").html(originalContents);
+    });
+        // Function to filter table
+    document.getElementById("search").addEventListener('keyup', function () {
+      var searchValue = this.value.toLowerCase();
+      var rows = document.querySelectorAll("#printablecontent tbody tr");
+
+      rows.forEach(function (row) {
+        var text = row.textContent.toLowerCase();
+        if (text.includes(searchValue)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    });
+  });
+  function exportToExcel() {
+    var location = 'data:application/vnd.ms-excel;base64,';
+    var excelTemplate = '<html> ' +
+      '<head> ' +
+      '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/> ' +
+      '</head> ' +
+      '<body> ' +
+      document.getElementById("printablecontent").innerHTML +
+      '</body> ' +
+      '</html>'
+    window.location.href = location + window.btoa(excelTemplate);
+  }
+
+</script>
+{% endblock %}

@@ -19,7 +19,7 @@
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet" />
 
     <!-- Custom styles for this template -->
-    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet" />
+    <!-- <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet" /> -->
 
     <!-- Custom styles for this page -->
     <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet" />
@@ -27,10 +27,10 @@
     <link href="/staticfiles/css/sb-admin-2.min.css" rel="stylesheet" />
 
     <!-- Custom styles for this template -->
-    <link href="/staticfiles/css/sb-admin-2.min.css" rel="stylesheet" />
+    <!-- <link href="/staticfiles/css/sb-admin-2.min.css" rel="stylesheet" /> -->
 
     <!-- Custom styles for this page -->
-    <link href="/staticfiles/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <!-- <link href="/staticfiles/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" /> -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 
     {% block css %} {% endblock %}
@@ -86,9 +86,9 @@
   </head>
 
   <body id="page-top">
-    <div id="preloader">
+    <!-- <div id="preloader">
       <div class="loader"></div>
-    </div>
+    </div> -->
     <!-- Page Wrapper -->
     <div id="wrapper">
       <!-- Sidebar -->
@@ -405,7 +405,7 @@
         </li>
 
         <li class="nav-item active">
-          <a class="nav-link" href="{% url 'supply_details_user_view' %}">
+          <a class="nav-link" href="{% url 'supply_details_user_view_print' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Medicine Consumption Details</span></a
           >
@@ -649,6 +649,50 @@
           >
         </li>
 
+
+        {% endif %} 
+
+
+        {% if request.session.user_role == 'Blood Bank' or request.session.user_role == 'Admin' %}
+        <hr class="sidebar-divider" />
+        <!-- Heading -->
+        <div class="sidebar-heading">Blood Bank</div>
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'issue_blood_add' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Issue Blood</span></a
+          >
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'issue_blood_view' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Issue Blood Report</span></a
+          >
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'donate_blood_add' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Donate Blood</span></a
+          >
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'donate_blood_view' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Donate Blood Report</span></a
+          >
+        </li>
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'blood_stocks' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Stock Report</span></a
+          >
+        </li>
 
         {% endif %} 
 

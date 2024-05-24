@@ -35,7 +35,18 @@
         <div style="flex: 1">
           <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
         </div>
-       
+        <div style="flex: 3">
+          <select name="department" class="form-control mb-2 mb-md-0">
+            <option>Select Department</option>
+            <option value="All">All</option>
+            {% for d in departments %}
+            <option value="{{d.department_id}}">{{d.name}}</option>
+            {% endfor %}
+            <!-- <option value="MOPD">MOPD</option>
+            <option value="EOPD">EOPD</option>
+            <option value="ChildEOPD">ChildEOPD</option> -->
+          </select>
+        </div>
         <div style="flex: 1">
           <button class="btn btn-primary w-100" type="submit">Filter</button>
         </div>

@@ -50,7 +50,7 @@
           
         </div>
       <div class="table-responsive">
-        <table class="table table-bordered" width="100%" cellspacing="0">
+        <table class="table table-bordered" width="100%" cellspacing="0" id="productTable">
           <thead>
             <tr>
               <th>Name</th>
@@ -62,7 +62,7 @@
             {% for d in products %}
             <tr>
               <td>{{d.product_name}}</td>
-              <td>{{d.quantity}}</td>
+              <td>{{d.stock_quantity}}</td>
             </tr>
             {% endfor %}
           </tbody>
@@ -76,6 +76,44 @@
 {% endblock %} 
 {% block script %}
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    mergeTableRows();
+  });
+
+  function mergeTableRows() {
+    const table = document.getElementById('productTable');
+    const rows = Array.from(table.querySelectorAll('tbody tr'));
+
+    const productData = {};
+
+    rows.forEach(row => {
+      const productName = row.cells[0].textContent.trim();
+      const productQuantity = parseInt(row.cells[1].textContent.trim(), 10);
+
+      if (productData[productName]) {
+        productData[productName] += productQuantity;
+      } else {
+        productData[productName] = productQuantity;
+      }
+    });
+
+    const newTableBody = document.createElement('tbody');
+
+    for (const [name, quantity] of Object.entries(productData)) {
+      const newRow = document.createElement('tr');
+      const nameCell = document.createElement('td');
+      const quantityCell = document.createElement('td');
+
+      nameCell.textContent = name;
+      quantityCell.textContent = quantity;
+
+      newRow.appendChild(nameCell);
+      newRow.appendChild(quantityCell);
+      newTableBody.appendChild(newRow);
+    }
+
+    table.replaceChild(newTableBody, table.querySelector('tbody'));
+  }
   // Function to print the table
   function printTable() {
     // Show the hidden print content

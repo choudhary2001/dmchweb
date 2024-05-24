@@ -396,15 +396,16 @@ def get_product_names_by_type(request):
 
         # Query the database to retrieve product names based on the selected product type
         # products = ProductType.objects.filter(p_type=product_type)
-        products = ProductType.objects.filter(p_type=product_type).values('name').distinct()
+        products = ProductType.objects.filter(p_type=product_type).values('product_type_id', 'name').distinct()
 
-
+        print(products)
         # Create a list to store the product names
         product_names = []
 
         # Iterate over the retrieved products and extract their names
         for product in products:
-            product_names.append({'product_type_id': product.product_type_id, 'name': product.name})
+            print(product)
+            product_names.append({'product_type_id': product['product_type_id'], 'name': product['name']})
         print(product_names)
         # Return the product names as JSON response
         return JsonResponse({'products': product_names})

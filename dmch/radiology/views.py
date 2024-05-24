@@ -465,8 +465,11 @@ def show_radiology_report(request):
 
         plate_counter = 0
         for radiology in r:
-            if radiology.no_of_plate:
-                plate_counter += int(radiology.no_of_plate)
+            try:
+                if radiology.no_of_plate:
+                    plate_counter += int(radiology.no_of_plate)
+            except (ValueError, TypeError):
+                pass
 
         ie = Investigation.objects.all().order_by('-created_at')
         de = RadiologyDepartment.objects.all().order_by('name')
@@ -580,8 +583,11 @@ def print_radiology_report(request):
 
         plate_counter = 0
         for radiology in r:
-            if radiology.no_of_plate:
-                plate_counter += int(radiology.no_of_plate)
+            try:
+                if radiology.no_of_plate:
+                    plate_counter += int(radiology.no_of_plate)
+            except (ValueError, TypeError):
+                pass
 
         ie = Investigation.objects.all().order_by('-created_at')
         de = RadiologyDepartment.objects.all().order_by('name')

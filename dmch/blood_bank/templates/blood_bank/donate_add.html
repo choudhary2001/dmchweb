@@ -1,0 +1,230 @@
+{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<style>
+  label {
+    width: 230px;
+  }
+  .form-group {
+    margin-bottom: 0.2rem;
+    line-height: 0.5rem;
+    align-items: center;
+  }
+  .form-control {
+    padding: ".15rem .75rem";
+  }
+</style>
+<div class="container-fluid">
+  <!-- Page Heading -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+
+  {% endfor %} {% endif %}
+  <form id="patientForm" method="POST" action="{% url 'donate_blood_add' %}">
+    {% csrf_token %}
+
+    <div class="row">
+        <!-- Left Column (Patient Details) -->
+
+
+        <div class="col-md-4 mb-3">
+            <label for="patient_name">Donor Name :</label>
+            <input type="tel" class="form-control" id="patient_name" name="patient_name"  required />
+        </div>
+
+
+        <div class="col-md-4 mb-3">
+            <label for="gender">Gender:</label>
+            <select type="text" id="gender" class="form-control" name="gender"  style="">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+                <option value="Non-binary">Non-binary</option>
+                <option value="Transgender">Transgender</option>
+                <option value="Genderqueer">Genderqueer</option>
+                <option value="Agender">Agender</option>
+            </select>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="age">Age:</label>
+            <input type="text" class="form-control" id="age" name="age"  />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="guardian_name">Guardian Name :</label>
+            <input type="text" class="form-control" id="guardian_name" name="guardian_name"  />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="address">Address :</label>
+            <input type="text" class="form-control" id="address" name="address"  />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="district">District:</label>
+            <input type="text" class="form-control" id="district" name="district"  />
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label for="mob_no">Mobile No.:</label>
+          <input type="text" class="form-control" id="mob_no" name="mob_no"  />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="vd">VD:</label>
+            <select  id="vd" class="form-control" name="vd" >
+                <option value="">Select VD</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+        </div>
+
+
+        <div class="col-md-4 mb-3">
+            <label for="vd_camp_name">VD Camp Name:</label>
+            <input type="text" class="form-control" id="vd_camp_name" name="vd_camp_name"  />
+            
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="segment_no">Segment No.:</label>
+            <input type="text" class="form-control" id="segment_no" name="segment_no"  />
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="bag_no">Bag No.:</label>
+            <input type="text" class="form-control" id="bag_no" name="bag_no"  />
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="blood_group">Blood Group:</label>
+            <select  id="blood_group" class="form-control" name="blood_group" >
+                <option value="">Select Blood Group</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+            </select>
+        </div>
+          
+        <div class="col-md-4 mb-3">
+            <label for="types">Bag Type:</label>
+            <select  id="types" class="form-control" name="types" >
+                <option value="">Select Type</option>
+                <option value="Single">Single</option>
+                <option value="Tripple">Tripple</option>
+            </select>
+        </div>
+
+        <div class="col-md-4 mb-3" >
+          <label for="add_date">Donate Date :</label>
+          <input type="date" id="add_date" value="{{ current_time_kolkata|date:'Y-m-d' }}" class="form-control" name="add_date" />
+      </div>
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+<!-- End of Main Content -->
+{% endblock %} {% block script %}
+
+<script>
+
+  // Function to handle form submission
+  function handleFormSubmission(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Your additional logic for form validation or processing goes here
+
+    // Select all input fields in the form
+    const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
+
+    // Flag to keep track of form validity
+    let isValid = true;
+
+    // Loop through each input field
+    inputs.forEach(function (input) {
+      // Check if the input field is  and does not have a value
+      if (input.hasAttribute("") && !input.value.trim()) {
+        // If a  field is empty, set isValid to false
+        isValid = false;
+        // Highlight the empty field (you can customize this part)
+        input.style.border = "1px solid red";
+      } else {
+        // Remove any previous highlighting
+        input.style.border = "";
+      }
+    });
+
+    // If the form is valid, submit it
+    if (isValid) {
+      document.getElementById("patientForm").submit();
+    } else {
+      // If the form is invalid, display an alert (you can customize this part)
+      //   alert("Please fill out all  fields.");
+    }
+  }
+
+  // Function to handle keyboard shortcuts
+  function handleShortcut(event) {
+    // if (event.ctrlKey && event.key === "s") {
+    if (event.key === "F2") {
+      // Ctrl + S pressed, trigger form submission
+      handleFormSubmission(event);
+    }
+  }
+
+  // Attach event listener for form submission
+  document.getElementById("patientForm").addEventListener("submit", handleFormSubmission);
+
+  // Attach event listener for keyboard shortcuts
+  document.addEventListener("keydown", handleShortcut);
+</script>
+
+<script>
+    $(document).ready(function () {
+      $("#regid").on("input", function () {
+        var regid = $(this).val();
+        if (regid) {
+          $.ajax({
+            url: '{% url "fetch_patient_data" %}',
+            type: "GET",
+            data: {
+              regid: regid,
+            },
+            success: function (data) {
+              // Update input fields with fetched data
+              $("#patient_name").val(data.name);
+              $("#gender").val(data.gender);
+              $("#age").val(data.age);
+              $("#mob_no").val(data.mob_no);
+            },
+            error: function (xhr, status, error) {
+              console.error(xhr.responseText);
+              // Handle error if necessary
+              $("#patient_name").val('');
+              $("#gender").val('');
+              $("#age").val('');
+              $("#mob_no").val('');
+            },
+          });
+        } else {
+          // Clear input fields when regid is empty
+          $("#patient_name").val('');
+          $("#gender").val('');
+          $("#age").val('');
+          $("#mob_no").val('');
+        }
+      });
+    });
+  </script>
+
+{% endblock %}

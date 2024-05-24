@@ -23,7 +23,7 @@ class Medicine(models.Model):
 
     def __str__(self):
         return f"{self.medicine_id} {self.product} {self.created_at}"
-    
+   
 
 class MedicineConsumption(models.Model):
     consumption_id = models.CharField(max_length=8, unique=True, editable=False, default="")

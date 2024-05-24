@@ -399,7 +399,19 @@ def medicine_supply_add_view(request):
                 except Exception as e:
                     # print(e)
                     p = None
-
+            try:
+                duplicate_patient = MedicineConsumption.objects.filter(
+                    user = request.user,
+                    patient=p,
+                    patient_name = patient_name, 
+                    regno = regid,
+                    departpment = d
+                ).first()
+                if duplicate_patient:
+                    messages.error(request, 'Duplicate patient found. Please check the details and try again.')
+                    return redirect(f"/medicine_store/supply/medicine/")
+            except Exception as e:
+                print(e)
             # if p is None:
             #     p = Patient.objects.create(
             #         user = request.user,
@@ -452,6 +464,8 @@ def medicine_supply_add_view(request):
             m.save()
             messages.success(request, 'Added Successfully')
 
+            return redirect(f"/medicine_store/supply/medicine/")
+
         s = Suppliar.objects.all().order_by('-created_at')
         dd = DrugDepartment.objects.all().order_by('-created_at')
         p = ProductType.objects.all().order_by('-created_at')
@@ -472,7 +486,7 @@ def medicine_supply_add_view(request):
                 for ps in sp:
                     if ps.stock_quantity > 0:
                         # unique_p_types.append({'productdetails_id' : ps.productdetails_id , 'product_name' : ps.product_name })
-                        unique_p_types.append({'productdetails_id' : ps.productdetails_id , 'product_name' : ps.product_name,'mfg_name' : ps.mfg_name, 'batch_no' : ps.batch_no, 'mfg_date' : ps.mfg_date, 'exp_date'  : ps.exp_date, 'stock_quantity' : ps.stock_quantity  })
+                        unique_p_types.append({'productdetails_id' : ps.productdetails_id , 'product_name' : ps.product_name,'mfg_name' : ps.mfg_name, 'batch_no' : ps.batch_no, 'mfg_date' : ps.mfg_date, 'exp_date'  : ps.exp_date, 'stock_quantity' : ps.stock_quantity, 'order_date' : ps.order_date  })
 
 
         print(unique_p_types)
@@ -729,7 +743,7 @@ def supply_details_user_view(request):
 
         # Filter MedicineConsumption objects for the users with the specified user role
         # p = MedicineConsumption.objects.filter(user_id__in=user_ids).order_by('-created_at')
-        p = MedicineConsumption.objects.filter(departpment= d).all()
+        p = MedicineConsumption.objects.filter(departpment= d).order_by('-created_at')
 
         # if start_date and end_date:
         #     p = p.filter(created_at__range=(start_date, end_date))
@@ -784,6 +798,7 @@ def supply_details_user_view(request):
 def supply_details_user_view_print(request):
     departpment = request.session['user_role']
     d = DrugDepartment.objects.filter(name = departpment).first()
+    d = DrugDepartment.objects.filter(name = departpment).first()
     if request.user.is_superuser or d is not None:
 
         start_date_str = request.GET.get('start_date')
@@ -801,15 +816,30 @@ def supply_details_user_view_print(request):
             end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)
         else:
             end_date = None
+        # pr = Profile.objects.filter(user_role = departpment).all()
 
-        profiles = Profile.objects.filter(user_role=departpment).select_related('user')
+        # p = MedicineConsumption.objects.filter(user = request.user).order_by('-created_at')
+        # Get all profiles with the specified user role
+        # profiles = Profile.objects.filter(user_role=departpment).select_related('user')
 
         # Extract user IDs from profiles
-        user_ids = [profile.user_id for profile in profiles]
+        # user_ids = [profile.user_id for profile in profiles]
 
         # Filter MedicineConsumption objects for the users with the specified user role
         # p = MedicineConsumption.objects.filter(user_id__in=user_ids).order_by('-created_at')
-        p = MedicineConsumption.objects.filter(departpment = d).order_by('-created_at')
+        p = MedicineConsumption.objects.filter(departpment= d).order_by('-created_at')
+
+        # if start_date and end_date:
+        #     p = p.filter(created_at__range=(start_date, end_date))
+
+        # elif start_date:
+        #     next_day = start_date + timedelta(days=1)
+        #     start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+        #     end_datetime = start_datetime + timedelta(days=1)
+        #     p = p.filter(created_at__gte=start_datetime, created_at__lt=end_datetime)
+
+        # elif end_date:
+        #     p = p.filter(created_at__lt=end_date)
 
         if start_date and end_date:
             p = p.filter(products__created_at__range=(start_date, end_date))
@@ -821,8 +851,8 @@ def supply_details_user_view_print(request):
         elif end_date:
             p = p.filter(products__created_at__lt=end_date)
 
-
         d = DrugDepartment.objects.all()
+        # sp = ProductSupply.objects.values('product_name', 'productdetails_id').distinct()
         # sp = ProductSupply.objects.all().order_by('-created_at')
         unique_p_types = []
         ss = Supply.objects.all()
@@ -833,6 +863,7 @@ def supply_details_user_view_print(request):
                 for ps in sp:
                     unique_p_types.append({'productdetails_id' : ps.productdetails_id , 'product_name' : ps.product_name })
         print(unique_p_types)
+        
         context = {
             'supply' : p,
             'title' : f"Total Medicine Consumption",
@@ -840,7 +871,7 @@ def supply_details_user_view_print(request):
             'productsupply' : unique_p_types
 
         }
-        return render(request, 'medicine_store/supplydetailsprint.html', context=context)
+        return render(request, 'medicine_store/supplydetails.html', context=context)
 
     else:
         logout(request)
@@ -1332,7 +1363,7 @@ def get_consumption_and_remaining_quantity(request):
             start_date = None
 
         if end_date_str:
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
         else:
             end_date = None
 
@@ -1361,33 +1392,50 @@ def get_consumption_and_remaining_quantity(request):
                     departpment=d
                 ).aggregate(total_quantity=Sum('products__quantity'))['total_quantity'] or 0
 
-                # total_consumed_before_start = Medicine.objects.filter(
-                #     created_at__lt=start_date,
-                #     product__product_name=product_name,
-                # ).aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
-
                 total_consumed_before_start = MedicineConsumption.objects.filter(
                     products__created_at__lt=start_date,
                     products__product__product_name=product_name,
                     departpment=d
                 ).aggregate(total_quantity=Sum('products__quantity'))['total_quantity'] or 0
 
-                opening_quantity = product_quantities[product_name]['purchase'] - total_consumed_before_start
-
-                # Closing Quantity
-                total_closing_quantity = Supply.objects.filter(
-                    products__product_name=product_name,
-                    departpment=d
-                ).aggregate(total_quantity=Sum('products__quantity'))['total_quantity'] or 0
-
-                total_consumed_till_end = MedicineConsumption.objects.filter(
-                    products__created_at__lte=end_date,
+                total_consumed_ = MedicineConsumption.objects.filter(
                     products__product__product_name=product_name,
                     departpment=d
                   
                 ).aggregate(total_quantity=Sum('products__quantity'))['total_quantity'] or 0
 
-                closing_quantity = product_quantities[product_name]['purchase'] - total_consumed_till_end
+                total_st_quantity = Supply.objects.filter(
+                    products__product_name=product_name,
+                    departpment=d
+                ).aggregate(total_quantity=Sum('products__stock_quantity'))['total_quantity'] or 0
+
+                total_edited = total_opening_quantity - total_consumed_ - total_st_quantity
+
+                opening_quantity = total_opening_quantity - total_edited - total_consumed_before_start
+
+                # Closing Quantity
+                total_closing_quantity = Supply.objects.filter(
+                    products__product_name=product_name,
+                    
+                    departpment=d
+                ).aggregate(total_quantity=Sum('products__quantity'))['total_quantity'] or 0
+
+                total_consumed_till_end = MedicineConsumption.objects.filter(
+                    products__created_at__lt=end_date,
+                    products__product__product_name=product_name,
+                    departpment=d
+                  
+                ).aggregate(total_quantity=Sum('products__quantity'))['total_quantity'] or 0
+
+                closing_quantity = opening_quantity - total_consumed_till_end
+
+
+                total_purchase_quantity = Supply.objects.filter(
+                    products__product_name=product_name,
+                    departpment=d,
+                    products__created_at__range=[start_date, end_date],
+
+                ).aggregate(total_quantity=Sum('products__quantity'))['total_quantity'] or 0
 
                 # Consumption within the date range
                 total_consumed_in_range = MedicineConsumption.objects.filter(
@@ -1398,8 +1446,9 @@ def get_consumption_and_remaining_quantity(request):
                 ).aggregate(total_quantity=Sum('products__quantity'))['total_quantity'] or 0
 
                 # Update quantities in the dictionary
+                product_quantities[product_name]['purchase1'] = total_purchase_quantity
                 product_quantities[product_name]['opening'] = opening_quantity
-                product_quantities[product_name]['closing'] = closing_quantity
+                product_quantities[product_name]['closing'] = opening_quantity - total_consumed_in_range
                 product_quantities[product_name]['remaining_quantity'] = total_consumed_in_range
         print(product_quantities)
         context = {

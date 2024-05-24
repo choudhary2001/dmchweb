@@ -52,69 +52,79 @@
               <th>Exp Date</th>
               <th>Quantity</th>
               <th>Supply Time</th>
-              <!-- <th>Action</th> -->
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
             {% for order in supply %}
-            {% for product in order.products.all %}
+            {% if forloop.first %}
+              {% for product in order.products.all %}
+                <tr>
+                  <td>
+                    {% if order.regno %}
+                      {{ order.regno }}
+                    {% else %}
+                      {% if order.patient.regnoid %}
+                        {{ order.patient.regnoid }}
+                      {% endif %}
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if order.patient_name %}
+                      {{ order.patient_name }}
+                    {% else %}
+                      {% if order.patient.name %}
+                        {{ order.patient.name }}
+                      {% else %}
+                        {{ order.patient.regnoid }}
+                      {% endif %}
+                    {% endif %}
+                  </td>
 
-            <tr>
-              <td>
-                {% if order.patient %}
-                  {% if order.patient.regnoid %}{{ order.patient.regnoid }}{% endif %}
                 {% else %}
-                  {{ order.patient_name }}
+                  <td style="border-bottom: none !important; border-top: none !important;" ></td>
+                  <td style="border-bottom: none !important; border-top: none !important;" ></td>
                 {% endif %}
-              </td>
-              
-              <td>
-                {% if order.patient %}
-                  {% if order.patient.name %}{{ order.patient.name }}{% else %}{{ order.patient.regnoid }}{% endif %}
-                {% else %}
-                  {{ order.regno }}
-                {% endif %}
-              </td>
-
-              <td>
-                <p>{{ product.product.product_name }}</p>
-              </td>
-
-              <td>
-                <p>{{ product.product.mfg_name }}</p>
-              </td>
-
-              <td>
-                <p>{{ product.product.mfg_date }}</p>
-              </td>
-              <td>
-                <p>{{ product.product.exp_date }}</p>
-              </td>
-
-              <td>
-                <p>{{ product.quantity }}</p>
-              </td>
-
-              <td>
-                {{product.created_at|date:"j-m-Y"}}
-
-              </td>
+                  <td>
+                    <p>{{ product.product.product_name }}</p>
+                  </td>
+                  <td>
+                    <p>{{ product.product.mfg_name }}</p>
+                  </td>
+                  <td>
+                    <p>{{ product.product.mfg_date }}</p>
+                  </td>
+                  <td>
+                    <p>{{ product.product.exp_date }}</p>
+                  </td>
+                  <td>
+                    <p>{{ product.quantity }}</p>
+                  </td>
+                  <td>
+                    {{ product.created_at|date:"j-m-Y" }}
+                  </td>
+                  {% if forloop.first %}
+                  <td>
+                    {{ order.created_at }}
+                  </td>
+                  <td>
+                    <a href="/medicine_store/supply/medicine/{{ order.consumption_id }}/update/" class="btn btn-primary btn-icon-split">
+                      <span class="icon text-white-50">
+                        <i class="fas fa-arrow-right"></i>
+                      </span>
+                      <span class="text">Edit</span>
+                    </a>
+                    <a href="/medicine_store/supply/medicine/{{ order.consumption_id }}/delete/" class="btn btn-danger btn-icon-split">
+                      <span class="icon text-white-50">
+                        <i class="fas fa-trash"></i>
+                      </span>
+                    </a>
+                  </td>
+                  {% else %}
+                  <td style="border-bottom: none !important; border-top: none !important;" ></td>
+                  {% endif %}
+                </tr>
               {% endfor %}
-              
-              <!-- <td>
-                <a href="/drug/supply/{{ order.supply_id }}/update/" class="btn btn-primary btn-icon-split">
-                  <span class="icon text-white-50">
-                    <i class="fas fa-arrow-right"></i>
-                  </span>
-                  <span class="text">Edit</span>
-                </a>
-                <a href="/drug/supply/{{ order.supply_id }}/delete/" class="btn btn-danger btn-icon-split">
-                  <span class="icon text-white-50">
-                    <i class="fas fa-trash"></i>
-                  </span>
-                </a>
-              </td> -->
-            </tr>
             {% endfor %}
           </tbody>
         </table>

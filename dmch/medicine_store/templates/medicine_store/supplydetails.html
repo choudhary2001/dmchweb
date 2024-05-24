@@ -1,4 +1,12 @@
 {% extends 'counter/base.html' %} {% block css %}
+<style>
+  .table td, .table th {
+    padding: .25rem;
+    vertical-align: top;
+    font-size: 0.75rem;
+    border-top: 1px solid #e3e6f0;
+  }
+</style>
 <!-- CSS for Select2 -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 {% endblock %} {% block content %}
@@ -24,15 +32,10 @@
         <div style="flex: 1">
           <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
         </div>
+        <div style="flex: 2">
+          <input type="search" class="form-control mb-2 mb-md-0" id="searchInput" onkeyup="searchTable()" placeholder="Search for names or medicines.." />
+        </div>
 
-        <!-- <div style="flex: 3">
-          <select class="form-control" name="product_name" id="product_name" required>
-            <option value="">Select Medicine Name</option>
-            {% for s in productsupply %}
-            <option value="{{ s.productdetails_id }}">{{ s.product_name }}</option>
-            {% endfor %}
-          </select>
-        </div> -->
         <div style="flex: 1">
           <button class="btn btn-primary w-100" type="submit">Filter</button>
         </div>
@@ -43,7 +46,7 @@
     </div>
     <div class="card-body" id="printablecontent">
       <div class="table-responsive" id="tableContainer">
-        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <table class="table table-bordered" id="dataTablee" width="100%" cellspacing="0">
           <thead>
             <tr>
               <th>Reg No.</th>
@@ -60,76 +63,79 @@
           </thead>
           <tbody>
             {% for order in supply %}
-            {% for product in order.products.all %}
+              {% for product in order.products.all %}
+              <tr>
+                {% if forloop.first %}
+                <td>
+                  {% if order.regno %}
+                    {{ order.regno }}
+                  {% else %}
+                    {% if order.patient.regnoid %}
+                      {{ order.patient.regnoid }}
+                    {% endif %}
+                  {% endif %}
+                </td>
+                <td>
+                  {% if order.patient_name %}
+                    {{ order.patient_name }}
+                  {% else %}
+                    {% if order.patient.name %}
+                      {{ order.patient.name }}
+                    {% else %}
+                      {{ order.patient.regnoid }}
+                    {% endif %}
+                  {% endif %}
+                </td>
 
-            <tr>
-              <td>
-                {% if order.regno %}
-                {{ order.regno }}
                 {% else %}
-                  {% if order.patient.regnoid %}{{ order.patient.regnoid }}{% endif %}
+                  <td style="border-bottom: none !important; border-top: none !important;" ></td>
+                  <td style="border-bottom: none !important; border-top: none !important;" ></td>
                 {% endif %}
-              </td>
-              
-              <td>
-                {% if order.patient_name %}
-                {{ order.patient_name }}
+                <td>
+                  <p>{{ product.product.product_name }}</p>
+                </td>
+                <td>
+                  <p>{{ product.product.mfg_name }}</p>
+                </td>
+                <td>
+                  <p>{{ product.product.mfg_date }}</p>
+                </td>
+                <td>
+                  <p>{{ product.product.exp_date }}</p>
+                </td>
+                <td>
+                  <p>{{ product.quantity }}</p>
+                </td>
+                <td>
+                  {{ product.created_at|date:"j-m-Y" }}
+                </td>
+                {% if forloop.first %}
+                <td>
+                  {{ order.created_at }}
+                </td>
+                <td>
+                  <a href="/medicine_store/supply/medicine/{{ order.consumption_id }}/update/" class="btn btn-primary btn-icon-split">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-arrow-right"></i>
+                    </span>
+                    <span class="text">Edit</span>
+                  </a>
+                  <a href="/medicine_store/supply/medicine/{{ order.consumption_id }}/delete/" class="btn btn-danger btn-icon-split">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-trash"></i>
+                    </span>
+                  </a>
+                </td>
                 {% else %}
-                {% if order.patient.name %}{{ order.patient.name }}{% else %}{{ order.patient.regnoid }}{% endif %}
+                <td style="border-bottom: none !important; border-top: none !important;" ></td>
+                <td style="border-bottom: none !important; border-top: none !important;" ></td>
                 {% endif %}
-              </td>
-
-              <td>
-                <p>{{ product.product.product_name }}</p>
-              </td>
-
-              <td>
-                <p>{{ product.product.mfg_name }}</p>
-              </td>
-
-              <td>
-                <p>{{ product.product.mfg_date }}</p>
-
-              </td>
-              <td>
-                <p>{{ product.product.exp_date }}</p>
-
-              </td>
-
-              <td>
-                <p>{{ product.quantity }}</p>
-              </td>
-
-              <td>
-                
-                <!-- <p>{{ order.created_at }}</p> -->
-                <!-- {{order.created_at|date:"j-m-Y"}} -->
-                {{product.created_at|date:"j-m-Y"}}
-
-
-              </td>
-              <td>
-                {{order.created_at}}
-              </td>
-              <td>
-                <a href="/medicine_store/supply/medicine/{{ order.consumption_id }}/update/" class="btn btn-primary btn-icon-split">
-                  <span class="icon text-white-50">
-                    <i class="fas fa-arrow-right"></i>
-                  </span>
-                  <span class="text">Edit</span>
-                </a>
-                <a href="/medicine_store/supply/medicine/{{ order.consumption_id }}/delete/" class="btn btn-danger btn-icon-split">
-                  <span class="icon text-white-50">
-                    <i class="fas fa-trash"></i>
-                  </span>
-                </a>
-              </td>
-            </tr>
-            {% endfor %}
-
+              </tr>
+              {% endfor %}
             {% endfor %}
           </tbody>
         </table>
+        
       </div>
     </div>
   </div>
@@ -153,6 +159,7 @@
     $("body").html(originalContents);
   }
 </script>
+
 <script>
   $(document).ready(function () {
     $("#product_name").select2();
@@ -171,6 +178,29 @@
 
 </script>
 
+<script>
+  function searchTable() {
+    // Declare variables
+    var input, filter, table, tr, td, i, j, txtValue;
+    input = document.getElementById("searchInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("dataTablee");
+    tr = table.getElementsByTagName("tr");
 
-
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 1; i < tr.length; i++) {
+      tr[i].style.display = "none"; // Hide the row initially
+      td = tr[i].getElementsByTagName("td");
+      for (j = 0; j < td.length; j++) {
+        if (td[j]) {
+          txtValue = td[j].textContent || td[j].innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = ""; // Show the row if a match is found
+            break; // Stop searching once a match is found
+          }
+        }
+      }
+    }
+  }
+</script>
 {% endblock %}
