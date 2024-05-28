@@ -157,11 +157,13 @@
     $("body").html(originalContents);
   }
 </script>
+
 <script>
   $(document).ready(function () {
     $("#product_name").select2();
   });
 </script>
+
 <script>
   document.addEventListener("DOMContentLoaded", function() {
     // Get all rows in the table body
@@ -186,6 +188,7 @@
     });
   });
 </script>
+
 <script>
   document.addEventListener("DOMContentLoaded", function() {
     // Get all rows in the table body
@@ -252,7 +255,7 @@
     while (switching) {
       switching = false;
       rows = table.rows;
-      for (i = 1; i < (rows.length - 1); i++) {
+      for (i = 1; i <= (rows.length - 1); i++) {
         shouldSwitch = false;
         x = rows[i].getElementsByTagName("td")[2];
         y = rows[i + 1].getElementsByTagName("td")[2];
@@ -285,19 +288,19 @@
     }
 
     // Reset to initial sorted state if search input is cleared
-    if (!filter) {
-      filterActive = false;
-      resetTableToInitialState();
-    }
+    // if (!filter) {
+    //   filterActive = false;
+    //   resetTableToInitialState();
+    // }
   }
 
-  function resetTableToInitialState() {
-    var table = document.getElementById("datatablee").getElementsByTagName("tbody")[0];
-    table.innerHTML = "";
-    initialTableRows.forEach(function(row) {
-      table.appendChild(row);
-    });
-  }
+  // function resetTableToInitialState() {
+  //   var table = document.getElementById("datatablee").getElementsByTagName("tbody")[0];
+  //   table.innerHTML = "";
+  //   initialTableRows.forEach(function(row) {
+  //     table.appendChild(row);
+  //   });
+  // }
 
   document.addEventListener("DOMContentLoaded", function() {
     var table = document.getElementById("datatablee");
@@ -411,34 +414,35 @@
     window.location.href = location + window.btoa(excelTemplate);
   }
 </script>
+
 <script>
   // Function to filter table rows based on search input
-  function filterTable() {
-    // Get the search input value
-    var filter = document.getElementById("searchInput").value.toUpperCase();
-    // Get the table rows
-    var rows = document.querySelector("#datatablee tbody").rows;
+  // function filterTable() {
+  //   // Get the search input value
+  //   var filter = document.getElementById("searchInput").value.toUpperCase();
+  //   // Get the table rows
+  //   var rows = document.querySelector("#datatablee tbody").rows;
 
-    // Loop through all table rows
-    for (var i = 0; i < rows.length; i++) {
-      var visible = false;
-      // Loop through all cells in the current row
-      for (var j = 0; j < rows[i].cells.length; j++) {
-        var cell = rows[i].cells[j];
-        // Check if the cell text matches the search query
-        if (cell.textContent.toUpperCase().indexOf(filter) > -1) {
-          visible = true;
-          break;
-        }
-      }
-      // Show or hide the row based on visibility
-      if (visible) {
-        rows[i].style.display = "";
-      } else {
-        rows[i].style.display = "none";
-      }
-    }
-  }
+  //   // Loop through all table rows
+  //   for (var i = 0; i < rows.length; i++) {
+  //     var visible = false;
+  //     // Loop through all cells in the current row
+  //     for (var j = 0; j < rows[i].cells.length; j++) {
+  //       var cell = rows[i].cells[j];
+  //       // Check if the cell text matches the search query
+  //       if (cell.textContent.toUpperCase().indexOf(filter) > -1) {
+  //         visible = true;
+  //         break;
+  //       }
+  //     }
+  //     // Show or hide the row based on visibility
+  //     if (visible) {
+  //       rows[i].style.display = "";
+  //     } else {
+  //       rows[i].style.display = "none";
+  //     }
+  //   }
+  // }
 
   // Add event listener to the search input field
   // document.getElementById("searchInput").addEventListener("keyup", filterTable);

@@ -1,4 +1,5 @@
-{% extends 'counter/base.html' %} {% block css %}
+{% extends 'counter/base.html' %}
+{% block css %}
 <style>
   .table td, .table th {
     padding: .25rem;
@@ -7,22 +8,24 @@
     border-top: 1px solid #e3e6f0;
   }
 </style>
+<!-- Include DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
 <!-- CSS for Select2 -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-{% endblock %} {% block content %}
+{% endblock %}
+{% block content %}
 <!-- Begin Page Content -->
 <div class="container-fluid">
-  <!-- Page Heading -->
-  <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
-  {% if messages %} {% for message in messages %}
-  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
-
-  {% endfor %} {% endif %}
+  {% if messages %}
+    {% for message in messages %}
+      <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+    {% endfor %}
+  {% endif %}
   <div style="display: flex"></div>
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <form action="{% url 'supply_details_user_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+      <form id="filterForm" style="display: flex; flex-wrap: wrap; gap: 10px">
         <div style="flex: 1">
           <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
         </div>
@@ -33,9 +36,8 @@
           <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
         </div>
         <div style="flex: 2">
-          <input type="search" class="form-control mb-2 mb-md-0" id="searchInput" onkeyup="searchTable()" placeholder="Search for names or medicines.." />
+          <input type="search" class="form-control mb-2 mb-md-0" id="searchInput" placeholder="Search for names or medicines.." />
         </div>
-
         <div style="flex: 1">
           <button class="btn btn-primary w-100" type="submit">Filter</button>
         </div>
@@ -62,145 +64,88 @@
             </tr>
           </thead>
           <tbody>
-            {% for order in supply %}
-              {% for product in order.products.all %}
-              <tr>
-                {% if forloop.first %}
-                <td>
-                  {% if order.regno %}
-                    {{ order.regno }}
-                  {% else %}
-                    {% if order.patient.regnoid %}
-                      {{ order.patient.regnoid }}
-                    {% endif %}
-                  {% endif %}
-                </td>
-                <td>
-                  {% if order.patient_name %}
-                    {{ order.patient_name }}
-                  {% else %}
-                    {% if order.patient.name %}
-                      {{ order.patient.name }}
-                    {% else %}
-                      {{ order.patient.regnoid }}
-                    {% endif %}
-                  {% endif %}
-                </td>
-
-                {% else %}
-                  <td style="border-bottom: none !important; border-top: none !important;" ></td>
-                  <td style="border-bottom: none !important; border-top: none !important;" ></td>
-                {% endif %}
-                <td>
-                  <p>{{ product.product.product_name }}</p>
-                </td>
-                <td>
-                  <p>{{ product.product.mfg_name }}</p>
-                </td>
-                <td>
-                  <p>{{ product.product.mfg_date }}</p>
-                </td>
-                <td>
-                  <p>{{ product.product.exp_date }}</p>
-                </td>
-                <td>
-                  <p>{{ product.quantity }}</p>
-                </td>
-                <td>
-                  {{ product.created_at|date:"j-m-Y" }}
-                </td>
-                {% if forloop.first %}
-                <td>
-                  {{ order.created_at }}
-                </td>
-                <td>
-                  <a href="/medicine_store/supply/medicine/{{ order.consumption_id }}/update/" class="btn btn-primary btn-icon-split">
-                    <span class="icon text-white-50">
-                      <i class="fas fa-arrow-right"></i>
-                    </span>
-                    <span class="text">Edit</span>
-                  </a>
-                  <a href="/medicine_store/supply/medicine/{{ order.consumption_id }}/delete/" class="btn btn-danger btn-icon-split">
-                    <span class="icon text-white-50">
-                      <i class="fas fa-trash"></i>
-                    </span>
-                  </a>
-                </td>
-                {% else %}
-                <td style="border-bottom: none !important; border-top: none !important;" ></td>
-                <td style="border-bottom: none !important; border-top: none !important;" ></td>
-                {% endif %}
-              </tr>
-              {% endfor %}
-            {% endfor %}
           </tbody>
         </table>
-        
       </div>
     </div>
   </div>
 </div>
-
-{% endblock %} {% block script %}
+{% endblock %}
+{% block script %}
 <!-- JavaScript for Select2 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<!-- Include DataTables JS -->
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 
 <script>
-  // Function to print the table
+  $(document).ready(function() {
+    $.fn.dataTable.ext.search.push(
+      function(settings, data, dataIndex) {
+        var searchValue = $('#searchInput').val().toLowerCase();
+        if (!searchValue) {
+          return true; // If no search value, show all data
+        }
+
+        // Check if any column data starts with the search value
+        for (var i = 0; i < data.length; i++) {
+          if (data[i].toLowerCase().startsWith(searchValue)) {
+            return true;
+          }
+        }
+        return false;
+      }
+    );
+
+    var table = $('#dataTablee').DataTable({
+      "processing": true,
+      "serverSide": true,
+      "ajax": {
+        "url": "{% url 'supply_details_user_view_data' %}",
+        "data": function (d) {
+          d.searchValue =  $('#searchInput').val(); 
+          d.start_date = $('#start_date').val();
+          d.end_date = $('#end_date').val();
+        }
+      },
+      "columns": [
+        { "data": "reg_no" },
+        { "data": "patient" },
+        { "data": "medicine_name" },
+        { "data": "mfg_by" },
+        { "data": "mfg_date" },
+        { "data": "exp_date" },
+        { "data": "quantity" },
+        { "data": "supply_time" },
+        { "data": "created_on" },
+        { "data": "actions", "orderable": false }
+      ],
+       "paging": true, // Enable pagination
+        "searching": true, // Enable search feature
+        "lengthChange": false, // Disable page length change
+        "dom": 'lfrtip', // Position of the feature elements
+        "buttons": ['copy', 'excel', 'pdf', 'print']
+    });
+    $('#searchInput').on('keyup', function() {
+        table.draw();
+      });
+
+    $('#filterForm').on('submit', function(e) {
+      e.preventDefault();
+      table.draw();
+    });
+
+
+    $("#product_name").select2();
+  });
+</script>
+
+<script>
   function printTable() {
-    // Show the hidden print content
-    // Print only the content inside the printContent div
     var printContents = $("#printablecontent").html();
     var originalContents = $("body").html();
     $("body").empty().html(printContents);
-
-    // Trigger the print dialog
     window.print();
     $("body").html(originalContents);
-  }
-</script>
-
-<script>
-  $(document).ready(function () {
-    $("#product_name").select2();
-  });
-
-  // $(document).ready(function() {
-  //   var table = $('#dataTable').DataTable();
-
-  //   // Custom search function for DataTable
-  //   $('#dataTable_filter input').on('keyup', function() {
-  //       var searchTerm = this.value.toUpperCase();
-  //       table.column(1).search(searchTerm ? '^' + searchTerm : '', true, false).draw();
-  //   });
-  // });
-
-
-</script>
-
-<script>
-  function searchTable() {
-    // Declare variables
-    var input, filter, table, tr, td, i, j, txtValue;
-    input = document.getElementById("searchInput");
-    filter = input.value.toUpperCase();
-    table = document.getElementById("dataTablee");
-    tr = table.getElementsByTagName("tr");
-
-    // Loop through all table rows, and hide those who don't match the search query
-    for (i = 1; i < tr.length; i++) {
-      tr[i].style.display = "none"; // Hide the row initially
-      td = tr[i].getElementsByTagName("td");
-      for (j = 0; j < td.length; j++) {
-        if (td[j]) {
-          txtValue = td[j].textContent || td[j].innerText;
-          if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            tr[i].style.display = ""; // Show the row if a match is found
-            break; // Stop searching once a match is found
-          }
-        }
-      }
-    }
   }
 </script>
 {% endblock %}

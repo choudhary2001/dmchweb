@@ -31,15 +31,10 @@
           <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
         </div>
 
-        <div style="flex: 3">
-          <select class="form-control" name="product_name" id="product_name">
-            <option value="">Select Medicine Name</option>
-            <option selected value="All">All</option>
-            {% for s in productsupply %}
-            <option {% if department == s.productdetails_id %}selected{% endif %} value="{{ s.productdetails_id }}">{{ s.product_name }}</option>
-            {% endfor %}
-          </select>
+        <div class="form-group">
+          <input type="search" class="form-control" id="searchInput" placeholder="Search...">
         </div>
+
         <!-- <div style="flex: 3">
           <select name="department" class="form-control mb-2 mb-md-0">
             <option>Select Department</option>
@@ -53,7 +48,10 @@
           <button class="btn btn-primary w-100" type="submit">Filter</button>
         </div>
         <div style="flex: 1">
-          <button class="btn btn-primary w-100" onclick="printTable()">Print Table</button>
+          <button class="btn btn-primary w-100" onclick="printTable()">Print</button>
+        </div>
+        <div style="flex: 3">
+          <a href="#;" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</a>
         </div>
       </form>
     </div>
@@ -163,4 +161,54 @@
     sortTableByProductName();
   })
 </script>
+
+<script>
+  function exportToExcel() {
+    var location = 'data:application/vnd.ms-excel;base64,';
+    var excelTemplate = '<html> ' +
+      '<head> ' +
+      '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/> ' +
+      '</head> ' +
+      '<body> ' +
+      document.getElementById("printablecontent").innerHTML +
+      '</body> ' +
+      '</html>'
+    window.location.href = location + window.btoa(excelTemplate);
+  }
+</script>
+
+
+<script>
+  // Function to filter table rows based on search input
+  function filterTable() {
+    // Get the search input value
+    var filter = document.getElementById("searchInput").value.toUpperCase();
+    // Get the table rows
+    var rows = document.querySelector("#tablee tbody").rows;
+
+    // Loop through all table rows
+    for (var i = 0; i < rows.length; i++) {
+      var visible = false;
+      // Loop through all cells in the current row
+      for (var j = 0; j < rows[i].cells.length; j++) {
+        var cell = rows[i].cells[j];
+        // Check if the cell text matches the search query
+        if (cell.textContent.toUpperCase().indexOf(filter) > -1) {
+          visible = true;
+          break;
+        }
+      }
+      // Show or hide the row based on visibility
+      if (visible) {
+        rows[i].style.display = "";
+      } else {
+        rows[i].style.display = "none";
+      }
+    }
+  }
+
+  // Add event listener to the search input field
+  document.getElementById("searchInput").addEventListener("keyup", filterTable);
+</script>
+
 {% endblock %}

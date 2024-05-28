@@ -107,6 +107,7 @@ def product_add_view(request):
                 company_name = request.POST.get(f'company_name_{i}')
                 company_address = request.POST.get(f'company_address_{i}')
                 quantity = request.POST.get(f'quantity_{i}')
+                quantity_type = request.POST.get(f'quantity_type_{i}')
 
 
                 product = Product.objects.create(
@@ -120,6 +121,7 @@ def product_add_view(request):
                     bill_no = bill_no,
                     chalan_no = chalan_no,
                     sp_order_no = sp_order_no,
+                    quantity_type = quantity_type
                 )
                 if date:
                     product.created_at = date
@@ -176,6 +178,7 @@ def product_update_view(request, product_id):
                 company_name = request.POST.get(f'company_name_{i}')
                 quantity = request.POST.get(f'quantity_{i}')
                 stock_quantity = request.POST.get(f'stock_quantity_{i}')
+                quantity_type = request.POST.get(f'quantity_type_{i}')
 
 
                 product = Product.objects.filter(product_id = product_id).first()
@@ -186,6 +189,7 @@ def product_update_view(request, product_id):
                 product.bill_no = bill_no
                 product.chalan_no = chalan_no
                 product.sp_order_no = sp_order_no
+                product.quantity_type = quantity_type
                 
                 if date:
                     product.created_at = date
@@ -616,6 +620,7 @@ def product_add_consumption(request):
                             quantity = quantity,
                             stock_quantity = quantity,
                             bill_no = p.bill_no,
+                            quantity_type = p.quantity_type,
                             chalan_no = p.chalan_no,
                             bill_date = p.bill_date,
                             chalan_date = p.chalan_date,

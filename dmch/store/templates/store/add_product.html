@@ -103,7 +103,7 @@
         <!-- Middle Column (Product Details) -->
 
          
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
             <div class="form-group">
               <label for="product_name_1">Product Name:</label>
               <input type="text" class="form-control" name="product_name_1"  />
@@ -112,14 +112,14 @@
   
 
           
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
           <div class="form-group">
             <label for="company_name_1">Company Name:</label>
             <input type="text" class="form-control" name="company_name_1"  />
           </div>
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
           <div class="form-group">
             <label for="company_address_1">Company Address:</label>
             <input type="text" class="form-control" name="company_address_1"  />
@@ -128,13 +128,19 @@
 
 
         <!-- Left Column (Patient Details) -->
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
           <div class="form-group">
             <label for="quantity_1">Quantity:</label>
             <input type="number" class="form-control" name="quantity_1" required />
           </div>
         </div>
-
+        <!-- Left Column (Patient Details) -->
+        <div class="col-md-3 mb-3">
+          <div class="form-group">
+            <label for="quantity_type_1">Quantity Type:</label>
+            <input type="number" class="form-control" name="quantity_type_1" required />
+          </div>
+        </div>
     </div>
   </div>
     <input type="hidden" id="productCount" name="product_count" value="1" />
@@ -219,7 +225,7 @@ if (event.keyCode === 13) { // Check if Enter key is pressed
 
 
     var quantityColumn = document.createElement("div");
-    quantityColumn.className = "col-md-3 mb-3";
+    quantityColumn.className = "col-md-2 mb-3";
     quantityColumn.innerHTML = `
         <div class="form-group">
           <label for="quantity">Quantity:</label>
@@ -227,6 +233,14 @@ if (event.keyCode === 13) { // Check if Enter key is pressed
         </div>
       `;
 
+      var quantityColumn = document.createElement("div");
+    quantityColumn.className = "col-md-3 mb-3";
+    quantityColumn.innerHTML = `
+        <div class="form-group">
+          <label for="quantity_type_">Quantity Type:</label>
+          <input type="number" class="form-control" name="quantity_type_${productCount}" required />
+        </div>
+      `;
 
 
     var removeButton = document.createElement("div");

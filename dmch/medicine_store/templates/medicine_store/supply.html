@@ -9,7 +9,8 @@
 <!-- Begin Page Content -->
 <style>
   label {
-    width: 230px;
+    font-size: 0.8rem;
+    width: 200px;
   }
   .form-group {
     margin-bottom: 0.2rem;
@@ -566,8 +567,11 @@
           var expDate = $(this).data('exp-date') || 'N/A';
           var orderDate = $(this).data('order-date') || 'N/A';
           var stockQuantity = $(this).data('stock-quantity') || 'N/A';
+          var expire = $(this).data('expire') || false;
 
-          var formattedOption = `<div class="popup-option" data-product-id="${$(this).val()}">
+          var colorStyle = expire ? 'color:red;' : '';
+
+          var formattedOption = `<div class="popup-option" data-product-id="${$(this).val()}" style="${colorStyle}">
             <span style="font-size:14px">${productName}</span>
             <span class="additional-info"> | ${mfgName}, ${batchNo},  ${mfgDate}, ${expDate}, ${stockQuantity} | ${orderDate}</span>
           </div>`;
@@ -722,7 +726,9 @@
                                data-mfg-date="${product.mfg_date}"
                                data-exp-date="${product.exp_date}"
                                data-order-date="${product.order_date}"
-                               data-stock-quantity="${product.stock_quantity}">
+                               data-stock-quantity="${product.stock_quantity}"
+                               data-expire="${product.expire}"
+                               >
                              ${product.product_name}
                            </option>`;
           productNameSelect.append(optionHtml);

@@ -499,6 +499,7 @@ def patient_registration_view_print(request):
             end_date = end_date + timedelta(days=1)  # Include records for the entire day
         else:
             end_date = None
+        total = 0
 
         if start_date_str or end_date_str or department_id:
         

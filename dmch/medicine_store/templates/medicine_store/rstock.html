@@ -1,5 +1,11 @@
 {% extends 'counter/base.html' %} {% block css %}
 <!-- CSS for Select2 -->
+<style>
+
+  td, th {
+    font-size: 12px;
+  }
+</style>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 {% endblock %} {% block content %}
 <!-- Begin Page Content -->
@@ -62,13 +68,13 @@
               <th>Exp Date</th>
               <th>Batch No</th>
               <th>Quantity</th>
-              <th>Consumption</th>
-              <th>In Stock</th>
-              <th>Total Stock</th>
+              <!-- <th>Consumption</th> -->
+              <!-- <th>In Stock</th> -->
+              <th>Total Quantity</th>
               <th>Supply On Date</th>
-              <th>Created Date/Time</th>
+              <th>Created Date</th>
               <th>Remarks</th>
-              <!-- <th>Action</th> -->
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -83,18 +89,17 @@
                     <td>{% if product.exp_date %}{{ product.exp_date }}{% endif %}</td>
                     <td>{{ product.batch_no }}</td>
                     <td>{{ product.quantity }}</td>
-                    <td class="quantity-difference"></td>
-                    <td>{{ product.stock_quantity }}</td>
+                    <!-- <td class="quantity-difference"></td> -->
+                    <!-- <td>{{ product.stock_quantity }}</td> -->
                     <td></td>
-                    <td >
+                    <td>
                       {% if order.order_date %}
                       <p>{{ order.order_date|date:"j-m-Y" }}</p>
                       {% else %}
                       <p>{{ product.order_date|date:"j-m-Y" }}</p>
                       {% endif %}
-                    
                     </td>
-                    <td >{{ order.created_at }}</td>
+                    <td >{{ order.created_at|date:"j-m-Y" }}</td>
                     <td >{{ order.remarks }}</td>
                     <td>
                       {% if order.de == request.session.user_role %}
@@ -216,25 +221,25 @@
       // Get the cells for quantity, product name, and stock quantity
       var productNameCell = row.querySelector("td:nth-child(3)");
       var quantityCell = row.querySelector("td:nth-child(8)");
-      var stockQuantityCell = row.querySelector("td:nth-child(10)");
-      var remainingStockCell = row.querySelector(".quantity-difference");
+      // var stockQuantityCell = row.querySelector("td:nth-child(9)");
+      // var remainingStockCell = row.querySelector(".quantity-difference");
 
       // Get the values from the cells
       var productName = productNameCell.textContent.trim();
       var quantity = parseInt(quantityCell.textContent);
-      var stockQuantity = parseInt(stockQuantityCell.textContent);
+      // var stockQuantity = parseInt(stockQuantityCell.textContent);
 
       // Calculate the remaining stock (difference)
-      var remainingStock = quantity - stockQuantity;
+      // var remainingStock = quantity - stockQuantity;
 
       // Update the remaining stock cell with the calculated remaining stock
-      remainingStockCell.textContent = remainingStock;
+      // remainingStockCell.textContent = remainingStock;
 
       // Update total stock for the product name
       if (productName in totalStock) {
-        totalStock[productName] += stockQuantity;
+        totalStock[productName] += quantity;
       } else {
-        totalStock[productName] = stockQuantity;
+        totalStock[productName] = quantity;
       }
     });
 
@@ -242,7 +247,7 @@
     var uniqueProducts = {}; // To keep track of processed product names
     rows.forEach(function(row) {
       var productNameCell = row.querySelector("td:nth-child(3)");
-      var totalStockCell = row.querySelector("td:nth-child(11)");
+      var totalStockCell = row.querySelector("td:nth-child(9)");
 
       var productName = productNameCell.textContent.trim();
       if (!(productName in uniqueProducts)) {

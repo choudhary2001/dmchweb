@@ -475,7 +475,7 @@ def show_patients_data(request):
         search_value_encoded = query_params.get('search', [''])[0]
         search_value_decoded = unquote_plus(search_value_encoded)
 
-        print("Decoded search value:", search_value_decoded)
+        print("Decoded search value:", search_query)
 
         # Filter patients based on search query
         if search_query:

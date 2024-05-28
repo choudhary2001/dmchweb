@@ -376,7 +376,8 @@ def blood_stocks(request):
             bs = bs.filter(add_date__range=(start_date, end_date))
         
         context = {
-            'stock' : bs
+            'stock' : bs,
+            'title' : 'Blood Stock'
         }
 
         return render(request, 'blood_bank/blood_stocks.html', context = context)

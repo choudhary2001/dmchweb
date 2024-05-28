@@ -27,4 +27,7 @@ urlpatterns = [
     path('expired/medicine/', views.store_expired_medicine, name='store_expired_medicine'),
     path('expired/medicine/print/', views.store_expired_medicine_print, name='store_expired_medicine_print'),
 
+
+    path('user/medicine/data/', views.supply_details_user_view_data, name='supply_details_user_view_data'),
+
 ]

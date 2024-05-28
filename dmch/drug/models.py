@@ -154,6 +154,9 @@ class ProductSupply(models.Model):
             self.productdetails_id = str(uuid.uuid4().int)[:8]
         super(ProductSupply, self).save(*args, **kwargs)
 
+    def __str__(self):
+        return f"{self.product_name}"
+
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete = models.SET_NULL,  blank = True, null = True)

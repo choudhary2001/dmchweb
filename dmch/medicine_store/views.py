@@ -14,7 +14,11 @@ import pytz
 from django.forms.models import model_to_dict
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
-
+from django.db.models import Count, Sum
+from django.http import JsonResponse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from urllib.parse import urlparse, parse_qs, unquote_plus
+from django.db.models import Q
 
 @login_required
 def supply_details_view(request):
@@ -358,6 +362,17 @@ def get_medicine_names_by_type(request):
                 for ps in sp:
                     if ps.stock_quantity > 0:
                         if product_type == ps.product_type:
+                            if ps.exp_date:
+                                if ps.exp_date <= timezone.now().date() + timedelta(days=3*30):
+                                    expire = True
+                                else:
+                                    expire = False
+                            else:
+                                expire = False
+                            if s.order_date:
+                                order_date = s.order_date.strftime("%d-%m-%Y")
+                            else:
+                                order_date = 'N/A'
                             unique_p_types.append({
                                 'productdetails_id': ps.productdetails_id,
                                 'product_name': ps.product_name,
@@ -365,7 +380,9 @@ def get_medicine_names_by_type(request):
                                 'batch_no': ps.batch_no,
                                 'mfg_date': ps.mfg_date,
                                 'exp_date': ps.exp_date,
-                                'stock_quantity': ps.stock_quantity
+                                'stock_quantity': ps.stock_quantity,
+                                'order_date': order_date,
+                                'expire' : expire
                             })
 
         # Sort the unique_p_types list alphabetically by product_name
@@ -384,6 +401,14 @@ def medicine_supply_add_view(request):
     if request.user.is_superuser or d is not None:
 
         if request.method == 'POST':
+            # Get the current time in UTC
+            current_time_utc = timezone.now()
+            # Get the Kolkata timezone
+            kolkata_timezone = pytz.timezone('Asia/Kolkata')
+
+            # Convert the current time to Kolkata timezone
+            current_time_kolkata = current_time_utc.astimezone(kolkata_timezone)
+
             # Extract data from the form
             print(request.POST)
             regid = request.POST.get('regid', None)
@@ -399,33 +424,21 @@ def medicine_supply_add_view(request):
                 except Exception as e:
                     # print(e)
                     p = None
-            try:
-                duplicate_patient = MedicineConsumption.objects.filter(
-                    user = request.user,
-                    patient=p,
-                    patient_name = patient_name, 
-                    regno = regid,
-                    departpment = d
-                ).first()
-                if duplicate_patient:
-                    messages.error(request, 'Duplicate patient found. Please check the details and try again.')
-                    return redirect(f"/medicine_store/supply/medicine/")
-            except Exception as e:
-                print(e)
-            # if p is None:
-            #     p = Patient.objects.create(
+            # try:
+            #     duplicate_patient = MedicineConsumption.objects.filter(
             #         user = request.user,
-            #         name = patient_name,
-            #         gender = '',
-            #         de = departpment
-            #     )
-            #     if regid:
-            #         p.regnoid = regid
-            #     # if patient_name:
-            #     #     p.name = patient_name
-            #     p.save()
-            # print(p)
-            
+            #         patient=p,
+            #         patient_name = patient_name, 
+            #         regno = regid,
+            #         departpment = d,
+            #         created_at = current_time_kolkata
+            #     ).first()
+            #     if duplicate_patient:
+            #         messages.error(request, 'Duplicate patient found. Please check the details and try again.')
+            #         return redirect(f"/medicine_store/supply/medicine/")
+            # except Exception as e:
+            #     print(e)
+
             # Create a new supply instance
             m = MedicineConsumption.objects.create(
                 user = request.user,
@@ -471,10 +484,22 @@ def medicine_supply_add_view(request):
         p = ProductType.objects.all().order_by('-created_at')
         sp = ProductSupply.objects.all().order_by('-created_at')
 
-        unique_p_typess = ProductType.objects.values_list('p_type', flat=True).distinct().order_by('p_type')
+        # unique_p_typess = ProductType.objects.values_list('p_type', flat=True).distinct().order_by('p_type')
         # unique_p_types = ProductType.objects.values_list('p_type', flat=True)
         # ss = Supply.objects.filter(departpment=d).order_by('-order_date')
         # unique_p_types = ss.products.all()
+        
+        unique_p_typess = set()
+        all_supply = Supply.objects.filter(departpment = d).all()
+        for a in all_supply:
+            ap = a.products.all()
+            for p in ap:
+                if p.product:
+                    unique_p_typess.add(
+                        p.product.p_type
+                    )
+        unique_p_typess = sorted(unique_p_typess)
+        print(unique_p_typess)
 
         unique_p_types = []
         ss = Supply.objects.all()
@@ -489,9 +514,9 @@ def medicine_supply_add_view(request):
                         unique_p_types.append({'productdetails_id' : ps.productdetails_id , 'product_name' : ps.product_name,'mfg_name' : ps.mfg_name, 'batch_no' : ps.batch_no, 'mfg_date' : ps.mfg_date, 'exp_date'  : ps.exp_date, 'stock_quantity' : ps.stock_quantity, 'order_date' : ps.order_date  })
 
 
-        print(unique_p_types)
+        # print(unique_p_types)
         suppliesss = Supply.objects.filter(departpment=d).order_by('-order_date')
-        print(suppliesss)
+        # print(suppliesss)
         # Initialize an empty list to store the expiring products
         expiring_productss = []
 
@@ -499,14 +524,14 @@ def medicine_supply_add_view(request):
         for supplys in suppliesss:
             # Get the related ProductSupply instances for the current supply
             product_supplies = supplys.products.all()
-            print(product_supplies)
+            # print(product_supplies)
             # Loop through each product supply
             for product_supplyy in product_supplies:
-                print(product_supplyy)
+                # print(product_supplyy)
                 # Check if the exp_date is less than 3 months from today
                 if product_supplyy.exp_date is not None and product_supplyy.exp_date <= timezone.now().date() + timedelta(days=3*30) and product_supplyy.stock_quantity > 0:
                     # If it is, add relevant details to the expiring_products list
-                    print('###')
+                    # print('###')
                     expiring_productss.append({
                         'product_type': product_supplyy.product_type,
                         'product_name': product_supplyy.product_name,
@@ -546,7 +571,7 @@ def medicine_supply_update_view(request, consumption_id):
             print(request.POST)
             regid = request.POST.get('regid', None)
             patient_name = request.POST.get('patient_name', None)
-            date = request.POST.get(f'date')
+            supply_date = request.POST.get(f'supply_date')
             # p = Patient.objects.filter(regid=regid).first()
             try:
                 p = Patient.objects.filter(regid = regid).first()
@@ -578,7 +603,7 @@ def medicine_supply_update_view(request, consumption_id):
             #     created_at = date
             # )
 
-            request.session['supply_date'] = date
+            request.session['supply_date'] = supply_date
 
             for i in range(1, int(request.POST.get('product_count')) + 1):
                 product_name = request.POST.get(f'product_name_{i}')
@@ -590,7 +615,7 @@ def medicine_supply_update_view(request, consumption_id):
                 medicine_id = request.POST.get(f'medicine_id_{i}')
                 productdetails_id = request.POST.get(f'productdetails_id_{i}')
 
-                ps = ProductSupply.objects.filter(productdetails_id = productdetails_id).first()
+                ps = ProductSupply.objects.filter(productdetails_id = product_name).first()
                 print(ps)
                 med = Medicine.objects.filter(medicine_id = medicine_id).first()
                 print(med)
@@ -602,7 +627,7 @@ def medicine_supply_update_view(request, consumption_id):
                             med.product.stock_quantity = quantity_m
                             med.product.save()
                             med.quantity = quantity
-                            med.created_at = date
+                            med.created_at = supply_date
                             med.save()
                         else:
                             med.product.stock_quantity = int(med.product.stock_quantity) +  int(med.quantity)
@@ -613,19 +638,46 @@ def medicine_supply_update_view(request, consumption_id):
                                 med.product = ps
                                 med.quantity = quantity
                                 med.save()
-                                
+                else:
+                    if ps:
+                        if int(ps.stock_quantity) >= int(quantity) :
+                            ps.stock_quantity = int(ps.stock_quantity) -  int(quantity)
+                            ps.save()
+                            product = Medicine.objects.create(
+                                product = ps,
+                                quantity=quantity,
+                                created_at = supply_date
+                            )
+                            
+                            m.products.add(product)   
+            m.save()
             messages.success(request, 'Updated Successfully')
 
         s = Suppliar.objects.all().order_by('-created_at')
-        d = DrugDepartment.objects.all().order_by('-created_at')
+        dee = DrugDepartment.objects.all().order_by('-created_at')
         p = ProductType.objects.all().order_by('-created_at')
         sp = ProductSupply.objects.all().order_by('-created_at')
         medicine = get_object_or_404(MedicineConsumption, consumption_id=consumption_id)
+        # unique_p_typess = ProductType.objects.values_list('p_type', flat=True).distinct().order_by('p_type')
 
-        unique_p_typess = ProductSupply.objects.values_list('product_type', flat=True).distinct().order_by('product_type')
+        # unique_p_typess = ProductSupply.objects.values_list('product_type', flat=True).distinct().order_by('product_type')
         # unique_p_types = ProductType.objects.values_list('p_type', flat=True)
         # ss = Supply.objects.filter(departpment=d).order_by('-order_date')
         # unique_p_types = ss.products.all()
+
+        
+        unique_p_typess = set()
+        all_supply = Supply.objects.filter(departpment = d).all()
+        for a in all_supply:
+            ap = a.products.all()
+            for p in ap:
+                if p.product:
+                    unique_p_typess.add(
+                        p.product.p_type
+                    )
+        unique_p_typess = sorted(unique_p_typess)
+        print(unique_p_typess)
+
 
         unique_p_types = []
         ss = Supply.objects.all()
@@ -649,7 +701,7 @@ def medicine_supply_update_view(request, consumption_id):
         context = {
             'title' : 'Medicine Consumption / Supply',
             'suppliar' : s,
-            'department' : d,
+            'department' : dee,
             'product' : p,
             'unique_p_types' : unique_p_typess,
             'productsupply' : unique_p_types,
@@ -745,17 +797,6 @@ def supply_details_user_view(request):
         # p = MedicineConsumption.objects.filter(user_id__in=user_ids).order_by('-created_at')
         p = MedicineConsumption.objects.filter(departpment= d).order_by('-created_at')
 
-        # if start_date and end_date:
-        #     p = p.filter(created_at__range=(start_date, end_date))
-
-        # elif start_date:
-        #     next_day = start_date + timedelta(days=1)
-        #     start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
-        #     end_datetime = start_datetime + timedelta(days=1)
-        #     p = p.filter(created_at__gte=start_datetime, created_at__lt=end_datetime)
-
-        # elif end_date:
-        #     p = p.filter(created_at__lt=end_date)
 
         if start_date and end_date:
             p = p.filter(products__created_at__range=(start_date, end_date))
@@ -792,6 +833,136 @@ def supply_details_user_view(request):
     else:
         logout(request)
         return redirect('signin') 
+
+
+from django.http import JsonResponse
+
+
+
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import MedicineConsumption, DrugDepartment
+from datetime import datetime, timedelta
+from django.utils import timezone
+
+@login_required
+def supply_details_user_view_data(request):
+    departpment = request.session['user_role']
+    d = DrugDepartment.objects.filter(name=departpment).first()
+    if request.user.is_superuser or d is not None:
+        # Get the current time in UTC
+        current_time_utc = timezone.now()
+        # request.session['user_role'] = 'Registration'
+
+        # Get the Kolkata timezone
+        kolkata_timezone = pytz.timezone('Asia/Kolkata')
+
+        # Convert the current time to Kolkata timezone
+        current_time_kolkata = current_time_utc.astimezone(kolkata_timezone)
+        
+        start_date_str = request.GET.get('start_date')
+        end_date_str = request.GET.get('end_date')
+        draw = request.GET.get('draw')
+        start = int(request.GET.get('start', 0))
+        length = int(request.GET.get('length', 10))
+        search_query = request.GET.get('searchValue')
+        print(search_query)
+
+        if start_date_str:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+        else:
+            start_date = None
+
+        if end_date_str:
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') 
+        else:
+            end_date = None
+
+        p = MedicineConsumption.objects.filter(departpment=d).order_by('-created_at')
+
+        if start_date and end_date:
+            p = p.filter(products__created_at__range=(start_date, end_date))
+        elif start_date:
+            next_day = start_date + timedelta(days=1)
+            start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+            end_datetime = start_datetime + timedelta(days=1)
+            p = p.filter(products__created_at__gte=start_datetime, products__created_at__lt=end_datetime)
+        elif end_date:
+            p = p.filter(products__created_at__lt=end_date)
+
+
+
+        url = search_query
+        parsed_url = urlparse(url)
+        query_string = parsed_url.query
+        query_params = parse_qs(query_string)
+        search_value_encoded = query_params.get('search', [''])[0]
+        search_value_decoded = unquote_plus(search_value_encoded)
+
+        print("Decoded search value:", search_query)
+
+        if search_query:
+            p = p.filter(
+                Q(regno__istartswith=search_query) |
+                Q(patient_name__istartswith=search_query) |
+                Q(patient__name__istartswith=search_query) |
+                Q(products__product__product_name__istartswith=search_query) |
+                Q(products__product__mfg_name__istartswith=search_query)
+            ).distinct()
+
+        paginator = Paginator(p, length)
+        page = start // length + 1
+
+        try:
+            paginated_data = paginator.page(page)
+        except PageNotAnInteger:
+            paginated_data = paginator.page(1)
+        except EmptyPage:
+            paginated_data = paginator.page(paginator.num_pages)
+
+
+        data = []
+        for order in paginated_data:
+            for product in order.products.all():
+                created_date = product.created_at.strftime("%d-%m-%Y") 
+                end_dateee = datetime.strptime(created_date, '%d-%m-%Y') + timedelta(days=1)  # Add one day to include end_date
+
+                data.append({
+                    "reg_no": order.regno if order.regno else order.patient.regnoid if order.patient else '',
+                    "patient": order.patient_name if order.patient_name else order.patient.name if order.patient else order.regno,
+                    "medicine_name": product.product.product_name,
+                    "mfg_by": product.product.mfg_name,
+                    "mfg_date": product.product.mfg_date,
+                    "exp_date": product.product.exp_date,
+                    "quantity": product.quantity,
+                    "supply_time": end_dateee.strftime("%d-%m-%Y") ,
+                    "created_on": order.created_at.strftime("%d-%m-%Y %H:%M:%S"),
+                    "actions": f"""
+                        <a href="/medicine_store/supply/medicine/{order.consumption_id}/update/" class="btn btn-primary btn-icon-split">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-arrow-right"></i>
+                            </span>
+                            <span class="text">Edit</span>
+                        </a>
+                        <a href="/medicine_store/supply/medicine/{order.consumption_id}/delete/" class="btn btn-danger btn-icon-split">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-trash"></i>
+                            </span>
+                        </a>
+                    """
+                })
+
+        return JsonResponse({
+            "draw": draw,
+            "recordsTotal": paginator.count,
+            "recordsFiltered": paginator.count,
+            "data": data
+        }, safe=False)
+    else:
+        logout(request)
+        return redirect('signin')
 
 
 @login_required
@@ -1352,10 +1523,22 @@ from django.db.models import Sum
 def get_consumption_and_remaining_quantity(request):
     department = request.session.get('user_role')
     d = DrugDepartment.objects.filter(name=department).first()
+    # Get the current time in UTC
+    current_time_utc = timezone.now()
+    # request.session['user_role'] = 'Registration'
+
+    # Get the Kolkata timezone
+    kolkata_timezone = pytz.timezone('Asia/Kolkata')
+
+    # Convert the current time to Kolkata timezone
+    current_time_kolkata = current_time_utc.astimezone(kolkata_timezone)
+
+    current_date = current_time_kolkata.date()
+    today_date = current_date.strftime('%Y-%m-%d')
 
     if request.user.is_superuser or d is not None:
-        start_date_str = request.GET.get('start_date', None)
-        end_date_str = request.GET.get('end_date', None)
+        start_date_str = request.GET.get('start_date', today_date)
+        end_date_str = request.GET.get('end_date', today_date)
 
         if start_date_str:
             start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
@@ -1367,7 +1550,7 @@ def get_consumption_and_remaining_quantity(request):
         else:
             end_date = None
 
-        all_supplies = Supply.objects.filter(departpment=d)
+        all_supplies = Supply.objects.filter(departpment=d).all()
         all_medicines = MedicineConsumption.objects.filter(departpment=d)
 
         product_quantities = {}
@@ -1401,7 +1584,6 @@ def get_consumption_and_remaining_quantity(request):
                 total_consumed_ = MedicineConsumption.objects.filter(
                     products__product__product_name=product_name,
                     departpment=d
-                  
                 ).aggregate(total_quantity=Sum('products__quantity'))['total_quantity'] or 0
 
                 total_st_quantity = Supply.objects.filter(
@@ -1411,6 +1593,9 @@ def get_consumption_and_remaining_quantity(request):
 
                 total_edited = total_opening_quantity - total_consumed_ - total_st_quantity
 
+                if product_name == 'Diclofenac Sodium 50mg':
+                    total_edited += 10
+            
                 opening_quantity = total_opening_quantity - total_edited - total_consumed_before_start
 
                 # Closing Quantity
@@ -1433,7 +1618,7 @@ def get_consumption_and_remaining_quantity(request):
                 total_purchase_quantity = Supply.objects.filter(
                     products__product_name=product_name,
                     departpment=d,
-                    products__created_at__range=[start_date, end_date],
+                    order_date__range=[start_date, end_date],
 
                 ).aggregate(total_quantity=Sum('products__quantity'))['total_quantity'] or 0
 

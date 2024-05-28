@@ -62,7 +62,7 @@
             {% for d in products %}
             <tr>
               <td>{{d.product_name}}</td>
-              <td>{{d.stock_quantity}}</td>
+              <td>{{d.stock_quantity}} {{d.quantity_typeq}}</td>
             </tr>
             {% endfor %}
           </tbody>
