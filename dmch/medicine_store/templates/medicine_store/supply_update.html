@@ -770,7 +770,7 @@
 
       $(document).on("keydown", function (event) {
         var popup = $("#productPopup_{{ forloop.counter }}");
-        var options = popup.find("option");
+        var options = popup.find(".popup-option");
 
         if (popup.is(":visible")) {
           if (event.keyCode === 38) { // Up arrow key
@@ -821,9 +821,9 @@
       });
 
 
-      $("#productPopup_{{ forloop.counter }}").on("click", "option", function () {
-        var productName = $(this).text();
-        var productId = $(this).val(); // Get the value of the selected option
+      $("#productPopup_{{ forloop.counter }}").on("click", ".popup-option", function () {
+        var productName = $(this).find('span').first().text().trim();
+        var productId = $(this).data('product-id');  // Get the value of the selected option
         console.log(productId, productName)
         $("#searchMedicine_{{ forloop.counter }}").val(productName);
         $(`#product_name_{{ forloop.counter }}`).val(productId);
