@@ -23,6 +23,12 @@ urlpatterns = [
     path('get_product_names_by_type_purchase/', views.get_product_names_by_type_purchase, name='get_product_names_by_type_purchase'),
     path('get_product_details/', views.get_product_details, name='get_product_details'),
 
+
+    path('get_batches_by_product/', views.get_batches_by_product, name='get_batches_by_product'),
+    path('get_product_names_by_type_purchases/', views.get_product_names_by_type_purchases, name='get_product_names_by_type_purchases'),
+    path('get_product_detailss/', views.get_product_detailss, name='get_product_detailss'),
+
+
     # Order URLs
     path('order/add/', views.order_add_view, name='order-add'),
     path('order/view/', views.order_details_view, name='order_details_view'),
@@ -45,7 +51,7 @@ urlpatterns = [
     path('supply/view/print/', views.supply_details_view_print, name='drug_supply_details_view_print'),
     path('supply/view/', views.supply_details_view, name='drug_supply_details_view'),
     path('supply/<str:supply_id>/update/', views.supply_update_view, name='supply-update'),
-    path('supply/<str:supply_id>/delete/', views.supply_delete_view, name='supply-delete'),
+    path('supply/<str:productdetails_id>/delete/', views.supply_delete_view, name='supply-delete'),
 
     path('expired/medicine/', views.expired_medicine, name='expired_medicine'),
     path('expired/medicine/print/', views.expired_medicine_print, name='expired_medicine_print'),

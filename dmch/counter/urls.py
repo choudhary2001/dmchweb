@@ -29,6 +29,11 @@ urlpatterns = [
     path('show-department-report/', views.department_wise_report, name="department_wise_report"),
     path('show-patients-ipd-data/', views.show_patients_data_ipd, name="show_patients_data_ipd"),
 
-    path('show-patient-ipd/', views.show_patients_ipd, name="show_patients_ipd")
+    path('show-patient-ipd/', views.show_patients_ipd, name="show_patients_ipd"),
     # path('opd-patients/', views.OPDPatientListCreateView.as_view(), name='opd-patient-list-create'),
+
+    path('report', views.find_user_report_data, name='find_user_report_data'),
+    path('alldata', views.find_user_all_report_data, name='find_user_all_report_data'),
+
+
 ]

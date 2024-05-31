@@ -1,27 +1,21 @@
-{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+{% extends 'counter/base.html' %} 
+{% block css %} 
+{% endblock %} 
+{% block content %}
 <!-- Begin Page Content -->
 <div class="container-fluid">
   <!-- Page Heading -->
   <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
-  {% if messages %} {% for message in messages %}
+  {% if messages %} 
+  {% for message in messages %}
   <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
-
-  {% endfor %} {% endif %}
+  {% endfor %} 
+  {% endif %}
   <div style="display: flex"></div>
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
       <form action="{% url 'stock_details_view_print' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
-        <!-- <div style="flex: 1">
-          <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
-        </div>
-        <div style="">
-          <span>-</span>
-        </div>
-        <div style="flex: 1">
-          <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
-        </div> -->
-
         <div style="flex: 1">
           <select id="quantity_filter" class="form-control mb-2 mb-md-0">
             <option value="all">Show All</option>
@@ -29,12 +23,11 @@
             <option value="equal_0">Equal to 0</option>
           </select>
         </div>
-
-        <!-- <div style="flex: 1">
-          <button class="btn btn-primary w-100" type="submit">Filter</button>
-        </div> -->
         <div style="flex: 1">
-          <button class="btn btn-primary w-100" onclick="printTable()">Print Table</button>
+          <input type="search" class="form-control mb-2 mb-md-0" />
+        </div>
+        <div style="flex: 1">
+          <button class="btn btn-primary w-100" onclick="printTable()">Print</button>
         </div>
       </form>
     </div>
@@ -46,14 +39,10 @@
               <td>SL. No.</td>
               <th>Product Type</th>
               <th>Product Name</th>
-              <!-- <th>Mfg By</th>
-              <th>Mfg Date</th>
-              <th>Exp Date</th> -->
               <th>In Stock</th>
             </tr>
           </thead>
           <tbody id="testReportTableBody">
-            
             {% for order in purchase %}
             {% for product in order.products.all %}
             <tr>
@@ -62,7 +51,6 @@
               <td>{{ product.stock_quantity }}</td>
             </tr>
             {% endfor %}
-
             {% endfor %}
           </tbody>
         </table>
@@ -70,14 +58,12 @@
     </div>
   </div>
 </div>
-
-{% endblock %} {% block script %}
+{% endblock %} 
+{% block script %}
 <script>
   // Get all the <tr> elements within the table body
   var tableBody = document.getElementById('testReportTableBody');
   var trElements = tableBody.querySelectorAll('tr');
-
-
 
   document.getElementById('quantity_filter').addEventListener('change', function() {
     var filterValue = this.value;
@@ -96,13 +82,6 @@
       }
     }
   });
-
-
-</script>
-<script>
-  // Get all the <tr> elements within the table body
-  var tableBody = document.getElementById('testReportTableBody');
-  var trElements = tableBody.querySelectorAll('tr');
 
   // Create an object to store combined products
   var combinedProducts = {};
@@ -128,25 +107,17 @@
   // Remove existing table rows
   tableBody.innerHTML = '';
 
+  // Convert combinedProducts object to array and sort it alphabetically by product name
+  var sortedProducts = Object.values(combinedProducts).sort((a, b) => a.productName.localeCompare(b.productName));
+
   // Loop through combined products and add them to the table
   var index = 1;
-  for (var key in combinedProducts) {
-    var product = combinedProducts[key];
+  sortedProducts.forEach(product => {
     var newRow = document.createElement('tr');
     newRow.innerHTML = '<td>' + index++ + '.</td><td>' + product.productType + '</td><td>' + product.productName + '</td><td>' + product.stockQuantity + '</td>';
     tableBody.appendChild(newRow);
-  }
-</script>
-<script>
-    $(document).ready(function() {
-        $(document).keydown(function(event) {
-            if (event.ctrlKey && event.key === 'p') {
-                event.preventDefault();  // Prevent the default print dialog
-                printTable();  // Call the custom print function
-            }
-        });
-    });
-    
+  });
+
   // Function to print the table
   function printTable() {
     // Show the hidden print content
@@ -160,5 +131,15 @@
     $("body").html(originalContents);
     window.location.reload();
   }
+
+  $(document).ready(function() {
+    $(document).keydown(function(event) {
+      if (event.ctrlKey && event.key === 'p') {
+        event.preventDefault();  // Prevent the default print dialog
+        printTable();  // Call the custom print function
+      }
+    });
+  });
+
 </script>
 {% endblock %}

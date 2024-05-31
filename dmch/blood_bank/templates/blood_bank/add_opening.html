@@ -1,0 +1,135 @@
+{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<style>
+  label {
+    width: 230px;
+  }
+  .form-group {
+    margin-bottom: 0.2rem;
+    line-height: 0.5rem;
+    align-items: center;
+  }
+  .form-control {
+    padding: ".15rem .75rem";
+  }
+</style>
+<div class="container-fluid">
+  <!-- Page Heading -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+
+  {% endfor %} {% endif %}
+  <form id="patientForm" method="POST" action="{% url 'add_opening_stock' %}">
+    {% csrf_token %}
+
+    <div class="row">
+        <!-- Left Column (Patient Details) -->
+
+
+
+        <div class="col-md-4 mb-3">
+            <label for="segment_no">Segment No.:</label>
+            <input type="text" class="form-control" id="segment_no" name="segment_no"  />
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="bag_no">Bag No.:</label>
+            <input type="text" class="form-control" id="bag_no" name="bag_no"  />
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="blood_group">Blood Group:</label>
+            <select  id="blood_group" class="form-control" name="blood_group" >
+                <option value="">Select Blood Group</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+            </select>
+        </div>
+          
+        <div class="col-md-4 mb-3">
+            <label for="types">Bag Type:</label>
+            <select  id="types" class="form-control" name="types" >
+                <option value="">Select Type</option>
+                <option value="Single">Single</option>
+                <option value="Tripple">Tripple</option>
+            </select>
+        </div>
+
+        <div class="col-md-4 mb-3" >
+          <label for="add_date">Opening Date :</label>
+          <input type="date" id="add_date" value="{{ current_time_kolkata|date:'Y-m-d' }}" class="form-control" name="add_date" />
+      </div>
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+<!-- End of Main Content -->
+{% endblock %} {% block script %}
+
+<script>
+
+  // Function to handle form submission
+  function handleFormSubmission(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Your additional logic for form validation or processing goes here
+
+    // Select all input fields in the form
+    const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
+
+    // Flag to keep track of form validity
+    let isValid = true;
+
+    // Loop through each input field
+    inputs.forEach(function (input) {
+      // Check if the input field is  and does not have a value
+      if (input.hasAttribute("") && !input.value.trim()) {
+        // If a  field is empty, set isValid to false
+        isValid = false;
+        // Highlight the empty field (you can customize this part)
+        input.style.border = "1px solid red";
+      } else {
+        // Remove any previous highlighting
+        input.style.border = "";
+      }
+    });
+
+    // If the form is valid, submit it
+    if (isValid) {
+      document.getElementById("patientForm").submit();
+    } else {
+      // If the form is invalid, display an alert (you can customize this part)
+      //   alert("Please fill out all  fields.");
+    }
+  }
+
+  // Function to handle keyboard shortcuts
+  function handleShortcut(event) {
+    // if (event.ctrlKey && event.key === "s") {
+    if (event.key === "F2") {
+      // Ctrl + S pressed, trigger form submission
+      handleFormSubmission(event);
+    }
+  }
+
+  // Attach event listener for form submission
+  document.getElementById("patientForm").addEventListener("submit", handleFormSubmission);
+
+  // Attach event listener for keyboard shortcuts
+  document.addEventListener("keydown", handleShortcut);
+</script>
+
+
+
+{% endblock %}

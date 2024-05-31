@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'radiology',
     'cardiology',
     'ipd',
-    'blood_bank'
+    'blood_bank',
+    'record_room'
 ]
 
 MIDDLEWARE = [
@@ -298,8 +299,31 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# STORAGES = {
+#     "staticfiles": {
+#         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+#     },
+# }
+
+
+# settings.py
+
+# Import the necessary module
+from django.core.files.storage import FileSystemStorage
+# Storage backend settings
 STORAGES = {
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        'OPTIONS': {
+            'location': os.path.join(BASE_DIR, 'media/'),
+            'base_url': '/media/',
+        },
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
     },
 }
+
+# URL configuration for serving media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')

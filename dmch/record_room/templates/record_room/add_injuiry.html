@@ -1,0 +1,156 @@
+{% extends 'counter/base.html' %} {% block css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+{% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<style>
+  label {
+    width: 230px;
+  }
+  .form-group {
+    margin-bottom: 0.2rem;
+    line-height: 0.5rem;
+    align-items: center;
+  }
+  .form-control {
+    padding: ".15rem .75rem";
+  }
+  .select2-selection{
+    width:380px;
+  }
+</style>
+
+<div class="container-fluid">
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+  {% endfor %} {% endif %}
+
+  <!-- Page Heading -->
+  <form id="patientForm" method="POST" action="{% url 'add_injuiry_report' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="row">
+        <!-- Left Column (Patient Details) -->
+        <div class="col-md-4 mb-3">
+            <label for="patient_id">Patient Id:</label>
+            <input type="text" class="form-control" id="patient_id" name="patient_id" required />
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="patient_name">Patient Name :</label>
+            <input type="text" class="form-control" id="patient_name" name="patient_name" required  />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="department">Department :</label>
+            <input type="text" class="form-control" id="department" name="department" required  />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="document">Upload Document:</label>
+            <input type="file" class="form-control" id="document" name="document"  />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="month">Month:</label>
+            <select id="month" class="form-control" name="month" required>
+                <option value="">Select Month</option>
+                <option value="January">January</option>
+                <option value="February">February</option>
+                <option value="March">March</option>
+                <option value="April">April</option>
+                <option value="May">May</option>
+                <option value="June">June</option>
+                <option value="July">July</option>
+                <option value="August">August</option>
+                <option value="September">September</option>
+                <option value="October">October</option>
+                <option value="November">November</option>
+                <option value="December">December</option>
+            </select>
+        </div>
+        
+
+        <div class="col-md-4 mb-3">
+            <label for="year">Year :</label>
+            <input type="text" class="form-control" id="year" name="year" required  />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="reason">Reason for Injuiry :</label>
+            <input type="text" class="form-control" id="reason" name="reason" required  />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="icd">ICD-10 :</label>
+            <input type="text" class="form-control" id="icd" name="icd" required  />
+        </div>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+</div>
+
+<!-- End of Main Content -->
+{% endblock %} {% block script %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("patient_id").focus();
+  });
+</script>
+
+<script>
+  // Function to handle form submission
+  function handleFormSubmission(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Your additional logic for form validation or processing goes here
+
+    // Select all input fields in the form
+    const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
+
+    // Flag to keep track of form validity
+    let isValid = true;
+
+    // Loop through each input field
+    inputs.forEach(function (input) {
+      // Check if the input field is required and does not have a value
+      if (input.hasAttribute("required") && !input.value.trim()) {
+        // If a required field is empty, set isValid to false
+        isValid = false;
+        // Highlight the empty field (you can customize this part)
+        input.style.border = "1px solid red";
+      } else {
+        // Remove any previous highlighting
+        input.style.border = "";
+      }
+    });
+
+    // If the form is valid, submit it
+    if (isValid) {
+      document.getElementById("patientForm").submit();
+    } else {
+      // If the form is invalid, display an alert (you can customize this part)
+      //   alert("Please fill out all required fields.");
+    }
+  }
+
+  // Function to handle keyboard shortcuts
+  function handleShortcut(event) {
+    // if (event.ctrlKey && event.key === "s") {
+    if (event.key === "F2") {
+      // Ctrl + S pressed, trigger form submission
+      handleFormSubmission(event);
+    }
+  }
+
+  // Attach event listener for form submission
+  document.getElementById("patientForm").addEventListener("submit", handleFormSubmission);
+
+  // Attach event listener for keyboard shortcuts
+  document.addEventListener("keydown", handleShortcut);
+</script>
+
+{% endblock %}

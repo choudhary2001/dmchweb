@@ -22,6 +22,8 @@ from urllib.parse import urlparse, parse_qs, unquote_plus
 from collections import Counter
 from django.db.models import Count
 from collections import defaultdict
+import requests
+
 # Get the Kolkata timezone
 kolkata_timezone = pytz.timezone('Asia/Kolkata')
 
@@ -200,16 +202,7 @@ def extract_duration(duration_str):
 @login_required
 def create_patient_registration(request):
     if request.user.is_superuser or request.session['user_role'] == 'Pathology':
-        # Patient_registration.objects.all().delete()
-        # Test_report.objects.all().delete()
-        # Urine_test.objects.all().delete()
-        # Stool_test.objects.all().delete()
-        # Ctest_report.objects.all().delete()
-        # Cbc_test.objects.all().delete()
-        # Serology_test.objects.all().delete()
         current_time_utc = timezone.now()
-        # request.session['user_role'] = 'Registration'
-
         # Get the Kolkata timezone
         kolkata_timezone = pytz.timezone('Asia/Kolkata')
 
@@ -242,9 +235,9 @@ def create_patient_registration(request):
                         p = None
                 # tc = Testcode.objects.filter(id = test_name).first()
                 if p is not None:
-                    if mob_no is not None:
-                        p.mobno = mob_no
-                        p.save()
+                    # if mob_no is not None:
+                    #     p.mobno = mob_no
+                    #     p.save()
                     patient = Patient_registration.objects.create(
                         user = request.user,
                         department=department,
@@ -257,7 +250,7 @@ def create_patient_registration(request):
                     )
                 else:
                     years, months, days = extract_duration(age)
-                    p = Patient(
+                    pp = Patient.objects.create(
                         regnoid = reg_no,
                         user = request.user,
                         name = patient_name,
@@ -268,13 +261,13 @@ def create_patient_registration(request):
                         mobno = mob_no,
                         de = 'Pathology'
                     )
-                    p.save()
+                    # p.save()
                     patient = Patient_registration.objects.create(
                         user = request.user,
                         department=department,
                         bill_no=bill_no,
                         lab_no=lab_no,
-                        reg_no=p,
+                        reg_no=pp,
                         referby=doctor,
                         test_name=test_name,
                         patient_name=patient_name,
@@ -453,7 +446,7 @@ def patient_registration_view_data(request):
             patients_data.append({
                 'id': patient.id,
                 'regid': patient_reg_no,
-                'name': patient.patient_name,
+                'name': patient.reg_no.name,
                 'mobile': patient_mobile,
                 'test_name': patient.test_name,
                 'bill_no': patient.bill_no,
@@ -842,8 +835,37 @@ def create_test_report(request):
                 
                 # Create test_report instance
                 test_report_obj = Test_report.objects.create(**data)
+                # test_report_obj = None
                 messages.success(request, 'Test Report created successfully')
                 # Redirect or render a success page as needed
+                try:
+                    mob_no = pr.reg_no.mobno
+                    # mob_no = '7654531678'
+                    if mob_no:
+                        url = "https://www.fast2sms.com/dev/bulkV2"
+
+                        payload = (
+                            f"sender_id=DMCH&"
+                            f"message=169254&"
+                            f"variables_values={pr.reg_no.name}|{mob_no}|{mob_no}&"
+                            f"route=dlt&"
+                            f"flash=1&"
+                            f"numbers={mob_no}"
+                        )
+                        print(payload)
+
+                        headers = {
+                            'authorization': "XWNHkDJmUba43l29xi1QCoI8ZsqBnGzgLfuEYS5p7AdhMc6eOrd7iLOaZQy21eosWJGHlFuI4TM3D9kV",
+                            'Content-Type': "application/x-www-form-urlencoded",
+                            'Cache-Control': "no-cache",
+                        }
+
+                        response = requests.request("POST", url, data=payload, headers=headers)
+                        print(response.text)
+
+                except Exception as e:
+                    print(e)
+
                 return render(request, 'print_report_test_report.html', {"test_report" : test_report_obj})
 
             else:

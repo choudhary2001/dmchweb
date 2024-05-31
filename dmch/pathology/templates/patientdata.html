@@ -97,7 +97,7 @@
             {% for d in patients %}
             <tr>
               <td>{% if d.reg_no %}{% if d.reg_no.de == 'Pathology' %}{{d.reg_no.regnoid}}{% else %}{{d.reg_no.regid}}{% endif %}{% endif %}</td>
-              <td>{{d.patient.reg_no.name}}</td>
+              <td>{{d.reg_no.name}}</td>
               <td>{% if d.test_name %}{{d.test_name}}{% endif %}</td>
               <td>{{d.reg_no.mobno}}</td>
               <td>{{d.bill_no}}</td>

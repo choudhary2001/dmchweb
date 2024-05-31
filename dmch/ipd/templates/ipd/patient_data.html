@@ -9,7 +9,7 @@
   {% endfor %} {% endif %}
 
   <div class="card py-2" style="display: flex; flex-direction: row; justify-content: space-between; padding-left: 5px; padding-right: 5px">
-    <form action="{% url 'show_patients_report' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+    <form action="{% url 'show_ipd_patients_report' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
       <div style="flex: 1">
         <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
       </div>

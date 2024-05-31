@@ -1,0 +1,134 @@
+{% extends 'counter/base.html' %} 
+{% load static %}
+{% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+  {% endfor %} {% endif %}
+
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card py-2" style="display: flex; flex-direction: row; justify-content: space-between; padding-left: 5px; padding-right: 5px">
+      <form action="{% url 'print_bht_report' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+        <div style="flex: 1">
+          <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+        </div>
+        <div style="">
+          <span>-</span>
+        </div>
+        <div style="flex: 1">
+          <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+        </div>
+        <div class="">
+            <select class="form-control" id="month" name="month">
+                <option value="All">Select Month</option>
+                <option value="January">January</option>
+                <option value="February">February</option>
+                <option value="March">March</option>
+                <option value="April">April</option>
+                <option value="May">May</option>
+                <option value="June">June</option>
+                <option value="July">July</option>
+                <option value="August">August</option>
+                <option value="September">September</option>
+                <option value="October">October</option>
+                <option value="November">November</option>
+                <option value="December">December</option>
+            </select>
+        </div>
+        <div style="">
+          <select name="doctor" class="form-control mb-2 mb-md-0">
+            <option>Select Department</option>
+            <option value="All">All</option>
+            {% for d in unique_departments %}
+            <option value="{{d}}">{{d}}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div style="flex: 1">
+          <button class="btn btn-primary w-100" type="submit">Filter</button>
+        </div>
+        <div style="flex: 1">
+          <a href="#;" class="btn btn-primary" onclick="printTable()" id="printButton">Print</a>
+        </div>
+         <!-- <div style="flex: 2">
+          <a href="#;" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</a>
+        </div> -->
+      </form>
+    </div>
+    <div class="card-body" id="printablecontent" >
+      <div class="table-responsive">
+        <table class="table table-bordered" id="" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+                <th>Patient Id</th>
+                <th>Patient Name</th>
+                <th>Department</th>
+                <th>Month</th>
+                <th>Year</th>
+                <th>Reason</th>
+                <th>ICD</th>
+                <th>Document</th>
+                <th>Created At</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for bht in report %}
+            <tr>
+                <td>{{ bht.patient_id }}</td>
+                <td>{{ bht.patient_name }}</td>
+                <td>{{ bht.department }}</td>
+                <td>{{ bht.month }}</td>
+                <td>{{ bht.year }}</td>
+                <td>{{ bht.reason }}</td>
+                <td>{{ bht.icd }}</td>
+                <td><a target="_blank" href="{{ bht.document.url }}">{{bht.document.name}}</a></td>
+                <td>{{ bht.created_at }}</td>
+            </tr>
+
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %} {% block script %}
+<script>
+
+  // Function to print the table
+  function printTable() {
+    var printContents = document.getElementById('printablecontent').innerHTML;
+    var originalContents = document.body.innerHTML;
+    var printWindow = window.open('', '', 'height=600,width=800');
+    printWindow.document.write('<html><head><title>Print Report</title>');
+    printWindow.document.write('<link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">'); // Adjust the path to your CSS if needed
+    printWindow.document.write('</head><body>');
+    printWindow.document.write(printContents);
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+    printWindow.close();
+}
+
+  function exportToExcel() {
+    var location = 'data:application/vnd.ms-excel;base64,';
+    var excelTemplate = '<html> ' +
+      '<head> ' +
+      '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/> ' +
+      '</head> ' +
+      '<body> ' +
+      document.getElementById("printablecontent").innerHTML +
+      '</body> ' +
+      '</html>'
+    window.location.href = location + window.btoa(excelTemplate);
+  }
+</script>
+{% endblock %}

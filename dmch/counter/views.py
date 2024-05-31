@@ -19,7 +19,7 @@ from django.db.models import Count, Sum
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from urllib.parse import urlparse, parse_qs, unquote_plus
-
+from pathology.models import *
 # Get the current time in UTC
 current_time_utc = timezone.now()
 from django.db.models import Q
@@ -64,11 +64,17 @@ def signin(request):
                 if p.user_role == 'Radiology':
                     return redirect('/radiology/add-report/')
 
+                if p.user_role == 'Cardiology':
+                    return redirect('/cardiology/add-report/')
+
                 if p.user_role == 'IPD':
                     return redirect('/ipd/add-patients/')
 
                 if p.user_role == 'Blood Bank':
                     return redirect('/blood-bank/issue-blood/')
+
+                if p.user_role == 'Record Room':
+                    return redirect('/record-room/add-bht/')
                     
                 if d is not None:
                     request.session['user_role_store'] = "Medicine Store"
@@ -1408,7 +1414,7 @@ def show_patients_data_ipd(request):
         # Your existing code here
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
-        department = request.GET.get('department')
+        department_id = request.GET.get('department')
         # start_date = request.GET.get('start_date', None)
         # end_date = request.GET.get('end_date', None)
 
@@ -1449,7 +1455,7 @@ def show_patients_data_ipd(request):
         search_value_encoded = query_params.get('search', [''])[0]
         search_value_decoded = unquote_plus(search_value_encoded)
 
-        print("Decoded search value:", search_value_decoded)
+        # print("Decoded search value:", search_value_decoded)
 
         # Filter patients based on search query
         if search_query:
@@ -1463,6 +1469,19 @@ def show_patients_data_ipd(request):
                 Q(revisit__icontains=search_query) |
                 Q(redcardtype__icontains=search_query)
             )
+
+
+        
+        department = None
+        if department_id != None:
+            if department_id != 'All':
+                de = Department.objects.filter(department_id = department_id).first()
+                print(de)
+                if de:
+                    patients = patients.filter(department = de, de = None)
+                    print(patients)
+                    department = de.name
+
 
         if start_date and end_date:
             # end_date = end_date + timedelta(days=1) 
@@ -1484,7 +1503,7 @@ def show_patients_data_ipd(request):
             patients = paginator.page(1)
         except EmptyPage:
             patients = paginator.page(paginator.num_pages)
-        print(patients)
+        # print(patients)
         # Serialize patients data
         patients_data = []
         for patient in patients:
@@ -1605,6 +1624,8 @@ def show_patients_ipd(request):
         # Get visit type counts for filtered patients
         visittype_counts = patients.values('visittype').annotate(total_count=Count('visittype')).order_by()
 
+        d = Department.objects.all()
+
         context = {
             'patients': patients,
             'title': f'Total Patients: {total}',
@@ -1616,7 +1637,8 @@ def show_patients_ipd(request):
             'free_total' : free_total,
             'revisit_total' : revisit_total,
             'start_date_str' : start_date_str,
-            'end_date_str' : end_date_str
+            'end_date_str' : end_date_str,
+            'departments' : d
         }
         print(context)
         return render(request, 'counter/patientsdataipd.html', context=context)
@@ -1630,3 +1652,44 @@ def signout(request):
     logout(request)
     request.session.clear()
     return redirect('signin') 
+
+
+def find_user_report_data(request):
+    mobile = request.GET.get('mobile')
+    patients = Patient.objects.filter(mobno=mobile).all()
+    print(patients)
+    test_reports = []
+    for patient in patients:
+        print(Patient_registration.objects.filter(reg_no = patient).all())
+        pr = Patient_registration.objects.filter(reg_no = patient).all()
+        for p in pr:
+            print(Test_report.objects.filter(patient=p).all())
+            test_reports.extend(Test_report.objects.filter(patient=p).all())
+            print(test_reports)
+    context = {
+        'test_reports': test_reports,
+        'patients' : patients
+    }
+    return render(request, 'counter/test_report.html', context=context)
+
+
+
+
+
+def find_user_all_report_data(request):
+    mobile = request.GET.get('mobile')
+    patients = Patient.objects.filter(mobno=mobile).all()
+    print(patients)
+    test_reports = []
+    for patient in patients:
+        print(Patient_registration.objects.filter(reg_no = patient).all())
+        pr = Patient_registration.objects.filter(reg_no = patient).all()
+        for p in pr:
+            print(Test_report.objects.filter(patient=p).all())
+            test_reports.extend(Test_report.objects.filter(patient=p).all())
+            print(test_reports)
+    context = {
+        'test_reports': test_reports,
+        'patients' : patients
+    }
+    return render(request, 'counter/all_data.html', context=context)

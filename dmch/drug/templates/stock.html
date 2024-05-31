@@ -1,12 +1,16 @@
-{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+{% extends 'counter/base.html' %} 
+{% block css %} 
+{% endblock %} 
+{% block content %}
 <!-- Begin Page Content -->
 <div class="container-fluid">
   <!-- Page Heading -->
   <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
-  {% if messages %} {% for message in messages %}
+  {% if messages %} 
+  {% for message in messages %}
   <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
-
-  {% endfor %} {% endif %}
+  {% endfor %} 
+  {% endif %}
   <marquee behavior="scroll" direction="left">
     <a href="{% url 'expired_medicine' %}" style="color: red;">
       <ul style="list-style: none; display: flex;" >
@@ -20,35 +24,34 @@
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <form action="{% url 'stock_details_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
-        <!-- <div style="flex: 1">
+      <form action="{% url 'stock_details_view_print' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+        <div style="flex: 1">
           <select id="quantity_filter" class="form-control mb-2 mb-md-0">
             <option value="all">Show All</option>
             <option value="more_than_0">More than 0</option>
             <option value="equal_0">Equal to 0</option>
           </select>
-        </div> -->
-        <div >
-          <a href="{% url 'stock_details_view_print' %}" class="btn btn-primary w-100">Print</a>
+        </div>
+        <div style="flex: 1">
+          <input type="search" id="search_box" class="form-control mb-2 mb-md-0" placeholder="Search by product name" />
+        </div>
+        <div style="flex: 1">
+          <button class="btn btn-primary w-100" onclick="printTable()">Print</button>
         </div>
       </form>
     </div>
-    <div class="card-body">
+    <div class="card-body" id="printablecontent">
       <div class="table-responsive">
-        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <table class="table table-bordered" id="product_table" width="100%" cellspacing="0">
           <thead>
             <tr>
               <td>SL. No.</td>
               <th>Product Type</th>
               <th>Product Name</th>
-              <!-- <th>Mfg By</th>
-              <th>Mfg Date</th>
-              <th>Exp Date</th> -->
               <th>In Stock</th>
             </tr>
           </thead>
           <tbody id="testReportTableBody">
-            
             {% for order in purchase %}
             {% for product in order.products.all %}
             <tr>
@@ -57,7 +60,6 @@
               <td>{{ product.stock_quantity }}</td>
             </tr>
             {% endfor %}
-
             {% endfor %}
           </tbody>
         </table>
@@ -66,14 +68,13 @@
   </div>
 </div>
 
-{% endblock %} {% block script %} 
+{% endblock %} 
+{% block script %} 
 
 <script>
   // Get all the <tr> elements within the table body
   var tableBody = document.getElementById('testReportTableBody');
   var trElements = tableBody.querySelectorAll('tr');
-
-
 
   document.getElementById('quantity_filter').addEventListener('change', function() {
     var filterValue = this.value;
@@ -93,12 +94,19 @@
     }
   });
 
+  document.getElementById('search_box').addEventListener('input', function() {
+    var searchValue = this.value.toLowerCase();
+    console.log(searchValue)
+    for (var i = 0; i < trElements.length; i++) {
+      var productName = trElements[i].children[2].textContent.trim().toLowerCase();
 
-</script>
-<script>
-  // Get all the <tr> elements within the table body
-  var tableBody = document.getElementById('testReportTableBody');
-  var trElements = tableBody.querySelectorAll('tr');
+      if (productName.startsWith(searchValue)) {
+        trElements[i].style.display = '';
+      } else {
+        trElements[i].style.display = 'none';
+      }
+    }
+  });
 
   // Create an object to store combined products
   var combinedProducts = {};
@@ -124,14 +132,38 @@
   // Remove existing table rows
   tableBody.innerHTML = '';
 
+  var sortedProducts = Object.values(combinedProducts).sort((a, b) => a.productName.localeCompare(b.productName));
+
   // Loop through combined products and add them to the table
   var index = 1;
-  for (var key in combinedProducts) {
-    var product = combinedProducts[key];
+
+  sortedProducts.forEach(product => {
     var newRow = document.createElement('tr');
     newRow.innerHTML = '<td>' + index++ + '.</td><td>' + product.productType + '</td><td>' + product.productName + '</td><td>' + product.stockQuantity + '</td>';
     tableBody.appendChild(newRow);
+  });
+
+  // Function to print the table
+  function printTable() {
+    // Show the hidden print content
+    // Print only the content inside the printContent div
+    var printContents = $("#printablecontent").html();
+    var originalContents = $("body").html();
+    $("body").empty().html(printContents);
+
+    // Trigger the print dialog
+    window.print();
+    $("body").html(originalContents);
+    window.location.reload();
   }
+
+  $(document).ready(function() {
+    $(document).keydown(function(event) {
+      if (event.ctrlKey && event.key === 'p') {
+        event.preventDefault();  // Prevent the default print dialog
+        printTable();  // Call the custom print function
+      }
+    });
+  });
 </script>
 {% endblock %}
-

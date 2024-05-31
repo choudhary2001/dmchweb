@@ -1,211 +1,191 @@
-{% extends 'counter/base.html' %} {% block css %} 
+{% extends 'counter/base.html' %}
+
+{% block css %}
 <style>
     th, td, tr {
-        font-size: 0.8 rem;
+        font-size: 0.8rem;
     }
 </style>
-{% endblock %} {% block content %}
-<!-- Begin Page Content -->
+{% endblock %}
+
+{% block content %}
 <div class="container-fluid">
-  <!-- Page Heading -->
-  <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
-  {% if messages %} {% for message in messages %}
-  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
-
-  {% endfor %} {% endif %}
-
-  <div class="card py-2" style="display: flex; flex-direction: row; justify-content: space-between; padding-left: 5px; padding-right: 5px">
-    <form action="{% url 'blood_stocks' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
-      <div style="flex: 1">
-        <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
-      </div>
-      <div style="">
-        <span>-</span>
-      </div>
-      <div style="flex: 1">
-        <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
-      </div>
-      <!-- <div style="flex: 3">
-        <select name="department" class="form-control mb-2 mb-md-0">
-          <option>Select Department</option>
-          <option value="All">All</option>
-          {% for d in departments %}
-          <option value="{{d.department_id}}">{{d.name}}</option>
-          {% endfor %}
-        </select>
-      </div> -->
-      <!-- <div style="flex: 2">
-        <select name="user_id" class="form-control mb-2 mb-md-0">
-          <option value="All"  >Select Staff</option>
-          <option value="All">All</option>
-          {% for d in registration_users %}
-          <option value="{{d.id}}">{{d.first_name}} {{d.last_name}}</option>
-          {% endfor %}
-        </select>
-      </div> -->
-      <div style="flex: 3">
-
-        <input type="search"  id="search" class="form-control mb-2 mb-md-0" placeholder="Search .." />
-      </div>
-      <div style="flex: 1">
-        <button class="btn btn-primary w-100" type="submit">Filter</button>
-      </div>
-      <div style="flex: 1">
-        <a href="#;" class="btn btn-primary" id="printButton">Print</a>
-      </div>
-       <div style="flex: 3">
-        <a href="#;" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</a>
-      </div>
-    </form>
-  </div>
-
-  <!-- DataTales Example -->
-  <div class="card shadow mb-4" id="printablecontent">
-    <!-- <div class="card-header d-flex flex-wrap">
-      <div class="d-flex flex-wrap">
-        <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">Date Range : {% if start_date %}{{ start_date }}{% endif %} {% if end_date %}{{ end_date }}{% endif %}</div>
-
-        <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">Department : {% if department %}{{ department }}{% else %} All {% endif %}</div>
-        <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">Total Patient : {{ total_p }}</div>
-        <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">Total Amount : Rs {{ total_amount }} /-</div>
-      </div>
-      <div class="d-flex flex-wrap">
-        <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">Red Card - {{ redcard }}</div>
-        <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">RB Case - {{ rbcase }}</div>
-        <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">ANC Free - {{ free_total }}</div>
-        <div class="card" style="width: 15%; padding: 15px">Re Visit - {{revisit_total}}</div>
-        {% for v in visittype_counts %}
-        <div class="card" style="flex: 25% 50% 100%; max-width: 100%; padding: 15px">{{ v.visittype }} - {{ v.total_count }}</div>
+    {% if messages %}
+        {% for message in messages %}
+            <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
         {% endfor %}
-      </div>
-    </div> -->
+    {% endif %}
+    
+    <div class="card py-2" style="display: flex; flex-direction: row; justify-content: space-between; padding: 5px;">
+      <form action="{% url 'blood_stocks' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+        <div style="form-group">
+          <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" value="{{ start_date_str }}" />
+        </div>
+        <div style="">
+          <span>-</span>
+        </div>
+        <div style="form-group">
+          <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" value="{{ end_date_str }}" />
+        </div>
+        <div style="form-group">
+            <input type="search" id="search" class="form-control mb-2 mb-md-0" placeholder="Search .." />
+        </div>
 
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-bordered" id="" width="100%" cellspacing="0">
-          <thead>
-            <tr>
-              <th>Segment No.</th>
-              <th>Bag No.</th>
-              <th>Blood Group</th>
-              <th>Bag Type</th>
-              <th>Blood Type</th>
-              <th>Status</th>
-              <th>IssueDate</th>
-              <!-- <th>Edit</th> -->
-            </tr>
-          </thead>
- 
-          <tbody>
-            {% for d in stock %}
-            <tr>
-              <td>{{d.segment_no}}</td>
-              <td>{{d.bag_no}}</td>
-              <td>{{d.blood_group}}</td>
-              <td>{{d.bag_type}}</td>
-              <td>{{d.blood_type}}</td>
-              <td style="{% if d.status == 'Expire' %}color:red !important; {% endif %}" >
-                
-                <!-- {{d.status}} -->
-                <select class="status-dropdown" data-id="{{ d.id }}" data-blood_type="{{d.blood_type}}">
-                    <option value="Active" {% if d.status == 'Active' %}selected{% endif %}>Active</option>
-                    <option value="Expire" {% if d.status == 'Expire' %}selected{% endif %}>Expire</option>
-                    <option value="Discard" {% if d.status == 'Discard' %}selected{% endif %}>Discard</option>
-                  </select>
-                </td>
-              <td>{{d.add_date}}</td>
-              <!-- <td>
-                <a href="/blood-bank/update-data/{{ d.id }}/" class="btn btn-primary btn-icon-split">
-                  <span class="icon text-white-50">
-                    <i class="fas fa-arrow-right"></i>
-                  </span>
-                  <span class="text">Edit</span>
-                </a>
-              </td> -->
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
+          <div class="form-group">
+              <select id="blood_group" class="form-control" name="blood_group">
+                  <option value="All" {% if blood_group == "All" %}selected{% endif %}>Select Blood Group</option>
+                  <option value="All" {% if blood_group == "All" %}selected{% endif %}>All</option>
+                  <option value="A+" {% if blood_group == "A+" %}selected{% endif %}>A+</option>
+                  <option value="A-" {% if blood_group == "A-" %}selected{% endif %}>A-</option>
+                  <option value="B+" {% if blood_group == "B+" %}selected{% endif %}>B+</option>
+                  <option value="B-" {% if blood_group == "B-" %}selected{% endif %}>B-</option>
+                  <option value="AB+" {% if blood_group == "AB+" %}selected{% endif %}>AB+</option>
+                  <option value="AB-" {% if blood_group == "AB-" %}selected{% endif %}>AB-</option>
+                  <option value="O+" {% if blood_group == "O+" %}selected{% endif %}>O+</option>
+                  <option value="O-" {% if blood_group == "O-" %}selected{% endif %}>O-</option>
+              </select>
+          </div>
+
+          <div class="form-group">
+              <select id="types" class="form-control" name="types">
+                  <option value="All" {% if types == "All" %}selected{% endif %}>Select Type</option>
+                  <option value="All" {% if types == "All" %}selected{% endif %}>All</option>
+                  <option value="W/B" {% if types == "W/B" %}selected{% endif %}>W/B</option>
+                  <option value="PRBC" {% if types == "PRBC" %}selected{% endif %}>PRBC</option>
+                  <option value="FFP" {% if types == "FFP" %}selected{% endif %}>FFP</option>
+                  <option value="PLT" {% if types == "PLT" %}selected{% endif %}>PLT</option>
+              </select>
+          </div>
+
+          <div class="form-group">
+              <select id="bag_type" class="form-control" name="bag_type">
+                  <option value="All" {% if bag_type == "All" %}selected{% endif %}>Select Bag Type</option>
+                  <option value="All" {% if bag_type == "All" %}selected{% endif %}>All</option>
+                  <option value="Single" {% if bag_type == "Single" %}selected{% endif %}>Single</option>
+                  <option value="Tripple" {% if bag_type == "Tripple" %}selected{% endif %}>Tripple</option>
+              </select>
+          </div>
+
+          <div class="form-group">
+              <select id="status" class="form-control" name="status">
+                  <option value="All" {% if status == "All" %}selected{% endif %}>Select Status</option>
+                  <option value="All" {% if status == "All" %}selected{% endif %}>All</option>
+                  <option value="Active" {% if status == "Active" %}selected{% endif %}>Active</option>
+                  <option value="Donate" {% if status == "Donate" %}selected{% endif %}>Donate</option>
+                  <option value="Expire" {% if status == "Expire" %}selected{% endif %}>Expire</option>
+                  <option value="Discard" {% if status == "Discard" %}selected{% endif %}>Discard</option>
+              </select>
+          </div>
+
+          <div style="form-group">
+              <button class="btn btn-primary w-100" type="submit">Filter</button>
+          </div>
+          <div style="form-group">
+              <a href="#;" class="btn btn-primary" id="printButton">Print</a>
+          </div>
+          <div style="form-group">
+              <a href="#;" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</a>
+          </div>
+      </form>
   </div>
+    <div class="card shadow mb-4" id="printablecontent">
+        <div class="card-header py-3" style="display: flex; flex-direction: column; align-items: center;">
+            <div><h2>Darbhanga Medical College and Hospital</h2></div>
+            <div><h3>Blood Bank</h3></div>
+            <div><h3>Stock Report</h3></div>
+            {% if start_date_str %}
+                <div><h3>{{ start_date_str }}{% if end_date_str %} - {{ end_date_str }}{% endif %}</h3></div>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Segment No.</th>
+                            <th>Bag No.</th>
+                            <th>Blood Group</th>
+                            <th>Bag Type</th>
+                            <th>Blood Type</th>
+                            <th>Status</th>
+                            <th>Issue Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in stock %}
+                            <tr>
+                                <td>{{ d.segment_no }}</td>
+                                <td>{{ d.bag_no }}</td>
+                                <td>{{ d.blood_group }}</td>
+                                <td>{{ d.bag_type }}</td>
+                                <td>{{ d.blood_type }}</td>
+                                <td style="{% if d.status == 'Expire' %}color:red !important;{% endif %}">
+                                    <select class="status-dropdown" data-id="{{ d.id }}" data-blood_type="{{ d.blood_type }}">
+                                        <option value="Active" {% if d.status == 'Active' %}selected{% endif %}>Active</option>
+                                        <option value="Donate" {% if d.status == 'Donate' %}selected{% endif %}>Donate</option>
+                                        <option value="Expire" {% if d.status == 'Expire' %}selected{% endif %}>Expire</option>
+                                        <option value="Discard" {% if d.status == 'Discard' %}selected{% endif %}>Discard</option>
+                                    </select>
+                                </td>
+                                <td>{{ d.add_date|date:"j-m-Y" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
+{% endblock %}
 
-{% endblock %} {% block script %}
+{% block script %}
 <script>
-
-  $(document).ready(function () {
-    // Function to handle printing
+$(document).ready(function () {
     $("#printButton").click(function () {
-      // Show the hidden print content
-      // Print only the content inside the printContent div
-      var printContents = $("#printablecontent").html();
-      var originalContents = $("body").html();
-      $("body").empty().html(printContents);
-
-      // Trigger the print dialog
-      window.print();
-      $("body").html(originalContents);
+        var printContents = $("#printablecontent").html();
+        var originalContents = $("body").html();
+        $("body").empty().html(printContents);
+        window.print();
+        $("body").html(originalContents);
     });
-        // Function to filter table
-    document.getElementById("search").addEventListener('keyup', function () {
-      var searchValue = this.value.toLowerCase();
-      var rows = document.querySelectorAll("#printablecontent tbody tr");
 
-      rows.forEach(function (row) {
-        var text = row.textContent.toLowerCase();
-        if (text.includes(searchValue)) {
-          row.style.display = '';
-        } else {
-          row.style.display = 'none';
-        }
-      });
+    $("#search").on('keyup', function () {
+        var searchValue = $(this).val().toLowerCase();
+        $("#printablecontent tbody tr").each(function () {
+            var text = $(this).text().toLowerCase();
+            $(this).toggle(text.includes(searchValue));
+        });
     });
-  });
-  function exportToExcel() {
-    var location = 'data:application/vnd.ms-excel;base64,';
-    var excelTemplate = '<html> ' +
-      '<head> ' +
-      '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/> ' +
-      '</head> ' +
-      '<body> ' +
-      document.getElementById("printablecontent").innerHTML +
-      '</body> ' +
-      '</html>'
-    window.location.href = location + window.btoa(excelTemplate);
-  }
 
-
-  $('.status-dropdown').change(function () {
+    $('.status-dropdown').change(function () {
         var stockId = $(this).data('id');
-        var blood_type = $(this).data('blood_type');
+        var bloodType = $(this).data('blood_type');
         var newStatus = $(this).val();
 
         $.ajax({
             type: 'POST',
-            url: '{% url "blood_stocks" %}',  // Make sure this URL is correct
+            url: '{% url "blood_stocks" %}',
             data: {
-            'stock_id': stockId,
-            'new_status': newStatus,
-            'blood_type' : blood_type,
-            'csrfmiddlewaretoken': '{{ csrf_token }}'
+                'stock_id': stockId,
+                'new_status': newStatus,
+                'blood_type': bloodType,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
             },
             success: function (response) {
-            if (response.success) {
-                // alert('Status updated successfully');
-            } else {
-                // alert('Failed to update status');
-            }
+                if (response.success) {
+                    // Optionally, show a success message
+                } else {
+                    // Optionally, show an error message
+                }
             }
         });
-        });
+    });
 
-  function exportToExcel() {
-    var location = 'data:application/vnd.ms-excel;base64,';
-    var excelTemplate = '<html><head><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body>' + document.getElementById("printablecontent").innerHTML + '</body></html>';
-    window.location.href = location + window.btoa(excelTemplate);
-  }
-
-
+    function exportToExcel() {
+        var location = 'data:application/vnd.ms-excel;base64,';
+        var excelTemplate = '<html><head><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body>' + document.getElementById("printablecontent").innerHTML + '</body></html>';
+        window.location.href = location + window.btoa(excelTemplate);
+    }
+});
 </script>
 {% endblock %}

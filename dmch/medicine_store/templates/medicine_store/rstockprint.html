@@ -4,7 +4,7 @@
 <style>
 
   td, th {
-    font-size: 12px;
+    font-size: 25px;
   }
 </style>
 {% endblock %} {% block content %}
@@ -46,6 +46,9 @@
         <div style="flex: 1">
           <a href="#" onclick="printTable()" class="btn btn-primary" id="printButton">Print</a>
         </div>
+        <div style="flex: 1">
+          <a href="#;" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</a>
+        </div>
       </form>
     </div>
     <div class="card-body" id="printablecontent">
@@ -57,58 +60,52 @@
         }
       </style> -->
       <div class="table-responsive" id="tableContainer">
-        <style>
-            .table td{
-              padding: 0.4rem !important;
-              font-size: 0.8rem !important;
-              
-            }
-          </style>
+
           <div class="card-header py-3" style="display: flex; flex-direction: column; align-items: center">
             <div><h2>Darbhanga Medical College and Hospital</h2></div>
             <div><h3>{{request.session.user_role}}</h3></div>
             <div><h3>Stock Report</h3></div>
             {% if start_date_str != None %}
-            <div><h3>{{start_date_str}}</h3></div>
+            <div><h3>{{start_date_str}} - {{end_date_str}}</h3></div>
             {% endif %}
           </div>
         <table class="table table-bordered" id="qwertyuiop" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th>Department</th>
+              <!-- <th>Department</th> -->
               <th>Product Type</th>
               <th>Product Name</th>
-              <th>Mfg By</th>
+              <!-- <th>Mfg By</th> -->
               <th>Mfg Date</th>
               <th>Exp Date</th>
               <th>Batch No</th>
               <th>Quantity</th>
               <!-- <th>Consumption</th>
               <th>In Stock</th> -->
-              <th>Total Quantity</th>
+              <!-- <th>Total Quantity</th>
               <th>Supply On Date</th>
               <th>Created Date</th>
-              <th>Remarks</th>
+              <th>Remarks</th> -->
             </tr>
           </thead>
           <tbody>
             {% for order in supply %}
               {% for product in order.products.all %}
                   <tr>
-                    <td>{{ order.departpment.name }}</td>
+                    <!-- <td>{{ order.departpment.name }}</td> -->
                     <td>{{ product.product_type }}</td>
                     <td>{{ product.product_name }}</td>
-                    <td>{{ product.mfg_name }}</td>
+                    <!-- <td>{{ product.mfg_name }}</td> -->
                     <td>{% if product.mfg_date %}{{ product.mfg_date }}{% endif %}</td>
                     <td>{% if product.exp_date %}{{ product.exp_date }}{% endif %}</td>
                     <td>{{ product.batch_no }}</td>
                     <td>{{ product.quantity }}</td>
                     <!-- <td class="quantity-difference"></td>
                     <td>{{ product.stock_quantity }}</td> -->
-                    <td></td>
+                    <!-- <td></td>
                     <td >{{ product.supply_date|date:"j-m-Y" }}</td>
                     <td >{{ product.created_at|date:"j-m-Y" }}</td>
-                    <td>{{ order.remarks }}</td>
+                    <td>{{ order.remarks }}</td> -->
                   </tr>
             
               {% endfor %}
@@ -252,6 +249,20 @@
       }
     });
   });
+</script>
+<script>
+  function exportToExcel() {
+    var location = 'data:application/vnd.ms-excel;base64,';
+    var excelTemplate = '<html> ' +
+      '<head> ' +
+      '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/> ' +
+      '</head> ' +
+      '<body> ' +
+      document.getElementById("printablecontent").innerHTML +
+      '</body> ' +
+      '</html>'
+    window.location.href = location + window.btoa(excelTemplate);
+  }
 </script>
 
 

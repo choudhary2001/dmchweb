@@ -12,4 +12,6 @@ urlpatterns = [
     path('blood-fetch-data/', views.blood_fetch_data, name="blood_fetch_data"),
     path('blood-stock-data/', views.blood_stocks, name="blood_stocks"),
 
+    path('add-opening-stock/', views.add_opening_stock, name="add_opening_stock"),
+
 ]
