@@ -102,6 +102,20 @@ class Test_report(models.Model):
     ct = models.CharField(max_length = 200, blank = True, null = True)
     cbc = models.CharField(max_length = 200, blank = True, null = True)
     lth = models.CharField(max_length = 200, blank = True, null = True)
+
+    tsh = models.CharField(max_length = 20, blank = True, null = True)
+    t4 = models.CharField(max_length = 20, blank = True, null = True)
+    t3 = models.CharField(max_length = 20, blank = True, null = True)
+    ft4 = models.CharField(max_length = 20, blank = True, null = True)
+    ft3 = models.CharField(max_length = 20, blank = True, null = True)
+    lh = models.CharField(max_length = 20, blank = True, null = True)
+    fsh = models.CharField(max_length = 20, blank = True, null = True)
+    prl = models.CharField(max_length = 20, blank = True, null = True)
+    vi = models.CharField(max_length = 20, blank = True, null = True)
+    huist = models.CharField(max_length = 20, blank = True, null = True)
+    amh = models.CharField(max_length = 20, blank = True, null = True)
+    anticcp = models.CharField(max_length = 20, blank = True, null = True)
+
     other = models.CharField(max_length = 250, blank = True, null = True)
     created_at = models.DateTimeField(auto_now_add = True)
 

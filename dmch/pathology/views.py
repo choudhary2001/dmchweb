@@ -23,6 +23,7 @@ from collections import Counter
 from django.db.models import Count
 from collections import defaultdict
 import requests
+from django.db import connection
 
 # Get the Kolkata timezone
 kolkata_timezone = pytz.timezone('Asia/Kolkata')
@@ -61,22 +62,39 @@ def fetch_patient_data(request):
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
 
+
+def get_patient_by_bill_no(bill_no):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM pathology_patient_registration WHERE bill_no = %s::text", [bill_no])
+        row = cursor.fetchone()
+        if row:
+            return Patient_registration.objects.get(pk=row[0])
+        else:
+            return None
+
 @login_required
 def fetch_patient_data_details(request):
     if request.method == 'GET' and 'regid' in request.GET:
-        regid = request.GET.get('regid')
+        bill_no = request.GET.get('regid')
         try:
             # patient = Patient.objects.filter(regid=regid).first()
             try:
-                regid_int = int(regid)
-                # If no exception is raised, it means regid is an integer
-                patient = Patient.objects.filter(Q(regid=regid_int) | Q(regnoid=regid)).first()
+                bill_no = int(bill_no)  # Ensure bill_no is treated as an integer for logic
             except ValueError:
-                # If regid cannot be converted to an integer, treat it as a varchar
-                patient = Patient.objects.filter(regnoid=regid).first()
+                return HttpResponseNotFound("Invalid bill number")
 
-            # patient = Patient.objects.filter(Q(regid=regid) | Q(regnoid=regid)).first()
-            pr = Patient_registration.objects.filter(reg_no=patient).first()
+            pr = get_patient_by_bill_no(bill_no)
+            print(pr)
+            # try:
+            #     # If no exception is raised, it means regid is an integer
+            #     patient = Patient.objects.filter(Q(regid=regid_int) | Q(regnoid=regid)).first()
+            # except ValueError:
+            #     # If regid cannot be converted to an integer, treat it as a varchar
+            #     patient = Patient.objects.filter(regnoid=regid).first()
+
+            # # patient = Patient.objects.filter(Q(regid=regid) | Q(regnoid=regid)).first()
+            # pr = Patient_registration.objects.filter(reg_no=patient).first()
+            # pr = get_object_or_404(Patient_registration, bill_no=regid_int)
 
             if pr is not None:
                 department_name = None
@@ -173,7 +191,8 @@ def fetch_patient_data_details(request):
                 data = {}
 
             return JsonResponse(data)
-        except Patient.DoesNotExist:
+        except Exception as e:
+            print(e)
             return JsonResponse({'error': 'Patient not found'}, status=404)
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
@@ -1037,7 +1056,7 @@ def create_test_report_view_data(request):
                 'test_report_id': patient.test_report_id,
                 'id': patient.id,
                 'regid': patient_reg_no,
-                'name': patient.patient.patient_name,
+                'name': patient.patient.reg_no.name,
                 'test_name': patient.patient.test_name,
                 'bill_no': patient.patient.bill_no,
                 'lab_no': patient.patient.lab_no,

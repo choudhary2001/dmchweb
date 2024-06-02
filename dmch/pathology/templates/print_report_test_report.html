@@ -13,378 +13,350 @@
         }
       }
     </style>
-    <style>
-
-    </style>
+    <style></style>
   </head>
   <body>
-
-    <div class="" id="printContent" style="width: 100%; margin-top: -10px; height: 842px;">
-      <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black;">
-        <h1 style="margin: 2px;" >DEPARTMENT OF CLINICAL PATHOLOGY</h1>
-        <h4 style="margin: 2px;" >DARBHANGA MEDICAL COLLEGE & HOSPITAL</h4>
-        <h6 style="margin: 2px;" >LAHERIASARAI, DARBHANGA (BIHAR)</h6>
-        <h6 style="margin: 2px;" >REPORT OF EXAMINATION OF BIOCHEMISTRY</h6>
+    <div class="" id="printContent" style="width: 100%; margin-top: -10px; height: 842px">
+      <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black">
+        <h1 style="margin: 2px">DEPARTMENT OF CLINICAL PATHOLOGY</h1>
+        <h4 style="margin: 2px">DARBHANGA MEDICAL COLLEGE & HOSPITAL</h4>
+        <h6 style="margin: 2px">LAHERIASARAI, DARBHANGA (BIHAR)</h6>
+        <h6 style="margin: 2px">REPORT OF EXAMINATION OF BIOCHEMISTRY</h6>
       </div>
       <hr />
       <div style="display: flex; justify-content: space-between">
-        <div style="display: flex; justify-content: space-between; width: 100%;">
-          <div style="font-family: sans-serif; color: black; font-size: 1rem;  margin-bottom: 0 !important;">
-            <p style="margin-bottom: 0;" >Patient Name : <strong>{% if test_report.reg_no.name %}{{test_report.reg_no.name}}{% endif %} </strong></p>
-            <p style="margin-bottom: 0;">Refd By. : <strong>{% if test_report.patient.referby.name %}{{test_report.patient.referby.name}}{% endif %}</strong></p>
-            <p style="margin-bottom: 0;">Bill No. : <strong>{% if test_report.patient.bill_no %}{{test_report.patient.bill_no}}{% endif %}</strong></p>
+        <div style="display: flex; justify-content: space-between; width: 100%">
+          <div style="font-family: sans-serif; color: black; font-size: 1rem; margin-bottom: 0 !important">
+            <p style="margin-bottom: 0">Patient Name : <strong>{% if test_report.reg_no.name %}{{test_report.reg_no.name}}{% endif %} </strong></p>
+            <p style="margin-bottom: 0">Refd By. : <strong>{% if test_report.patient.referby.name %}{{test_report.patient.referby.name}}{% endif %}</strong></p>
+            <p style="margin-bottom: 0">Bill No. : <strong>{% if test_report.patient.bill_no %}{{test_report.patient.bill_no}}{% endif %}</strong></p>
           </div>
-          <div style="font-family: sans-serif; color: black; font-size: 1rem;  margin-bottom: 0 !important;">
-            <p style="margin-bottom: 0;">Date : <strong>{% if test_report.created_at %}{{test_report.created_at}}{% endif %}</strong></p>
-            <p style="margin-bottom: 0;">Reg No. : <strong>{% if test_report.reg_no %}{% if test_report.reg_no.de == 'Pathology' %}{{test_report.reg_no.regnoid}}{% else %}{{test_report.reg_no.regid}}{% endif %}{% endif %}</strong></p>
-            <p style="margin-bottom: 0;">Lab No. : <strong>{% if test_report.patient.lab_no %}{{test_report.patient.lab_no}}{% endif %}</strong></p>
+          <div style="font-family: sans-serif; color: black; font-size: 1rem; margin-bottom: 0 !important">
+            <p style="margin-bottom: 0">Date : <strong>{% if test_report.created_at %}{{test_report.created_at}}{% endif %}</strong></p>
+            <p style="margin-bottom: 0">Reg No. : <strong>{% if test_report.reg_no %}{% if test_report.reg_no.de == 'Pathology' %}{{test_report.reg_no.regnoid}}{% else %}{{test_report.reg_no.regid}}{% endif %}{% endif %}</strong></p>
+            <p style="margin-bottom: 0">Lab No. : <strong>{% if test_report.patient.lab_no %}{{test_report.patient.lab_no}}{% endif %}</strong></p>
           </div>
         </div>
       </div>
       <hr />
-      <div style="height: 700px;" >
+      <div style="height: 700px">
         <div class="table-responsive">
-          <table class="table"  width="100%" cellspacing="0">
+          <table class="table" width="100%" cellspacing="0">
             <thead>
               <tr>
-                <th style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px; border: none !important;" >SL. No.</th>
-                <th style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px; text-align:left;">Test</th>
-                <th style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px;  text-align:left;">Result</th>
-                <th style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px;  text-align:left;">Normal Range</th>
+                <th style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px; border: none !important">SL. No.</th>
+                <th style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px; text-align: left">Test</th>
+                <th style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px; text-align: left">Result</th>
+                <th style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px; text-align: left">Normal Range</th>
               </tr>
             </thead>
             <tbody id="testReportTableBody">
               {% if test_report.palsma_glucose_fasting %}
               <tr>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Plasma Glucose Fasting</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.palsma_glucose_fasting}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 110 mg/dl</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Plasma Glucose Fasting</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.palsma_glucose_fasting}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">70 - 110 mg/dl</td>
               </tr>
-              {% endif %}
-              {% if test_report.palsma_glucose_pp %}
+              {% endif %} {% if test_report.palsma_glucose_pp %}
               <tr>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Plasma Glucose PP</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.palsma_glucose_pp}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 150 mg/dl</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Plasma Glucose PP</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.palsma_glucose_pp}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">70 - 150 mg/dl</td>
               </tr>
-              {% endif %}
-              {% if test_report.blood_sugar_random %}
+              {% endif %} {% if test_report.blood_sugar_random %}
               <tr>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Blood Sugar Random</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.blood_sugar_random}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 150 mg/dl</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Blood Sugar Random</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.blood_sugar_random}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">70 - 150 mg/dl</td>
               </tr>
-              {% endif %}
-              {% if test_report.blood_ures %}
+              {% endif %} {% if test_report.blood_ures %}
               <tr>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Blood Urea</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.blood_ures}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">15 - 45 mg/dl</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Blood Urea</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.blood_ures}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">15 - 45 mg/dl</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.serun_creatinine %}
+              {% endif %} {% if test_report.serun_creatinine %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Serum Creatinine</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.serun_creatinine}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.7 - 1.4 mg/dl</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Serum Creatinine</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.serun_creatinine}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0.7 - 1.4 mg/dl</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.serum_uric_acid %}
+              {% endif %} {% if test_report.serum_uric_acid %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Serum Uric Acid</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.serum_uric_acid}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.5 - 7.2 mg/dl</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Serum Uric Acid</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.serum_uric_acid}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">3.5 - 7.2 mg/dl</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.billirubin_total %}
+              {% endif %} {% if test_report.billirubin_total %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Total Bilirubin</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.billirubin_total}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.4 - 1.2 mg/dl</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Total Bilirubin</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.billirubin_total}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0.4 - 1.2 mg/dl</td>
               </tr>
-              {% endif %}
-              
-              {% if test_report.sgpt %}
+              {% endif %} {% if test_report.sgpt %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">SGPT</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.sgpt}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 35 IU/L</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">SGPT</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.sgpt}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0.0 - 35 IU/L</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.sgot %}
+              {% endif %} {% if test_report.sgot %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">SGOT</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.sgot}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 45 IU/L</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">SGOT</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.sgot}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0.0 - 45 IU/L</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.total_protein %}
+              {% endif %} {% if test_report.total_protein %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Total Protein</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.total_protein}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">6.4 - 8.3 g/dl</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Total Protein</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.total_protein}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">6.4 - 8.3 g/dl</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.serum_albumin %}
+              {% endif %} {% if test_report.serum_albumin %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Serum Albumin</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.serum_albumin}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.5 - 5.2 g/dl</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Serum Albumin</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.serum_albumin}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">3.5 - 5.2 g/dl</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.alk_phosphatase %}
+              {% endif %} {% if test_report.alk_phosphatase %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Alk Phosphatae</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.alk_phosphatase}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">30 - 130 U/L</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Alk Phosphatae</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.alk_phosphatase}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">30 - 130 U/L</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.gama_gt %}
+              {% endif %} {% if test_report.gama_gt %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Gamma GT. (GGT)</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.gama_gt}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 55 IU/L</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Gamma GT. (GGT)</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.gama_gt}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0 - 55 IU/L</td>
               </tr>
-              {% endif %}
-              
-              {% if test_report.amylase %}
+              {% endif %} {% if test_report.amylase %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Amylease</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.amylase}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Amylease</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.amylase}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0 - 80 U/L</td>
               </tr>
-              {% endif %}
-              
-              {% if test_report.hbaic %}
+              {% endif %} {% if test_report.hbaic %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">HbA1c</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.hbaic}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">UP TO 6.4%</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">HbA1c</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.hbaic}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">UP TO 6.4%</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.total_cholestrol %}
+              {% endif %} {% if test_report.total_cholestrol %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Total Cholesterol</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.total_cholestrol}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 220 mg/dl</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Total Cholesterol</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.total_cholestrol}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0 - 220 mg/dl</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.hdl_cholestrol %}
+              {% endif %} {% if test_report.hdl_cholestrol %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">HDL Cholesterol</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.hdl_cholestrol}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">45 - 80 mg/dl</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">HDL Cholesterol</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.hdl_cholestrol}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">45 - 80 mg/dl</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.ldl_cholestrol %}
+              {% endif %} {% if test_report.ldl_cholestrol %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">LDL Cholesterol</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.ldl_cholestrol}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">60 - 140 mg/dl</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">LDL Cholesterol</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.ldl_cholestrol}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">60 - 140 mg/dl</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.vldl_cholestrol %}
+              {% endif %} {% if test_report.vldl_cholestrol %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">VLDL Cholesterol</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.vldl_cholestrol}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">22 - 33 mg/dl</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">VLDL Cholesterol</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.vldl_cholestrol}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">22 - 33 mg/dl</td>
               </tr>
-              {% endif %}
-              
-              {% if test_report.serum_trigicerides %}
+              {% endif %} {% if test_report.serum_trigicerides %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Serum Trigicerides</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.serum_trigicerides}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">40 - 145 mg/dl</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Serum Trigicerides</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.serum_trigicerides}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">40 - 145 mg/dl</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.serun_sodium %}
+              {% endif %} {% if test_report.serun_sodium %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Serum Sodium</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.serun_sodium}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">136 -146 mmo/L</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Serum Sodium</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.serun_sodium}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">136 -146 mmo/L</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.serum_potasium %}
+              {% endif %} {% if test_report.serum_potasium %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Serum Potasium</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.serum_potasium}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.5 -5.5 mmo/dl</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Serum Potasium</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.serum_potasium}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">3.5 -5.5 mmo/dl</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.serum_cloried %}
+              {% endif %} {% if test_report.serum_cloried %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Serum Chloride</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.serum_cloried}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">98.0 - 107.0 mmo/L</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Serum Chloride</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.serum_cloried}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">98.0 - 107.0 mmo/L</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.serum_calcium %}
+              {% endif %} {% if test_report.serum_calcium %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Serum Calcium</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.serum_calcium}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">8.6 - 10.2 mmo/L</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Serum Calcium</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.serum_calcium}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">8.6 - 10.2 mmo/L</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.aso_titer %}
+              {% endif %} {% if test_report.aso_titer %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">ASO Titer</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.aso_titer}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Up to 250 IU/L</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">ASO Titer</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.aso_titer}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Up to 250 IU/L</td>
               </tr>
-              {% endif %}
-
-
-              {% if test_report.crp %}
+              {% endif %} {% if test_report.crp %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">CRP</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.crp}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 6.0 mg/L</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">CRP</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.crp}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0.0 - 6.0 mg/L</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.raf_factor %}
+              {% endif %} {% if test_report.raf_factor %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">RAF Factor</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.raf_factor}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 20 mg/ml</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">RAF Factor</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.raf_factor}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0.0 - 20 mg/ml</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.lipase %}
+              {% endif %} {% if test_report.lipase %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Lipase</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.lipase}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 38.0 U/L</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Lipase</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.lipase}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0 - 38.0 U/L</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.esr %}
+              {% endif %} {% if test_report.esr %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">ESR</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.esr}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 9 mm/hr</td>
-                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">ESR</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.esr}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0 - 9 mm/hr</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.bt %}
+              {% endif %} {% if test_report.bt %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">BT</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.bt}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">30 Sec - 2 Min 30 Sec</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">BT</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.bt}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">30 Sec - 2 Min 30 Sec</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.ct %}
+              {% endif %} {% if test_report.ct %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">CT</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.ct}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">2 Min 50 Sec - 7 Min</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">CT</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.ct}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">2 Min 50 Sec - 7 Min</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.lth %}
+              {% endif %} {% if test_report.lth %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">LDH</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.lth}}</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">140 - 280 U/L</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">LDH</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.lth}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">140 - 280 U/L</td>
               </tr>
-              {% endif %}
-
-              {% if test_report.other %}
+              {% endif %} {% if test_report.tsh %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Other</td>
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{test_report.other}}</td>
-                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">TSH</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.tsh}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0.9 - 4.5 U/L</td>
               </tr>
-              {% endif %}
-              {% if test_report.cbc %}
+              {% endif %} {% if test_report.t4 %}
               <tr>
-                
-                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"><strong>CBC, {{test_report.cbc}}</strong></td>
-                
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">T4</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.t4}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">52 - 127 ng/mL</td>
+              </tr>
+              {% endif %} {% if test_report.t3 %}
+              <tr>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">T3</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.t3}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0.69 - 2.15 ng/mL</td>
+              </tr>
+              {% endif %} {% if test_report.ft4 %}
+              <tr>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">FT4</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.ft4}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">8.9 - 17.2 pg/mL</td>
+              </tr>
+              {% endif %} {% if test_report.ft3 %}
+              <tr>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">FT3</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.ft3}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">2 - 4.2 pg/mL</td>
+              </tr>
+              {% endif %} {% if test_report.lh %}
+              <tr>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">LH</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.lh}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0.40 - 82 mIU/mL</td>
+              </tr>
+              {% endif %} {% if test_report.fsh %}
+              <tr>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">FSH</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.fsh}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">1.30 - 138 mIU/mL</td>
+              </tr>
+              {% endif %} {% if test_report.prl %}
+              <tr>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Prolectin (PRL)</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.prl}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">54 - 490 ulu/mL</td>
+              </tr>
+              {% endif %} {% if test_report.vi %}
+              <tr>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Vi + B12</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.vi}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">200 - 1100 pg/mL</td>
+              </tr>
+              {% endif %} {% if test_report.huist %}
+              <tr>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">25 0 HvitD</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.huist}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">30 - 100 ng/mL</td>
+              </tr>
+              {% endif %} {% if test_report.amh %}
+              <tr>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">AMH</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.amh}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0.20 - 25.0 ng/mL</td>
+              </tr>
+              {% endif %} {% if test_report.anticcp %}
+              <tr>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Anticcp</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.anticcp}}</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0.00 - 17 U/mL</td>
+              </tr>
+              {% endif %} {% if test_report.other %}
+              <tr>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Other</td>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{test_report.other}}</td>
+              </tr>
+              {% endif %} {% if test_report.cbc %}
+              <tr>
+                <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px"><strong>CBC, {{test_report.cbc}}</strong></td>
               </tr>
               {% endif %}
             </tbody>
           </table>
         </div>
-
       </div>
 
-      <div style="display: flex;justify-content: space-between; width: 100%;" >
+      <div style="display: flex; justify-content: space-between; width: 100%">
         <div>Checked By ..............</div>
         <div>Signature ..................................................</div>
       </div>
     </div>
-  
+
     <script>
       // Get all the <tr> elements within the table body
-      var tableBody = document.getElementById('testReportTableBody');
-      var trElements = tableBody.querySelectorAll('tr');
+      var tableBody = document.getElementById("testReportTableBody");
+      var trElements = tableBody.querySelectorAll("tr");
 
       // Loop through each <tr> element and add numbering
       for (var i = 0; i < trElements.length; i++) {
         // Create a new <td> element to hold the numbering
-        var tdNumber = document.createElement('td');
-        tdNumber.style.fontFamily = 'sans-serif';
-        tdNumber.style.color = 'black';
-        tdNumber.style.fontSize = '1.2rem';
-        tdNumber.style.padding = '3px';
-        tdNumber.style.border = 'none';
+        var tdNumber = document.createElement("td");
+        tdNumber.style.fontFamily = "sans-serif";
+        tdNumber.style.color = "black";
+        tdNumber.style.fontSize = "1.2rem";
+        tdNumber.style.padding = "3px";
+        tdNumber.style.border = "none";
         // Add the numbering to the <td> element
         tdNumber.textContent = i + 1 + ".";
         // Insert the <td> element as the first child of the <tr>
         trElements[i].insertBefore(tdNumber, trElements[i].firstChild);
       }
     </script>
-        
+
     <script>
       // Function to print the patient details
       function printPatientDetails() {

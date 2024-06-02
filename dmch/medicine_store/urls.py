@@ -23,6 +23,8 @@ urlpatterns = [
     path('supply/<int:supply_id>/update/', views.supply_update_view, name='medicine-supply-update'),
     path('supply/<int:supply_id>/delete/', views.supply_delete_view, name='medicine_supply-delete'),
     path('itemwise/consumption/', views.get_consumption_and_remaining_quantity, name='get_consumption_and_remaining_quantity'),
+    path('itemwise/consumption/view/', views.get_consumption_and_remaining_quantityy, name='get_consumption_and_remaining_quantityy'),
+    path('itemwise/consumption/view/data/', views.get_consumption_and_remaining_quantityyy, name='get_consumption_and_remaining_quantityyy'),
 
     path('expired/medicine/', views.store_expired_medicine, name='store_expired_medicine'),
     path('expired/medicine/print/', views.store_expired_medicine_print, name='store_expired_medicine_print'),

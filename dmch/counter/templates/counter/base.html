@@ -98,7 +98,7 @@
           <!-- <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
           </div> -->
-          <div class="sidebar-brand mx-3" style="height: auto !important;">DMCH</div>
+          <div class="sidebar-brand mx-3" style="height: auto !important">DMCH</div>
         </a>
 
         <!-- Divider -->
@@ -368,7 +368,7 @@
             <span>Product Name</span></a
           >
         </li> -->
-        
+
         <li class="nav-item active">
           <a class="nav-link" href="{% url 'medicine_stock_add_view' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -410,30 +410,35 @@
             <span>Medicine Consumption Details</span></a
           >
         </li>
-
+        {% if request.session.user_role != 'Emergency Med Store' or request.session.user_role != 'Gynic MED Store' %}
         <li class="nav-item active">
-          <a class="nav-link" href="{% url 'get_consumption_and_remaining_quantity' %}">
+          <a class="nav-link" href="{% url 'get_consumption_and_remaining_quantityyy' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Item Wise Consumption</span></a
           >
         </li>
+        {% else %}
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'get_consumption_and_remaining_quantityy' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Item Wise Consumption</span></a
+          >
+        </li>
+        {% endif %}
 
         <li class="nav-item active">
-          <a class="nav-link" href="{% url 'store_expired_medicine' %}" style="color: red;">
+          <a class="nav-link" href="{% url 'store_expired_medicine' %}" style="color: red">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Expired Medicine</span></a
           >
         </li>
 
-        {% endif %}
-
-        {% if request.user.is_superuser %}
+        {% endif %} {% if request.user.is_superuser %}
 
         <hr class="sidebar-divider" />
 
         <!-- Heading -->
         <div class="sidebar-heading">Store</div>
-
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
@@ -443,15 +448,12 @@
           >
         </li>
 
-        {% endif %}
-
-        {% if request.session.user_role_store == 'Store' %}
+        {% endif %} {% if request.session.user_role_store == 'Store' %}
 
         <hr class="sidebar-divider" />
 
         <!-- Heading -->
         <div class="sidebar-heading">Store</div>
-
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
@@ -460,8 +462,7 @@
             <span>Add Products</span></a
           >
         </li>
-        {% endif %}
-        {% if request.session.user_role_store == 'Store' or request.session.user_role == 'Admin' %}
+        {% endif %} {% if request.session.user_role_store == 'Store' or request.session.user_role == 'Admin' %}
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
@@ -470,9 +471,7 @@
             <span>Products Report</span></a
           >
         </li>
-        {% endif %}
-
-        {% if request.session.user_role_store == 'Store' or request.session.user_role == 'Admin' %}
+        {% endif %} {% if request.session.user_role_store == 'Store' or request.session.user_role == 'Admin' %}
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
@@ -481,10 +480,7 @@
             <span>Products Stock</span></a
           >
         </li>
-        {% endif %}
-
-
-        {% if request.session.user_role_store == 'Store' %}
+        {% endif %} {% if request.session.user_role_store == 'Store' %}
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
@@ -493,8 +489,7 @@
             <span>Transfer Products</span></a
           >
         </li>
-        {% endif %} 
-        {% if request.session.user_role_store == 'Store' or request.session.user_role == 'Admin' %}
+        {% endif %} {% if request.session.user_role_store == 'Store' or request.session.user_role == 'Admin' %}
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
@@ -504,9 +499,7 @@
           >
         </li>
 
-        {% endif %}
-
-        {% if request.session.user_role == 'Radiology' or request.session.user_role == 'Admin' %}
+        {% endif %} {% if request.session.user_role == 'Radiology' or request.session.user_role == 'Admin' %}
         <hr class="sidebar-divider" />
 
         <!-- Heading -->
@@ -541,7 +534,6 @@
           >
         </li>
 
-
         <li class="nav-item active">
           <a class="nav-link" href="{% url 'add_radiology_report' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -556,10 +548,7 @@
           >
         </li>
 
-
-        {% endif %} 
-
-        {% if request.session.user_role == 'Cardiology' or request.session.user_role == 'Admin' %}
+        {% endif %} {% if request.session.user_role == 'Cardiology' or request.session.user_role == 'Admin' %}
         <hr class="sidebar-divider" />
 
         <!-- Heading -->
@@ -580,8 +569,6 @@
           >
         </li>
 
-  
-
         <li class="nav-item active">
           <a class="nav-link" href="{% url 'add_cardiology_report' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -596,11 +583,7 @@
           >
         </li>
 
-
-        {% endif %} 
-
-
-        {% if request.session.user_role == 'IPD' or request.session.user_role == 'Admin' %}
+        {% endif %} {% if request.session.user_role == 'IPD' or request.session.user_role == 'Admin' %}
         <hr class="sidebar-divider" />
         <!-- Heading -->
         <div class="sidebar-heading">I. P. D.</div>
@@ -627,7 +610,6 @@
           >
         </li>
 
-
         <li class="nav-item active">
           <a class="nav-link" href="{% url 'ipd_add_patient' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -649,11 +631,7 @@
           >
         </li>
 
-
-        {% endif %} 
-
-
-        {% if request.session.user_role == 'Blood Bank' or request.session.user_role == 'Admin' %}
+        {% endif %} {% if request.session.user_role == 'Blood Bank' or request.session.user_role == 'Admin' %}
         <hr class="sidebar-divider" />
         <!-- Heading -->
         <div class="sidebar-heading">Blood Bank</div>
@@ -701,10 +679,7 @@
           >
         </li>
 
-        {% endif %} 
-
-
-        {% if request.session.user_role == 'Record Room' or request.session.user_role == 'Admin' %}
+        {% endif %} {% if request.session.user_role == 'Record Room' or request.session.user_role == 'Admin' %}
         <hr class="sidebar-divider" />
         <!-- Heading -->
         <div class="sidebar-heading">Record Room</div>
@@ -752,7 +727,7 @@
           >
         </li>
 
-        {% endif %} 
+        {% endif %}
 
         <!-- Divider -->
         <!-- <hr class="sidebar-divider" /> -->
@@ -1031,7 +1006,7 @@
         <footer class="sticky-footer bg-white">
           <div class="container my-auto">
             <div class="copyright text-center my-auto">
-              <span>Copyright &copy; <a  href="https://swastik.ai" target="_blank" >Shwastik Tech Solutions Pvt. Ltd.</a></span>
+              <span>Copyright &copy; <a href="https://swastik.ai" target="_blank">Shwastik Tech Solutions Pvt. Ltd.</a></span>
             </div>
             <br />
             <div class="copyright text-center my-auto">

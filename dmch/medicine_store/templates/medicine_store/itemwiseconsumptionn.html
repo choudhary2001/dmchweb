@@ -1,0 +1,221 @@
+{% extends 'counter/base.html' %} {% block css %}
+<style>
+  td, tr {
+      font-size: 0.75rem !important;
+      line-height: 0.5rem;
+  }
+</style>
+{% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+
+  {% endfor %} {% endif %}
+  <div style="display: flex"></div>
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <form action="{% url 'get_consumption_and_remaining_quantityy' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+        <div style="flex: 1">
+          <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+        </div>
+        <div style="">
+          <span>-</span>
+        </div>
+        <div style="flex: 1">
+          <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+        </div>
+
+        <div class="form-group">
+          <input type="search" class="form-control" id="searchInput" placeholder="Search...">
+        </div>
+
+        <!-- <div style="flex: 3">
+          <select name="department" class="form-control mb-2 mb-md-0">
+            <option>Select Department</option>
+            <option value="All">All</option>
+            {% for d in departments %}
+            <option value="{{d.department_id}}">{{d.name}}</option>
+            {% endfor %}
+          </select>
+        </div> -->
+
+
+        <div style="flex: 1">
+          <button class="btn btn-primary w-100" type="submit">Filter</button>
+        </div>
+        <div style="flex: 1">
+          <button class="btn btn-primary w-100" onclick="printTable()">Print</button>
+        </div>
+        <div style="flex: 3">
+          <a href="#;" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</a>
+        </div>
+      </form>
+    </div>
+
+    <div class="card-body" id="printablecontent">
+      <style>
+        td{
+          font-weight: bold;
+        }
+      </style>
+        <div class="card-header py-3" style="    display: flex;
+        flex-direction: column;
+        align-items: center;">
+            <div><h2>Darbhanga Medical College and Hospital</h2></div>
+            <div><h3>{{request.session.user_role}}</h3></div>
+            <div><h3>Item Wise Consumption</h3></div>
+            {% if start_date_str != None %}
+            <div><h3>{{start_date_str}}{% if end_date_str != None %}{% if end_date_str != 'None' %} - {{end_date_str}}{% endif %}{% endif %} </h3>  </div>
+            {% endif %}
+        </div>
+      <div class="table-responsive" id="tableContainer">
+        <table class="table table-bordered" width="100%" id="tablee" cellspacing="0">
+          <thead>
+            <tr>
+              <th>Medicine Name</th>
+              <th>Opening</th>
+              <th>Purchase</th>
+              <th>Consumption</th>
+              <th>Closing</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- {% for order in supply %}
+            <tr>
+              <td>{{ order.product_name }}</td>
+              <td>{% if order.total_quantity == None %}0{% else %}{{ order.total_quantity }}{% endif %}</td>
+              <td>{% if order.till_remaining == None %}0{% else %}{{ order.till_remaining }}{% endif %}</td>
+              <td>{% if order.till_end == None %}0{% else %}{{ order.till_end }}{% endif %}</td>
+
+          
+            </tr>
+            {% endfor %} -->
+            {% for product_name, quantities in product_quantities.items %}
+            <tr>
+              <td>{{ product_name }}</td>
+              <td>{{ quantities.opening }}</td>
+              <td>{{ quantities.purchase1 }}</td>
+              <td>{{ quantities.remaining_quantity }}</td>
+              <td>{{ quantities.closing }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block script %}
+<!-- JavaScript for Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#product_name").select2();
+  });
+</script>
+<script>
+  // Function to print the table
+  function printTable() {
+    // Show the hidden print content
+    // Print only the content inside the printContent div
+    var printContents = $("#printablecontent").html();
+    var originalContents = $("body").html();
+    $("body").empty().html(printContents);
+
+    // Trigger the print dialog
+    window.print();
+    $("body").html(originalContents);
+    window.location.reload();
+  }
+</script>
+<script>
+  function sortTableByProductName() {
+    var table, rows, switching, i, x, y, shouldSwitch;
+    table = document.getElementById("tablee");
+    switching = true;
+    // Loop until no switching has been done
+    while (switching) {
+      switching = false;
+      rows = table.rows;
+      // Loop through all table rows (except the first, which contains table headers)
+      for (i = 1; i < (rows.length - 1); i++) {
+        shouldSwitch = false;
+        // Get the two product names to compare
+        x = rows[i].getElementsByTagName("td")[0]; // Product Name column index
+        y = rows[i + 1].getElementsByTagName("td")[0]; // Product Name column index
+        // Check if the two rows should switch places based on alphabetical order
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          // If so, mark as a switch and break the loop
+          shouldSwitch = true;
+          break;
+        }
+      }
+      if (shouldSwitch) {
+        // Perform the switch and mark that a switch has been done
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+      }
+    }
+  }
+  document.addEventListener("DOMContentLoaded", function() {
+    sortTableByProductName();
+  })
+</script>
+
+<script>
+  function exportToExcel() {
+    var location = 'data:application/vnd.ms-excel;base64,';
+    var excelTemplate = '<html> ' +
+      '<head> ' +
+      '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/> ' +
+      '</head> ' +
+      '<body> ' +
+      document.getElementById("printablecontent").innerHTML +
+      '</body> ' +
+      '</html>'
+    window.location.href = location + window.btoa(excelTemplate);
+  }
+</script>
+
+
+<script>
+  // Function to filter table rows based on search input
+  function filterTable() {
+    // Get the search input value
+    var filter = document.getElementById("searchInput").value.toUpperCase();
+    // Get the table rows
+    var rows = document.querySelector("#tablee tbody").rows;
+
+    // Loop through all table rows
+    for (var i = 0; i < rows.length; i++) {
+      var visible = false;
+      // Loop through all cells in the current row
+      for (var j = 0; j < rows[i].cells.length; j++) {
+        var cell = rows[i].cells[j];
+        // Check if the cell text matches the search query
+        if (cell.textContent.toUpperCase().indexOf(filter) > -1) {
+          visible = true;
+          break;
+        }
+      }
+      // Show or hide the row based on visibility
+      if (visible) {
+        rows[i].style.display = "";
+      } else {
+        rows[i].style.display = "none";
+      }
+    }
+  }
+
+  // Add event listener to the search input field
+  document.getElementById("searchInput").addEventListener("keyup", filterTable);
+</script>
+
+{% endblock %}
