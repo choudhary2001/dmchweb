@@ -174,6 +174,7 @@ def fetch_patient_data_details(request):
                     }
 
                 data = {
+                    'regid' : pr.reg_no.regid,
                     'name': pr.reg_no.name,
                     'bill_no': pr.bill_no,
                     'lab_no': pr.lab_no,
@@ -828,27 +829,34 @@ def create_test_report(request):
 
         if request.method == 'POST':
             # Extract data from POST request for all fields
-            reg_no = request.POST.get('regid')
-            print(reg_no)
+            bill_no = request.POST.get('bill_no')
+            print(bill_no)
+            try:
+                bill_no = int(bill_no)  # Ensure bill_no is treated as an integer for logic
+            except ValueError:
+                return HttpResponseNotFound("Invalid bill number")
+
+            pr = get_patient_by_bill_no(bill_no)
+            # print(pr)
             data = {}
             for field in Test_report._meta.fields:
                 data[field.name] = request.POST.get(field.name)
             print(data)
-            # Fetch the corresponding Patient object based on the provided reg_no
+            # # Fetch the corresponding Patient object based on the provided reg_no
 
-            try:
-                regid_int = int(reg_no)
-                # If no exception is raised, it means regid is an integer
-                patient = Patient.objects.filter(Q(regid=regid_int) | Q(regnoid=reg_no)).first()
-            except ValueError:
-                # If regid cannot be converted to an integer, treat it as a varchar
-                patient = Patient.objects.filter(regnoid=reg_no).first()
+            # try:
+            #     regid_int = int(reg_no)
+            #     # If no exception is raised, it means regid is an integer
+            #     patient = Patient.objects.filter(Q(regid=regid_int) | Q(regnoid=reg_no)).first()
+            # except ValueError:
+            #     # If regid cannot be converted to an integer, treat it as a varchar
+            #     patient = Patient.objects.filter(regnoid=reg_no).first()
 
-            pr = Patient_registration.objects.filter(reg_no=patient).first()
-            print(patient, pr)
+            # pr = Patient_registration.objects.filter(reg_no=patient).first()
+            print(pr)
             if pr is not None:
                 # Assign the patient object to the reg_no field in the data
-                data['reg_no'] = patient
+                data['reg_no'] = pr.reg_no
                 data['patient'] = pr
                 data['user'] = request.user
                 

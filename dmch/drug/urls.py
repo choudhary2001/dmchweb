@@ -27,6 +27,7 @@ urlpatterns = [
     path('get_batches_by_product/', views.get_batches_by_product, name='get_batches_by_product'),
     path('get_product_names_by_type_purchases/', views.get_product_names_by_type_purchases, name='get_product_names_by_type_purchases'),
     path('get_product_detailss/', views.get_product_detailss, name='get_product_detailss'),
+    path('get_product_details/data/', views.get_product_detailss_by_name, name='get_product_detailss_by_name'),
 
 
     # Order URLs

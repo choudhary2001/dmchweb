@@ -426,7 +426,7 @@
       var stockQuantityInput = container.find("input[name^='stock_quantity']");
 
       $.ajax({
-        url: '{% url "get_product_details" %}',
+        url: '{% url "get_product_detailss_by_name" %}',
         type: "GET",
         data: {
           product_name: productName,

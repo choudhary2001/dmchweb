@@ -1662,9 +1662,12 @@ def get_product_detailss(request):
     if request.user.is_superuser or request.session['user_role'] == 'Drug':
         batch_no = request.GET.get('batch_no')
         product_purchase = ProductPurchase.objects.filter(batch_no=batch_no).first()
+        print(product_purchase)
         if product_purchase:
             product_purchase_dict = model_to_dict(product_purchase)
-            purchase = Purchase.objects.filter(products=product_purchase).first()
+            purchase = Purchase.objects.filter(products__batch_no=batch_no).first()
+            print(purchase)
+            print(purchase.supplier.name)
             if purchase and purchase.supplier:
                 product_purchase_dict['supplier_name'] = purchase.supplier.name
                 product_purchase_dict['productdetails_id'] = product_purchase.productdetails_id
@@ -1676,3 +1679,30 @@ def get_product_detailss(request):
     else:
         logout(request)
         return redirect('signin')
+
+
+
+@login_required
+def get_product_detailss_by_name(request):
+    if request.user.is_superuser or request.session['user_role'] == 'Drug':
+        product_name = request.GET.get('product_name')
+        product_purchase = ProductPurchase.objects.filter(product__product_type_id=product_name).first()
+        print(product_purchase)
+        if product_purchase:
+            product_purchase_dict = model_to_dict(product_purchase)
+            purchase = Purchase.objects.filter(products__product__product_type_id=product_name).first()
+            print(purchase)
+            print(purchase.supplier.name)
+            if purchase and purchase.supplier:
+                product_purchase_dict['supplier_name'] = purchase.supplier.name
+                product_purchase_dict['productdetails_id'] = product_purchase.productdetails_id
+            else:
+                product_purchase_dict['supplier_name'] = None
+            return JsonResponse({'product': product_purchase_dict})
+        else:
+            return JsonResponse({'error': 'Product details not found for the given batch number'}, status=404)
+    else:
+        logout(request)
+        return redirect('signin')
+
+

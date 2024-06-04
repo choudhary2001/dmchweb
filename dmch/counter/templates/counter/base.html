@@ -410,9 +410,30 @@
             <span>Medicine Consumption Details</span></a
           >
         </li>
-        {% if request.session.user_role != 'Emergency Med Store' or request.session.user_role != 'Gynic MED Store' %}
+        {% if request.session.user_role == 'Emergency Med Store' %}
         <li class="nav-item active">
           <a class="nav-link" href="{% url 'get_consumption_and_remaining_quantityyy' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Item Wise Consumption</span></a
+          >
+        </li>
+        {% elif request.session.user_role == 'Gynic MED Store' %}
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'get_consumption_and_remaining_quantityyy' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Item Wise Consumption</span></a
+          >
+        </li>
+        {% elif request.session.user_role == 'MCH& GY MED' %}
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'get_consumption_and_remaining_quantity' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Item Wise Consumption</span></a
+          >
+        </li>
+        {% elif request.session.user_role == 'OPD Med Store' %}
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'get_consumption_and_remaining_quantityy' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Item Wise Consumption</span></a
           >

@@ -35,11 +35,15 @@ def fetch_ipd_patient_data(request):
         regid = request.GET.get('regid')
         try:
             # patient = Patient.objects.filter(regid=regid).first()
-            patient = Patient.objects.filter(Q(regid=regid) | Q(regnoid=regid)).first()
+            try:
+                patient = Patient.objects.filter(Q(regid=regid) | Q(regnoid=regid)).first()
 
-            data = {
-                'patient' : model_to_dict(patient)
-            }
+                data = {
+                    'patient' : model_to_dict(patient)
+                }
+            except Exception as e:
+                print(e)
+                data = {}
             return JsonResponse(data)
         except Patient.DoesNotExist:
             return JsonResponse({'error': 'Patient not found'}, status=404)
@@ -219,8 +223,10 @@ def ipd_add_patient(request):
 
                 de = IpdDepartment.objects.filter(department_id = department).first()
                 d = IpdDoctor.objects.filter(doctor_id = doctor).first()
-                p = Patient.objects.filter(regid = regid).first()
-
+                try:
+                    p = Patient.objects.filter(regid = regid).first()
+                except Exception as e:
+                    p = None
                 patient = Patient_Admission.objects.create(
                     user = request.user,
                     patient = p,
@@ -244,6 +250,7 @@ def ipd_add_patient(request):
                     department=de,
                     appointment_date = admit_date
                 )
+                
                 messages.success(request, 'Patient Admitted Successfully')
  
                 # return render(request, 'counter/patientsprint.html', {"patient" : patient})
@@ -291,9 +298,6 @@ def fetch_ipd_decharge_patient_data(request):
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
 
-
-
-
 @login_required
 def update_ipd_patient(request, patient_dmission_id):
     if request.user.is_superuser or request.session['user_role'] == 'IPD':
@@ -318,7 +322,7 @@ def update_ipd_patient(request, patient_dmission_id):
             department = request.POST.get('department')
             disease = request.POST.get('disease')
             admit_date = request.POST.get('admit_date')
-            discharge_date = request.POST.get('discharge_date')
+            discharge_date = request.POST.get('discharge_date', None)
             discharge = request.POST.get('discharge')
             death = request.POST.get('death')
             lama = request.POST.get('lama')
@@ -338,8 +342,11 @@ def update_ipd_patient(request, patient_dmission_id):
             else:
                 days = 0
 
-            p = Patient.objects.filter(regid = regid).first()
-
+            try:
+                p = Patient.objects.filter(regid = regid).first()
+            except Exception as e:
+                # print(e)
+                p = None
 
             de = IpdDepartment.objects.filter(department_id = department).first()
             d = IpdDoctor.objects.filter(doctor_id = doctor).first()
@@ -362,12 +369,13 @@ def update_ipd_patient(request, patient_dmission_id):
             pa.referby=d
             pa.department=de
             pa.appointment_date = admit_date
-            pa.discharge_date = discharge_date
+            if discharge_date:
+                pa.discharge_date = discharge_date
             pa.death = death
             pa.lama = lama
             
             # Save the updated patient object
-            p.save()
+            pa.save()
 
             messages.success(request, 'Patient Updated Successfully')
 
@@ -396,9 +404,6 @@ def delete_patients(request, pk):
     else:
         logout(request)
         return redirect('signin') 
-
-
-
 
 @login_required
 def ipd_discharge_patient(request):
@@ -456,7 +461,8 @@ def show_ipd_patients_report(request):
 
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
-        department = request.GET.get('department')
+        department = request.GET.get('department', None)
+        print(department)
 
         # Convert the date strings to datetime objects
         if start_date_str:
@@ -484,6 +490,11 @@ def show_ipd_patients_report(request):
             patients = patients.filter(appointment_date__gte=start_date, appointment_date__lt=next_day)
         elif end_date:
             patients = patients.filter(appointment_date__lt=end_date)
+
+        if department != None:
+            if department != 'All':
+                patients = patients.filter(department__department_id=department)
+
         
         de = IpdDepartment.objects.all().order_by('-created_at')
         context = {

@@ -20,7 +20,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from urllib.parse import urlparse, parse_qs, unquote_plus
 from django.db.models import Q
 
-
+import csv
+from django.http import HttpResponse
 
 
 
@@ -959,33 +960,61 @@ def supply_details_user_view_data(request):
             for product in order.products.all():
                 created_date = product.created_at.strftime("%d-%m-%Y") 
                 end_dateee = datetime.strptime(created_date, '%d-%m-%Y') + timedelta(days=1)  # Add one day to include end_date
+                if search_query:
+                    if product.product.product_name.lower().startswith(search_query.lower()):
+                        data.append({
+                            "reg_no": order.regno if order.regno else order.patient.regnoid if order.patient else '',
+                            "patient": order.patient_name if order.patient_name else order.patient.name if order.patient else order.regno,
+                            "medicine_name": product.product.product_name,
+                            "mfg_by": product.product.mfg_name,
+                            "batch": product.product.batch_no,
+                            "mfg_date": product.product.mfg_date,
+                            "exp_date": product.product.exp_date,
+                            "quantity": product.quantity,
+                            "supply_time": end_dateee.strftime("%d-%m-%Y") ,
+                            "created_on": order.created_at.strftime("%d-%m-%Y %H:%M:%S"),
+                            "actions": f"""
+                                <a href="/medicine_store/supply/medicine/{order.consumption_id}/update/" class="btn btn-primary btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </span>
+                                    <span class="text">Edit</span>
+                                </a>
+                                <a href="/medicine_store/supply/medicine/{order.consumption_id}/delete/" class="btn btn-danger btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        <i class="fas fa-trash"></i>
+                                    </span>
+                                </a>
+                            """
+                        })
+                else:
+                    data.append({
+                        "reg_no": order.regno if order.regno else order.patient.regnoid if order.patient else '',
+                        "patient": order.patient_name if order.patient_name else order.patient.name if order.patient else order.regno,
+                        "medicine_name": product.product.product_name,
+                        "mfg_by": product.product.mfg_name,
+                        "batch": product.product.batch_no,
+                        "mfg_date": product.product.mfg_date,
+                        "exp_date": product.product.exp_date,
+                        "quantity": product.quantity,
+                        "supply_time": end_dateee.strftime("%d-%m-%Y") ,
+                        "created_on": order.created_at.strftime("%d-%m-%Y %H:%M:%S"),
+                        "actions": f"""
+                            <a href="/medicine_store/supply/medicine/{order.consumption_id}/update/" class="btn btn-primary btn-icon-split">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-arrow-right"></i>
+                                </span>
+                                <span class="text">Edit</span>
+                            </a>
+                            <a href="/medicine_store/supply/medicine/{order.consumption_id}/delete/" class="btn btn-danger btn-icon-split">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-trash"></i>
+                                </span>
+                            </a>
+                        """
+                    })
 
-                data.append({
-                    "reg_no": order.regno if order.regno else order.patient.regnoid if order.patient else '',
-                    "patient": order.patient_name if order.patient_name else order.patient.name if order.patient else order.regno,
-                    "medicine_name": product.product.product_name,
-                    "mfg_by": product.product.mfg_name,
-                    "batch": product.product.batch_no,
-                    "mfg_date": product.product.mfg_date,
-                    "exp_date": product.product.exp_date,
-                    "quantity": product.quantity,
-                    "supply_time": end_dateee.strftime("%d-%m-%Y") ,
-                    "created_on": order.created_at.strftime("%d-%m-%Y %H:%M:%S"),
-                    "actions": f"""
-                        <a href="/medicine_store/supply/medicine/{order.consumption_id}/update/" class="btn btn-primary btn-icon-split">
-                            <span class="icon text-white-50">
-                                <i class="fas fa-arrow-right"></i>
-                            </span>
-                            <span class="text">Edit</span>
-                        </a>
-                        <a href="/medicine_store/supply/medicine/{order.consumption_id}/delete/" class="btn btn-danger btn-icon-split">
-                            <span class="icon text-white-50">
-                                <i class="fas fa-trash"></i>
-                            </span>
-                        </a>
-                    """
-                })
-
+        print(data)
         return JsonResponse({
             "draw": draw,
             "recordsTotal": paginator.count,
@@ -995,6 +1024,74 @@ def supply_details_user_view_data(request):
     else:
         logout(request)
         return redirect('signin')
+
+
+    # department = request.session['user_role']
+    # d = DrugDepartment.objects.filter(name=department).first()
+    
+    # if request.user.is_superuser or d is not None:
+    #     # Get the date range from request
+    #     start_date_str = request.GET.get('start_date')
+    #     end_date_str = request.GET.get('end_date')
+    #     search_query = request.GET.get('searchValue', '')
+
+    #     if start_date_str:
+    #         start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+    #     else:
+    #         start_date = None
+
+    #     if end_date_str:
+    #         end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+    #     else:
+    #         end_date = None
+
+    #     # Filter data based on date range and search query
+    #     p = MedicineConsumption.objects.filter(department=d).order_by('-created_at')
+
+    #     if start_date and end_date:
+    #         p = p.filter(products__created_at__range=(start_date, end_date))
+    #     elif start_date:
+    #         start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+    #         end_datetime = start_datetime + timedelta(days=1)
+    #         p = p.filter(products__created_at__gte=start_datetime, products__created_at__lt=end_datetime)
+    #     elif end_date:
+    #         p = p.filter(products__created_at__lt=end_date)
+
+    #     if search_query:
+    #         p = p.filter(
+    #             Q(regno__istartswith=search_query) |
+    #             Q(patient_name__istartswith=search_query) |
+    #             Q(patient__name__istartswith=search_query) |
+    #             Q(products__product__product_name__istartswith=search_query) |
+    #             Q(products__product__mfg_name__istartswith=search_query)
+    #         ).distinct()
+
+    #     # Create the HttpResponse object with the appropriate CSV header.
+    #     response = HttpResponse(content_type='text/csv')
+    #     response['Content-Disposition'] = 'attachment; filename="medicine_consumption.csv"'
+
+    #     writer = csv.writer(response)
+    #     writer.writerow(['Reg No.', 'Patient', 'Medicine Name', 'Mfg By', 'Batch No', 'Mfg Date', 'Exp Date', 'Quantity', 'Supply Time', 'Created On Date/Time'])
+
+    #     for order in p:
+    #         for product in order.products.all():
+    #             if product.product.product_name.lower().startswith(search_query.lower()):
+    #                 writer.writerow([
+    #                     order.regno if order.regno else order.patient.regnoid if order.patient else '',
+    #                     order.patient_name if order.patient_name else order.patient.name if order.patient else order.regno,
+    #                     product.product.product_name,
+    #                     product.product.mfg_name,
+    #                     product.product.batch_no,
+    #                     product.product.mfg_date,
+    #                     product.product.exp_date,
+    #                     product.quantity,
+    #                     product.created_at.strftime("%d-%m-%Y"),
+    #                     order.created_at.strftime("%d-%m-%Y %H:%M:%S")
+    #                 ])
+    #     return response
+    # else:
+    #     logout(request)
+    #     return redirect('signin')
 
 
 @login_required
@@ -1143,7 +1240,7 @@ def supply_update_view(request, supply_id):
                     if expdate:
                         pp.exp_date = expdate
                     pp.stock_quantity = stock_quantity
-                    pp.supply_date = date
+                    pp.supply_date = order_date
 
                     pp.save()
 
@@ -1509,8 +1606,8 @@ def get_consumption_and_remaining_quantityy(request):
 
                 total_edited = total_opening_quantity - total_consumed_ - total_st_quantity
 
-                if product_name == 'Diclofenac Sodium 50mg':
-                    total_edited += 10
+                # if product_name == 'Diclofenac Sodium 50mg':
+                #     total_edited += 10
 
                 opening_quantity = total_opening_quantity - total_edited - total_consumed_before_start
 
