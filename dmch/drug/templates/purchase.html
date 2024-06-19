@@ -8,15 +8,15 @@
 
   {% endfor %} {% endif %}
   <marquee behavior="scroll" direction="left">
-    <a href="{% url 'expired_medicine' %}" style="color: red;">
-      <ul style="list-style: none; display: flex;" >
+    <a href="{% url 'expired_medicine' %}" style="color: red">
+      <ul style="list-style: none; display: flex">
         {% for product in expiring_products %}
-          <li style="color: red;" >{{ product.product_name }} ({{ product.batch_no }} {{ product.exp_date }}) , </li>
+        <li style="color: red">{{ product.product_name }} ({{ product.batch_no }} {{ product.exp_date }}) ,</li>
         {% endfor %}
       </ul>
     </a>
   </marquee>
-  
+
   <div style="display: flex"></div>
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
@@ -51,6 +51,7 @@
               <th>Mfg By</th>
               <th>Mfg Date</th>
               <th>Exp Date</th>
+              <th>Quantity</th>
               <th>In Stock</th>
               <th>Batch No</th>
               <th>Supplier Name</th>
@@ -61,39 +62,35 @@
             </tr>
           </thead>
           <tbody>
-            {% for order in purchase %}
-            {% for product in order.products.all %}
+            {% for order in purchase %} {% for product in order.products.all %}
 
             <tr>
               <td>{{ order.order_id }}</td>
               <td>
                 <p>{{ product.product_type }}</p>
-
               </td>
               <td>
                 <p>{{ product.product_name }}</p>
-
               </td>
               <td>
                 <p>{{ product.mfg_name }}</p>
-
               </td>
 
               <td>
                 <p>{{ product.mfg_date }}</p>
-
               </td>
               <td>
                 <p>{{ product.exp_date }}</p>
-
               </td>
               <td>
-                <p>{{ product.quantity }}</p>,
+                <p>{{ product.quantity }}</p>
+              </td>
+
+              <td>
                 <p>{{ product.stock_quantity }}</p>
               </td>
               <td>
                 <p>{{ product.batch_no }}</p>
-
               </td>
               <td>
                 <p>
@@ -103,7 +100,7 @@
               </td>
               <td>{{ order.invoice_no }}</td>
               <td>{{ order.invoice_date }}</td>
- 
+
               <td>
                 <p>{{ product.purchase_date }}</p>
               </td>
@@ -122,9 +119,7 @@
                 </a>
               </td>
             </tr>
-            {% endfor %}
-
-            {% endfor %}
+            {% endfor %} {% endfor %}
           </tbody>
         </table>
       </div>

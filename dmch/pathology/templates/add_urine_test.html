@@ -23,159 +23,161 @@
     {% csrf_token %}
 
     <div class="row">
-        <!-- Left Column (Patient Details) -->
-        <div class="col-md-4 mb-3">
-            <label for="regid">Reg No.:</label>
-            <input type="text" class="form-control" id="regid" name="regid" required />
+      <!-- Left Column (Patient Details) -->
+      <div class="col-md-4 mb-3">
+        <label for="bill_no">Bill No.:</label>
+        <input type="text" class="form-control" id="bill_no" value="" name="bill_no" required />
+      </div>
 
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="regid">Reg No.:</label>
+        <input type="text" class="form-control" id="regid" name="regid" disabled required />
+      </div>
 
-        <div class="col-md-4 mb-3">
-            <label for="bill_no">Bill No.:</label>
-            <input type="text" class="form-control" id="bill_no" value="" name="bill_no"  disabled required />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="labno">Lab No :</label>
+        <input type="text" id="labno" class="form-control" disabled name="labno" />
+      </div>
 
-        <div class="col-md-4 mb-3" >
-            <label for="labno">Lab No :</label>
-            <input type="text" id="labno" class="form-control"  disabled name="labno" />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="patient_name">Patient Name :</label>
+        <input type="text" class="form-control" id="patient_name" name="patient_name" disabled />
+      </div>
 
-        <div class="col-md-4 mb-3">
-            <label for="patient_name">Patient Name :</label>
-            <input type="text" class="form-control" id="patient_name" name="patient_name" disabled  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="department">Department:</label>
+        <input type="text" class="form-control" id="department" value="" name="department" disabled />
+      </div>
 
-
-        <div class="col-md-4 mb-3">
-            <label for="department">Department:</label>
-            <input type="text" class="form-control" id="department" value="" name="department"  disabled  />
-        </div>
-
-
-
-        <div class="col-md-4 mb-3" >
-            <label for="doctor">Refer By :</label>
-            <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
+      <div class="col-md-4 mb-3">
+        <label for="doctor">Refer By :</label>
+        <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
             <option>Select Doctor</option>
             </select> -->
-            <input type="text" class="form-control" id="doctor" value="" name="doctor" disabled   />
-
-        </div>
-      
-        <div class="col-md-4 mb-3">
-            <label for="amount">Amount:</label>
-            <input type="text" class="form-control" id="amount" value="" name="amount"   />
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <label for="colour">Colour:</label>
-            <input type="text" class="form-control" id="colour" value="" name="colour"   />
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <label for="odour">Odour :</label>
-            <input type="text" class="form-control" id="odour" value="" name="odour"   />
-        </div>
-
-        <div class="col-md-4 mb-3">
-          <label for="specific_gravity">Specific Gravity:</label>
-          <input type="text" class="form-control" id="specific_gravity" value="" name="specific_gravity"  />
+        <input type="text" class="form-control" id="doctor" value="" name="doctor" disabled />
       </div>
-  
+
       <div class="col-md-4 mb-3">
-          <label for="deposti">Deposti:</label>
-          <input type="text" class="form-control" id="deposti" value="" name="deposti"  />
+        <label for="amount">Amount:</label>
+        <input type="text" class="form-control" id="amount" value="" name="amount" />
       </div>
-  
+
       <div class="col-md-4 mb-3">
-          <label for="reaction">Reaction:</label>
-          <input type="text" class="form-control" id="reaction" value="" name="reaction"  />
+        <label for="colour">Colour:</label>
+        <!-- <input type="text" class="form-control" id="colour" value="" name="colour" /> -->
+        <select type="text" id="colour" class="form-control" name="colour">
+          <option value="">Select Colour</option>
+          <option value="Pale Yellow">Pale Yellow</option>
+          <option value="Deep Yellow">Deep Yellow</option>
+          <option value="Redish">Redish</option>
+        </select>
       </div>
-  
-        
-              <div class="col-md-4 mb-3">
-                <label for="sugar">Sugar:</label>
-                <input type="text" class="form-control" id="sugar" value="" name="sugar"  />
-            </div>
 
-              
-            <div class="col-md-4 mb-3">
-              <label for="albumin">Albumin:</label>
-              <input type="text" class="form-control" id="albumin" value="" name="albumin"  />
-          </div>
+      <div class="col-md-4 mb-3">
+        <label for="odour">Odour :</label>
+        <input type="text" class="form-control" id="odour" value="" name="odour" />
+      </div>
 
-            
-          <div class="col-md-4 mb-3">
-            <label for="phosphate">Phosphate:</label>
-            <input type="text" class="form-control" id="phosphate" value="" name="phosphate"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="specific_gravity">Specific Gravity:</label>
+        <input type="text" class="form-control" id="specific_gravity" value="" name="specific_gravity" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="mucin">Mucin:</label>
-          <input type="text" class="form-control" id="mucin" value="" name="mucin"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="deposti">Deposti:</label>
+        <input type="text" class="form-control" id="deposti" value="" name="deposti" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="bile_salt">Bile Salt:</label>
-          <input type="text" class="form-control" id="bile_salt" value="" name="bile_salt"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="reaction">Reaction:</label>
+        <input type="text" class="form-control" id="reaction" value="" name="reaction" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="bile_pigment">Bile Pigment:</label>
-          <input type="text" class="form-control" id="bile_pigment" value="" name="bile_pigment"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="sugar">Sugar:</label>
+        <input type="text" class="form-control" id="sugar" value="" name="sugar" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="urobilinogen">Urobilinogen:</label>
-          <input type="text" class="form-control" id="urobilinogen" value="" name="urobilinogen"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="albumin">Albumin:</label>
+        <!-- <input type="text" class="form-control" id="albumin" value="" name="albumin" /> -->
+        <select type="text" id="albumin" class="form-control" name="albumin">
+          <option value="">Select Albumin</option>
+          <option value="Not Present">Not Present</option>
+          <option value="Present">Present</option>
+          <option value="1+">1+</option>
+          <option value="2+">2+</option>
+          <option value="3+">3+</option>
+          <option value="4+">4+</option>
+        </select>
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="acetone_bodies">Acetone Bodies:</label>
-          <input type="text" class="form-control" id="acetone_bodies" value="" name="acetone_bodies"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="phosphate">Phosphate:</label>
+        <input type="text" class="form-control" id="phosphate" value="" name="phosphate" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="rbc">RBC:</label>
-          <input type="text" class="form-control" id="rbc" value="" name="rbc"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="mucin">Mucin:</label>
+        <input type="text" class="form-control" id="mucin" value="" name="mucin" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="wbc">WBC:</label>
-          <input type="text" class="form-control" id="wbc" value="" name="wbc"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="bile_salt">Bile Salt:</label>
+        <input type="text" class="form-control" id="bile_salt" value="" name="bile_salt" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="epitheilal_cell">Epitheilal Cell:</label>
-          <input type="text" class="form-control" id="epitheilal_cell" value="" name="epitheilal_cell"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="bile_pigment">Bile Pigment:</label>
+        <input type="text" class="form-control" id="bile_pigment" value="" name="bile_pigment" />
+      </div>
 
-        <div class="col-md-4 mb-3">
-          <label for="casts">Casts:</label>
-          <input type="text" class="form-control" id="casts" value="" name="casts"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="crystas">Crystas:</label>
-          <input type="text" class="form-control" id="crystas" value="" name="crystas"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="others">Others:</label>
-          <input type="text" class="form-control" id="others" value="" name="others"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="urobilinogen">Urobilinogen:</label>
+        <input type="text" class="form-control" id="urobilinogen" value="" name="urobilinogen" />
+      </div>
 
+      <div class="col-md-4 mb-3">
+        <label for="acetone_bodies">Acetone Bodies:</label>
+        <input type="text" class="form-control" id="acetone_bodies" value="" name="acetone_bodies" />
+      </div>
 
+      <div class="col-md-4 mb-3">
+        <label for="rbc">RBC:</label>
+        <input type="text" class="form-control" id="rbc" value="" name="rbc" />
+      </div>
 
+      <div class="col-md-4 mb-3">
+        <label for="wbc">WBC:</label>
+        <input type="text" class="form-control" id="wbc" value="" name="wbc" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="epitheilal_cell">Epitheilal Cell:</label>
+        <input type="text" class="form-control" id="epitheilal_cell" value="" name="epitheilal_cell" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="casts">Casts:</label>
+        <input type="text" class="form-control" id="casts" value="" name="casts" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="crystas">Crystas:</label>
+        <input type="text" class="form-control" id="crystas" value="" name="crystas" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="others">Others:</label>
+        <input type="text" class="form-control" id="others" value="" name="others" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="dr">Doctor Signature :</label>
+        <select type="text" id="dr" class="form-control" name="dr">
+          <option value="">Select Doctor</option>
+          <option value="santoshkumar">Dr. Santosh Kumar Sharma</option>
+          <option value="knyadav">Dr. K. N. Yadav</option>
+        </select>
+      </div>
     </div>
-
-
 
     <button type="submit" class="btn btn-primary">Save</button>
   </form>
@@ -183,108 +185,58 @@
 
 <!-- End of Main Content -->
 {% endblock %} {% block script %}
-<script></script>
-<script>
-
-
-  // Function to handle form submission
-  function handleFormSubmission(event) {
-    event.preventDefault(); // Prevent default form submission
-
-    // Your additional logic for form validation or processing goes here
-
-    // Select all input fields in the form
-    const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
-
-    // Flag to keep track of form validity
-    let isValid = true;
-
-    // Loop through each input field
-    inputs.forEach(function (input) {
-      // Check if the input field is  and does not have a value
-      if (input.hasAttribute("required") && !input.value.trim()) {
-        // If a  field is empty, set isValid to false
-        isValid = false;
-        // Highlight the empty field (you can customize this part)
-        input.style.border = "1px solid red";
-      } else {
-        // Remove any previous highlighting
-        input.style.border = "";
-      }
-    });
-
-    // If the form is valid, submit it
-    if (isValid) {
-      document.getextementById("patientForm").submit();
-    } else {
-      // If the form is invalid, display an alert (you can customize this part)
-      //   alert("Please fill out all  fields.");
-    }
-  }
-
-  // Function to handle keyboard shortcuts
-  function handleShortcut(event) {
-    // if (event.ctrlKey && event.key === "s") {
-    if (event.key === "F2") {
-      // Ctrl + S pressed, trigger form submission
-      handleFormSubmission(event);
-    }
-  }
-
-  // Attach event listener for form submission
-  document.getextementById("patientForm").addEventListener("submit", handleFormSubmission);
-
-  // Attach event listener for keyboard shortcuts
-  document.addEventListener("keydown", handleShortcut);
-</script>
-
 <script>
   $(document).ready(function () {
-    $("#regid").on("input", function () {
-      var regid = $(this).val();
-      if (regid) {
-        $.ajax({
-          url: '{% url "fetch_patient_data_details" %}',
-          type: "GET",
-          data: {
-            regid: regid,
-          },
-          success: function (data) {
-            if (data.urine_report && data.urine_report.available) {
+    $("#bill_no").on("keypress", function (e) {
+      if (e.which === 13) {
+        var regid = $(this).val();
+        e.preventDefault();
+        if (regid) {
+          $.ajax({
+            url: '{% url "fetch_patient_data_details" %}',
+            type: "GET",
+            data: {
+              regid: regid,
+            },
+            success: function (data) {
+              console.log(data);
+              // Update input fields with fetched data
+              $("#patient_name").val(data.name);
+              $("#regid").val(data.regid);
+              $("#bill_no").val(data.bill_no);
+              $("#labno").val(data.lab_no);
+              $("#department").val(data.department);
+              $("#doctor").val(data.referby);
+              $("#patient_name").val(data.name);
+              if (data.urine_report && data.urine_report.available) {
                 // Redirect to another page
                 window.location.href = `/pathology/update_urine_test/${data.urine_report.id}/`;
-            }
-            // Update input fields with fetched data
-            $("#patient_name").val(data.name);
-            $("#bill_no").val(data.bill_no);
-            $("#labno").val(data.lab_no);
-            $("#department").val(data.department);
-            $("#doctor").val(data.referby);
-            $("#patient_name").val(data.name);
-          },
-          error: function (xhr, status, error) {
-            console.error(xhr.responseText);
-            // Handle error if necessary
-            $("#patient_name").val('');
-            $("#bill_no").val('');
-            $("#labno").val('');
-            $("#department").val('');
-            $("#doctor").val('');
-            $("#patient_name").val('');
-          },
-        });
-      } else {
-        // Clear input fields when regid is empty
-        $("#patient_name").val('');
-        $("#bill_no").val('');
-        $("#labno").val('');
-        $("#department").val('');
-        $("#doctor").val('');
-        $("#patient_name").val('');
+              }
+            },
+            error: function (xhr, status, error) {
+              console.error(xhr.responseText);
+              // Handle error if necessary
+              $("#patient_name").val("");
+              $("#regid").val("");
+              $("#bill_no").val("");
+              $("#labno").val("");
+              $("#department").val("");
+              $("#doctor").val("");
+              $("#patient_name").val("");
+            },
+          });
+        } else {
+          // Clear input fields when regid is empty
+          $("#patient_name").val("");
+          $("#bill_no").val("");
+          $("#regid").val("");
+          $("#labno").val("");
+          $("#department").val("");
+          $("#doctor").val("");
+          $("#patient_name").val("");
+        }
       }
     });
   });
 </script>
-
-
 {% endblock %}

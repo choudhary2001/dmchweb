@@ -18,7 +18,7 @@
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <form action="{% url 'c_test_report_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+      <form action="{% url 'cbc_test_report_view' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
         <div style="flex: 1">
           <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
         </div>
@@ -28,15 +28,14 @@
         <div style="flex: 1">
           <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
         </div>
-       
+
         <div style="flex: 1">
           <button class="btn btn-primary w-100" type="submit">Filter</button>
         </div>
-    
-        <div style="flex: 1">
-            <a href="{% url 'create_test_report_view_print' %}" class="btn btn-primary w-100">Print</a>
-        </div>
 
+        <div style="flex: 1">
+          <a href="{% url 'cbc_test_report_view_print' %}" class="btn btn-primary w-100">Print</a>
+        </div>
       </form>
     </div>
     <div class="card-body">
@@ -44,18 +43,19 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
-                <th>Reg No.</th>
-                <th>Name</th>
-                <th>Bill No.</th>
-                <th>Lab No.</th>
-                <th>Department</th>
-                <th>Refer By</th>
-                <th>RBC</th>
-                <th>HGB</th>
-                <th>HCT</th>
-                <th>MCV</th>
-                <th>MCH</th>
-                <th>MCHC</th>
+              <th>Reg No.</th>
+              <th>Name</th>
+              <th>Mob No.</th>
+              <th>Bill No.</th>
+              <th>Lab No.</th>
+              <th>Department</th>
+              <th>Refer By</th>
+              <th>RBC</th>
+              <th>HGB</th>
+              <th>HCT</th>
+              <th>MCV</th>
+              <th>MCH</th>
+              <th>MCHC</th>
               <th>Date</th>
               {% if request.user.is_superuser %}
               <th>Edit</th>
@@ -67,19 +67,20 @@
           </thead>
           <tfoot>
             <tr>
-                <th>Reg No.</th>
-                <th>Name</th>
-                <th>Bill No.</th>
-                <th>Lab No.</th>
-                <th>Department</th>
-                <th>Refer By</th>
-                <th>RBC</th>
-                <th>HGB</th>
-                <th>HCT</th>
-                <th>MCV</th>
-                <th>MCH</th>
-                <th>MCHC</th>
-                <th>Date</th>
+              <th>Reg No.</th>
+              <th>Name</th>
+              <th>Mob No.</th>
+              <th>Bill No.</th>
+              <th>Lab No.</th>
+              <th>Department</th>
+              <th>Refer By</th>
+              <th>RBC</th>
+              <th>HGB</th>
+              <th>HCT</th>
+              <th>MCV</th>
+              <th>MCH</th>
+              <th>MCHC</th>
+              <th>Date</th>
               {% if request.user.is_superuser %}
               <th>Edit</th>
               <th>Delete</th>
@@ -93,6 +94,7 @@
             <tr>
               <td>{{d.reg_no.regid}}</td>
               <td>{{d.reg_no.name}}</td>
+              <td>{{d.reg_no.mobno}}</td>
               <td>{{d.patient.bill_no}}</td>
               <td>{{d.patient.lab_no}}</td>
               <td>{{d.patient.department.name}}</td>

@@ -67,7 +67,7 @@
       <div class="col-md-4 mb-3">
         <div class="form-group">
           <label for="regid">Reg No.:</label>
-          <input type="text" class="form-control" id="regid" name="regid" value="{% if medicine.regno %}{{ medicine.regno }}{% else %}{% if medicine.patient.regnoid %}{{ medicine.patient.regnoid }}{% endif %}{% endif %}" disabled />
+          <input type="text" class="form-control" id="regid" name="regid" value="{% if medicine.regno %}{{ medicine.regno }}{% else %}{% if medicine.patient.regnoid %}{{ medicine.patient.regnoid }}{% endif %}{% endif %}" {% if request.session.user_role != 'Emergency Med Store' %}disabled{% endif %} />
         </div>
       </div>
 
@@ -76,7 +76,7 @@
           <label for="patient_name">Patient Name :</label>
           <input type="text" class="form-control" id="patient_name" name="patient_name" value="{% if medicine.patient_name %}{{ medicine.patient_name }}
           {% else %}{% if medicine.patient.name %}{{ medicine.patient.name }}{% else %}{{ medicine.patient.regnoid }}{% endif %}
-          {% endif %}" disabled  />
+          {% endif %}" {% if request.session.user_role != 'Emergency Med Store' %}disabled{% endif %}  />
         </div>
       </div>
 
@@ -247,7 +247,9 @@
               <input value="{{p.medicine_id}}" type="text" class="form-control" name="medicine_id_{{ forloop.counter }}"  value="{{p.medicine_id}}"  required />
             </div>
         </div>
-       
+        <div class="form-group" style="height:35px">
+          <button type="button" style="height:35px" class="btn btn-danger remove-product">x</button>
+      </div>
 
       </div>
     {% endfor %}

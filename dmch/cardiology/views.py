@@ -128,7 +128,7 @@ def add_cardiology_report(request):
 @login_required
 def show_cardiology_report(request):
 
-    if request.user.is_superuser or request.session['user_role'] == 'Crdiology':
+    if request.user.is_superuser or  request.user.is_staff or request.session['user_role'] == 'Crdiology':
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
         product_name = request.GET.get('product_name')
@@ -194,7 +194,7 @@ def show_cardiology_report(request):
 
 @login_required
 def print_cardiology_report(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Crdiology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Crdiology':
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
         product_name = request.GET.get('product_name')

@@ -18,6 +18,7 @@ from django.db.models.functions import Lower, Upper, Trim
 from django.db.models import CharField
 from django.forms.models import model_to_dict
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import F, ExpressionWrapper, BigIntegerField
 # Get the current time in UTC
 current_time_utc = timezone.now()
 
@@ -160,7 +161,6 @@ def product_type_add_view(request):
         context = {
             'producttype' : s,
             'title' : f"Total Products : {len(s)}"
-
         }
         return render(request, 'product_type.html', context = context)
     else:
@@ -243,11 +243,10 @@ def order_add_view(request):
                 )
 
                 order.products.add(product)
-            messages.success(request, 'Order Added Successfully.')
             # Save the order
             order.save()
-            messages.success(request, 'Added Successfully')
-
+            messages.success(request, 'Order Added Successfully.')
+            return redirect(f'/drug/order/add/')
 
         s = Suppliar.objects.all().order_by('-created_at')
         d = DrugDepartment.objects.all().order_by('-created_at')
@@ -398,15 +397,15 @@ def get_product_names_by_type(request):
         # products = ProductType.objects.filter(p_type=product_type)
         products = ProductType.objects.filter(p_type=product_type).values('product_type_id', 'name').distinct()
 
-        print(products)
+        # print(products)
         # Create a list to store the product names
         product_names = []
 
         # Iterate over the retrieved products and extract their names
         for product in products:
-            print(product)
+            # print(product)
             product_names.append({'product_type_id': product['product_type_id'], 'name': product['name']})
-        print(product_names)
+        # print(product_names)
         # Return the product names as JSON response
         return JsonResponse({'products': product_names})
     else:
@@ -415,7 +414,9 @@ def get_product_names_by_type(request):
 
 @login_required
 def get_product_names_by_type_purchase(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Drug':
+    if request.user.is_superuser or request.session['user_role'] == 'Drug' or request.session['user_role_store'] == 'Medicine Store' :
+
+    # if request.user.is_superuser or request.session['user_role'] == 'Drug':
 
         # Get the selected product type from the AJAX request
         product_type = request.GET.get('product_type')
@@ -424,14 +425,14 @@ def get_product_names_by_type_purchase(request):
         products = ProductType.objects.filter(p_type=product_type)
         product_names = []
         for p in products:
-            print(p)
+            # print(p)
             pdp = ProductPurchase.objects.filter(product=p)
-            print(pdp)
+            # print(pdp)
             if pdp:
                 for pp in pdp:
                     if pp.quantity > 0 and pp.stock_quantity > 0:
                         # Create a dictionary to store the product names
-                        print(pp.productdetails_id , p.name)
+                        # print(pp.productdetails_id , p.name)
                         product_names.append({'product_type_id': pp.productdetails_id, 'product_type_id_': p.product_type_id,  'name': p.name, 'batch' : pp.batch_no})
 
         product_names = sorted(product_names, key=lambda x: x['name'])
@@ -444,14 +445,15 @@ def get_product_names_by_type_purchase(request):
 
 @login_required
 def get_product_details(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Drug':
+    if request.user.is_superuser or request.session['user_role'] == 'Drug' or request.session['user_role_store'] == 'Medicine Store' :
+
         # Get the selected product type from the AJAX request
         product_name = request.GET.get('product_name')
-        print(product_name)
+        # print(product_name)
         if product_name:
             # Retrieve the ProductPurchase object
             product_purchase = ProductPurchase.objects.filter(productdetails_id=product_name).first()
-            print(product_purchase)
+            # print(product_purchase)
             # Check if the ProductPurchase object exists
             if product_purchase:
                 # Convert the model instance to a dictionary
@@ -464,7 +466,7 @@ def get_product_details(request):
                     product_purchase_dict['supplier_name'] = purchase.supplier.name
                 else:
                     product_purchase_dict['supplier_name'] = None
-                print(product_purchase_dict)
+                # print(product_purchase_dict)
                 # Return the dictionary as JSON response
                 return JsonResponse({'product': product_purchase_dict})
             else:
@@ -540,12 +542,10 @@ def order_update_view(request, order_id):
                             order.products.add(product)
                     except Exception as e:
                         print(e)
-
-            messages.success(request, 'Order Added Successfully.')
             # Save the order
             order.save()
-            messages.success(request, 'Added Successfully')
-
+            messages.success(request, 'Updated Successfully')
+            return redirect(f'/drug/order/{order_id}/update/')
 
         s = Suppliar.objects.all().order_by('-created_at')
         d = DrugDepartment.objects.all().order_by('-created_at')
@@ -615,7 +615,7 @@ def purchase_add_view(request):
                 paid=paid,
                 due=due
             )
-                    # Loop through the product form fields
+            # Loop through the product form fields
             for i in range(1, int(request.POST.get('product_count')) + 1):
                 department_name = request.POST.get(f'department_{i}')
                 product_type_name = request.POST.get(f'product_type_{i}')
@@ -654,12 +654,10 @@ def purchase_add_view(request):
                 )
 
                 purchase.products.add(product)
-            messages.success(request, 'Product Purchased Successfully.')
-
             # Save the order
             purchase.save()
             messages.success(request, 'Added Successfully')
-
+            return redirect(f'/drug/purchase/add/')
 
         s = Suppliar.objects.all().order_by('-created_at')
         d = DrugDepartment.objects.all().order_by('-created_at')
@@ -680,130 +678,6 @@ def purchase_add_view(request):
     else:
         logout(request)
         return redirect('signin') 
-
-
-# @login_required
-# def purchase_update_view(request,purchase_id):
-#     if request.user.is_superuser or request.session['user_role'] == 'Drug':
-
-#         # purchase = get_object_or_404(Purchase, purchase_id=purchase_id)
-#         purchase = Purchase.objects.filter(purchase_id = purchase_id).first()
-
-#         if request.method == 'POST':
-#             print(request.POST)
-#             # Extract data from the form
-#             order_id = request.POST.get('order_id')
-#             supplier_id = request.POST.get('suppliar')
-#             mob_no = request.POST.get('mob_no')
-#             gst = request.POST.get('gst')
-#             email = request.POST.get('email')
-#             invoice_no = request.POST.get('invoice')
-#             invoice_date = request.POST.get('invoice_date')
-#             total_amount = request.POST.get('total_amount')
-#             paid = request.POST.get('paid')
-#             due = request.POST.get('due')
-#             purchase_date = request.POST.get('purchase_date')
-#             suppliar = Suppliar.objects.filter(suppliar_id=supplier_id).first()
-
-#             purchase.suppliar = suppliar
-#             purchase.mob_no = mob_no
-#             purchase.gst = gst
-#             purchase.invoice_no = invoice_no
-#             purchase.invoice_date = invoice_date
-
-
-#             # Loop through the product form fields
-#             for i in range(1, int(request.POST.get('product_count')) + 1):
-#                 department_name = request.POST.get(f'department_{i}')
-#                 product_type_name = request.POST.get(f'product_type_{i}')
-#                 product_name = request.POST.get(f'product_name_{i}')
-#                 mfg_name = request.POST.get(f'mfgname_{i}')
-#                 batch_no = request.POST.get(f'batchno_{i}')
-#                 mfgdate = request.POST.get(f'mfgdate_{i}')
-#                 expdate = request.POST.get(f'expdate_{i}')
-#                 mrp = request.POST.get(f'mrp_{i}')
-#                 purchaserate = request.POST.get(f'purchaserate_{i}')
-#                 quantity = request.POST.get(f'quantity_{i}')
-#                 stock_quantity = request.POST.get(f'stock_quantity_{i}')
-#                 amount = request.POST.get(f'amount_{i}')
-#                 productdetails_id = request.POST.get(f'productdetails_id_{i}')
-
-#                 print(f"Product[i]: Department ID: {department_name}, Product Type ID: {product_type_name}, MFG Name: {mfg_name}, Batch No: {batch_no}, Quantity: {quantity}")
-
-#                 print(department_name, product_type_name, product_name, mfg_name, batch_no)
-#                 department = DrugDepartment.objects.filter(department_id=department_name).first()
-#                 product_type = ProductType.objects.filter(product_type_id=product_name).first()
-#                 p = ProductPurchase.objects.filter(productdetails_id = productdetails_id).first()
-                
-#                 if p:
-#                     print(p.product_type)
-#                     print(product_type.name , product_type.p_type)
-#                     p.product_name=product_type.name,
-#                     p.product_type=product_type.p_type,
-#                     p.product = product_type
-#                     p.mfg_name = mfg_name
-#                     p.batch_no = batch_no
-#                     p.quantity = quantity
-#                     p.stock_quantity = stock_quantity
-#                     p.mfg_date = mfgdate
-#                     p.exp_date = expdate
-#                     p.mrp = mrp
-#                     p.purchase_rate = purchaserate
-#                     p.purchase_date = purchase_date
-#                     p.save()
-                
-#                 if p is None:
-#                     try:
-#                         product = ProductPurchase.objects.create(
-#                             user = request.user,
-#                             department=department,
-#                             product_name=product_type.name,
-#                             product_type=product_type_name,
-#                             product = product_type,
-#                             mfg_name=mfg_name,
-#                             batch_no=batch_no,
-#                             quantity=quantity,
-#                             stock_quantity=quantity,
-#                             mfg_date = mfgdate,
-#                             exp_date = expdate,
-#                             mrp = mrp, 
-#                             purchase_rate = purchaserate,
-#                             purchase_amount = amount,
-#                             purchase_date = date
-#                         )
-
-#                         purchase.products.add(product)
-#                     except Exception as e:
-#                         print(e)
-            
-
-#             # Save the order
-#             purchase.save()
-
-#             messages.success(request, 'Product Updated Successfully.')
-
-#             return redirect(f"/drug/purchase/{purchase.purchase_id}/update/")
-
-#         s = Suppliar.objects.all().order_by('-created_at')
-#         d = DrugDepartment.objects.all().order_by('-created_at')
-#         p = ProductType.objects.all().order_by('-created_at')
-#         unique_p_types = ProductType.objects.annotate(
-#             normalized_p_type=Trim(Upper('p_type', output_field=CharField()))
-#         ).values_list('normalized_p_type', flat=True).distinct().order_by('p_type')
-
-#         context = {
-#             'title' : 'Update Purchase',
-#             'suppliar' : s,
-#             'department' : d,
-#             'product' : p,
-#             'unique_p_types' : unique_p_types,
-#             'purchase' : purchase
-#         }
-#         return render(request, 'update_purchase.html', context=context)
-#     else:
-#         logout(request)
-#         return redirect('signin') 
-
 
 @login_required
 def purchase_update_view(request, purchase_id):
@@ -1262,7 +1136,7 @@ def supply_add_view(request):
                 print(product_type)
                 p = ProductPurchase.objects.filter(productdetails_id = product_type_id_column ).first()
                 # p = ProductPurchase.objects.filter(product = product_type ).first()
-                print(p)
+                # print(p)
                 if p:
                     print(p.stock_quantity, quantity)
 
@@ -1320,10 +1194,20 @@ def supply_delete_view(request, productdetails_id):
         print(supply)
         try:
             if supply is not None:
-                pp = ProductPurchase.objects.filter(product_name = supply.product_name, batch_no = supply.batch_no).first()
-                pp.stock_quantity = pp.stock_quantity + int(supply.stock_quantity)
-                pp.save()
-                supply.delete()
+
+                pp = ProductPurchase.objects.filter(
+                    product=supply.product,
+                    batch_no=supply.batch_no,
+                ).annotate(
+                    difference=ExpressionWrapper(F('quantity') - F('stock_quantity'), output_field=BigIntegerField())
+                ).filter(
+                    difference__gt=supply.quantity
+                ).first()
+                # pp = ProductPurchase.objects.filter(product_name = supply.product_name, batch_no = supply.batch_no).first()
+                if pp:
+                    pp.stock_quantity = pp.stock_quantity + int(supply.quantity)
+                    pp.save()
+                    supply.delete()
         except Exception as e:
             print(e)
         return redirect('drug_supply_details_view')  # Replace 'success-page' with actual URL
@@ -1477,7 +1361,7 @@ def supply_update_view(request, supply_id):
     if request.user.is_superuser or request.session['user_role'] == 'Drug':
 
         supply = get_object_or_404(Supply, supply_id=supply_id)
-        print(supply)
+        # print(supply)
         if request.method == 'POST':
             print(request.POST)
             # Extract data from the form
@@ -1493,7 +1377,6 @@ def supply_update_view(request, supply_id):
             supply.department = department
             supply.indent = indent
             supply.order_date = order_date
-            supply.save()
 
             # Loop through the product form fields
             for i in range(1, int(request.POST.get('product_count')) + 1):
@@ -1511,19 +1394,21 @@ def supply_update_view(request, supply_id):
                 productdetails_id = request.POST.get(f'productdetails_id_{i}')
 
 
-                print(f"Product Type ID: {product_type_name}, MFG Name: {mfg_name}, Batch No: {batch_no}, Quantity: {quantity}")
-                product_type_new = ProductType.objects.filter(product_type_id=product_name).first()
-                pp = ProductSupply.objects.filter(productdetails_id = productdetails_id, product = product_type_new).first()
+                print(f"Product Type ID: {product_name}, MFG Name: {productdetails_id}, Batch No: {batch_no}, Quantity: {quantity}")
+                product_type_new = ProductPurchase.objects.filter(productdetails_id=product_name).first()
+                print(product_type_new)
+                pp = ProductSupply.objects.filter(productdetails_id = productdetails_id, product = product_type_new.product).first()
+                print(pp)
                 if pp:
                     print("Product Available")
                     product_type = ProductType.objects.filter(product_type_id=pp.product.product_type_id).first()
-                    p = ProductPurchase.objects.filter(product = product_type, batch_no = batch_no).first()
+                    p = ProductPurchase.objects.filter(productdetails_id = productdetails_id).first()
                     print(p)
                     if p:
                         print(p.stock_quantity, quantity)
 
                         if int(p.stock_quantity) >= int(quantity):
-                            p.stock_quantity = int(p.stock_quantity) -  int(quantity) + p.stock_quantity
+                            p.stock_quantity = int(p.stock_quantity) -  int(quantity) + int(pp.stock_quantity)
                             p.save()
 
                             pp.product = product_type
@@ -1541,41 +1426,82 @@ def supply_update_view(request, supply_id):
 
                     try:
                         ppp = ProductSupply.objects.filter(productdetails_id = productdetails_id).first()
+                        if ppp is not None:
+                            product_type = ProductType.objects.filter(product_type_id=ppp.product.product_type_id).first()
+                            # product_type_new = ProductType.objects.filter(product_type_id=product_name).first()
+                            # p = ProductPurchase.objects.filter(product = ppp.product,batch_no =ppp.batch_no ).first()
+                            p = ProductPurchase.objects.filter(
+                                product=ppp.product,
+                                batch_no=ppp.batch_no,
+                            ).annotate(
+                                difference=ExpressionWrapper(F('quantity') - F('stock_quantity'), output_field=BigIntegerField())
+                            ).filter(
+                                difference__gt=ppp.quantity
+                            ).first()
 
-                        product_type = ProductType.objects.filter(product_type_id=ppp.product.product_type_id).first()
-                        product_type_new = ProductType.objects.filter(product_type_id=product_name).first()
-                        p = ProductPurchase.objects.filter(product = product_type,batch_no =ppp.batch_no ).first()
-                        p_n = ProductPurchase.objects.filter(product = product_type_new, batch_no = batch_no).first()
-                        print(p)
-                        if p:
-                            print(p.stock_quantity, quantity)
-                            p.stock_quantity = int(p.stock_quantity) +  int(ppp.quantity)
-                            p.save()
-                            if int(p_n.stock_quantity) >= int(quantity):
-                                p_n.stock_quantity = int(p_n.stock_quantity) -  int(quantity)
-                                p_n.save()
+                            p_n = ProductPurchase.objects.filter(productdetails_id = product_name).first()
+                            print(p, p_n)
 
-                                product = ProductSupply.objects.create(
-                                    user = request.user,
-                                    product=product_type,
-                                    mfg_name=mfg_name,
-                                    batch_no=batch_no,
-                                    quantity=quantity,
-                                    mfg_date = mfgdate,
-                                    exp_date = expdate,
-                                    stock_quantity = stock_quantity,
-                                    supply_date = order_date
-                                )
+                            if p:
+                                print(p.stock_quantity, quantity)
+                                p.stock_quantity = int(p.stock_quantity) +  int(ppp.quantity)
+                                p.save()
+                                if int(p_n.stock_quantity) >= int(quantity):
+                                    p_n.stock_quantity = int(p_n.stock_quantity) -  int(quantity)
+                                    p_n.save()
 
-                                supply.products.add(product)
-                                ppp.delete()
+                                    product = ProductSupply.objects.create(
+                                        user = request.user,
+                                        product=p_n.product,
+                                        product_name = p_n.product_name,
+                                        product_type = p_n.product_type,
+                                        mfg_name=mfg_name,
+                                        batch_no=batch_no,
+                                        quantity=quantity,
+                                        mfg_date = mfgdate,
+                                        exp_date = expdate,
+                                        stock_quantity = quantity,
+                                        supply_date = order_date
+                                    )
+
+                                    supply.products.add(product)
+                                    ppp.delete()
+                        else:
+
+                         
+                            p = ProductPurchase.objects.filter(productdetails_id = product_name ).first()
+                        
+                            print(p)
+                            if p:
+                                print(p.stock_quantity, quantity)
+
+                                if int(p.stock_quantity) >= int(quantity):
+                                    p.stock_quantity = int(p.stock_quantity) -  int(quantity)
+                                    p.save()
+                                    pt = ProductType.objects.filter(product_type_id = p.product.product_type_id).first()
+                                    print(pt)
+                                    product = ProductSupply.objects.create(
+                                        user = request.user,
+                                        product = pt,
+                                        product_name=pt.name,
+                                        product_type=pt.p_type,
+                                        mfg_name=p.mfg_name,
+                                        batch_no=p.batch_no,
+                                        quantity=quantity,
+                                        mfg_date = p.mfg_date,
+                                        exp_date = p.exp_date,
+                                        stock_quantity = quantity,
+                                        supply_date = order_date
+                                    )
+
+                                    supply.products.add(product)
+
                     except Exception as e:
                         print(e)
 
-            # Save the order
-            # supply.save()
+            supply.save()
             messages.success(request, 'Updated Successfully')
-        supply = get_object_or_404(Supply, supply_id=supply_id)
+            return redirect(f'/drug/supply/{supply_id}/update/')
 
         s = Suppliar.objects.all().order_by('-created_at')
         d = DrugDepartment.objects.all().order_by('-created_at')
@@ -1650,8 +1576,8 @@ def get_product_names_by_type_purchases(request):
 def get_batches_by_product(request):
     if request.user.is_superuser or request.session['user_role'] == 'Drug':
         product_type_id = request.GET.get('product_type_id')
-        product_purchases = ProductPurchase.objects.filter(product__product_type_id=product_type_id, stock_quantity__gt=0).values('batch_no').distinct()
-        batch_numbers = [{'batch_no': pp['batch_no']} for pp in product_purchases]
+        product_purchases = Purchase.objects.filter(products__product__product_type_id=product_type_id, products__stock_quantity__gt=0).values('products__batch_no', 'products__productdetails_id').all()
+        batch_numbers = [{'batch_no': pp['products__batch_no'], 'productdetails_id' : pp['products__productdetails_id']} for pp in product_purchases]
         return JsonResponse({'batches': batch_numbers})
     else:
         logout(request)
@@ -1661,11 +1587,11 @@ def get_batches_by_product(request):
 def get_product_detailss(request):
     if request.user.is_superuser or request.session['user_role'] == 'Drug':
         batch_no = request.GET.get('batch_no')
-        product_purchase = ProductPurchase.objects.filter(batch_no=batch_no).first()
+        product_purchase = ProductPurchase.objects.filter(productdetails_id=batch_no).first()
         print(product_purchase)
         if product_purchase:
             product_purchase_dict = model_to_dict(product_purchase)
-            purchase = Purchase.objects.filter(products__batch_no=batch_no).first()
+            purchase = Purchase.objects.filter(products__productdetails_id=batch_no).first()
             print(purchase)
             print(purchase.supplier.name)
             if purchase and purchase.supplier:
@@ -1686,11 +1612,11 @@ def get_product_detailss(request):
 def get_product_detailss_by_name(request):
     if request.user.is_superuser or request.session['user_role'] == 'Drug':
         product_name = request.GET.get('product_name')
-        product_purchase = ProductPurchase.objects.filter(product__product_type_id=product_name).first()
+        product_purchase = ProductPurchase.objects.filter(productdetails_id=product_name).first()
         print(product_purchase)
         if product_purchase:
             product_purchase_dict = model_to_dict(product_purchase)
-            purchase = Purchase.objects.filter(products__product__product_type_id=product_name).first()
+            purchase = Purchase.objects.filter(products__productdetails_id=product_name).first()
             print(purchase)
             print(purchase.supplier.name)
             if purchase and purchase.supplier:

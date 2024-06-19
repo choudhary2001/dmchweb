@@ -295,7 +295,7 @@
         <div class="col-md-4 mb-3" style="display: none;">
           <div class="form-group">
             <label for="mfgname">Products Details Id:</label>
-            <input  type="text" class="form-control" name="productdetails_id_${productCount}" required />
+            <input  type="text" class="form-control" name="productdetails_id_${productCount}" />
           </div>
         </div>
     `;
@@ -387,7 +387,7 @@
           productNameSelect.append('<option value="">Select Product Name</option>');
           $.each(data.products, function (index, product) {
             console.log(product.product_type_id, selectedValue)
-            var option = $('<option value="' + product.product_type_id_ + '" >' + product.name + "</option>");
+            var option = $('<option value="' + product.product_type_id + '" >' + product.name + "</option>");
             if (selectedValue === product.product_type_id_) {
               console.log("#######################")
               option.prop("selected", true);
@@ -424,6 +424,7 @@
       var mfgDateInput = container.find("input[name^='mfgdate']");
       var expDateInput = container.find("input[name^='expdate']");
       var stockQuantityInput = container.find("input[name^='stock_quantity']");
+      var productDetailsInput = container.find("input[name^='productdetails_id']");
 
       $.ajax({
         url: '{% url "get_product_detailss_by_name" %}',
@@ -438,6 +439,7 @@
           mfgDateInput.val(data.product.mfg_date);
           expDateInput.val(data.product.exp_date);
           stockQuantityInput.val(data.product.stock_quantity);
+          // productDetailsInput.val(data.product.productdetails_id);
         },
       });
     });

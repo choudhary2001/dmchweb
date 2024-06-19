@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sitemaps',
     'counter',
     'drug',
     'pathology',
@@ -59,6 +60,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'counter.middleware.logging_middleware.LoggingMiddleware',
+
 ]
 
 ROOT_URLCONF = 'dmch.urls'
@@ -104,10 +107,19 @@ JAZZMIN_SETTINGS = {
     "site_logo_classes": "img-circle",
 
     # Relative path to a favicon for your site, will default to site_logo if absent (ideally 32x32 px)
-    "site_icon": None,
+    "site_icon": '/img/dmc-logo.webp',
 
+    # "custom_css": "/* Custom CSS */\
+    #                .login-logo h1 picture img {\
+    #                    width: 50px !important;\
+    #                    height: 50px !important;\
+    #                }\
+    #                .site-icon img {\
+    #                    width: 32px;\
+    #                    height: 32px;\
+    #                }",
     # Welcome text on the login screen
-    "welcome_sign": "Welcome to the DMCH",
+    "welcome_sign": "Welcome to the Darbhanga Medical College & Hospital, Laheriasarai Darbhanga",
 
     # Copyright on the footer
     "copyright": "Shwastik Tech Solutions Pvt. Ltd",
@@ -327,3 +339,42 @@ STORAGES = {
 # URL configuration for serving media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#         },
+#         'db': {
+#             'level': 'DEBUG',
+#             'class': 'django_db_logger.db_log_handler.DatabaseLogHandler',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console', 'db'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#         'django.request': {
+#             'handlers': ['console', 'db'],
+#             'level': 'DEBUG',
+#             'propagate': False,
+#         },
+#         'django.db.backends': {
+#             'handlers': ['console', 'db'],
+#             'level': 'DEBUG',
+#             'propagate': False,
+#         },
+#     },
+# }
+
+
+# settings.py
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 25 * 1024 * 1024  # 20 MB

@@ -23,178 +23,180 @@
     {% csrf_token %}
 
     <div class="row">
-        <!-- Left Column (Patient Details) -->
-        <div class="col-md-4 mb-3">
-            <label for="regid">Reg No.:</label>
-            <input type="text" class="form-control" id="regid" name="regid" required />
+      <!-- Left Column (Patient Details) -->
+      <div class="col-md-4 mb-3">
+        <label for="bill_no">Bill No.:</label>
+        <input type="text" class="form-control" id="bill_no" value="" name="bill_no" required />
+      </div>
 
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="regid">Reg No.:</label>
+        <input type="text" class="form-control" id="regid" name="regid" disabled required />
+      </div>
 
-        <div class="col-md-4 mb-3">
-            <label for="bill_no">Bill No.:</label>
-            <input type="text" class="form-control" id="bill_no" value="" name="bill_no"  disabled  required />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="labno">Lab No :</label>
+        <input type="text" id="labno" class="form-control" disabled name="labno" />
+      </div>
 
-        <div class="col-md-4 mb-3" >
-            <label for="labno">Lab No :</label>
-            <input type="text" id="labno" class="form-control"  disabled name="labno" />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="patient_name">Patient Name :</label>
+        <input type="text" class="form-control" id="patient_name" name="patient_name" disabled required />
+      </div>
 
-        <div class="col-md-4 mb-3">
-            <label for="patient_name">Patient Name :</label>
-            <input type="text" class="form-control" id="patient_name" name="patient_name" disabled required />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="department">Department:</label>
+        <input type="text" class="form-control" id="department" value="" name="department" disabled />
+      </div>
 
-
-        <div class="col-md-4 mb-3">
-            <label for="department">Department:</label>
-            <input type="text" class="form-control" id="department" value="" name="department"  disabled  />
-        </div>
-
-
-
-        <div class="col-md-4 mb-3" >
-            <label for="doctor">Refer By :</label>
-            <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
+      <div class="col-md-4 mb-3">
+        <label for="doctor">Refer By :</label>
+        <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
             <option>Select Doctor</option>
             </select> -->
-            <input type="text" class="form-control" id="doctor" value="" name="doctor" disabled   />
-
-        </div>
-      
-
-        <div class="col-md-4 mb-3">
-            <label for="rbc">RBC:</label>
-            <input type="text" class="form-control" id="rbc" value="" name="rbc"   />
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <label for="hgb">HGB :</label>
-            <input type="text" class="form-control" id="hgb" value="" name="hgb"   />
-        </div>
-
-        <div class="col-md-4 mb-3">
-          <label for="hct">HCT:</label>
-          <input type="text" class="form-control" id="hct" value="" name="hct"  />
+        <input type="text" class="form-control" id="doctor" value="" name="doctor" disabled />
       </div>
-  
+
       <div class="col-md-4 mb-3">
-          <label for="mcv">MCV:</label>
-          <input type="text" class="form-control" id="mcv" value="" name="mcv"  />
+        <label for="wbc">WBC:</label>
+        <input type="text" class="form-control" id="wbc" value="" name="wbc" />
       </div>
-  
+
       <div class="col-md-4 mb-3">
-          <label for="mch">MCH:</label>
-          <input type="text" class="form-control" id="mch" value="" name="mch"  />
+        <label for="neut">Neu% :</label>
+        <input type="text" class="form-control" id="neut" value="" name="neut" />
       </div>
-  
-        
       <div class="col-md-4 mb-3">
-          <label for="mchc">MCHC:</label>
-          <input type="text" class="form-control" id="mchc" value="" name="mchc"  />
+        <label for="lymph">Lym%:</label>
+        <input type="text" class="form-control" id="lymph" value="" name="lymph" />
       </div>
 
-              
-            <div class="col-md-4 mb-3">
-              <label for="rdw_sd">Rdw Sd:</label>
-              <input type="text" class="form-control" id="rdw_sd" value="" name="rdw_sd"  />
-          </div>
+      <div class="col-md-4 mb-3">
+        <label for="mono">Mon% :</label>
+        <input type="text" class="form-control" id="mono" value="" name="mono" />
+      </div>
 
-            
-          <div class="col-md-4 mb-3">
-            <label for="rdw_cv">Rdw Cv:</label>
-            <input type="text" class="form-control" id="rdw_cv" value="" name="rdw_cv"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="eo">Eos%:</label>
+        <input type="text" class="form-control" id="eo" value="" name="eo" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="wbc">WBC:</label>
-          <input type="text" class="form-control" id="wbc" value="" name="wbc"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="baso">Bas%:</label>
+        <input type="text" class="form-control" id="baso" value="" name="baso" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="neut">Neut :</label>
-          <input type="text" class="form-control" id="neut" value="" name="neut"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="rbc">RBC:</label>
+        <input type="text" class="form-control" id="rbc" value="" name="rbc" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="lymph">Lymph:</label>
-          <input type="text" class="form-control" id="lymph" value="" name="lymph"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="hgb">HGB :</label>
+        <input type="text" class="form-control" id="hgb" value="" name="hgb" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="mono">Mono:</label>
-          <input type="text" class="form-control" id="mono" value="" name="mono"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="hct">HCT:</label>
+        <input type="text" class="form-control" id="hct" value="" name="hct" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="eo">EO:</label>
-          <input type="text" class="form-control" id="eo" value="" name="eo"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="mcv">MCV:</label>
+        <input type="text" class="form-control" id="mcv" value="" name="mcv" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="baso">Baso:</label>
-          <input type="text" class="form-control" id="baso" value="" name="baso"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="mch">MCH:</label>
+        <input type="text" class="form-control" id="mch" value="" name="mch" />
+      </div>
 
+      <div class="col-md-4 mb-3">
+        <label for="mchc">MCHC:</label>
+        <input type="text" class="form-control" id="mchc" value="" name="mchc" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="rdw_cv">Rdw Cv:</label>
+        <input type="text" class="form-control" id="rdw_cv" value="" name="rdw_cv" />
+      </div>
 
-        <div class="col-md-4 mb-3">
-          <label for="plt">PLT:</label>
-          <input type="text" class="form-control" id="plt" value="" name="plt"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="pdw">PDW:</label>
-          <input type="text" class="form-control" id="pdw" value="" name="pdw"  />
-        </div>
-        <div class="col-md-4 mb-3">
-            <label for="mpv">MPV:</label>
-            <input type="text" class="form-control" id="mpv" value="" name="mpv"  />
-          </div>
-        <div class="col-md-4 mb-3">
-          <label for="p_lcr">P LCR:</label>
-          <input type="text" class="form-control" id="p_lcr" value="" name="p_lcr"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="pct">PCT:</label>
-          <input type="text" class="form-control" id="pct" value="" name="pct"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="ret">RET:</label>
-          <input type="text" class="form-control" id="ret" value="" name="ret"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="irf">IRF:</label>
-          <input type="text" class="form-control" id="irf" value="" name="irf"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="lfr">LFR:</label>
-          <input type="text" class="form-control" id="lfr" value="" name="lfr"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="mfr">MFR:</label>
-          <input type="text" class="form-control" id="mfr" value="" name="mfr"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="hfr">HFR:</label>
-          <input type="text" class="form-control" id="hfr" value="" name="hfr"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="wbc_ip_message">WBC IP Message:</label>
-          <input type="text" class="form-control" id="wbc_ip_message" value="" name="wbc_ip_message"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="rcb_rft_ip_message">RCB RFT IP Message:</label>
-          <input type="text" class="form-control" id="rcb_rft_ip_message" value="" name="rcb_rft_ip_message"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="plt_ip_message">PLT IP Message:</label>
-          <input type="text" class="form-control" id="plt_ip_message" value="" name="plt_ip_message"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="rdw_sd">Rdw Sd:</label>
+        <input type="text" class="form-control" id="rdw_sd" value="" name="rdw_sd" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="plt">PLT:</label>
+        <input type="text" class="form-control" id="plt" value="" name="plt" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="mpv">MPV:</label>
+        <input type="text" class="form-control" id="mpv" value="" name="mpv" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="pdw">PDW SD:</label>
+        <input type="text" class="form-control" id="pdw" value="" name="pdw" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="ret">PDW CV:</label>
+        <input type="text" class="form-control" id="ret" value="" name="ret" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="pct">PCT:</label>
+        <input type="text" class="form-control" id="pct" value="" name="pct" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="p_lcr">P-LCR:</label>
+        <input type="text" class="form-control" id="p_lcr" value="" name="p_lcr" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="lfr">P-LCC:</label>
+        <input type="text" class="form-control" id="lfr" value="" name="lfr" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="dr">Doctor Signature :</label>
+        <select type="text" id="dr" class="form-control" name="dr">
+          <option value="">Select Doctor</option>
+          <option value="santoshkumar">Dr. Santosh Kumar Sharma</option>
+          <option value="knyadav">Dr. K. N. Yadav</option>
+        </select>
+      </div>
+
+      <!-- 
+      <div class="col-md-4 mb-3">
+        <label for="irf">IRF:</label>
+        <input type="text" class="form-control" id="irf" value="" name="irf" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="lfr">LFR:</label>
+        <input type="text" class="form-control" id="lfr" value="" name="lfr" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="mfr">MFR:</label>
+        <input type="text" class="form-control" id="mfr" value="" name="mfr" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="hfr">HFR:</label>
+        <input type="text" class="form-control" id="hfr" value="" name="hfr" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="wbc_ip_message">WBC IP Message:</label>
+        <input type="text" class="form-control" id="wbc_ip_message" value="" name="wbc_ip_message" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="rcb_rft_ip_message">RCB RFT IP Message:</label>
+        <input type="text" class="form-control" id="rcb_rft_ip_message" value="" name="rcb_rft_ip_message" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="plt_ip_message">PLT IP Message:</label>
+        <input type="text" class="form-control" id="plt_ip_message" value="" name="plt_ip_message" />
+      </div> -->
     </div>
 
     <button type="submit" class="btn btn-primary">Save</button>
@@ -203,107 +205,58 @@
 
 <!-- End of Main Content -->
 {% endblock %} {% block script %}
-
-<script>
-  // Function to handle form submission
-  function handleFormSubmission(event) {
-    event.preventDefault(); // Prevent default form submission
-
-    // Your additional logic for form validation or processing goes here
-
-    // Select all input fields in the form
-    const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
-
-    // Flag to keep track of form validity
-    let isValid = true;
-
-    // Loop through each input field
-    inputs.forEach(function (input) {
-      // Check if the input field is  and does not have a value
-      if (input.hasAttribute("required") && !input.value.trim()) {
-        // If a  field is empty, set isValid to false
-        isValid = false;
-        // Highlight the empty field (you can customize this part)
-        input.style.border = "1px solid red";
-      } else {
-        // Remove any previous highlighting
-        input.style.border = "";
-      }
-    });
-
-    // If the form is valid, submit it
-    if (isValid) {
-      document.getextementById("patientForm").submit();
-    } else {
-      // If the form is invalid, display an alert (you can customize this part)
-      //   alert("Please fill out all  fields.");
-    }
-  }
-
-  // Function to handle keyboard shortcuts
-  function handleShortcut(event) {
-    // if (event.ctrlKey && event.key === "s") {
-    if (event.key === "F2") {
-      // Ctrl + S pressed, trigger form submission
-      handleFormSubmission(event);
-    }
-  }
-
-  // Attach event listener for form submission
-  document.getextementById("patientForm").addEventListener("submit", handleFormSubmission);
-
-  // Attach event listener for keyboard shortcuts
-  document.addEventListener("keydown", handleShortcut);
-</script>
-
 <script>
   $(document).ready(function () {
-    $("#regid").on("input", function () {
-      var regid = $(this).val();
-      if (regid) {
-        $.ajax({
-          url: '{% url "fetch_patient_data_details" %}',
-          type: "GET",
-          data: {
-            regid: regid,
-          },
-          success: function (data) {
-            if (data.cbc_report && data.cbc_report.available) {
+    $("#bill_no").on("keypress", function (e) {
+      if (e.which === 13) {
+        var regid = $(this).val();
+        e.preventDefault();
+        if (regid) {
+          $.ajax({
+            url: '{% url "fetch_patient_data_details" %}',
+            type: "GET",
+            data: {
+              regid: regid,
+            },
+            success: function (data) {
+              console.log(data);
+              // Update input fields with fetched data
+              $("#patient_name").val(data.name);
+              $("#regid").val(data.regid);
+              $("#bill_no").val(data.bill_no);
+              $("#labno").val(data.lab_no);
+              $("#department").val(data.department);
+              $("#doctor").val(data.referby);
+              $("#patient_name").val(data.name);
+              if (data.cbc_report && data.cbc_report.available) {
                 // Redirect to another page
                 window.location.href = `/pathology/update_cbc_test/${data.cbc_report.id}/`;
-            }
-            // Update input fields with fetched data
-            $("#patient_name").val(data.name);
-            $("#bill_no").val(data.bill_no);
-            $("#labno").val(data.lab_no);
-            $("#department").val(data.department);
-            $("#doctor").val(data.referby);
-            $("#patient_name").val(data.name);
-
-          },
-          error: function (xhr, status, error) {
-            console.error(xhr.responseText);
-            // Handle error if necessary
-            $("#patient_name").val('');
-            $("#bill_no").val('');
-            $("#labno").val('');
-            $("#department").val('');
-            $("#doctor").val('');
-            $("#patient_name").val('');
-          },
-        });
-      } else {
-        // Clear input fields when regid is empty
-        $("#patient_name").val('');
-        $("#bill_no").val('');
-        $("#labno").val('');
-        $("#department").val('');
-        $("#doctor").val('');
-        $("#patient_name").val('');
+              }
+            },
+            error: function (xhr, status, error) {
+              console.error(xhr.responseText);
+              // Handle error if necessary
+              $("#patient_name").val("");
+              $("#regid").val("");
+              $("#bill_no").val("");
+              $("#labno").val("");
+              $("#department").val("");
+              $("#doctor").val("");
+              $("#patient_name").val("");
+            },
+          });
+        } else {
+          // Clear input fields when regid is empty
+          $("#patient_name").val("");
+          $("#bill_no").val("");
+          $("#regid").val("");
+          $("#labno").val("");
+          $("#department").val("");
+          $("#doctor").val("");
+          $("#patient_name").val("");
+        }
       }
     });
   });
 </script>
-
-
 {% endblock %}

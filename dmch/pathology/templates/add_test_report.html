@@ -19,7 +19,7 @@
   <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
 
   {% endfor %} {% endif %}
-  <form id="patientForm" method="POST" action="{% url 'create_test_report' %}">
+  <form id="patientForm" method="POST" action="{% url 'create_test_report' %}" enctype="multipart/form-data">
     {% csrf_token %}
 
     <div class="row">
@@ -276,8 +276,21 @@
         <label for="other">Other:</label>
         <input type="text" class="form-control" id="other" value="" name="other" />
       </div>
-    </div>
 
+      <!-- <div class="col-md-4 mb-3">
+        <label for="document">Upload CBC Report:</label>
+        <input type="file" class="form-control" id="document" name="document" />
+      </div> -->
+
+      <div class="col-md-4 mb-3">
+        <label for="dr">Doctor Signature :</label>
+        <select type="text" id="dr" class="form-control" name="dr">
+          <option value="">Select Doctor</option>
+          <option value="santoshkumar">Dr. Santosh Kumar Sharma</option>
+          <option value="knyadav">Dr. K. N. Yadav</option>
+        </select>
+      </div>
+    </div>
     <button type="submit" class="btn btn-primary">Save</button>
   </form>
 </div>

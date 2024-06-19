@@ -35,7 +35,7 @@
         <div style="flex: 1">
           <a href="{% url 'supply_details_view_print' %}" class="btn btn-primary" id="printButton">Print</a>
         </div>
-         <!-- <div style="flex: 2">
+        <!-- <div style="flex: 2">
           <a href="#;" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</a>
         </div> -->
       </form>
@@ -46,19 +46,19 @@
           <thead>
             <tr>
               <th>Department</th>
-                <th>Name</th>
-                <th>Company Name</th>
-                <th>Quantity</th>
-                <th>In Stock</th>
-                <th>Bill No.</th>
-                <th>Bill Date</th>
-                <th>Chalan no</th>
-                <th>Chalan Date</th>
-                <th>Superintendent Order no</th>
-                <th>Superintendent Order Date</th>
-                <th>Received Date</th>
-                <!-- <th>Edit</th> -->
-                <th>Delete</th>
+              <th>Name</th>
+              <th>Company Name</th>
+              <th>Quantity</th>
+              <th>In Stock</th>
+              <th>Bill No.</th>
+              <th>Bill Date</th>
+              <th>Chalan no</th>
+              <th>Chalan Date</th>
+              <th>Superintendent Order no</th>
+              <th>Superintendent Order Date</th>
+              <th>Received Date</th>
+              <!-- <th>Edit</th> -->
+              <th>Delete</th>
             </tr>
           </thead>
           <tfoot>
@@ -85,8 +85,8 @@
               <td>{{d.sdepartment.name}}</td>
               <td>{{d.product_name}}</td>
               <td>{{d.company_name}}</td>
-              <td>{{d.quantity}} {{d.quantity_typeq}}</td>
-              <td>{{d.stock_quantity}} {{d.quantity_typeq}}</td>
+              <td>{{d.quantity}} {% if d.quantity_type %}{{d.quantity_type}}{% endif %}</td>
+              <td>{{d.stock_quantity}} {% if d.quantity_type %}{{d.quantity_type}}{% endif %}</td>
               <td>{{d.bill_no}}</td>
               <td>{{d.chalan_no}}</td>
               <td>{{d.bill_date}}</td>
@@ -118,7 +118,6 @@
       </div>
     </div>
   </div>
-
 </div>
 
 {% endblock %} {% block script %} {% endblock %}

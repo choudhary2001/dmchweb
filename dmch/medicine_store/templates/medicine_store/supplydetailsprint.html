@@ -1,49 +1,74 @@
-{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+{% extends 'counter/base.html' %} {% block css %}
+<style>
+  /* Loader CSS */
+  .loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    display: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -60px;
+    margin-top: -60px;
+    z-index: 9999;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+{% endblock %} {% block content %}
 <!-- Begin Page Content -->
 <div class="container-fluid">
-  <!-- Page Heading -->
-  <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
   {% if messages %} {% for message in messages %}
   <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
-
   {% endfor %} {% endif %}
   <div style="display: flex"></div>
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <form action="{% url 'supply_details_user_view_print' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+      <form id="filterForm" style="display: flex; flex-wrap: wrap; gap: 10px">
         <div style="flex: 1">
-          <input type="datetime-local" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+          <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
         </div>
         <div style="">
           <span>-</span>
         </div>
         <div style="flex: 1">
-          <input type="datetime-local" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+          <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
         </div>
-
-        <!-- <div style="flex: 3">
-          <select name="department" class="form-control mb-2 mb-md-0">
-            <option>Select Department</option>
-            <option value="All">All</option>
-            {% for d in departments %}
-            <option value="{{d.department_id}}">{{d.name}}</option>
-            {% endfor %}
-          </select>
-        </div> -->
+        <div style="flex: 2">
+          <input type="search" class="form-control mb-2 mb-md-0" id="searchpInput" name="searchpInput" placeholder="Search Reg No. or Patient Name.." />
+        </div>
+        <div style="flex: 2">
+          <input type="search" class="form-control mb-2 mb-md-0" id="searchInput" name="searchInput" placeholder="Search medicine name .." />
+        </div>
         <div style="flex: 1">
           <button class="btn btn-primary w-100" type="submit">Filter</button>
         </div>
-        <div style="flex: 1">
-          <button class="btn btn-primary w-100" onclick="printTable()">Print Table</button>
+        <div style="flex: 2">
+          <button type="button" class="btn btn-primary w-100" onclick="printTable()">Print Table</button>
+        </div>
+        <div style="flex: 3">
+          <a href="#;" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</a>
         </div>
       </form>
     </div>
     <div class="card-body" id="printablecontent">
       <div class="table-responsive" id="tableContainer">
-        <table class="table table-bordered" width="100%" cellspacing="0">
+        <table class="table table-bordered" id="datatables" width="100%" cellspacing="0">
           <thead>
             <tr>
+              <th>Sl No.</th>
               <th>Reg No.</th>
               <th>Patient</th>
               <th>Medicine Name</th>
@@ -52,100 +77,107 @@
               <th>Exp Date</th>
               <th>Quantity</th>
               <th>Supply Time</th>
-              <th>Action</th>
             </tr>
           </thead>
-          <tbody>
-            {% for order in supply %}
-            {% if forloop.first %}
-              {% for product in order.products.all %}
-                <tr>
-                  <td>
-                    {% if order.regno %}
-                      {{ order.regno }}
-                    {% else %}
-                      {% if order.patient.regnoid %}
-                        {{ order.patient.regnoid }}
-                      {% endif %}
-                    {% endif %}
-                  </td>
-                  <td>
-                    {% if order.patient_name %}
-                      {{ order.patient_name }}
-                    {% else %}
-                      {% if order.patient.name %}
-                        {{ order.patient.name }}
-                      {% else %}
-                        {{ order.patient.regnoid }}
-                      {% endif %}
-                    {% endif %}
-                  </td>
-
-                {% else %}
-                  <td style="border-bottom: none !important; border-top: none !important;" ></td>
-                  <td style="border-bottom: none !important; border-top: none !important;" ></td>
-                {% endif %}
-                  <td>
-                    <p>{{ product.product.product_name }}</p>
-                  </td>
-                  <td>
-                    <p>{{ product.product.mfg_name }}</p>
-                  </td>
-                  <td>
-                    <p>{{ product.product.mfg_date }}</p>
-                  </td>
-                  <td>
-                    <p>{{ product.product.exp_date }}</p>
-                  </td>
-                  <td>
-                    <p>{{ product.quantity }}</p>
-                  </td>
-                  <td>
-                    {{ product.created_at|date:"j-m-Y" }}
-                  </td>
-                  {% if forloop.first %}
-                  <td>
-                    {{ order.created_at }}
-                  </td>
-                  <td>
-                    <a href="/medicine_store/supply/medicine/{{ order.consumption_id }}/update/" class="btn btn-primary btn-icon-split">
-                      <span class="icon text-white-50">
-                        <i class="fas fa-arrow-right"></i>
-                      </span>
-                      <span class="text">Edit</span>
-                    </a>
-                    <a href="/medicine_store/supply/medicine/{{ order.consumption_id }}/delete/" class="btn btn-danger btn-icon-split">
-                      <span class="icon text-white-50">
-                        <i class="fas fa-trash"></i>
-                      </span>
-                    </a>
-                  </td>
-                  {% else %}
-                  <td style="border-bottom: none !important; border-top: none !important;" ></td>
-                  {% endif %}
-                </tr>
-              {% endfor %}
-            {% endfor %}
+          <tbody id="tableBody">
+            <!-- Data will be populated here by JavaScript -->
           </tbody>
         </table>
       </div>
     </div>
   </div>
+  <!-- Loader -->
+  <div class="loader" id="loader"></div>
 </div>
 
 {% endblock %} {% block script %}
 <script>
-  // Function to print the table
-  function printTable() {
-    // Show the hidden print content
-    // Print only the content inside the printContent div
-    var printContents = $("#printablecontent").html();
-    var originalContents = $("body").html();
-    $("body").empty().html(printContents);
+  $(document).ready(function () {
+    $("#filterForm").on("submit", function (event) {
+      event.preventDefault();
+      fetchTableData();
+    });
 
-    // Trigger the print dialog
-    window.print();
-    $("body").html(originalContents);
-  }
+    function fetchTableData() {
+      $("#loader").show();
+      $.ajax({
+        url: '{% url "supply_details_user_view_data_data" %}',
+        type: "GET",
+        data: $("#filterForm").serialize(),
+        success: function (response) {
+          console.log(response);
+          populateTable(response.data);
+          $("#loader").hide();
+        },
+        error: function (error) {
+          console.error("There was an error with the request:", error);
+          $("#loader").hide();
+        },
+      });
+    }
+
+    function populateTable(data) {
+      let tableBody = $("#tableBody");
+      tableBody.empty();
+      data.forEach((row, index) => {
+        console.log(row);
+        let rowHtml = `<tr>
+          <td>${index + 1}</td>
+          <td>${row.reg_no}</td>
+          <td>${row.patient}</td>
+          <td>${row.medicine_name}</td>
+          <td>${row.mfg_by}</td>
+          <td>${row.mfg_date}</td>
+          <td>${row.exp_date}</td>
+          <td>${row.quantity}</td>
+          <td>${row.supply_time}</td>
+        </tr>`;
+        tableBody.append(rowHtml);
+      });
+      // filterTable(); // Apply client-side search after populating the table
+    }
+
+    // Client-side search function
+    // window.filterTable = function () {
+    //   let input = $("#searchInput").val().toLowerCase();
+    //   let table = $("#datatables tbody");
+    //   let tr = table.find("tr");
+
+    //   tr.each(function () {
+    //     let row = $(this);
+    //     let showRow = false;
+
+    //     row.find("td").each(function () {
+    //       let cell = $(this);
+    //       if (cell.text().toLowerCase().indexOf(input) > -1) {
+    //         showRow = true;
+    //         return false; // Exit the loop
+    //       }
+    //     });
+
+    //     if (showRow) {
+    //       row.show();
+    //     } else {
+    //       row.hide();
+    //     }
+    //   });
+    // };
+
+    // Function to print the table
+    window.printTable = function () {
+      var printContents = document.getElementById("printablecontent").innerHTML;
+      var originalContents = document.body.innerHTML;
+      document.body.innerHTML = printContents;
+      window.print();
+      document.body.innerHTML = originalContents;
+    };
+
+    // Function to export the table to Excel
+    window.exportToExcel = function () {
+      var location = "data:application/vnd.ms-excel;base64,";
+      var excelTemplate = "<html> " + "<head> " + '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/> ' + "</head> " + "<body> " + document.getElementById("printablecontent").innerHTML + "</body> " + "</html>";
+      window.location.href = location + window.btoa(excelTemplate);
+    };
+  });
 </script>
 {% endblock %}

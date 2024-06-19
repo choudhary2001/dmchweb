@@ -21,7 +21,7 @@
       </div>
       <div style="flex: 3">
         <select name="department" class="form-control mb-2 mb-md-0">
-          <option>Select Department</option>
+          <option value="All">Select Department</option>
           <option value="All">All</option>
           {% for d in departments %}
           <option value="{{d.department_id}}">{{d.name}}</option>
@@ -44,11 +44,11 @@
         <button class="btn btn-primary w-100" type="submit">Filter</button>
       </div>
       <div style="flex: 1">
-        <a href="#;" class="btn btn-primary" id="printButton">Print</a>
+        <a href="{% url 'show_ipd_patients_report_print' %}" class="btn btn-primary" id="">Print</a>
       </div>
-       <div style="flex: 3">
+      <!-- <div style="flex: 3">
         <a href="#;" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</a>
-      </div>
+      </div> -->
     </form>
   </div>
 
@@ -80,6 +80,7 @@
             <tr>
               <!-- <th>Staff</th> -->
               <th>Reg No.</th>
+              <th>Doctor Reg No.</th>
               <th>Department</th>
               <th>Patient Name</th>
               <th>Age</th>
@@ -96,21 +97,19 @@
               <!-- <th>Delete</th> -->
             </tr>
           </thead>
- 
+
           <tbody>
             {% for d in patients %}
             <tr>
               <!-- <td>{{d.user.first_name}}  {{d.user.last_name}}</td> -->
               <td>{{d.regno}}</td>
+              <td>{{d.dr_reg_no}}</td>
               <td>{{d.department.name}}</td>
               <td>{{d.name}}</td>
               <td>{% if d.year %}{{d.year}}Y{% endif %} {% if d.month %}{{d.month}}M{% endif %} {% if d.days %}{{d.days}}D{% endif %}</td>
               <td>{{d.gender}}</td>
               <td>{{d.guardiannametitle}} {{d.guardianname}}</td>
-              <td>{{d.address}},
-                {{d.district}},
-                {{d.policest}},
-                {{d.pincode}}</td>
+              <td>{{d.address}}, {{d.district}}, {{d.policest}}, {{d.pincode}}</td>
               <td>{{d.disease}}</td>
               <td>{{d.appointment_date}}</td>
               <td>{{d.discharge_date}}</td>
@@ -167,15 +166,8 @@
     });
   });
   function exportToExcel() {
-    var location = 'data:application/vnd.ms-excel;base64,';
-    var excelTemplate = '<html> ' +
-      '<head> ' +
-      '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/> ' +
-      '</head> ' +
-      '<body> ' +
-      document.getElementById("printablecontent").innerHTML +
-      '</body> ' +
-      '</html>'
+    var location = "data:application/vnd.ms-excel;base64,";
+    var excelTemplate = "<html> " + "<head> " + '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/> ' + "</head> " + "<body> " + document.getElementById("printablecontent").innerHTML + "</body> " + "</html>";
     window.location.href = location + window.btoa(excelTemplate);
   }
 </script>

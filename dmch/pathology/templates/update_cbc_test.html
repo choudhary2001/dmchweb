@@ -14,8 +14,7 @@
   }
 </style>
 
-<div class="" id="printContent" style="width: 100%; margin-top: -10px; display: none;">
-
+<div class="" id="printContent" style="width: 100%; margin-top: -10px; display: none">
   <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.8rem">
     <h2>DEPARTMENT OF CLINICAL PATHOLOGY</h2>
     <h4>DARBHANGA MEDICAL COLLEGE & HOSPITAL</h4>
@@ -24,13 +23,13 @@
   </div>
   <hr />
   <div style="display: flex; justify-content: space-between">
-    <div style="display: flex; justify-content: space-between; width: 100%;">
-      <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+    <div style="display: flex; justify-content: space-between; width: 100%">
+      <div style="font-family: sans-serif; color: black; font-size: 1.3rem; margin-bottom: 0.4rem !important">
         <p>Patient Name : <strong>{% if cbc.reg_no.name %}{{cbc.reg_no.name}}{% endif %} </strong></p>
         <p>Refd By. : <strong>{% if cbc.patient.referby.name %}{{cbc.patient.referby.name}}{% endif %}</strong></p>
         <p>Bill No. : <strong>{% if cbc.patient.bill_no %}{{cbc.patient.bill_no}}{% endif %}</strong></p>
       </div>
-      <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+      <div style="font-family: sans-serif; color: black; font-size: 1.3rem; margin-bottom: 0.4rem !important">
         <p>Date : <strong>{% if cbc.created_at %}{{cbc.created_at}}{% endif %}</strong></p>
         <p>Reg No. : <strong>{% if cbc.reg_no %}{% if cbc.reg_no.de == 'Pathology' %}{{cbc.reg_no.regnoid}}{% else %}{{cbc.reg_no.regid}}{% endif %}{% endif %}</strong></p>
         <p>Lab No. : <strong>{% if cbc.patient.lab_no %}{{cbc.patient.lab_no}}{% endif %}</strong></p>
@@ -39,9 +38,8 @@
   </div>
   <hr />
   <div>
-
     <div class="table-responsive">
-      <table class="table table-bordered"  width="100%" cellspacing="0">
+      <table class="table table-bordered" width="100%" cellspacing="0">
         <thead>
           <tr>
             <th>Test</th>
@@ -52,269 +50,193 @@
         <tbody>
           {% if cbc.rbc %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">RBC</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">RBC</td>
             <td style="font-family: sans-serif; color: {% if not 3.50 <= cbc.rbc <= 5.50 %}red{% else %}black{% endif %}; font-size: 1rem; ">{{cbc.rbc}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.50 - 5.50 10^6/uL</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">3.50 - 5.50 10^6/uL</td>
           </tr>
-          {% endif %}
-          {% if cbc.hgb %}
+          {% endif %} {% if cbc.hgb %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">HGB</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">HGB</td>
             <td style="font-family: sans-serif; color: {% if not  11.0 <= cbc.hgb <= 16.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.hgb}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">11.0 - 16.0 g/dl</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">11.0 - 16.0 g/dl</td>
           </tr>
-          {% endif %}
-          {% if cbc.hct %}
+          {% endif %} {% if cbc.hct %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">HCT</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">HCT</td>
             <td style="font-family: sans-serif; color: {% if not  37.0 <= cbc.hct <= 54.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.hct}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">37.0 - 54.0 %</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">37.0 - 54.0 %</td>
           </tr>
-          {% endif %}
-          {% if cbc.mcv %}
+          {% endif %} {% if cbc.mcv %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">MCV</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">MCV</td>
             <td style="font-family: sans-serif; color: {% if not  80.0 <= cbc.mcv <= 100.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.mcv}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">80.0 - 100.0 fl</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">80.0 - 100.0 fl</td>
           </tr>
-          {% endif %}
-
-          {% if cbc.mch %}
+          {% endif %} {% if cbc.mch %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">MCH</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">MCH</td>
             <td style="font-family: sans-serif; color: {% if not  27.0 <= cbc.mch <= 34.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.mch}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">27.0 - 34.0 pg</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">27.0 - 34.0 pg</td>
           </tr>
-          {% endif %}
-
-          {% if cbc.mchc %}
+          {% endif %} {% if cbc.mchc %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">MCHC</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">MCHC</td>
             <td style="font-family: sans-serif; color: {% if not  32.0 <= cbc.mchc <= 36.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.mchc}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">32.0 - 36.0 g/dl</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">32.0 - 36.0 g/dl</td>
           </tr>
-          {% endif %}
-
-          {% if cbc.rdw_sd %}
+          {% endif %} {% if cbc.rdw_sd %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">RDW SD</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">RDW SD</td>
             <td style="font-family: sans-serif; color: {% if not  35.0 <= cbc.rdw_sd <= 56.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.rdw_sd}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">35.0 - 56.0 fL</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">35.0 - 56.0 fL</td>
           </tr>
-          {% endif %}
-          
-          {% if cbc.rdw_cv %}
+          {% endif %} {% if cbc.rdw_cv %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">RDW CV</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">RDW CV</td>
             <td style="font-family: sans-serif; color: {% if not  11.0 <= cbc.rdw_cv <= 16.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.rdw_cv}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">11.0 - 16.0 %</td>
-
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">11.0 - 16.0 %</td>
           </tr>
-          {% endif %}
-
-          {% if cbc.sgot %}
+          {% endif %} {% if cbc.sgot %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">SGOT</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{cbc.sgot}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">SGOT</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{cbc.sgot}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px"></td>
           </tr>
-          {% endif %}
-
-          {% if cbc.wbc %}
+          {% endif %} {% if cbc.wbc %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">WBC</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">WBC</td>
             <td style="font-family: sans-serif; color: {% if not  4.0 <= cbc.rbc <= 10.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.wbc}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">4.0 - 10.0 10^3/uL</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">4.0 - 10.0 10^3/uL</td>
           </tr>
-          {% endif %}
-
-          {% if cbc.neut %}
+          {% endif %} {% if cbc.neut %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">NENUT</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">NENUT</td>
             <td style="font-family: sans-serif; color: {% if not  50.0 <= cbc.neut <= 70.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.neut}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">50.0 - 70.0 %</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">50.0 - 70.0 %</td>
           </tr>
-          {% endif %}
-
-          {% if cbc.lymph %}
+          {% endif %} {% if cbc.lymph %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">LYMPH</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">LYMPH</td>
             <td style="font-family: sans-serif; color: {% if not  20.0 <= cbc.lymph <= 40.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.lymph}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">20.0 - 40.0 %</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">20.0 - 40.0 %</td>
           </tr>
-          {% endif %}
-
-          {% if cbc.mono %}
+          {% endif %} {% if cbc.mono %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">MONO</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">MONO</td>
             <td style="font-family: sans-serif; color: {% if not  3.0 <= cbc.mono <= 12.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.mono}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.0 - 12.0 %</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">3.0 - 12.0 %</td>
           </tr>
-          {% endif %}
-          
-          {% if cbc.eo %}
+          {% endif %} {% if cbc.eo %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">EO</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">EO</td>
             <td style="font-family: sans-serif; color: {% if not  0.50 <= cbc.eo <= 5.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.eo}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.5 - 5.0 %</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0.5 - 5.0 %</td>
           </tr>
-          {% endif %}
-          
-          {% if cbc.baso %}
+          {% endif %} {% if cbc.baso %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">BASO</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">BASO</td>
             <td style="font-family: sans-serif; color: {% if not  0.0 <= cbc.baso <= 1.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.baso}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 1.0 %</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0.0 - 1.0 %</td>
           </tr>
-          {% endif %}
-
-          {% if cbc.plt %}
+          {% endif %} {% if cbc.plt %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">PLT</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">PLT</td>
             <td style="font-family: sans-serif; color: {% if not  100 <= cbc.plt <= 300 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.plt}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">100 - 300 10^3/uL</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">100 - 300 10^3/uL</td>
           </tr>
-          {% endif %}
-
-          {% if cbc.pdw %}
+          {% endif %} {% if cbc.pdw %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">PDW</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{cbc.pdw}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">PDW</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{cbc.pdw}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px"></td>
           </tr>
-          {% endif %}
-
-          {% if cbc.mpv %}
+          {% endif %} {% if cbc.mpv %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">MPV</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">MPV</td>
             <td style="font-family: sans-serif; color: {% if not  6.50 <= cbc.mpv <= 12.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.mpv}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">6.5 - 12.0 fL</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">6.5 - 12.0 fL</td>
           </tr>
-          {% endif %}
-
-          {% if cbc.p_lcr %}
+          {% endif %} {% if cbc.p_lcr %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">P LCR</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">P LCR</td>
             <td style="font-family: sans-serif; color: {% if not  11.0 <= cbc.p_lcr <= 45.0 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.p_lcr}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">11.0 - 45.0 %</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">11.0 - 45.0 %</td>
           </tr>
-          {% endif %}
-          
-          {% if cbc.pct %}
+          {% endif %} {% if cbc.pct %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">PCT</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">PCT</td>
             <td style="font-family: sans-serif; color: {% if not  0.108 <= cbc.pct <= 0.282 %}red{% else %}black{% endif %}; font-size: 1rem;">{{cbc.pct}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.108 - 0.282 %</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">0.108 - 0.282 %</td>
           </tr>
-          {% endif %}
-
-          {% if cbc.ret %}
+          {% endif %} {% if cbc.ret %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">RET</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{cbc.ret}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">RET</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{cbc.ret}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px"></td>
           </tr>
-          {% endif %}
-
-          {% if cbc.irf %}
+          {% endif %} {% if cbc.irf %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">IRF</td>
-            <td style="font-family: sans-serif; color: black;; font-size: 1rem;">{{cbc.irf}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">IRF</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem">{{cbc.irf}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px"></td>
           </tr>
-          {% endif %}
-
-          {% if cbc.lfr %}
+          {% endif %} {% if cbc.lfr %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">LFR</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{cbc.lfr}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">LFR</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{cbc.lfr}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px"></td>
           </tr>
-          {% endif %}
-
-          {% if cbc.mfr %}
+          {% endif %} {% if cbc.mfr %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">MFR</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{cbc.mfr}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">MFR</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{cbc.mfr}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px"></td>
           </tr>
-          {% endif %}
-
-          {% if cbc.hfr %}
+          {% endif %} {% if cbc.hfr %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">HFR</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{cbc.hfr}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">HFR</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{cbc.hfr}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px"></td>
           </tr>
-          {% endif %}
-
-
-          {% if cbc.wbc_ip_message %}
+          {% endif %} {% if cbc.wbc_ip_message %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">WBC Ip Message</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{cbc.wbc_ip_message}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">WBC Ip Message</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{cbc.wbc_ip_message}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px"></td>
           </tr>
-          {% endif %}
-
-          {% if cbc.rcb_rft_ip_message %}
+          {% endif %} {% if cbc.rcb_rft_ip_message %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Rcb Rft Ip Message</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{cbc.rcb_rft_ip_message}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Rcb Rft Ip Message</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{cbc.rcb_rft_ip_message}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px"></td>
           </tr>
-          {% endif %}
-
-          {% if cbc.plt_ip_message %}
+          {% endif %} {% if cbc.plt_ip_message %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Plt Ip Message</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{cbc.plt_ip_message}}</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px"></td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Plt Ip Message</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{cbc.plt_ip_message}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px"></td>
           </tr>
           {% endif %}
-
-
         </tbody>
       </table>
     </div>
-
   </div>
-  <div style="display: flex;justify-content: space-between; width: 100%;position: absolute; bottom: 0;" >
+  {% if cbc.dr %}
+  <div style="display: flex; justify-content: space-between; width: 100%; position: relative; bottom: 0; display: flex; justify-content: space-between; width: 100%; position: relative; bottom: 0; flex-direction: column; align-items: flex-end">
+    {% if cbc.dr == 'santoshkumar' %}<img height="100px" src="/media/img/drsantosh1.png" />
+    <br />
+    <h6>Dr. Santosh Kumar Sharma</h6>
+    {% endif %} {% if cbc.dr == 'knyadav' %}<img height="100px" src="/media/img/drkn1.png" />
+    <br />
+    <p>Dr. K. N. Yadav</p>
+    {% endif %}
+  </div>
+  {% endif %}
+  <div style="display: flex; justify-content: space-between; width: 100%">
     <div>Checked By ..............</div>
     <div>Signature ..................................................</div>
   </div>
-
-
 </div>
-
 
 <div class="container-fluid">
   <!-- Page Heading -->
@@ -326,185 +248,154 @@
     {% csrf_token %}
 
     <div class="row">
-        <!-- Left Column (Patient Details) -->
-        <div class="col-md-4 mb-3">
-            <label for="regid">Reg No.:</label>
-            <input type="text" class="form-control" id="regid"  value="{{cbc.reg_no.regid}}" disabled  name="regid"required />
+      <!-- Left Column (Patient Details) -->
+      <div class="col-md-4 mb-3">
+        <label for="regid">Reg No.:</label>
+        <input type="text" class="form-control" id="regid" value="{{cbc.reg_no.regid}}" disabled name="regid" required />
+      </div>
 
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="bill_no">Bill No.:</label>
+        <input type="text" class="form-control" id="bill_no" name="bill_no" disabled />
+      </div>
 
-        <div class="col-md-4 mb-3">
-            <label for="bill_no">Bill No.:</label>
-            <input type="text" class="form-control" id="bill_no"  name="bill_no"  disabled  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="labno">Lab No :</label>
+        <input type="text" id="labno" class="form-control" disabled name="labno" />
+      </div>
 
-        <div class="col-md-4 mb-3" >
-            <label for="labno">Lab No :</label>
-            <input type="text" id="labno" class="form-control"  disabled name="labno" />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="patient_name">Patient Name :</label>
+        <input type="text" class="form-control" id="patient_name" name="patient_name" disabled />
+      </div>
 
-        <div class="col-md-4 mb-3">
-            <label for="patient_name">Patient Name :</label>
-            <input type="text" class="form-control" id="patient_name" name="patient_name" disabled  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="department">Department:</label>
+        <input type="text" class="form-control" id="department" name="department" disabled />
+      </div>
 
-
-        <div class="col-md-4 mb-3">
-            <label for="department">Department:</label>
-            <input type="text" class="form-control" id="department"  name="department"  disabled  />
-        </div>
-
-
-
-        <div class="col-md-4 mb-3" >
-            <label for="doctor">Refer By :</label>
-            <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
+      <div class="col-md-4 mb-3">
+        <label for="doctor">Refer By :</label>
+        <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
             <option>Select Doctor</option>
             </select> -->
-            <input type="text" class="form-control" id="doctor" name="doctor" disabled   />
-
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <label for="rbc">RBC:</label>
-            <input type="text" class="form-control" id="rbc" value="{{cbc.rbc}}" name="rbc"   />
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <label for="hgb">HGB :</label>
-            <input type="text" class="form-control" id="hgb" value="{{cbc.hgb}}" name="hgb"   />
-        </div>
-
-        <div class="col-md-4 mb-3">
-          <label for="hct">HCT:</label>
-          <input type="text" class="form-control" id="hct" value="{{cbc.hct}}" name="hct"  />
+        <input type="text" class="form-control" id="doctor" name="doctor" disabled />
       </div>
-  
+
       <div class="col-md-4 mb-3">
-          <label for="mcv">MCV:</label>
-          <input type="text" class="form-control" id="mcv" value="{{cbc.mcv}}" name="mcv"  />
+        <label for="wbc">WBC:</label>
+        <input type="text" class="form-control" id="wbc" value="{{cbc.wbc}}" name="wbc" />
       </div>
-  
+
       <div class="col-md-4 mb-3">
-          <label for="mch">MCH:</label>
-          <input type="text" class="form-control" id="mch" value="{{cbc.mch}}" name="mch"  />
+        <label for="neut">Neu% :</label>
+        <input type="text" class="form-control" id="neut" value="{{cbc.neut}}" name="neut" />
       </div>
-  
-        
       <div class="col-md-4 mb-3">
-          <label for="mchc">MCHC:</label>
-          <input type="text" class="form-control" id="mchc" value="{{cbc.mchc}}" name="mchc"  />
+        <label for="lymph">Lym%:</label>
+        <input type="text" class="form-control" id="lymph" value="{{cbc.lymph}}" name="lymph" />
       </div>
 
-              
-            <div class="col-md-4 mb-3">
-              <label for="rdw_sd">Rdw Sd:</label>
-              <input type="text" class="form-control" id="rdw_sd" value="{{cbc.rdw_sd}}" name="rdw_sd"  />
-          </div>
+      <div class="col-md-4 mb-3">
+        <label for="mono">Mon% :</label>
+        <input type="text" class="form-control" id="mono" value="{{cbc.mono}}" name="mono" />
+      </div>
 
-            
-          <div class="col-md-4 mb-3">
-            <label for="rdw_cv">Rdw Cv:</label>
-            <input type="text" class="form-control" id="rdw_cv" value="{{cbc.rdw_cv}}" name="rdw_cv"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="eo">Eos%:</label>
+        <input type="text" class="form-control" id="eo" value="{{cbc.eo}}" name="eo" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="wbc">WBC:</label>
-          <input type="text" class="form-control" id="wbc" value="{{cbc.wbc}}" name="wbc"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="baso">Bas%:</label>
+        <input type="text" class="form-control" id="baso" value="{{cbc.baso}}" name="baso" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="neut">Neut :</label>
-          <input type="text" class="form-control" id="neut" value="{{cbc.neut}}" name="neut"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="rbc">RBC:</label>
+        <input type="text" class="form-control" id="rbc" value="{{cbc.rbc}}" name="rbc" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="lymph">Lymph:</label>
-          <input type="text" class="form-control" id="lymph" value="{{cbc.lymph}}" name="lymph"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="hgb">HGB :</label>
+        <input type="text" class="form-control" id="hgb" value="{{cbc.hgb}}" name="hgb" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="mono">Mono:</label>
-          <input type="text" class="form-control" id="mono" value="{{cbc.mono}}" name="mono"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="hct">HCT:</label>
+        <input type="text" class="form-control" id="hct" value="{{cbc.hct}}" name="hct" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="eo">EO:</label>
-          <input type="text" class="form-control" id="eo" value="{{cbc.eo}}" name="eo"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="mcv">MCV:</label>
+        <input type="text" class="form-control" id="mcv" value="{{cbc.mcv}}" name="mcv" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="baso">Baso:</label>
-          <input type="text" class="form-control" id="baso" value="{{cbc.baso}}" name="baso"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="mch">MCH:</label>
+        <input type="text" class="form-control" id="mch" value="{{cbc.mch}}" name="mch" />
+      </div>
 
+      <div class="col-md-4 mb-3">
+        <label for="mchc">MCHC:</label>
+        <input type="text" class="form-control" id="mchc" value="{{cbc.mchc}}" name="mchc" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="rdw_cv">Rdw Cv:</label>
+        <input type="text" class="form-control" id="rdw_cv" value="{{cbc.rdw_cv}}" name="rdw_cv" />
+      </div>
 
-        <div class="col-md-4 mb-3">
-          <label for="plt">PLT:</label>
-          <input type="text" class="form-control" id="plt" value="{{cbc.plt}}" name="plt"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="pdw">PDW:</label>
-          <input type="text" class="form-control" id="pdw" value="{{cbc.pdw}}" name="pdw"  />
-        </div>
-        <div class="col-md-4 mb-3">
-            <label for="mpv">MPV:</label>
-            <input type="text" class="form-control" id="mpv" value="{{cbc.mpv}}" name="mpv"  />
-          </div>
-        <div class="col-md-4 mb-3">
-          <label for="p_lcr">P LCR:</label>
-          <input type="text" class="form-control" id="p_lcr" value="{{cbc.p_lcr}}" name="p_lcr"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="pct">PCT:</label>
-          <input type="text" class="form-control" id="pct" value="{{cbc.pct}}" name="pct"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="ret">RET:</label>
-          <input type="text" class="form-control" id="ret" value="{{cbc.ret}}" name="ret"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="irf">IRF:</label>
-          <input type="text" class="form-control" id="irf" value="{{cbc.irf}}" name="irf"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="lfr">LFR:</label>
-          <input type="text" class="form-control" id="lfr" value="{{cbc.lfr}}" name="lfr"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="mfr">MFR:</label>
-          <input type="text" class="form-control" id="mfr" value="{{cbc.mfr}}" name="mfr"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="hfr">HFR:</label>
-          <input type="text" class="form-control" id="hfr" value="{{cbc.hfr}}" name="hfr"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="wbc_ip_message">WBC IP Message:</label>
-          <input type="text" class="form-control" id="wbc_ip_message" value="{{cbc.wbc_ip_message}}" name="wbc_ip_message"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="rcb_rft_ip_message">RCB RFT IP Message:</label>
-          <input type="text" class="form-control" id="rcb_rft_ip_message" value="{{cbc.rcb_rft_ip_message}}" name="rcb_rft_ip_message"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="plt_ip_message">PLT IP Message:</label>
-          <input type="text" class="form-control" id="plt_ip_message" value="{{cbc.plt_ip_message}}" name="plt_ip_message"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="rdw_sd">Rdw Sd:</label>
+        <input type="text" class="form-control" id="rdw_sd" value="{{cbc.rdw_sd}}" name="rdw_sd" />
+      </div>
 
+      <div class="col-md-4 mb-3">
+        <label for="plt">PLT:</label>
+        <input type="text" class="form-control" id="plt" value="{{cbc.plt}}" name="plt" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="mpv">MPV:</label>
+        <input type="text" class="form-control" id="mpv" value="{{cbc.mpv}}" name="mpv" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="pdw">PDW SD:</label>
+        <input type="text" class="form-control" id="pdw" value="{{cbc.pdw}}" name="pdw" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="ret">PDW CV:</label>
+        <input type="text" class="form-control" id="ret" value="{{cbc.ret}}" name="ret" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="pct">PCT:</label>
+        <input type="text" class="form-control" id="pct" value="{{cbc.pct}}" name="pct" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="p_lcr">P-LCR:</label>
+        <input type="text" class="form-control" id="p_lcr" value="{{cbc.p_lcr}}" name="p_lcr" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="lfr">P-LCC:</label>
+        <input type="text" class="form-control" id="lfr" value="{{cbc.lfr}}" name="lfr" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="dr">Doctor Signature :</label>
+        <select type="text" id="dr" class="form-control" name="dr">
+          <option value="{{cbc.lfr}}">Select Doctor</option>
+          <option {% if cbc.dr == 'santoshkumar' %}selected{% endif %}  value="santoshkumar">Dr. Santosh Kumar Sharma</option>
+          <option {% if cbc.dr == 'knyadav' %}selected{% endif %} value="knyadav">Dr. K. N. Yadav</option>
+        </select>
+      </div>
     </div>
 
-
-
     <button type="submit" class="btn btn-primary">Save</button>
-    <a href="#;" id="printButton" style=" display: none;" class="btn btn-primary">Print</a>
-
+    <a href="#;" id="printButton" style="display: none" class="btn btn-primary">Print</a>
   </form>
 </div>
 
@@ -519,82 +410,32 @@
 </script>
 <script>
   $(document).ready(function () {
-      // Function to handle printing
-      $("#printButton").click(function () {
-          // Show the hidden print content
-          $("#printContent").show();
+    // Function to handle printing
+    $("#printButton").click(function () {
+      // Show the hidden print content
+      $("#printContent").show();
 
-          // Print only the content inside the printContent div
-          var printContents = $("#printContent").html();
-          var originalContents = $("body").html();
-          $("body").empty().html(printContents);
+      // Print only the content inside the printContent div
+      var printContents = $("#printContent").html();
+      var originalContents = $("body").html();
+      $("body").empty().html(printContents);
 
-          // Trigger the print dialog
-          window.print();
+      // Trigger the print dialog
+      window.print();
 
-          // Restore the original page content
-          $("#printContent").hide();
-          $("body").html(originalContents);
-          $("#printContent").hide();
-      });
+      // Restore the original page content
+      $("#printContent").hide();
+      $("body").html(originalContents);
+      $("#printContent").hide();
+    });
   });
 </script>
 
-<script>
-  // Function to handle form submission
-  function handleFormSubmission(event) {
-    event.preventDefault(); // Prevent default form submission
 
-    // Your additional logic for form validation or processing goes here
-
-    // Select all input fields in the form
-    const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
-
-    // Flag to keep track of form validity
-    let isValid = true;
-
-    // Loop through each input field
-    inputs.forEach(function (input) {
-      // Check if the input field is  and does not have a value
-      if (input.hasAttribute("") && !input.value.trim()) {
-        // If a  field is empty, set isValid to false
-        isValid = false;
-        // Highlight the empty field (you can customize this part)
-        input.style.border = "1px solid red";
-      } else {
-        // Remove any previous highlighting
-        input.style.border = "required";
-      }
-    });
-
-    // If the form is valid, submit it
-    if (isValid) {
-      document.getextementById("patientForm").submit();
-    } else {
-      // If the form is invalid, display an alert (you can customize this part)
-      //   alert("Please fill out all  fields.");
-    }
-  }
-
-  // Function to handle keyboard shortcuts
-  function handleShortcut(event) {
-    // if (event.ctrlKey && event.key === "s") {
-    if (event.key === "F2") {
-      // Ctrl + S pressed, trigger form submission
-      handleFormSubmission(event);
-    }
-  }
-
-  // Attach event listener for form submission
-  document.getextementById("patientForm").addEventListener("submit", handleFormSubmission);
-
-  // Attach event listener for keyboard shortcuts
-  document.addEventListener("keydown", handleShortcut);
-</script>
 
 <script>
   $(document).ready(function () {
-    var regid = {{ cbc.reg_no.regid }};
+    var regid = {{ cbc.patient.bill_no }};
     if (regid) {
     $.ajax({
         url: '{% url "fetch_patient_data_details" %}',
@@ -603,6 +444,7 @@
         regid: regid,
         },
         success: function (data) {
+          console.log(data)
         // Update input fields with fetched data
         $("#patient_name").val(data.name);
         $("#bill_no").val(data.bill_no);
@@ -633,6 +475,5 @@
     }
   });
 </script>
-
 
 {% endblock %}

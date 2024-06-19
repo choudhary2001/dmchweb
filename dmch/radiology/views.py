@@ -47,7 +47,7 @@ def get_investigation_by_department(request):
 
 @login_required
 def departments(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Radiology' or request.session['user_role'] == 'Cardiology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Radiology' or request.session['user_role'] == 'Cardiology':
         if request.method == "POST":
             department = request.POST['department']
             room_no = request.POST.get('room_no', None)
@@ -100,7 +100,7 @@ def departments_delete(request, department_id):
 
 @login_required
 def doctors(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Radiology' or request.session['user_role'] == 'Cardiology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Radiology' or request.session['user_role'] == 'Cardiology':
         if request.method == "POST":
             doctor = request.POST['doctor']
             department = request.POST['department']
@@ -160,7 +160,7 @@ def doctors_delete(request, doctor_id):
 
 @login_required
 def investigations(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Radiology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Radiology':
         if request.method == "POST":
             name = request.POST['name']
             department_unit = request.POST['department_unit']
@@ -210,7 +210,7 @@ def investigations_delete(request, investigation_id):
 
 @login_required
 def radiology_sub_unit(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Radiology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Radiology':
         if request.method == "POST":
             name = request.POST['name']
             department_unit = request.POST['department_unit']
@@ -374,7 +374,7 @@ def add_radiology_report(request):
 
 @login_required
 def show_radiology_report(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Radiology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Radiology':
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
         product_name = request.GET.get('product_name', None)
@@ -493,7 +493,7 @@ def show_radiology_report(request):
 
 @login_required
 def print_radiology_report(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Radiology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Radiology':
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
         product_name = request.GET.get('product_name', None)

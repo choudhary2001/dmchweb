@@ -14,9 +14,7 @@
   }
 </style>
 
-
-<div class="" id="printContent" style="width: 100%; margin-top: -10px; display: none;">
-
+<div class="" id="printContent" style="width: 100%; margin-top: -10px; display: none">
   <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.8rem">
     <h2>DEPARTMENT OF CLINICAL PATHOLOGY</h2>
     <h4>DARBHANGA MEDICAL COLLEGE & HOSPITAL</h4>
@@ -25,13 +23,13 @@
   </div>
   <hr />
   <div style="display: flex; justify-content: space-between">
-    <div style="display: flex; justify-content: space-between; width: 100%;">
-      <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+    <div style="display: flex; justify-content: space-between; width: 100%">
+      <div style="font-family: sans-serif; color: black; font-size: 1.3rem; margin-bottom: 0.4rem !important">
         <p>Patient Name : <strong>{% if urine.reg_no.name %}{{urine.reg_no.name}}{% endif %} </strong></p>
         <p>Refd By. : <strong>{% if urine.patient.referby.name %}{{urine.patient.referby.name}}{% endif %}</strong></p>
         <p>Bill No. : <strong>{% if urine.patient.bill_no %}{{urine.patient.bill_no}}{% endif %}</strong></p>
       </div>
-      <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+      <div style="font-family: sans-serif; color: black; font-size: 1.3rem; margin-bottom: 0.4rem !important">
         <p>Date : <strong>{% if urine.created_at %}{{urine.created_at}}{% endif %}</strong></p>
         <p>Reg No. : <strong>{% if urine.reg_no %}{% if urine.reg_no.de == 'Pathology' %}{{urine.reg_no.regnoid}}{% else %}{{urine.reg_no.regid}}{% endif %}{% endif %}</strong></p>
         <p>Lab No. : <strong>{% if urine.patient.lab_no %}{{urine.patient.lab_no}}{% endif %}</strong></p>
@@ -40,9 +38,8 @@
   </div>
   <hr />
   <div>
-
     <div class="table-responsive">
-      <table class="table table-bordered"  width="100%" cellspacing="0">
+      <table class="table table-bordered" width="100%" cellspacing="0">
         <thead>
           <tr>
             <th>Test</th>
@@ -53,189 +50,145 @@
         <tbody>
           {% if urine.amount %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Amount</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.amount}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Amount</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.amount}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 110 mg/dl</td> -->
           </tr>
-          {% endif %}
-          {% if urine.colour %}
+          {% endif %} {% if urine.colour %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Colour</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.colour}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Colour</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.colour}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 150 mg/dl</td> -->
           </tr>
-          {% endif %}
-
-          {% if urine.odour %}
+          {% endif %} {% if urine.odour %}
           <tr>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Odour</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.odour}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Odour</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.odour}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 150 mg/dl</td> -->
           </tr>
-          {% endif %}
-
-          {% if urine.specific_gravity %}
+          {% endif %} {% if urine.specific_gravity %}
           <tr>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Specific Gravity</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.specific_gravity}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Specific Gravity</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.specific_gravity}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">15 - 45 mg/dl</td> -->
           </tr>
-          {% endif %}
-
-          {% if urine.deposti %}
+          {% endif %} {% if urine.deposti %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Deposti</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.deposti}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Deposti</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.deposti}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">07 - 1.5 mg/dl</td> -->
           </tr>
-          {% endif %}
-
-          {% if urine.reaction %}
+          {% endif %} {% if urine.reaction %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Reaction</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.reaction}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Reaction</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.reaction}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.5 - 7.2 mg/dl</td> -->
           </tr>
-          {% endif %}
-
-          {% if urine.sugar %}
+          {% endif %} {% if urine.sugar %}
           <tr>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Sugar</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.sugar}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Sugar</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.sugar}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 1.2 mg/dl</td> -->
           </tr>
-          {% endif %}
-          
-          {% if urine.albumin %}
+          {% endif %} {% if urine.albumin %}
           <tr>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Albumin</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.albumin}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Albumin</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.albumin}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 35 IU/L</td> -->
           </tr>
-          {% endif %}
-
-          {% if urine.phosphate %}
+          {% endif %} {% if urine.phosphate %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Phosphatae</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.phosphate}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Phosphatae</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.phosphate}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 45 IU/L</td> -->
           </tr>
-          {% endif %}
-
-          {% if urine.mucin %}
+          {% endif %} {% if urine.mucin %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Mucin</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.mucin}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Mucin</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.mucin}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">6.4 - 8.3 g/dl</td> -->
           </tr>
-          {% endif %}
-
-          {% if urine.bile_salt %}
+          {% endif %} {% if urine.bile_salt %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Bile Salt</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.bile_salt}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Bile Salt</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.bile_salt}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.5 - 5.2 g/dl</td> -->
           </tr>
-          {% endif %}
-
-          {% if urine.bile_pigment %}
+          {% endif %} {% if urine.bile_pigment %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Bile Pigment</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.bile_pigment}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Bile Pigment</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.bile_pigment}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">30 - 130 U/L</td> -->
           </tr>
-          {% endif %}
-
-          {% if urine.urobilinogen %}
+          {% endif %} {% if urine.urobilinogen %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Urobilinogen </td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.urobilinogen}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Urobilinogen</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.urobilinogen}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 55 IU/L</td> -->
           </tr>
-          {% endif %}
-          
-          {% if urine.acetone_bodies %}
+          {% endif %} {% if urine.acetone_bodies %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Acetone Bodies</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.acetone_bodies}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Acetone Bodies</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.acetone_bodies}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
+          </tr>
+          {% endif %} {% if urine.rbc %}
+          <tr>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">RBC</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.rbc}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
+          </tr>
+          {% endif %} {% if urine.wbc %}
+          <tr>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">WBC</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.wbc}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
+          </tr>
+          {% endif %} {% if urine.epitheilal_cell %}
+          <tr>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Epitheilal Cell</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.epitheilal_cell}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
+          </tr>
+          {% endif %} {% if urine.casts %}
+          <tr>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Casts</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.casts}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
+          </tr>
+          {% endif %} {% if urine.crystas %}
+          <tr>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Crystas</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.crystas}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
+          </tr>
+          {% endif %} {% if urine.others %}
+          <tr>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Others</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{urine.others}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
           </tr>
           {% endif %}
-          {% if urine.rbc %}
-          <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">RBC </td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.rbc}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
-          </tr>
-          {% endif %}
-          {% if urine.wbc %}
-          <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">WBC </td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.wbc}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
-          </tr>
-          {% endif %}
-          {% if urine.epitheilal_cell %}
-          <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Epitheilal Cell</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.epitheilal_cell}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
-          </tr>
-          {% endif %}
-
-          {% if urine.casts %}
-          <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Casts </td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.casts}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
-          </tr>
-          {% endif %}
-
-          {% if urine.crystas %}
-          <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Crystas</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.crystas}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
-          </tr>
-          {% endif %}
-
-          {% if urine.others %}
-          <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Others </td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{urine.others}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
-          </tr>
-          {% endif %}
-          
         </tbody>
       </table>
     </div>
-
   </div>
-  <div style="display: flex;justify-content: space-between; width: 100%;position: absolute; bottom: 0;" >
+  {% if urine.dr %}
+  <div style="display: flex; justify-content: space-between; width: 100%; position: relative; bottom: 0; display: flex; justify-content: space-between; width: 100%; position: relative; bottom: 0; flex-direction: column; align-items: flex-end">
+    {% if urine.dr == 'santoshkumar' %}<img height="100px" src="/media/img/drsantosh1.png" />
+    <br />
+    <h6>Dr. Santosh Kumar Sharma</h6>
+    {% endif %} {% if urine.dr == 'knyadav' %}<img height="100px" src="/media/img/drkn1.png" />
+    <br />
+    <p>Dr. K. N. Yadav</p>
+    {% endif %}
+  </div>
+  {% endif %}
+  <div style="display: flex; justify-content: space-between; width: 100%">
     <div>Checked By ..............</div>
     <div>Signature ..................................................</div>
   </div>
-
-
 </div>
-
 
 <div class="container-fluid">
   <!-- Page Heading -->
@@ -247,161 +200,164 @@
     {% csrf_token %}
 
     <div class="row">
-        <!-- Left Column (Patient Details) -->
-        <div class="col-md-4 mb-3">
-            <label for="regid">Reg No.:</label>
-            <input type="text" class="form-control" id="regid"  value="{{urine.reg_no.regid}}" disabled  name="regid"  />
+      <!-- Left Column (Patient Details) -->
+      <div class="col-md-4 mb-3">
+        <label for="regid">Reg No.:</label>
+        <input type="text" class="form-control" id="regid" value="{{urine.reg_no.regid}}" disabled name="regid" />
+      </div>
 
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="bill_no">Bill No.:</label>
+        <input type="text" class="form-control" id="bill_no" value="" name="bill_no" disabled />
+      </div>
 
-        <div class="col-md-4 mb-3">
-            <label for="bill_no">Bill No.:</label>
-            <input type="text" class="form-control" id="bill_no" value="" name="bill_no"  disabled  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="labno">Lab No :</label>
+        <input type="text" id="labno" class="form-control" disabled name="labno" />
+      </div>
 
-        <div class="col-md-4 mb-3" >
-            <label for="labno">Lab No :</label>
-            <input type="text" id="labno" class="form-control"  disabled name="labno" />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="patient_name">Patient Name :</label>
+        <input type="text" class="form-control" id="patient_name" name="patient_name" disabled />
+      </div>
 
-        <div class="col-md-4 mb-3">
-            <label for="patient_name">Patient Name :</label>
-            <input type="text" class="form-control" id="patient_name" name="patient_name" disabled  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="department">Department:</label>
+        <input type="text" class="form-control" id="department" value="" name="department" disabled />
+      </div>
 
-
-        <div class="col-md-4 mb-3">
-            <label for="department">Department:</label>
-            <input type="text" class="form-control" id="department" value="" name="department"  disabled  />
-        </div>
-
-
-
-        <div class="col-md-4 mb-3" >
-            <label for="doctor">Refer By :</label>
-            <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
+      <div class="col-md-4 mb-3">
+        <label for="doctor">Refer By :</label>
+        <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
             <option>Select Doctor</option>
             </select> -->
-            <input type="text" class="form-control" id="doctor" value="" name="doctor" disabled   />
-
-        </div>
-      
-        <div class="col-md-4 mb-3">
-            <label for="amount">Amount:</label>
-            <input type="text" class="form-control" id="amount" value="{{urine.amount}}" name="amount"   />
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <label for="colour">Colour:</label>
-            <input type="text" class="form-control" id="colour" value="{{urine.colour}}" name="colour"   />
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <label for="odour">Odour :</label>
-            <input type="text" class="form-control" id="odour" value="{{urine.odour}}" name="odour"   />
-        </div>
-
-        <div class="col-md-4 mb-3">
-          <label for="specific_gravity">Specific Gravity:</label>
-          <input type="text" class="form-control" id="specific_gravity" value="{{urine.specific_gravity}}" name="specific_gravity"  />
+        <input type="text" class="form-control" id="doctor" value="" name="doctor" disabled />
       </div>
-  
+
       <div class="col-md-4 mb-3">
-          <label for="deposti">Deposti:</label>
-          <input type="text" class="form-control" id="deposti" value="{{urine.deposti}}" name="deposti"  />
+        <label for="amount">Amount:</label>
+        <input type="text" class="form-control" id="amount" value="{{urine.amount}}" name="amount" />
       </div>
-  
+
       <div class="col-md-4 mb-3">
-          <label for="reaction">Reaction:</label>
-          <input type="text" class="form-control" id="reaction" value="{{urine.reaction}}" name="reaction"  />
+        <label for="colour">Colour:</label>
+        <!-- <input type="text" class="form-control" id="colour" value="{{urine.colour}}" name="colour" /> -->
+        <select type="text" id="colour" class="form-control" name="colour">
+          <option value="">Select Colour</option>
+          <option {% if urine.colour == 'Pale Yellow' %}selected{% endif %} value="Pale Yellow">Pale Yellow</option>
+          <option {% if urine.colour == 'Deep Yellow' %}selected{% endif %} value="Deep Yellow">Deep Yellow</option>
+          <option {% if urine.colour == 'Radish' %}selected{% endif %} value="Redish">Redish</option>
+        </select>
       </div>
-  
-        
-              <div class="col-md-4 mb-3">
-                <label for="sugar">Sugar:</label>
-                <input type="text" class="form-control" id="sugar" value="{{urine.sugar}}" name="sugar"  />
-            </div>
 
-              
-            <div class="col-md-4 mb-3">
-              <label for="albumin">Albumin:</label>
-              <input type="text" class="form-control" id="albumin" value="{{urine.albumin}}" name="albumin"  />
-          </div>
+      <div class="col-md-4 mb-3">
+        <label for="odour">Odour :</label>
+        <input type="text" class="form-control" id="odour" value="{{urine.odour}}" name="odour" />
+      </div>
 
-            
-          <div class="col-md-4 mb-3">
-            <label for="phosphate">Phosphate:</label>
-            <input type="text" class="form-control" id="phosphate" value="{{urine.phosphate}}" name="phosphate"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="specific_gravity">Specific Gravity:</label>
+        <input type="text" class="form-control" id="specific_gravity" value="{{urine.specific_gravity}}" name="specific_gravity" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="mucin">Mucin:</label>
-          <input type="text" class="form-control" id="mucin" value="{{urine.mucin}}" name="mucin"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="deposti">Deposti:</label>
+        <input type="text" class="form-control" id="deposti" value="{{urine.deposti}}" name="deposti" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="bile_salt">Bile Salt:</label>
-          <input type="text" class="form-control" id="bile_salt" value="{{urine.bile_salt}}" name="bile_salt"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="reaction">Reaction:</label>
+        <input type="text" class="form-control" id="reaction" value="{{urine.reaction}}" name="reaction" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="bile_pigment">Bile Pigment:</label>
-          <input type="text" class="form-control" id="bile_pigment" value="{{urine.bile_pigment}}" name="bile_pigment"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="sugar">Sugar:</label>
+        <input type="text" class="form-control" id="sugar" value="{{urine.sugar}}" name="sugar" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="urobilinogen">Urobilinogen:</label>
-          <input type="text" class="form-control" id="urobilinogen" value="{{urine.urobilinogen}}" name="urobilinogen"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="albumin">Albumin:</label>
+        <!-- <input type="text" class="form-control" id="albumin" value="{{urine.albumin}}" name="albumin" /> -->
+        <select type="text" id="albumin" class="form-control" name="albumin">
+          <option value="">Select Albumin</option>
+          <option {% if urine.albumin == 'Present' %}selected{% endif %} value="Not Present">Not Present</option>
+          <option {% if urine.albumin == 'Not Present' %}selected{% endif %} value="Present">Present</option>
+          <option {% if urine.albumin == '1+' %}selected{% endif %} value="1+">1+</option>
+          <option {% if urine.albumin == '2+' %}selected{% endif %} value="2+">2+</option>
+          <option {% if urine.albumin == '3+' %}selected{% endif %} value="3+">3+</option>
+          <option {% if urine.albumin == '4+' %}selected{% endif %} value="4+">4+</option>
+        </select>
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="acetone_bodies">Acetone Bodies:</label>
-          <input type="text" class="form-control" id="acetone_bodies" value="{{urine.acetone_bodies}}" name="acetone_bodies"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="phosphate">Phosphate:</label>
+        <input type="text" class="form-control" id="phosphate" value="{{urine.phosphate}}" name="phosphate" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="rbc">RBC:</label>
-          <input type="text" class="form-control" id="rbc" value="{{urine.rbc}}" name="rbc"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="mucin">Mucin:</label>
+        <input type="text" class="form-control" id="mucin" value="{{urine.mucin}}" name="mucin" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="wbc">WBC:</label>
-          <input type="text" class="form-control" id="wbc" value="{{urine.wbc}}" name="wbc"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="bile_salt">Bile Salt:</label>
+        <input type="text" class="form-control" id="bile_salt" value="{{urine.bile_salt}}" name="bile_salt" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="epitheilal_cell">Epitheilal Cell:</label>
-          <input type="text" class="form-control" id="epitheilal_cell" value="{{urine.epitheilal_cell}}" name="epitheilal_cell"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="bile_pigment">Bile Pigment:</label>
+        <input type="text" class="form-control" id="bile_pigment" value="{{urine.bile_pigment}}" name="bile_pigment" />
+      </div>
 
-        <div class="col-md-4 mb-3">
-          <label for="casts">Casts:</label>
-          <input type="text" class="form-control" id="casts" value="{{urine.casts}}" name="casts"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="crystas">Crystas:</label>
-          <input type="text" class="form-control" id="crystas" value="{{urine.crystas}}" name="crystas"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="others">Others:</label>
-          <input type="text" class="form-control" id="others" value="{{urine.others}}" name="others"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="urobilinogen">Urobilinogen:</label>
+        <input type="text" class="form-control" id="urobilinogen" value="{{urine.urobilinogen}}" name="urobilinogen" />
+      </div>
 
+      <div class="col-md-4 mb-3">
+        <label for="acetone_bodies">Acetone Bodies:</label>
+        <input type="text" class="form-control" id="acetone_bodies" value="{{urine.acetone_bodies}}" name="acetone_bodies" />
+      </div>
 
+      <div class="col-md-4 mb-3">
+        <label for="rbc">RBC:</label>
+        <input type="text" class="form-control" id="rbc" value="{{urine.rbc}}" name="rbc" />
+      </div>
 
+      <div class="col-md-4 mb-3">
+        <label for="wbc">WBC:</label>
+        <input type="text" class="form-control" id="wbc" value="{{urine.wbc}}" name="wbc" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="epitheilal_cell">Epitheilal Cell:</label>
+        <input type="text" class="form-control" id="epitheilal_cell" value="{{urine.epitheilal_cell}}" name="epitheilal_cell" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="casts">Casts:</label>
+        <input type="text" class="form-control" id="casts" value="{{urine.casts}}" name="casts" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="crystas">Crystas:</label>
+        <input type="text" class="form-control" id="crystas" value="{{urine.crystas}}" name="crystas" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="others">Others:</label>
+        <input type="text" class="form-control" id="others" value="{{urine.others}}" name="others" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="dr">Doctor Signature :</label>
+        <select type="text" id="dr" class="form-control" name="dr">
+          <option value="">Select Doctor</option>
+          <option {% if urine.dr == 'santoshkumar' %}selected{% endif %}  value="santoshkumar">Dr. Santosh Kumar Sharma</option>
+          <option {% if urine.dr == 'knyadav' %}selected{% endif %} value="knyadav">Dr. K. N. Yadav</option>
+        </select>
+      </div>
     </div>
 
     <button type="submit" class="btn btn-primary">Save</button>
-    <a href="#;" id="printButton" style=" display: none;" class="btn btn-primary">Print</a>
-
+    <a href="#;" id="printButton" style="display: none" class="btn btn-primary">Print</a>
   </form>
 </div>
 
@@ -418,21 +374,21 @@
   $(document).ready(function () {
     // Function to handle printing
     $("#printButton").click(function () {
-        // Show the hidden print content
-        $("#printContent").show();
+      // Show the hidden print content
+      $("#printContent").show();
 
-        // Print only the content inside the printContent div
-        var printContents = $("#printContent").html();
-        var originalContents = $("body").html();
-        $("body").empty().html(printContents);
+      // Print only the content inside the printContent div
+      var printContents = $("#printContent").html();
+      var originalContents = $("body").html();
+      $("body").empty().html(printContents);
 
-        // Trigger the print dialog
-        window.print();
+      // Trigger the print dialog
+      window.print();
 
-        // Restore the original page content
-        $("#printContent").hide();
-        $("body").html(originalContents);
-        $("#printContent").hide();
+      // Restore the original page content
+      $("#printContent").hide();
+      $("body").html(originalContents);
+      $("#printContent").hide();
     });
   });
 </script>
@@ -490,7 +446,7 @@
 
 <script>
   $(document).ready(function () {
-    var regid = {{ urine.reg_no.regid }};
+    var regid = {{ urine.patient.bill_no }};
     if (regid) {
     $.ajax({
         url: '{% url "fetch_patient_data_details" %}',

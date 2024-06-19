@@ -35,9 +35,9 @@
             </select>
           </div> -->
 
-          <div class="form-group">
-            <input type="text" class="form-control" id="searchInput" placeholder="Search...">
-          </div>
+        <div class="form-group">
+          <input type="text" class="form-control" id="searchInput" placeholder="Search..." />
+        </div>
         <div style="flex: 1">
           <button class="btn btn-primary w-100" type="submit">Filter</button>
         </div>
@@ -52,10 +52,9 @@
 
     <div class="card-body" id="printablecontent">
       <style>
-        .table td{
+        .table td {
           padding: 0.4rem !important;
           font-size: 0.8rem !important;
-          
         }
       </style>
       <div class="card-header py-3" style="display: flex; flex-direction: column; align-items: center">
@@ -81,15 +80,13 @@
               <th>Purchase</th>
               <th>Consumption</th>
               <th>Closing</th>
-              <!-- <th>Total Stock</th> -->
               <th>Remarks</th>
               <th>Supply On Date</th>
               <th>Created Date/Time</th>
             </tr>
           </thead>
           <tbody>
-            {% for order in supply %}
-            {% for product in order.products.all %}
+            {% for order in supply %} {% for product in order.products.all %}
             <tr>
               <td>{{ order.departpment.name }}</td>
 
@@ -130,8 +127,7 @@
               <td>{{order.order_date|date:"j-m-Y"}}</td>
               <td>{{order.created_at}}</td>
             </tr>
-            {% endfor %}
-            {% endfor %}
+            {% endfor %} {% endfor %}
           </tbody>
         </table>
       </div>
@@ -165,17 +161,17 @@
 </script>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("DOMContentLoaded", function () {
     // Get all rows in the table body
     var rows = document.querySelectorAll("tbody tr");
 
     // Iterate over each row
-    rows.forEach(function(row) {
+    rows.forEach(function (row) {
       // Get the cells for quantity and stock quantity
       var quantityCell = row.querySelector("td:nth-child(9)");
       var stockQuantityCell = row.querySelector("td:nth-child(11)");
       var remainingStockCell = row.querySelector(".quantity-difference");
-      console.log(quantityCell, stockQuantityCell, remainingStockCell)
+      console.log(quantityCell, stockQuantityCell, remainingStockCell);
       // Get the values from the cells
       var quantity = parseInt(quantityCell.textContent);
       var stockQuantity = parseInt(stockQuantityCell.textContent);
@@ -190,7 +186,7 @@
 </script>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("DOMContentLoaded", function () {
     // Get all rows in the table body
     var rows = document.querySelectorAll("tbody tr");
 
@@ -198,7 +194,7 @@
     var totalStock = {};
 
     // Iterate over each row
-    rows.forEach(function(row) {
+    rows.forEach(function (row) {
       // Get the cells for quantity, product name, and stock quantity
       var productNameCell = row.querySelector("td:nth-child(3)");
       var quantityCell = row.querySelector("td:nth-child(9)");
@@ -226,7 +222,7 @@
 
     // Update Total Stock column
     var uniqueProducts = {}; // To keep track of processed product names
-    rows.forEach(function(row) {
+    rows.forEach(function (row) {
       var productNameCell = row.querySelector("td:nth-child(3)");
       var totalStockCell = row.querySelector("td:nth-child(11)");
 
@@ -236,12 +232,10 @@
         uniqueProducts[productName] = true;
       } else {
         totalStockCell.textContent = ""; // Clear cell for duplicate product names
-        
       }
     });
   });
 </script>
-
 
 <script>
   var filterActive = false;
@@ -255,7 +249,7 @@
     while (switching) {
       switching = false;
       rows = table.rows;
-      for (i = 1; i <= (rows.length - 1); i++) {
+      for (i = 1; i <= rows.length - 1; i++) {
         shouldSwitch = false;
         x = rows[i].getElementsByTagName("td")[2];
         y = rows[i + 1].getElementsByTagName("td")[2];
@@ -302,7 +296,7 @@
   //   });
   // }
 
-  document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("DOMContentLoaded", function () {
     var table = document.getElementById("datatablee");
     var rows = Array.from(table.getElementsByTagName("tbody")[0].getElementsByTagName("tr"));
     initialTableRows = rows.slice(); // Store initial sorted state
@@ -312,32 +306,31 @@
   document.getElementById("searchInput").addEventListener("keyup", filterTable);
 </script>
 
-
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("DOMContentLoaded", function () {
     // Object to store aggregated data for each product name and batch number combination
     var aggregatedData = {};
 
     // Iterate over each row in the table body
-    document.querySelectorAll("tbody tr").forEach(function(row) {
+    document.querySelectorAll("tbody tr").forEach(function (row) {
       // Get the cells for all columns
       var cells = row.querySelectorAll("td");
 
       // Extract data from cells
-      var department = cells[0].textContent.trim() || ' ';
-      var productType = cells[1].textContent.trim() || ' ';
-      var productName = cells[2].textContent.trim() || ' ';
-      var mfgBy = cells[3].textContent.trim() || ' ';
-      var mfgDate = cells[4].textContent.trim() || ' ';
-      var expDate = cells[5].textContent.trim() || ' ';
-      var batchNo = cells[6].textContent.trim() || ' ';
+      var department = cells[0].textContent.trim() || " ";
+      var productType = cells[1].textContent.trim() || " ";
+      var productName = cells[2].textContent.trim() || " ";
+      var mfgBy = cells[3].textContent.trim() || " ";
+      var mfgDate = cells[4].textContent.trim() || " ";
+      var expDate = cells[5].textContent.trim() || " ";
+      var batchNo = cells[6].textContent.trim() || " ";
       var quantity = parseInt(cells[7].textContent) || 0;
       var consumption = parseInt(cells[9].textContent) || 0;
       var inStock = parseInt(cells[10].textContent) || 0;
       // var totalStock = parseInt(cells[10].textContent) || 0;
-      var supplyDate = cells[11].textContent.trim() || ' ';
-      var createdDateTime = cells[12].textContent.trim() || ' ';
-      var remarks = cells[13].textContent.trim() || '';
+      var supplyDate = cells[11].textContent.trim() || " ";
+      var createdDateTime = cells[12].textContent.trim() || " ";
+      var remarks = cells[13].textContent.trim() || "";
 
       // Generate a unique key for each product name
       var key = productName;
@@ -365,7 +358,7 @@
           // totalStock: inStock, // Initialize totalStock with inStock
           supplyDate: supplyDate,
           createdDateTime: createdDateTime,
-          remarks: remarks
+          remarks: remarks,
         };
       }
     });
@@ -373,7 +366,7 @@
     // Update the table with the aggregated data
     var tableBody = document.querySelector("tbody");
     tableBody.innerHTML = ""; // Clear existing table rows
-    Object.keys(aggregatedData).forEach(function(key) {
+    Object.keys(aggregatedData).forEach(function (key) {
       var rowData = aggregatedData[key];
       // Create a new row with the aggregated data
       var newRow = document.createElement("tr");
@@ -399,18 +392,10 @@
   });
 </script>
 
-
 <script>
   function exportToExcel() {
-    var location = 'data:application/vnd.ms-excel;base64,';
-    var excelTemplate = '<html> ' +
-      '<head> ' +
-      '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/> ' +
-      '</head> ' +
-      '<body> ' +
-      document.getElementById("printablecontent").innerHTML +
-      '</body> ' +
-      '</html>'
+    var location = "data:application/vnd.ms-excel;base64,";
+    var excelTemplate = "<html> " + "<head> " + '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/> ' + "</head> " + "<body> " + document.getElementById("printablecontent").innerHTML + "</body> " + "</html>";
     window.location.href = location + window.btoa(excelTemplate);
   }
 </script>

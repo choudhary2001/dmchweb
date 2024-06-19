@@ -14,9 +14,7 @@
   }
 </style>
 
-
-<div class="" id="printContent" style="width: 100%; margin-top: -10px; display: none;">
-
+<div class="" id="printContent" style="width: 100%; margin-top: -10px; display: none">
   <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.8rem">
     <h2>DEPARTMENT OF CLINICAL PATHOLOGY</h2>
     <h4>DARBHANGA MEDICAL COLLEGE & HOSPITAL</h4>
@@ -25,13 +23,13 @@
   </div>
   <hr />
   <div style="display: flex; justify-content: space-between">
-    <div style="display: flex; justify-content: space-between; width: 100%;">
-      <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+    <div style="display: flex; justify-content: space-between; width: 100%">
+      <div style="font-family: sans-serif; color: black; font-size: 1.3rem; margin-bottom: 0.4rem !important">
         <p>Patient Name : <strong>{% if serology.reg_no.name %}{{serology.reg_no.name}}{% endif %} </strong></p>
         <p>Refd By. : <strong>{% if serology.patient.referby.name %}{{serology.patient.referby.name}}{% endif %}</strong></p>
         <p>Bill No. : <strong>{% if serology.patient.bill_no %}{{serology.patient.bill_no}}{% endif %}</strong></p>
       </div>
-      <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+      <div style="font-family: sans-serif; color: black; font-size: 1.3rem; margin-bottom: 0.4rem !important">
         <p>Date : <strong>{% if serology.created_at %}{{serology.created_at}}{% endif %}</strong></p>
         <p>Reg No. : <strong>{% if serology.reg_no %}{% if serology.reg_no.de == 'Pathology' %}{{serology.reg_no.regnoid}}{% else %}{{serology.reg_no.regid}}{% endif %}{% endif %}</strong></p>
         <p>Lab No. : <strong>{% if serology.patient.lab_no %}{{serology.patient.lab_no}}{% endif %}</strong></p>
@@ -40,9 +38,8 @@
   </div>
   <hr />
   <div>
-
     <div class="table-responsive">
-      <table class="table table-bordered"  width="100%" cellspacing="0">
+      <table class="table table-bordered" width="100%" cellspacing="0">
         <thead>
           <tr>
             <th>Test</th>
@@ -52,39 +49,40 @@
         <tbody>
           {% if serology.hiv %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">HIV</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{serology.hiv}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">HIV</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{serology.hiv}}</td>
           </tr>
-          {% endif %}
-          {% if serology.hcv %}
+          {% endif %} {% if serology.hcv %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">HCV</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{serology.hcv}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">HCV</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{serology.hcv}}</td>
           </tr>
-          {% endif %}
-          {% if serology.hbsag %}
+          {% endif %} {% if serology.hbsag %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">HBSAG</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{serology.hbsag}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">HBSAG</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{serology.hbsag}}</td>
           </tr>
           {% endif %}
-          
         </tbody>
       </table>
     </div>
-
   </div>
-  <div style="display: flex;justify-content: space-between; width: 100%;position: absolute; bottom: 0;" >
+  {% if serology.dr %}
+  <div style="display: flex; justify-content: space-between; width: 100%; position: relative; bottom: 0; display: flex; justify-content: space-between; width: 100%; position: relative; bottom: 0; flex-direction: column; align-items: flex-end">
+    {% if serology.dr == 'santoshkumar' %}<img height="100px" src="/media/img/drsantosh1.png" />
+    <br />
+    <h6>Dr. Santosh Kumar Sharma</h6>
+    {% endif %} {% if serology.dr == 'knyadav' %}<img height="100px" src="/media/img/drkn1.png" />
+    <br />
+    <p>Dr. K. N. Yadav</p>
+    {% endif %}
+  </div>
+  {% endif %}
+  <div style="display: flex; justify-content: space-between; width: 100%">
     <div>Checked By ..............</div>
     <div>Signature ..................................................</div>
   </div>
-
-
 </div>
-
 
 <div class="container-fluid">
   <!-- Page Heading -->
@@ -96,68 +94,66 @@
     {% csrf_token %}
 
     <div class="row">
-        <!-- Left Column (Patient Details) -->
-        <div class="col-md-4 mb-3">
-            <label for="regid">Reg No.:</label>
-            <input type="text" class="form-control" id="regid"  value="{{serology.reg_no.regid}}" disabled  name="regid"  />
+      <!-- Left Column (Patient Details) -->
+      <div class="col-md-4 mb-3">
+        <label for="regid">Reg No.:</label>
+        <input type="text" class="form-control" id="regid" value="{{serology.reg_no.regid}}" disabled name="regid" />
+      </div>
 
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="bill_no">Bill No.:</label>
+        <input type="text" class="form-control" id="bill_no" value="" name="bill_no" disabled />
+      </div>
 
-        <div class="col-md-4 mb-3">
-            <label for="bill_no">Bill No.:</label>
-            <input type="text" class="form-control" id="bill_no" value="" name="bill_no"  disabled  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="labno">Lab No :</label>
+        <input type="text" id="labno" class="form-control" disabled name="labno" />
+      </div>
 
-        <div class="col-md-4 mb-3" >
-            <label for="labno">Lab No :</label>
-            <input type="text" id="labno" class="form-control"  disabled name="labno" />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="patient_name">Patient Name :</label>
+        <input type="text" class="form-control" id="patient_name" name="patient_name" disabled />
+      </div>
 
-        <div class="col-md-4 mb-3">
-            <label for="patient_name">Patient Name :</label>
-            <input type="text" class="form-control" id="patient_name" name="patient_name" disabled  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="department">Department:</label>
+        <input type="text" class="form-control" id="department" value="" name="department" disabled />
+      </div>
 
-
-        <div class="col-md-4 mb-3">
-            <label for="department">Department:</label>
-            <input type="text" class="form-control" id="department" value="" name="department"  disabled  />
-        </div>
-
-
-
-        <div class="col-md-4 mb-3" >
-            <label for="doctor">Refer By :</label>
-            <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
+      <div class="col-md-4 mb-3">
+        <label for="doctor">Refer By :</label>
+        <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
             <option>Select Doctor</option>
             </select> -->
-            <input type="text" class="form-control" id="doctor" value="" name="doctor" disabled   />
-
-        </div>
-            
-        <div class="col-md-4 mb-3">
-            <label for="hiv">HIV :</label>
-            <input type="text" class="form-control" id="hiv" value="{{serology.hiv}}" name="hiv"   />
-        </div>
-
-        <div class="col-md-4 mb-3">
-          <label for="hcv">HCV:</label>
-          <input type="text" class="form-control" id="hcv" value="{{serology.hcv}}" name="hcv"  />
+        <input type="text" class="form-control" id="doctor" value="" name="doctor" disabled />
       </div>
-  
+
       <div class="col-md-4 mb-3">
-          <label for="hbsag">HBSAG:</label>
-          <input type="text" class="form-control" id="hbsag" value="{{serology.hbsag}}" name="hbsag"  />
+        <label for="hiv">HIV :</label>
+        <input type="text" class="form-control" id="hiv" value="{{serology.hiv}}" name="hiv" />
       </div>
-  
 
+      <div class="col-md-4 mb-3">
+        <label for="hcv">HCV:</label>
+        <input type="text" class="form-control" id="hcv" value="{{serology.hcv}}" name="hcv" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="hbsag">HBSAG:</label>
+        <input type="text" class="form-control" id="hbsag" value="{{serology.hbsag}}" name="hbsag" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="dr">Doctor Signature :</label>
+        <select type="text" id="dr" class="form-control" name="dr">
+          <option value="">Select Doctor</option>
+          <option {% if serology.dr == 'santoshkumar' %}selected{% endif %}  value="santoshkumar">Dr. Santosh Kumar Sharma</option>
+          <option {% if serology.dr == 'knyadav' %}selected{% endif %} value="knyadav">Dr. K. N. Yadav</option>
+        </select>
+      </div>
     </div>
 
-
-
     <button type="submit" class="btn btn-primary">Save</button>
-    <a href="#;" id="printButton" style=" display: none;" class="btn btn-primary">Print</a>
-
+    <a href="#;" id="printButton" style="display: none" class="btn btn-primary">Print</a>
   </form>
 </div>
 
@@ -173,24 +169,24 @@
 </script>
 <script>
   $(document).ready(function () {
-      // Function to handle printing
-      $("#printButton").click(function () {
-          // Show the hidden print content
-          $("#printContent").show();
+    // Function to handle printing
+    $("#printButton").click(function () {
+      // Show the hidden print content
+      $("#printContent").show();
 
-          // Print only the content inside the printContent div
-          var printContents = $("#printContent").html();
-          var originalContents = $("body").html();
-          $("body").empty().html(printContents);
+      // Print only the content inside the printContent div
+      var printContents = $("#printContent").html();
+      var originalContents = $("body").html();
+      $("body").empty().html(printContents);
 
-          // Trigger the print dialog
-          window.print();
+      // Trigger the print dialog
+      window.print();
 
-          // Restore the original page content
-          $("#printContent").hide();
-          $("body").html(originalContents);
-          $("#printContent").hide();
-      });
+      // Restore the original page content
+      $("#printContent").hide();
+      $("body").html(originalContents);
+      $("#printContent").hide();
+    });
   });
 </script>
 <script>
@@ -247,7 +243,7 @@
 
 <script>
   $(document).ready(function () {
-    var regid = {{ serology.reg_no.regid }};
+    var regid = {{ serology.patient.bill_no }};
     if (regid) {
     $.ajax({
         url: '{% url "fetch_patient_data_details" %}',
@@ -286,6 +282,5 @@
     }
   });
 </script>
-
 
 {% endblock %}

@@ -27,7 +27,7 @@ print(current_time_kolkata)
 
 @login_required
 def departments(request):
-    if request.user.is_superuser:
+    if request.user.is_superuser or request.user.is_staff:
 
         if request.method == "POST":
             department = request.POST['department']
@@ -238,7 +238,7 @@ def product_delete_view(request, product_id):
 def product_details_view(request):
     departpment = request.session['user_role']
     d = StoreDepartment.objects.filter(name = departpment).first()
-    if request.user.is_superuser or d is not None:
+    if request.user.is_superuser or d is not None or request.user.is_staff:
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -309,7 +309,7 @@ def product_details_view(request):
 def supply_details_view_print(request):
     departpment = request.session['user_role']
     d = StoreDepartment.objects.filter(name = departpment).first()
-    if request.user.is_superuser or d is not None:
+    if request.user.is_superuser or d is not None or request.user.is_staff:
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -382,7 +382,7 @@ def supply_details_view_print(request):
 def product_stock_view_print(request):
     departpment = request.session['user_role']
     d = StoreDepartment.objects.filter(name = departpment).first()
-    if request.user.is_superuser or d is not None:
+    if request.user.is_superuser or d is not None or request.user.is_staff:
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -564,7 +564,7 @@ def supply_update_view(request, supply_id):
 def get_product_details_view(request):
     departpment = request.session['user_role']
     d = StoreDepartment.objects.filter(name = departpment).first()
-    if request.user.is_superuser or d is not None:
+    if request.user.is_superuser or d is not None or request.user.is_staff:
         # Get the selected product type from the AJAX request
         product_name = request.GET.get('product_name')
         print(product_name)
@@ -665,7 +665,7 @@ def product_consumption_delete_view(request, product_id):
 def product_consumption_details_view(request):
     departpment = request.session['user_role']
     d = StoreDepartment.objects.filter(name = departpment).first()
-    if request.user.is_superuser or d is not None:
+    if request.user.is_superuser or d is not None or request.user.is_staff:
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -736,7 +736,7 @@ def product_consumption_details_view(request):
 def product_consumption_details_view_print(request):
     departpment = request.session['user_role']
     d = StoreDepartment.objects.filter(name = departpment).first()
-    if request.user.is_superuser or d is not None:
+    if request.user.is_superuser or d is not None or request.user.is_staff:
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')

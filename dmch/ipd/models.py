@@ -41,8 +41,8 @@ class Patient_Admission(models.Model):
     referby = models.ForeignKey(IpdDoctor, on_delete = models.SET_NULL, blank = True, null = True)
     patient = models.ForeignKey(Patient, on_delete = models.SET_NULL, blank = True, null =True)
 
-    regno = models.CharField(max_length=100, unique = True)
-    dr_reg_no = models.CharField(max_length = 255, blank = True, null = True, unique= True)
+    regno = models.CharField(max_length=100)
+    dr_reg_no = models.CharField(max_length = 255, blank = True, null = True)
     name = models.CharField(max_length=255,blank = True, null = True)
     guardiannametitle = models.CharField(max_length=100,blank = True, null = True)
     guardianname = models.CharField(max_length=255)

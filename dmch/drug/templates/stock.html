@@ -1,21 +1,16 @@
-{% extends 'counter/base.html' %} 
-{% block css %} 
-{% endblock %} 
-{% block content %}
+{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
 <!-- Begin Page Content -->
 <div class="container-fluid">
   <!-- Page Heading -->
   <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
-  {% if messages %} 
-  {% for message in messages %}
+  {% if messages %} {% for message in messages %}
   <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
-  {% endfor %} 
-  {% endif %}
+  {% endfor %} {% endif %}
   <marquee behavior="scroll" direction="left">
-    <a href="{% url 'expired_medicine' %}" style="color: red;">
-      <ul style="list-style: none; display: flex;" >
+    <a href="{% url 'expired_medicine' %}" style="color: red">
+      <ul style="list-style: none; display: flex">
         {% for product in expiring_products %}
-          <li style="color: red;" >{{ product.product_name }} ({{ product.batch_no }} {{ product.exp_date }}) , </li>
+        <li style="color: red">{{ product.product_name }} ({{ product.batch_no }} {{ product.exp_date }}) ,</li>
         {% endfor %}
       </ul>
     </a>
@@ -33,7 +28,7 @@
           </select>
         </div>
         <div style="flex: 1">
-          <input type="search" id="search_box" class="form-control mb-2 mb-md-0" placeholder="Search by product name" />
+          <input type="search" id="searchInput" class="form-control mb-2 mb-md-0" placeholder="Search by product name" />
         </div>
         <div style="flex: 1">
           <button class="btn btn-primary w-100" onclick="printTable()">Print</button>
@@ -52,15 +47,13 @@
             </tr>
           </thead>
           <tbody id="testReportTableBody">
-            {% for order in purchase %}
-            {% for product in order.products.all %}
+            {% for order in purchase %} {% for product in order.products.all %}
             <tr>
               <td>{{ product.product_type }}</td>
               <td>{{ product.product_name }}</td>
               <td>{{ product.stock_quantity }}</td>
             </tr>
-            {% endfor %}
-            {% endfor %}
+            {% endfor %} {% endfor %}
           </tbody>
         </table>
       </div>
@@ -68,45 +61,44 @@
   </div>
 </div>
 
-{% endblock %} 
-{% block script %} 
+{% endblock %} {% block script %}
 
 <script>
   // Get all the <tr> elements within the table body
-  var tableBody = document.getElementById('testReportTableBody');
-  var trElements = tableBody.querySelectorAll('tr');
+  var tableBody = document.getElementById("testReportTableBody");
+  var trElements = tableBody.querySelectorAll("tr");
 
-  document.getElementById('quantity_filter').addEventListener('change', function() {
+  document.getElementById("quantity_filter").addEventListener("change", function () {
     var filterValue = this.value;
 
     for (var i = 0; i < trElements.length; i++) {
       var totalQuantity = parseInt(trElements[i].children[2].textContent.trim(), 10);
-      
-      if (filterValue === 'all') {
-        trElements[i].style.display = '';
-      } else if (filterValue === 'more_than_0' && totalQuantity > 0) {
-        trElements[i].style.display = '';
-      } else if (filterValue === 'equal_0' && totalQuantity === 0) {
-        trElements[i].style.display = '';
+
+      if (filterValue === "all") {
+        trElements[i].style.display = "";
+      } else if (filterValue === "more_than_0" && totalQuantity > 0) {
+        trElements[i].style.display = "";
+      } else if (filterValue === "equal_0" && totalQuantity === 0) {
+        trElements[i].style.display = "";
       } else {
-        trElements[i].style.display = 'none';
+        trElements[i].style.display = "none";
       }
     }
   });
 
-  document.getElementById('search_box').addEventListener('input', function() {
-    var searchValue = this.value.toLowerCase();
-    console.log(searchValue)
-    for (var i = 0; i < trElements.length; i++) {
-      var productName = trElements[i].children[2].textContent.trim().toLowerCase();
+  // document.getElementById("search_box").addEventListener("input", function () {
+  //   var searchValue = this.value.toLowerCase();
+  //   console.log(searchValue);
+  //   for (var i = 0; i < trElements.length; i++) {
+  //     var productName = trElements[i].children[2].textContent.trim().toLowerCase();
 
-      if (productName.startsWith(searchValue)) {
-        trElements[i].style.display = '';
-      } else {
-        trElements[i].style.display = 'none';
-      }
-    }
-  });
+  //     if (productName.startsWith(searchValue)) {
+  //       trElements[i].style.display = "";
+  //     } else {
+  //       trElements[i].style.display = "none";
+  //     }
+  //   }
+  // });
 
   // Create an object to store combined products
   var combinedProducts = {};
@@ -119,18 +111,19 @@
     var stockQuantity = parseInt(trElements[i].children[2].textContent.trim(), 10);
 
     // Create a unique key for each product based on its name and quantity
-    var key = productName + '|' + productType;
+    var key = productName + "|" + productType;
 
     // If the product exists in combinedProducts, update its quantity
     if (combinedProducts.hasOwnProperty(key)) {
       combinedProducts[key].stockQuantity += stockQuantity;
-    } else {  // Otherwise, add it to combinedProducts
+    } else {
+      // Otherwise, add it to combinedProducts
       combinedProducts[key] = { productType: productType, productName: productName, stockQuantity: stockQuantity };
     }
   }
 
   // Remove existing table rows
-  tableBody.innerHTML = '';
+  tableBody.innerHTML = "";
 
   var sortedProducts = Object.values(combinedProducts).sort((a, b) => a.productName.localeCompare(b.productName));
 
@@ -138,8 +131,8 @@
   var index = 1;
 
   sortedProducts.forEach(product => {
-    var newRow = document.createElement('tr');
-    newRow.innerHTML = '<td>' + index++ + '.</td><td>' + product.productType + '</td><td>' + product.productName + '</td><td>' + product.stockQuantity + '</td>';
+    var newRow = document.createElement("tr");
+    newRow.innerHTML = "<td>" + index++ + ".</td><td>" + product.productType + "</td><td>" + product.productName + "</td><td>" + product.stockQuantity + "</td>";
     tableBody.appendChild(newRow);
   });
 
@@ -157,13 +150,47 @@
     window.location.reload();
   }
 
-  $(document).ready(function() {
-    $(document).keydown(function(event) {
-      if (event.ctrlKey && event.key === 'p') {
-        event.preventDefault();  // Prevent the default print dialog
-        printTable();  // Call the custom print function
+  $(document).ready(function () {
+    $(document).keydown(function (event) {
+      if (event.ctrlKey && event.key === "p") {
+        event.preventDefault(); // Prevent the default print dialog
+        printTable(); // Call the custom print function
       }
     });
   });
 </script>
+
+<script>
+  // Function to filter table rows based on search input
+  function filterTable() {
+    // Get the search input value
+    var filter = document.getElementById("searchInput").value.toUpperCase();
+    // Get the table rows
+    var rows = document.querySelector("#product_table tbody").rows;
+
+    // Loop through all table rows
+    for (var i = 0; i < rows.length; i++) {
+      var visible = false;
+      // Loop through all cells in the current row
+      for (var j = 0; j < rows[i].cells.length; j++) {
+        var cell = rows[i].cells[j];
+        // Check if the cell text matches the search query
+        if (cell.textContent.toUpperCase().indexOf(filter) > -1) {
+          visible = true;
+          break;
+        }
+      }
+      // Show or hide the row based on visibility
+      if (visible) {
+        rows[i].style.display = "";
+      } else {
+        rows[i].style.display = "none";
+      }
+    }
+  }
+
+  // Add event listener to the search input field
+  document.getElementById("searchInput").addEventListener("keyup", filterTable);
+</script>
+
 {% endblock %}

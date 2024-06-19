@@ -305,7 +305,7 @@ def donate_blood_view(request):
 
 @login_required
 def blood_fetch_data(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Blood Bank':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Blood Bank':
         update_blood_stock_status()
 
         if request.method == 'GET' and 'bag_no' in request.GET:
@@ -337,7 +337,7 @@ def blood_fetch_data(request):
 
 @login_required
 def blood_stocks(request):
-    if request.user.is_superuser or request.session.get('user_role') == 'Blood Bank':
+    if request.user.is_superuser or  request.user.is_staff or request.session.get('user_role') == 'Blood Bank':
         if request.method == 'POST':
             stock_id = request.POST.get('stock_id')
             new_status = request.POST.get('new_status')

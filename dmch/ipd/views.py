@@ -53,7 +53,7 @@ def fetch_ipd_patient_data(request):
 
 @login_required
 def ipd_departments(request):
-    if request.user.is_superuser or request.session['user_role'] == 'IPD':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'IPD':
         if request.method == "POST":
             department = request.POST['department']
             room_no = request.POST.get('room_no', None)
@@ -106,7 +106,7 @@ def departments_delete(request, department_id):
 
 @login_required
 def ipd_doctors(request):
-    if request.user.is_superuser or request.session['user_role'] == 'IPD':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'IPD':
         if request.method == "POST":
             doctor = request.POST['doctor']
             department = request.POST['department']
@@ -220,9 +220,14 @@ def ipd_add_patient(request):
                     days = int(days)
                 else:
                     days = 0
-
-                de = IpdDepartment.objects.filter(department_id = department).first()
-                d = IpdDoctor.objects.filter(doctor_id = doctor).first()
+                if department:
+                    de = IpdDepartment.objects.filter(department_id = department).first()
+                else:
+                    de = None
+                if doctor:
+                    d = IpdDoctor.objects.filter(doctor_id = doctor).first()
+                else:
+                    d = None
                 try:
                     p = Patient.objects.filter(regid = regid).first()
                 except Exception as e:
@@ -407,7 +412,7 @@ def delete_patients(request, pk):
 
 @login_required
 def ipd_discharge_patient(request):
-    if request.user.is_superuser or request.session['user_role'] == 'IPD':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'IPD':
         current_time_utc = timezone.now()
         # request.session['user_role'] = 'Registration'
 
@@ -457,7 +462,7 @@ def ipd_discharge_patient(request):
         return redirect('signin') 
 
 def show_ipd_patients_report(request):
-    if request.user.is_superuser or request.session['user_role'] == 'IPD':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'IPD':
 
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
@@ -473,7 +478,7 @@ def show_ipd_patients_report(request):
         if end_date_str:
             end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
             # Adjust the end date to include all records for that day
-            end_date = end_date + timedelta(days=1)  # Include records for the entire day
+            end_date = end_date   # Include records for the entire day
         else:
             end_date = None
         
@@ -506,3 +511,59 @@ def show_ipd_patients_report(request):
     else:
         logout(request)
         return redirect('signin') 
+
+
+def show_ipd_patients_report_print(request):
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'IPD':
+
+        start_date_str = request.GET.get('start_date', None)
+        end_date_str = request.GET.get('end_date', None)
+        department = request.GET.get('department', None)
+        print(department)
+
+        # Convert the date strings to datetime objects
+        if start_date_str:
+            start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d')
+        else:
+            start_date = None
+
+        if end_date_str:
+            end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d')
+            # Adjust the end date to include all records for that day
+            end_date = end_date   # Include records for the entire day
+        else:
+            end_date = None
+        
+        if start_date_str or end_date_str or department:
+            patients = Patient_Admission.objects.all().order_by('-appointment_date')
+
+            if start_date and end_date:
+                # end_date = end_date + timedelta(days=1) 
+                # start_date = start_date - timedelta(days=1)
+                patients = patients.filter(appointment_date__range=(start_date, end_date))
+            elif start_date:
+                # If only start date is provided, include all records for that day
+                next_day = start_date + timedelta(days=1)
+                patients = patients.filter(appointment_date__gte=start_date, appointment_date__lt=next_day)
+            elif end_date:
+                patients = patients.filter(appointment_date__lt=end_date)
+
+            if department != None:
+                if department != 'All':
+                    patients = patients.filter(department__department_id=department)
+
+        else:
+            patients = []
+        de = IpdDepartment.objects.all().order_by('-created_at')
+        context = {
+            'departments' : de,
+            'title' : f"Total Patient Report : {len(patients)}",
+            'patients' : patients,
+            'start_date_str' : start_date_str,
+            'end_date_str' : end_date_str
+        }
+        return render(request, 'ipd/print_patient_data.html', context=context) 
+    else:
+        logout(request)
+        return redirect('signin') 
+

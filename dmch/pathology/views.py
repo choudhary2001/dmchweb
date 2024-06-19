@@ -221,7 +221,7 @@ def extract_duration(duration_str):
 
 @login_required
 def create_patient_registration(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
         current_time_utc = timezone.now()
         # Get the Kolkata timezone
         kolkata_timezone = pytz.timezone('Asia/Kolkata')
@@ -326,7 +326,7 @@ def create_patient_registration(request):
 
 @login_required
 def patient_registration_view(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
@@ -348,7 +348,7 @@ def patient_registration_view(request):
         
         if start_date_str or end_date_str or department_id:
             # Filter patients based on the provided date range
-            if request.user.is_superuser:
+            if request.user.is_superuser or request.user.is_staff:
                 patients = Patient_registration.objects.all().order_by('-created_at')
             else:
                 patients = Patient_registration.objects.filter(user = request.user).order_by('-created_at')
@@ -392,7 +392,7 @@ def patient_registration_view(request):
 
 @login_required
 def patient_registration_view_data(request):
-    if request.user.is_superuser or request.session.get('user_role') == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session.get('user_role') == 'Pathology':
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
         department = request.GET.get('department')
@@ -408,7 +408,7 @@ def patient_registration_view_data(request):
         else:
             end_date = None
 
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.is_staff:
             tr = Patient_registration.objects.all().order_by('-created_at')
         else:
             tr = Patient_registration.objects.filter(user = request.user).order_by('-created_at')
@@ -494,7 +494,7 @@ def patient_registration_view_data(request):
 
 @login_required
 def patient_registration_view_print(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
@@ -517,7 +517,7 @@ def patient_registration_view_print(request):
         if start_date_str or end_date_str or department_id:
         
             # Filter patients based on the provided date range
-            if request.user.is_superuser:
+            if request.user.is_superuser or request.user.is_staff:
                 patients = Patient_registration.objects.all().order_by('-created_at')
             else:
                 patients = Patient_registration.objects.filter(user = request.user).order_by('-created_at')
@@ -649,7 +649,7 @@ def delete_patient_registration(request, pk):
 
 @login_required
 def departments(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         if request.method == "POST":
             department = request.POST['department']
@@ -706,7 +706,7 @@ def departments_delete(request, department_id):
 
 @login_required
 def doctors(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         if request.method == "POST":
             doctor = request.POST['doctor']
@@ -730,7 +730,7 @@ def doctors(request):
 
 @login_required
 def doctors_update(request, doctor_id):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or  request.session['user_role'] == 'Pathology':
 
         if request.method == "POST":
             d = PathologyDoctor.objects.filter(doctor_id =doctor_id).first()
@@ -772,7 +772,7 @@ def doctors_delete(request, doctor_id):
 
 @login_required
 def create_testcode(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         if request.method == 'POST':
             test_code = request.POST.get('test_code')
@@ -825,7 +825,7 @@ def delete_testcode(request, pk):
 
 @login_required
 def create_test_report(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         if request.method == 'POST':
             # Extract data from POST request for all fields
@@ -842,26 +842,54 @@ def create_test_report(request):
             for field in Test_report._meta.fields:
                 data[field.name] = request.POST.get(field.name)
             print(data)
-            # # Fetch the corresponding Patient object based on the provided reg_no
+         
+            total_cholestrol = request.POST.get('total_cholestrol', None)
+            serum_trigicerides = request.POST.get('serum_trigicerides', None)
+            document = request.FILES.get('document', None)
 
-            # try:
-            #     regid_int = int(reg_no)
-            #     # If no exception is raised, it means regid is an integer
-            #     patient = Patient.objects.filter(Q(regid=regid_int) | Q(regnoid=reg_no)).first()
-            # except ValueError:
-            #     # If regid cannot be converted to an integer, treat it as a varchar
-            #     patient = Patient.objects.filter(regnoid=reg_no).first()
 
-            # pr = Patient_registration.objects.filter(reg_no=patient).first()
+            print(total_cholestrol, serum_trigicerides)
             print(pr)
             if pr is not None:
                 # Assign the patient object to the reg_no field in the data
                 data['reg_no'] = pr.reg_no
                 data['patient'] = pr
                 data['user'] = request.user
-                
+                try:
+                    if total_cholestrol and serum_trigicerides:
+                        # hdl_cholestrol = total_cholestrol/4
+                        # vldl_cholestrol = serum_trigicerides/5
+                        # ldl_cholestrol = hdl_cholestrol + vldl_cholestrol - total_cholestrol
+                        hdl_cholestrol = float(total_cholestrol)/int(4)
+                        vldl_cholestrol = float(serum_trigicerides)/int(5)
+                        # ldl_cholestrol = float(hdl_cholestrol) + float(vldl_cholestrol) - float(total_cholestrol)
+                        ldl_cholestrol = float(total_cholestrol) - (float(hdl_cholestrol) + float(vldl_cholestrol) )
+                        
+                        formatted_hdl_cholestrol =  f"{hdl_cholestrol:.2f}" 
+                        formatted_vldl_cholesterol = f"{vldl_cholestrol:.2f}" 
+                        formatted_ldl_cholestrol = f"{ldl_cholestrol:.2f}"
+
+                        data['hdl_cholestrol'] = formatted_hdl_cholestrol
+                        data['vldl_cholestrol'] = formatted_vldl_cholesterol
+                        data['ldl_cholestrol'] = formatted_ldl_cholestrol
+
+                except Exception as e:
+                    print(e)
+                    
                 # Create test_report instance
                 test_report_obj = Test_report.objects.create(**data)
+
+                if document:
+                    cbc_report = CBCReport.objects.create(
+                        user = request.user,
+                        test_report_id = test_report_obj.test_report_id,
+                        reg_no = test_report_obj.reg_no,
+                        patient = test_report_obj.patient,
+                        no = test_report_obj.cbc,
+                        document = document
+                    )
+                else :
+                    cbc_report = None
                 # test_report_obj = None
                 messages.success(request, 'Test Report created successfully')
                 # Redirect or render a success page as needed
@@ -893,7 +921,7 @@ def create_test_report(request):
                 except Exception as e:
                     print(e)
 
-                return render(request, 'print_report_test_report.html', {"test_report" : test_report_obj})
+                return render(request, 'print_report_test_report.html', {"test_report" : test_report_obj, 'cbc_report': cbc_report})
 
             else:
                 messages.success(request, 'Please complete Registration using this id then create report.')
@@ -921,7 +949,7 @@ def create_test_report(request):
 
 @login_required
 def create_test_report_view(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
@@ -945,7 +973,7 @@ def create_test_report_view(request):
         if start_date_str or end_date_str or department_id:
         
             # Filter patients based on the provided date range
-            if request.user.is_superuser:
+            if request.user.is_superuser or request.user.is_staff:
                 tr = Test_report.objects.all().order_by('-created_at')
             else:
                 tr = Test_report.objects.filter(user = request.user).order_by('-created_at')
@@ -999,7 +1027,7 @@ def create_test_report_view(request):
 
 @login_required
 def create_test_report_view_data(request):
-    if request.user.is_superuser or request.session.get('user_role') == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session.get('user_role') == 'Pathology':
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
         department = request.GET.get('department')
@@ -1093,7 +1121,7 @@ def create_test_report_view_data(request):
 
 @login_required
 def create_test_report_view_print(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
@@ -1120,7 +1148,7 @@ def create_test_report_view_print(request):
         
         if start_date_str or end_date_str or department_id:
             # Filter patients based on the provided date range
-            if request.user.is_superuser:
+            if request.user.is_superuser or request.user.is_staff:
                 tr = Test_report.objects.all().order_by('-created_at')
             else:
                 tr = Test_report.objects.filter(user = request.user).order_by('-created_at')
@@ -1179,13 +1207,53 @@ def create_test_report_view_print(request):
 def update_test_report(request, pk):
     if request.user.is_superuser or request.session['user_role'] == 'Pathology':
         test_report_obj = get_object_or_404(Test_report, pk=pk)
+        cbc_report = CBCReport.objects.filter(test_report_id = test_report_obj.test_report_id).first()
         if request.method == 'POST':
             for field in Test_report._meta.fields:
                 if request.POST.get(field.name):
                     setattr(test_report_obj, field.name, request.POST.get(field.name))
+
+            total_cholestrol = request.POST.get('total_cholestrol', None)
+            serum_trigicerides = request.POST.get('serum_trigicerides', None)
+            document = request.FILES.get('document', None)
+
+            print(total_cholestrol, serum_trigicerides)
+            try:
+                if total_cholestrol and serum_trigicerides:
+                    hdl_cholestrol = float(total_cholestrol)/int(4)
+                    vldl_cholestrol = float(serum_trigicerides)/int(5)
+                    # ldl_cholestrol = float(hdl_cholestrol) + float(vldl_cholestrol) - float(total_cholestrol)
+                    ldl_cholestrol = float(total_cholestrol) - (float(hdl_cholestrol) + float(vldl_cholestrol) )
+                    
+                    formatted_hdl_cholestrol =  f"{hdl_cholestrol:.2f}" 
+                    formatted_vldl_cholesterol = f"{vldl_cholestrol:.2f}" 
+                    formatted_ldl_cholestrol = f"{ldl_cholestrol:.2f}"
+
+                    test_report_obj.hdl_cholestrol = formatted_hdl_cholestrol
+                    test_report_obj.vldl_cholestrol = formatted_vldl_cholesterol
+                    test_report_obj.ldl_cholestrol = formatted_ldl_cholestrol
+                
+            except Exception as e:
+                print(e)
             test_report_obj.save()
+            if document:
+                if cbc_report:
+                    cbc_report.no = test_report_obj.cbc
+                    cbc_report.document = document
+                    cbc_report.save()
+                else:
+                    cbc_report = CBCReport.objects.create(
+                        user = request.user,
+                        test_report_id = test_report_obj.test_report_id,
+                        reg_no = test_report_obj.reg_no,
+                        patient = test_report_obj.patient,
+                        no = test_report_obj.cbc,
+                        document = document
+                    )
+            else :
+                cbc_report = None
         counter = 1 
-        return render(request, 'update_test_report.html', {'test_report': test_report_obj, 'title' : 'Update Test Report'})
+        return render(request, 'update_test_report.html', {'test_report': test_report_obj, 'title' : 'Update Test Report', 'cbc_report' : cbc_report})
     else:
         logout(request)
         return redirect('signin') 
@@ -1211,35 +1279,61 @@ def delete_test_report(request, pk):
 
 @login_required
 def create_urine_test(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         if request.method == 'POST':
             # Extract data from POST request for all fields
-            reg_no = request.POST.get('regid')
+            # reg_no = request.POST.get('regid')
 
             data = {}
             for field in Urine_test._meta.fields:
                 data[field.name] = request.POST.get(field.name)
 
-
+            # Extract data from POST request for all fields
+            bill_no = request.POST.get('bill_no')
+            print(bill_no)
             try:
-                regid_int = int(reg_no)
-                # If no exception is raised, it means regid is an integer
-                patient = Patient.objects.filter(Q(regid=regid_int) | Q(regnoid=reg_no)).first()
+                bill_no = int(bill_no)  # Ensure bill_no is treated as an integer for logic
             except ValueError:
-                # If regid cannot be converted to an integer, treat it as a varchar
-                patient = Patient.objects.filter(regnoid=reg_no).first()
+                return HttpResponseNotFound("Invalid bill number")
 
-            pr = Patient_registration.objects.filter(reg_no=patient).first()
-            print(patient, pr)
+            pr = get_patient_by_bill_no(bill_no)
+
             if pr is not None:
                 # Assign the patient object to the reg_no field in the data
-                data['reg_no'] = patient
+                data['reg_no'] = pr.reg_no
                 data['patient'] = pr
                 data['user'] = request.user
 
                 # Create urine_test instance
                 urine_test_obj = Urine_test.objects.create(**data)
+                try:
+                    mob_no = pr.reg_no.mobno
+                    # mob_no = '7654531678'
+                    if mob_no:
+                        url = "https://www.fast2sms.com/dev/bulkV2"
+
+                        payload = (
+                            f"sender_id=DMCH&"
+                            f"message=169254&"
+                            f"variables_values={pr.reg_no.name}|{mob_no}|{mob_no}&"
+                            f"route=dlt&"
+                            f"flash=1&"
+                            f"numbers={mob_no}"
+                        )
+                        print(payload)
+
+                        headers = {
+                            'authorization': "XWNHkDJmUba43l29xi1QCoI8ZsqBnGzgLfuEYS5p7AdhMc6eOrd7iLOaZQy21eosWJGHlFuI4TM3D9kV",
+                            'Content-Type': "application/x-www-form-urlencoded",
+                            'Cache-Control': "no-cache",
+                        }
+
+                        response = requests.request("POST", url, data=payload, headers=headers)
+                        print(response.text)
+
+                except Exception as e:
+                    print(e)
                 messages.success(request, 'Urine Test Added Successfully.')
                 return render(request, 'print_report_urine_test.html', {"urine" : urine_test_obj})
             else:
@@ -1254,7 +1348,7 @@ def create_urine_test(request):
 
 @login_required
 def urine_test_report_view(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -1274,7 +1368,7 @@ def urine_test_report_view(request):
             end_date = None
         
         # Filter patients based on the provided date range
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.is_staff:
             tr = Urine_test.objects.all().order_by('-created_at')
         else:
             tr = Urine_test.objects.filter(user = request.user).order_by('-created_at')
@@ -1328,7 +1422,7 @@ def urine_test_report_view(request):
 
 @login_required
 def urine_test_report_view_print(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -1348,7 +1442,7 @@ def urine_test_report_view_print(request):
             end_date = None
         
         # Filter patients based on the provided date range
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.is_staff:
             tr = Urine_test.objects.all().order_by('-created_at')
         else:
             tr = Urine_test.objects.filter(user = request.user).order_by('-created_at')
@@ -1429,36 +1523,60 @@ def delete_urine_test(request, pk):
 # Views for stool_test
 @login_required
 def create_stool_test(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         if request.method == 'POST':
-            reg_no = request.POST.get('regid')
 
             data = {}
             for field in Stool_test._meta.fields:
                 data[field.name] = request.POST.get(field.name)
 
-            # patient = Patient.objects.filter(regid=reg_no).first()
-
+            # Extract data from POST request for all fields
+            bill_no = request.POST.get('bill_no')
+            print(bill_no)
             try:
-                regid_int = int(reg_no)
-                # If no exception is raised, it means regid is an integer
-                patient = Patient.objects.filter(Q(regid=regid_int) | Q(regnoid=reg_no)).first()
+                bill_no = int(bill_no)  # Ensure bill_no is treated as an integer for logic
             except ValueError:
-                # If regid cannot be converted to an integer, treat it as a varchar
-                patient = Patient.objects.filter(regnoid=reg_no).first()
+                return HttpResponseNotFound("Invalid bill number")
 
-            pr = Patient_registration.objects.filter(reg_no=patient).first()
-            print(patient, pr)
+            pr = get_patient_by_bill_no(bill_no)
+
             if pr is not None:
                 # Assign the patient object to the reg_no field in the data
-                data['reg_no'] = patient
+                data['reg_no'] = pr.reg_no
                 data['patient'] = pr
                 data['user'] = request.user
 
                 # Create urine_test instance
 
                 stool_test_obj = Stool_test.objects.create(**data)
+                try:
+                    mob_no = pr.reg_no.mobno
+                    # mob_no = '7654531678'
+                    if mob_no:
+                        url = "https://www.fast2sms.com/dev/bulkV2"
+
+                        payload = (
+                            f"sender_id=DMCH&"
+                            f"message=169254&"
+                            f"variables_values={pr.reg_no.name}|{mob_no}|{mob_no}&"
+                            f"route=dlt&"
+                            f"flash=1&"
+                            f"numbers={mob_no}"
+                        )
+                        print(payload)
+
+                        headers = {
+                            'authorization': "XWNHkDJmUba43l29xi1QCoI8ZsqBnGzgLfuEYS5p7AdhMc6eOrd7iLOaZQy21eosWJGHlFuI4TM3D9kV",
+                            'Content-Type': "application/x-www-form-urlencoded",
+                            'Cache-Control': "no-cache",
+                        }
+
+                        response = requests.request("POST", url, data=payload, headers=headers)
+                        print(response.text)
+
+                except Exception as e:
+                    print(e)
                 messages.success(request, 'Stool test added Successfully.')
                 return render(request, 'print_report_stool_test.html', {"stool" : stool_test_obj})
             else:
@@ -1472,7 +1590,7 @@ def create_stool_test(request):
 
 @login_required
 def stool_test_report_view(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -1492,7 +1610,7 @@ def stool_test_report_view(request):
             end_date = None
         
         # Filter patients based on the provided date range
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.is_staff:
             tr = Stool_test.objects.all().order_by('-created_at')
         else:
             tr = Stool_test.objects.filter(user = request.user).order_by('-created_at')
@@ -1545,7 +1663,7 @@ def stool_test_report_view(request):
 
 @login_required
 def stool_test_report_view_print(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -1565,7 +1683,7 @@ def stool_test_report_view_print(request):
             end_date = None
         
         # Filter patients based on the provided date range
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.is_staff:
             tr = Stool_test.objects.all().order_by('-created_at')
         else:
             tr = Stool_test.objects.filter(user = request.user).order_by('-created_at')
@@ -1641,34 +1759,60 @@ def delete_stool_test(request, pk):
 
 @login_required
 def create_ctest_report(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         if request.method == 'POST':
             data = {}
-            reg_no = request.POST.get('regid')
 
             for field in Ctest_report._meta.fields:
                 data[field.name] = request.POST.get(field.name)
 
             # patient = Patient.objects.filter(regid=reg_no).first()
 
+            # Extract data from POST request for all fields
+            bill_no = request.POST.get('bill_no')
+            print(bill_no)
             try:
-                regid_int = int(reg_no)
-                # If no exception is raised, it means regid is an integer
-                patient = Patient.objects.filter(Q(regid=regid_int) | Q(regnoid=reg_no)).first()
+                bill_no = int(bill_no)  # Ensure bill_no is treated as an integer for logic
             except ValueError:
-                # If regid cannot be converted to an integer, treat it as a varchar
-                patient = Patient.objects.filter(regnoid=reg_no).first()
+                return HttpResponseNotFound("Invalid bill number")
 
-            pr = Patient_registration.objects.filter(reg_no=patient).first()
-            print(patient, pr)
+            pr = get_patient_by_bill_no(bill_no)
+
             if pr is not None:
                 # Assign the patient object to the reg_no field in the data
-                data['reg_no'] = patient
+                data['reg_no'] = pr.reg_no
                 data['patient'] = pr
                 data['user'] = request.user
                 # Create urine_test instance
                 ctest_test_obj = Ctest_report.objects.create(**data)
+                try:
+                    mob_no = pr.reg_no.mobno
+                    # mob_no = '7654531678'
+                    if mob_no:
+                        url = "https://www.fast2sms.com/dev/bulkV2"
+
+                        payload = (
+                            f"sender_id=DMCH&"
+                            f"message=169254&"
+                            f"variables_values={pr.reg_no.name}|{mob_no}|{mob_no}&"
+                            f"route=dlt&"
+                            f"flash=1&"
+                            f"numbers={mob_no}"
+                        )
+                        print(payload)
+
+                        headers = {
+                            'authorization': "XWNHkDJmUba43l29xi1QCoI8ZsqBnGzgLfuEYS5p7AdhMc6eOrd7iLOaZQy21eosWJGHlFuI4TM3D9kV",
+                            'Content-Type': "application/x-www-form-urlencoded",
+                            'Cache-Control': "no-cache",
+                        }
+
+                        response = requests.request("POST", url, data=payload, headers=headers)
+                        print(response.text)
+
+                except Exception as e:
+                    print(e)
                 messages.success(request, 'H.S.F.   Added Successfully.')
                 return render(request, 'print_report_ctest_report.html', {"ctest" : ctest_test_obj})
             else:
@@ -1682,7 +1826,7 @@ def create_ctest_report(request):
 
 @login_required
 def c_test_report_view(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -1702,7 +1846,7 @@ def c_test_report_view(request):
             end_date = None
         
         # Filter patients based on the provided date range
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.is_staff:
             tr = Ctest_report.objects.all().order_by('-created_at')
         else:
             tr = Ctest_report.objects.filter(user = request.user).order_by('-created_at')
@@ -1755,7 +1899,7 @@ def c_test_report_view(request):
 
 @login_required
 def c_test_report_view_print(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -1775,7 +1919,7 @@ def c_test_report_view_print(request):
             end_date = None
         
         # Filter patients based on the provided date range
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.is_staff:
             tr = Ctest_report.objects.all().order_by('-created_at')
         else:
             tr = Ctest_report.objects.filter(user = request.user).order_by('-created_at')
@@ -1853,38 +1997,85 @@ def delete_ctest_report(request, pk):
 
 @login_required
 def create_cbc_test(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         if request.method == 'POST':
-            reg_no = request.POST.get('regid')
 
             data = {}
             for field in Cbc_test._meta.fields:
                 data[field.name] = request.POST.get(field.name)
 
-            # patient = Patient.objects.filter(regid=reg_no).first()
-
+            # Extract data from POST request for all fields
+            bill_no = request.POST.get('bill_no')
+            print(bill_no)
             try:
-                regid_int = int(reg_no)
-                # If no exception is raised, it means regid is an integer
-                patient = Patient.objects.filter(Q(regid=regid_int) | Q(regnoid=reg_no)).first()
+                bill_no = int(bill_no)  # Ensure bill_no is treated as an integer for logic
             except ValueError:
-                # If regid cannot be converted to an integer, treat it as a varchar
-                patient = Patient.objects.filter(regnoid=reg_no).first()
+                return HttpResponseNotFound("Invalid bill number")
 
-            pr = Patient_registration.objects.filter(reg_no=patient).first()
-            print(patient, pr)
+            pr = get_patient_by_bill_no(bill_no)
+            rbc = request.POST.get('rbc', None)
+            hgb = request.POST.get('hgb', None)
+            hct = request.POST.get('hct', None)
+            plt = request.POST.get('plt', None)
+            mpv = request.POST.get('mpv', None)
+            pdw = request.POST.get('pdw', None)
+            p_lcr = request.POST.get('p_lcr', None)
+
             if pr is not None:
                 # Assign the patient object to the reg_no field in the data
-                data['reg_no'] = patient
+                data['reg_no'] = pr.reg_no
                 data['patient'] = pr
                 data['user'] = request.user
+                try:
+                    mcv = round((float(hct)/float(rbc))*10, 2)
+                    mch = round((float(hgb)/(float(rbc)))*10, 2)
+                    mchc = round((float(hgb)/(float(mcv) * float(rbc)))*1000, 2)
+                    ret = round((float(pdw)/float(mpv))/100, 2)
+                    pct = round(((float(plt))*float(mpv))/10000, 2)
+                    lfr = round(float(plt) * (float(p_lcr)/100), 2)
+                    # Create urine_test instance
+                    data['mcv'] = mcv
+                    data['mch'] = mch
+                    data['mchc'] = mchc
+                    data['ret'] = ret
+                    data['pct'] = pct
+                    data['lfr'] = lfr
+                except Exception as e:
+                    print(e)
 
-                # Create urine_test instance
                 
                 cbc_test_obj = Cbc_test.objects.create(**data)
+                # try:
+                #     mob_no = pr.reg_no.mobno
+                #     # mob_no = '7654531678'
+                #     if mob_no:
+                #         url = "https://www.fast2sms.com/dev/bulkV2"
+
+                #         payload = (
+                #             f"sender_id=DMCH&"
+                #             f"message=169254&"
+                #             f"variables_values={pr.reg_no.name}|{mob_no}|{mob_no}&"
+                #             f"route=dlt&"
+                #             f"flash=1&"
+                #             f"numbers={mob_no}"
+                #         )
+                #         print(payload)
+
+                #         headers = {
+                #             'authorization': "XWNHkDJmUba43l29xi1QCoI8ZsqBnGzgLfuEYS5p7AdhMc6eOrd7iLOaZQy21eosWJGHlFuI4TM3D9kV",
+                #             'Content-Type': "application/x-www-form-urlencoded",
+                #             'Cache-Control': "no-cache",
+                #         }
+
+                #         response = requests.request("POST", url, data=payload, headers=headers)
+                #         print(response.text)
+
+                # except Exception as e:
+                #     print(e)
                 messages.success(request, 'CBC test added Successfully.')
-                return render(request, 'print_report_cbc_test.html', {"cbc" : cbc_test_obj})
+                # return render(request, 'print_report_cbc_test.html', {"cbc" : cbc_test_obj})
+                return redirect(f'/pathology/create_cbc_test/')
             else:
                 messages.success(request, 'Please complete Registration using this id then create report.')
                 
@@ -1897,7 +2088,7 @@ def create_cbc_test(request):
 
 @login_required
 def cbc_test_report_view(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -1917,7 +2108,7 @@ def cbc_test_report_view(request):
             end_date = None
         
         # Filter patients based on the provided date range
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.is_staff:
             tr = Cbc_test.objects.all().order_by('-created_at')
         else:
             tr = Cbc_test.objects.filter(user = request.user).order_by('-created_at')
@@ -1961,7 +2152,7 @@ def cbc_test_report_view(request):
 
 @login_required
 def cbc_test_report_view_print(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -1981,7 +2172,7 @@ def cbc_test_report_view_print(request):
             end_date = None
         
         # Filter patients based on the provided date range
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.is_staff:
             tr = Cbc_test.objects.all().order_by('-created_at')
         else:
             tr = Cbc_test.objects.filter(user = request.user).order_by('-created_at')
@@ -2034,7 +2225,33 @@ def update_cbc_test(request, pk):
             for field in Cbc_test._meta.fields:
                 if request.POST.get(field.name):
                     setattr(cbc_test_obj, field.name, request.POST.get(field.name))
+            try:
+                rbc = request.POST.get('rbc', None)
+                hgb = request.POST.get('hgb', None)
+                hct = request.POST.get('hct', None)
+                plt = request.POST.get('plt', None)
+                mpv = request.POST.get('mpv', None)
+                pdw = request.POST.get('pdw', None)
+                p_lcr = request.POST.get('p_lcr', None)
+                print(rbc, hgb, hct, plt, mpv, pdw, p_lcr)
+                mcv = round((float(hct)/float(rbc))*10, 2)
+                mch = round((float(hgb)/(float(rbc)))*10, 2)
+                mchc = round((float(hgb)/(float(mcv) * float(rbc)))*1000, 2)
+                ret = round((float(pdw)/float(mpv))/100, 2)
+                pct = round(((float(plt))*float(mpv))/10000, 2)
+                lfr = round(float(plt) * (float(p_lcr)/100), 2)
+                # Create urine_test instance
+                cbc_test_obj.mcv = mcv
+                cbc_test_obj.mch = mch
+                cbc_test_obj.mchc = mchc
+                cbc_test_obj.ret = ret
+                cbc_test_obj.pct = pct
+                cbc_test_obj.lfr = lfr
+            except Exception as e:
+                print(e)
+
             cbc_test_obj.save()
+
         return render(request, 'update_cbc_test.html', {'cbc': cbc_test_obj, 'title' : 'Update CBC Test'})
     else:
         logout(request)
@@ -2057,27 +2274,57 @@ def delete_cbc_test(request, pk):
 
 @login_required
 def create_serology_test(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         if request.method == 'POST':
-            reg_no = request.POST.get('regid')
-
             data = {}
             for field in Serology_test._meta.fields:
                 data[field.name] = request.POST.get(field.name)
+            # Extract data from POST request for all fields
+            bill_no = request.POST.get('bill_no')
+            print(bill_no)
+            try:
+                bill_no = int(bill_no)  # Ensure bill_no is treated as an integer for logic
+            except ValueError:
+                return HttpResponseNotFound("Invalid bill number")
 
-            patient = Patient.objects.filter(regid=reg_no).first()
-            
-            pr = Patient_registration.objects.filter(reg_no=patient).first()
-            print(patient, pr)
+            pr = get_patient_by_bill_no(bill_no)
+
             if pr is not None:
                 # Assign the patient object to the reg_no field in the data
-                data['reg_no'] = patient
+                data['reg_no'] = pr.reg_no
                 data['patient'] = pr
                 # Create urine_test instance
                 data['user'] = request.user
 
                 serology_test_obj = Serology_test.objects.create(**data)
+                try:
+                    mob_no = pr.reg_no.mobno
+                    # mob_no = '7654531678'
+                    if mob_no:
+                        url = "https://www.fast2sms.com/dev/bulkV2"
+
+                        payload = (
+                            f"sender_id=DMCH&"
+                            f"message=169254&"
+                            f"variables_values={pr.reg_no.name}|{mob_no}|{mob_no}&"
+                            f"route=dlt&"
+                            f"flash=1&"
+                            f"numbers={mob_no}"
+                        )
+                        print(payload)
+
+                        headers = {
+                            'authorization': "XWNHkDJmUba43l29xi1QCoI8ZsqBnGzgLfuEYS5p7AdhMc6eOrd7iLOaZQy21eosWJGHlFuI4TM3D9kV",
+                            'Content-Type': "application/x-www-form-urlencoded",
+                            'Cache-Control': "no-cache",
+                        }
+
+                        response = requests.request("POST", url, data=payload, headers=headers)
+                        print(response.text)
+
+                except Exception as e:
+                    print(e)
                 messages.success(request, 'Serology test added Successfully.')
                 return render(request, 'print_report_serology_test.html', {"serology" : serology_test_obj})
             else:
@@ -2091,7 +2338,7 @@ def create_serology_test(request):
 
 @login_required
 def serology_test_report_view(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -2111,7 +2358,7 @@ def serology_test_report_view(request):
             end_date = None
         
         # Filter patients based on the provided date range
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.is_staff:
             tr = Serology_test.objects.all().order_by('-created_at')
         else:
             tr = Serology_test.objects.filter(user = request.user).order_by('-created_at')
@@ -2155,7 +2402,7 @@ def serology_test_report_view(request):
 
 @login_required
 def serology_test_report_view_print(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Pathology':
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -2175,7 +2422,7 @@ def serology_test_report_view_print(request):
             end_date = None
         
         # Filter patients based on the provided date range
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.is_staff:
             tr = Serology_test.objects.all().order_by('-created_at')
         else:
             tr = Serology_test.objects.filter(user = request.user).order_by('-created_at')
@@ -2220,7 +2467,7 @@ def serology_test_report_view_print(request):
 
 @login_required
 def update_serology_test(request, pk):
-    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+    if request.user.is_superuser or  request.session['user_role'] == 'Pathology':
 
         serology_test_obj = get_object_or_404(Serology_test, pk=pk)
         if request.method == 'POST':
@@ -2252,15 +2499,33 @@ def find_user_report(request):
         patients = Patient.objects.filter(mobno=mobile).all()
         print(patients)
         test_reports = []
+        cbc_reports = []
+        urine_reports = []
+        stool_reports = []
+        ctest_reports = []
+        serology_reports = []
+        cbc_reports_data = []
         for patient in patients:
             print(Patient_registration.objects.filter(reg_no = patient).all())
             pr = Patient_registration.objects.filter(reg_no = patient).all()
             for p in pr:
-                print(Test_report.objects.filter(patient=p).all())
                 test_reports.extend(Test_report.objects.filter(patient=p).all())
+                cbc_reports.extend(CBCReport.objects.filter(patient=p).all())
+                cbc_reports_data.extend(Cbc_test.objects.filter(patient=p).all())
+                urine_reports.extend(Urine_test.objects.filter(patient=p).all())
+                stool_reports.extend(Stool_test.objects.filter(patient=p).all())
+                ctest_reports.extend(Ctest_report.objects.filter(patient=p).all())
+                serology_reports.extend(Serology_test.objects.filter(patient=p).all())
+
                 print(test_reports)
         context = {
-            'test_reports': test_reports
+            'test_reports': test_reports,
+            'cbc_reports': cbc_reports,
+            'cbc_reports_data' : cbc_reports_data,
+            'urine_reports': urine_reports,
+            'stool_reports': stool_reports,
+            'ctest_reports': ctest_reports,
+            'serology_reports': serology_reports,
         }
         return render(request, 'counter/test_report.html', context=context)
     else:
@@ -2412,7 +2677,7 @@ for category in categories:
 
 @login_required
 def pathology_report(request):
-    if request.user.is_superuser or request.session.get('user_role') == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session.get('user_role') == 'Pathology':
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
         department_id = request.GET.get('department', None)
@@ -2517,7 +2782,7 @@ def pathology_report(request):
 
 @login_required
 def pathology_report_location_wise(request):
-    if request.user.is_superuser or request.session.get('user_role') == 'Pathology':
+    if request.user.is_superuser or request.user.is_staff or request.session.get('user_role') == 'Pathology':
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
         department_id = request.GET.get('department', None)

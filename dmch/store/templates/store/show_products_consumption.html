@@ -35,7 +35,7 @@
         <div style="flex: 1">
           <a href="{% url 'product_consumption_details_view_print' %}" class="btn btn-primary" id="printButton">Print</a>
         </div>
-         <!-- <div style="flex: 2">
+        <!-- <div style="flex: 2">
           <a href="#;" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</a>
         </div> -->
       </form>
@@ -45,15 +45,15 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
-                <th>Department</th>
-                <th>Transfer To</th>
-                <th>Name</th>
-                <th>Company Name</th>
-                <th>Quantity</th>
-                <!-- <th>In Stock</th> -->
-                <th>Created At</th>
-                <!-- <th>Edit</th> -->
-                <th>Delete</th>
+              <th>Department</th>
+              <th>Transfer To</th>
+              <th>Name</th>
+              <th>Company Name</th>
+              <th>Quantity</th>
+              <!-- <th>In Stock</th> -->
+              <th>Created At</th>
+              <!-- <th>Edit</th> -->
+              <th>Delete</th>
             </tr>
           </thead>
           <tfoot>
@@ -76,7 +76,7 @@
               <td>{{d.department}}</td>
               <td>{{d.product_name}}</td>
               <td>{{d.company_name}}</td>
-              <td>{{d.quantity}} {{d.quantity_typeq}}</td>
+              <td>{{d.quantity}} {% if d.quantity_type %}{{d.quantity_type}}{% endif %}</td>
               <!-- <td>{{d.stock_quantity}}</td> -->
               <td>{{d.created_at}}</td>
               <!-- <td>
@@ -103,7 +103,6 @@
       </div>
     </div>
   </div>
-
 </div>
 
 {% endblock %} {% block script %} {% endblock %}

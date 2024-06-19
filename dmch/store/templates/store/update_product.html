@@ -13,14 +13,14 @@
     /* padding: 0; */
     /* font-size: 12px; */
   }
-  .exp_date{
+  .exp_date {
     padding: 0 !important;
     max-width: 14% !important;
   }
-  .quantity_div{
+  .quantity_div {
     padding: 0 !important;
   }
-  .cross_div{
+  .cross_div {
     padding: 0 !important;
     max-width: 25px !important;
   }
@@ -42,18 +42,18 @@
         </div>
       </div>
 
-        <!-- Left Column (Patient Details) -->
-        <div class="col-md-3 mb-3">
-          <div class="form-group">
-            <label for="bill_no">Bill No.:</label>
-            <input type="text" class="form-control" name="bill_no" value="{% if product.bill_no %}{{product.bill_no}}{% endif %}" />
-          </div>
+      <!-- Left Column (Patient Details) -->
+      <div class="col-md-3 mb-3">
+        <div class="form-group">
+          <label for="bill_no">Bill No.:</label>
+          <input type="text" class="form-control" name="bill_no" value="{% if product.bill_no %}{{product.bill_no}}{% endif %}" />
         </div>
+      </div>
       <!-- Right Column (Order Details) -->
       <div class="col-md-3 mb-3">
         <div class="form-group">
           <label for="bill_date">Bill Date:</label>
-          <input type="date" class="form-control" name="bill_date" value="{% if product.bill_date %}{{product.bill_date|date:'Y-m-d'}}{% endif %}"  />
+          <input type="date" class="form-control" name="bill_date" value="{% if product.bill_date %}{{product.bill_date|date:'Y-m-d'}}{% endif %}" />
         </div>
       </div>
 
@@ -67,7 +67,7 @@
       <div class="col-md-3 mb-3">
         <div class="form-group">
           <label for="chalan_date">Chalan Date:</label>
-          <input type="date" class="form-control" name="chalan_date" value="{% if product.chalan_date %}{{product.chalan_date|date:'Y-m-d'}}{% endif %}"  />
+          <input type="date" class="form-control" name="chalan_date" value="{% if product.chalan_date %}{{product.chalan_date|date:'Y-m-d'}}{% endif %}" />
         </div>
       </div>
 
@@ -80,53 +80,48 @@
       <div class="col-md-3 mb-3">
         <div class="form-group">
           <label for="sp_order_date">Suppritendent Order Date:</label>
-          <input type="date" class="form-control" name="sp_order_date"  value="{% if product.sp_order_date %}{{product.sp_order_date|date:'Y-m-d'}}{% endif %}" />
+          <input type="date" class="form-control" name="sp_order_date" value="{% if product.sp_order_date %}{{product.sp_order_date|date:'Y-m-d'}}{% endif %}" />
         </div>
       </div>
-      <div class="col-md-3 mb-3 ">
+      <div class="col-md-3 mb-3">
         <div class="form-group">
           <label for="received_date">Received Date:</label>
-          <input type="date" class="form-control" name="received_date" value="{% if product.received_date %}{{product.received_date|date:'Y-m-d'}}{% endif %}"  />
+          <input type="date" class="form-control" name="received_date" value="{% if product.received_date %}{{product.received_date|date:'Y-m-d'}}{% endif %}" />
         </div>
       </div>
-      <div class="col-md-3 mb-3 ">
+      <div class="col-md-3 mb-3">
         <div class="form-group">
           <label for="date">Date:</label>
-          <input type="date" class="form-control" name="date" value="{% if product.created_at %}{{product.created_at|date:'Y-m-d'}}{% endif %}"  />
+          <input type="date" class="form-control" name="date" value="{% if product.created_at %}{{product.created_at|date:'Y-m-d'}}{% endif %}" />
         </div>
       </div>
     </div>
 
     <h3>Products</h3>
     <div id="productFields">
-        
       <div class="row product-row">
         <!-- Middle Column (Product Details) -->
 
-         
         <div class="col-md-4 mb-3">
-            <div class="form-group">
-              <label for="product_name_1">Product Name:</label>
-              <input type="text" class="form-control" name="product_name_1" value="{% if product.product_name %}{{product.product_name}}{% endif %}" />
-            </div>
+          <div class="form-group">
+            <label for="product_name_1">Product Name:</label>
+            <input type="text" class="form-control" name="product_name_1" value="{% if product.product_name %}{{product.product_name}}{% endif %}" />
           </div>
-  
-          <div class="col-md-4 mb-3">
-            <div class="form-group">
-              <label for="product_name_1">Product Id:</label>
-              <input type="text" class="form-control" name="product_id_1" value="{% if product.product_id %}{{product.product_id}}{% endif %}" />
-            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="form-group">
+            <label for="product_name_1">Product Id:</label>
+            <input type="text" class="form-control" name="product_id_1" value="{% if product.product_id %}{{product.product_id}}{% endif %}" />
           </div>
-  
-          
+        </div>
+
         <div class="col-md-4 mb-3">
           <div class="form-group">
             <label for="company_name_1">Company Name:</label>
             <input type="text" class="form-control" name="company_name_1" value="{% if product.company_name %}{{product.company_name}}{% endif %}" />
           </div>
         </div>
-
-
 
         <!-- Left Column (Patient Details) -->
         <div class="col-md-4 mb-3">
@@ -136,17 +131,23 @@
           </div>
         </div>
 
+        <div class="col-md-3 mb-3">
+          <div class="form-group">
+            <label for="quantity_type_1">Quantity Type:</label>
+            <input type="text" value="{% if product.quantity_type %}{{product.quantity_type}}{% endif %}" class="form-control" name="quantity_type_1" />
+          </div>
+        </div>
+
         <!-- Left Column (Patient Details) -->
         <div class="col-md-4 mb-3">
-            <div class="form-group">
-                <label for="quantity_1">Stock Quantity:</label>
-                <input type="number" class="form-control" name="stock_quantity_1" value="{% if product.stock_quantity %}{{product.stock_quantity}}{% endif %}" required />
-            </div>
-            </div>
-    
+          <div class="form-group">
+            <label for="quantity_1">Stock Quantity:</label>
+            <input type="number" class="form-control" name="stock_quantity_1" value="{% if product.stock_quantity %}{{product.stock_quantity}}{% endif %}" required />
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-    <input type="hidden" id="productCount" name="product_count" value="1"  />
+    <input type="hidden" id="productCount" name="product_count" value="1" />
 
     <!-- <div class="text-center mt-3">
       <button type="button" class="btn btn-primary" id="addProductField">Add Product</button>
@@ -182,78 +183,71 @@
 </script>
 
 <script>
-
-$("#orderForm").on("keydown", function (event) {
-
-if (event.keyCode === 13) { // Check if Enter key is pressed
-    event.preventDefault(); // Prevent the default behavior of the Enter key
-
-}
-});
+  $("#orderForm").on("keydown", function (event) {
+    if (event.keyCode === 13) {
+      // Check if Enter key is pressed
+      event.preventDefault(); // Prevent the default behavior of the Enter key
+    }
+  });
 
   // Function to add product fields dynamically
   // document.getElementById("addProductField").addEventListener("click", function () {
-    $("#productFields").on("keyup", "input[name^='quantity']", function (event) {
-    if (event.keyCode === 13) { // Check if Enter key is pressed
+  $("#productFields").on("keyup", "input[name^='quantity']", function (event) {
+    if (event.keyCode === 13) {
+      // Check if Enter key is pressed
       event.preventDefault();
-    var productCount = parseInt($("#productCount").val());
-    productCount++;
-    $("#productCount").val(productCount);
-    var productFields = document.getElementById("productFields");
-    var productRow = document.createElement("div");
-    productRow.className = "row product-row";
+      var productCount = parseInt($("#productCount").val());
+      productCount++;
+      $("#productCount").val(productCount);
+      var productFields = document.getElementById("productFields");
+      var productRow = document.createElement("div");
+      productRow.className = "row product-row";
 
-    var middleColumn = document.createElement("div");
+      var middleColumn = document.createElement("div");
 
-
-    var productColumn = document.createElement("div");
-    productColumn.className = "col-md-4 mb-3";
-    productColumn.innerHTML = `
+      var productColumn = document.createElement("div");
+      productColumn.className = "col-md-4 mb-3";
+      productColumn.innerHTML = `
           <div class="form-group">
             <label for="product_name_${productCount}">Product Name:</label>
             <input type="text" class="form-control" name="product_name_${productCount}"  />
           </div>
         `;
 
-
-    var mfgColumn = document.createElement("div");
-    mfgColumn.className = "col-md-4 mb-3";
-    mfgColumn.innerHTML = `
+      var mfgColumn = document.createElement("div");
+      mfgColumn.className = "col-md-4 mb-3";
+      mfgColumn.innerHTML = `
           <div class="form-group">
             <label for="company_name_${productCount}">Company Name:</label>
             <input type="text" class="form-control" name="company_name_${productCount}"  />
           </div>
         `;
 
-
-
-    var quantityColumn = document.createElement("div");
-    quantityColumn.className = "col-md-3 mb-3";
-    quantityColumn.innerHTML = `
+      var quantityColumn = document.createElement("div");
+      quantityColumn.className = "col-md-3 mb-3";
+      quantityColumn.innerHTML = `
         <div class="form-group">
           <label for="quantity">Quantity:</label>
           <input type="number" class="form-control" name="quantity_${productCount}" required />
         </div>
       `;
 
-
-
-    var removeButton = document.createElement("div");
-    removeButton.className = "col-md-1 cross_div";
-    removeButton.innerHTML = `
+      var removeButton = document.createElement("div");
+      removeButton.className = "col-md-1 cross_div";
+      removeButton.innerHTML = `
       <div class="form-group">
           <label for="">&nbsp;</label>
           <button type="button" class="btn btn-danger remove-product">x</button>
       </div>
     `;
 
-    productRow.appendChild(productColumn);
-    productRow.appendChild(mfgColumn);
-    productRow.appendChild(quantityColumn);
-    productRow.appendChild(removeButton);
+      productRow.appendChild(productColumn);
+      productRow.appendChild(mfgColumn);
+      productRow.appendChild(quantityColumn);
+      productRow.appendChild(removeButton);
 
-    productFields.appendChild(productRow);
-      }
+      productFields.appendChild(productRow);
+    }
   });
 
   // Function to remove product fields

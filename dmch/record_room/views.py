@@ -81,7 +81,7 @@ def add_bht_report(request):
 @login_required
 def show_bht_report(request):
 
-    if request.user.is_superuser or request.session['user_role'] == 'Record Room':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Record Room':
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
         department = request.GET.get('department', None)
@@ -130,7 +130,7 @@ def show_bht_report(request):
 @login_required
 def print_bht_report(request):
 
-    if request.user.is_superuser or request.session['user_role'] == 'Record Room':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Record Room':
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
         department = request.GET.get('department', None)
@@ -229,7 +229,7 @@ def add_injuiry_report(request):
 @login_required
 def show_injuiry_report(request):
 
-    if request.user.is_superuser or request.session['user_role'] == 'Record Room':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Record Room':
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
         department = request.GET.get('department', None)
@@ -276,7 +276,7 @@ def show_injuiry_report(request):
 @login_required
 def print_injuiry_report(request):
 
-    if request.user.is_superuser or request.session['user_role'] == 'Record Room':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Record Room':
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
         department = request.GET.get('department', None)
@@ -374,7 +374,7 @@ def add_death_report(request):
 @login_required
 def show_death_report(request):
 
-    if request.user.is_superuser or request.session['user_role'] == 'Record Room':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Record Room':
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
         department = request.GET.get('department', None)
@@ -421,7 +421,7 @@ def show_death_report(request):
 @login_required
 def print_death_report(request):
 
-    if request.user.is_superuser or request.session['user_role'] == 'Record Room':
+    if request.user.is_superuser or  request.user.is_staff or request.session['user_role'] == 'Record Room':
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
         department = request.GET.get('department', None)

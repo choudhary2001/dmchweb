@@ -14,9 +14,7 @@
   }
 </style>
 
-
-<div class="" id="printContent" style="width: 100%; margin-top: -10px; display: none;">
-
+<div class="" id="printContent" style="width: 100%; margin-top: -10px; display: none">
   <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.8rem">
     <h2>DEPARTMENT OF CLINICAL PATHOLOGY</h2>
     <h4>DARBHANGA MEDICAL COLLEGE & HOSPITAL</h4>
@@ -25,13 +23,13 @@
   </div>
   <hr />
   <div style="display: flex; justify-content: space-between">
-    <div style="display: flex; justify-content: space-between; width: 100%;">
-      <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+    <div style="display: flex; justify-content: space-between; width: 100%">
+      <div style="font-family: sans-serif; color: black; font-size: 1.3rem; margin-bottom: 0.4rem !important">
         <p>Patient Name : <strong>{% if ctest.reg_no.name %}{{ctest.reg_no.name}}{% endif %} </strong></p>
         <p>Refd By. : <strong>{% if ctest.patient.referby.name %}{{ctest.patient.referby.name}}{% endif %}</strong></p>
         <p>Bill No. : <strong>{% if ctest.patient.bill_no %}{{ctest.patient.bill_no}}{% endif %}</strong></p>
       </div>
-      <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+      <div style="font-family: sans-serif; color: black; font-size: 1.3rem; margin-bottom: 0.4rem !important">
         <p>Date : <strong>{% if ctest.created_at %}{{ctest.created_at}}{% endif %}</strong></p>
         <p>Reg No. : <strong>{% if ctest.reg_no %}{% if ctest.reg_no.de == 'Pathology' %}{{ctest.reg_no.regnoid}}{% else %}{{ctest.reg_no.regid}}{% endif %}{% endif %}</strong></p>
         <p>Lab No. : <strong>{% if ctest.patient.lab_no %}{{ctest.patient.lab_no}}{% endif %}</strong></p>
@@ -40,9 +38,8 @@
   </div>
   <hr />
   <div>
-
     <div class="table-responsive">
-      <table class="table table-bordered"  width="100%" cellspacing="0">
+      <table class="table table-bordered" width="100%" cellspacing="0">
         <thead>
           <tr>
             <th>Test</th>
@@ -53,139 +50,109 @@
         <tbody>
           {% if ctest.volume %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Volume</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{ctest.volume}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Volume</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{ctest.volume}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 110 mg/dl</td> -->
           </tr>
-          {% endif %}
-          {% if ctest.consistency %}
+          {% endif %} {% if ctest.consistency %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Consistency</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{ctest.consistency}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Consistency</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{ctest.consistency}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 150 mg/dl</td> -->
           </tr>
-          {% endif %}
-          {% if ctest.colour %}
+          {% endif %} {% if ctest.colour %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Colour</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{ctest.colour}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Colour</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{ctest.colour}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 150 mg/dl</td> -->
           </tr>
-          {% endif %}
-          {% if ctest.method_collection %}
+          {% endif %} {% if ctest.method_collection %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Mode of collection</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{ctest.method_collection}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Mode of collection</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{ctest.method_collection}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.5 - 7.2 mg/dl</td> -->
           </tr>
-          {% endif %}
-
-          {% if ctest.abestinenece %}
+          {% endif %} {% if ctest.abestinenece %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Time of collection</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{ctest.abestinenece}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Time of collection</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{ctest.abestinenece}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">15 - 45 mg/dl</td> -->
           </tr>
-          {% endif %}
-
-          {% if ctest.time_exam %}
+          {% endif %} {% if ctest.time_exam %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Time of examination</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{ctest.time_exam}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Time of examination</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{ctest.time_exam}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">07 - 1.5 mg/dl</td> -->
           </tr>
-          {% endif %}
-
-
-
-          {% if ctest.total_count %}
+          {% endif %} {% if ctest.total_count %}
           <tr>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Total Count</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{ctest.total_count}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Total Count</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{ctest.total_count}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 1.2 mg/dl</td> -->
           </tr>
-          {% endif %}
-          
-          {% if ctest.active %}
+          {% endif %} {% if ctest.active %}
           <tr>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Active</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{ctest.active}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Active</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{ctest.active}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 35 IU/L</td> -->
           </tr>
-          {% endif %}
-
-          {% if ctest.sluggish %}
+          {% endif %} {% if ctest.sluggish %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Sluggish</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{ctest.sluggish}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Sluggish</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{ctest.sluggish}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 45 IU/L</td> -->
           </tr>
-          {% endif %}
-
-          {% if ctest.non_matliz %}
+          {% endif %} {% if ctest.non_matliz %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Non Motile</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{ctest.non_matliz}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Non Motile</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{ctest.non_matliz}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">6.4 - 8.3 g/dl</td> -->
           </tr>
-          {% endif %}
-
-          {% if ctest.rbc %}
+          {% endif %} {% if ctest.rbc %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">RBC</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{ctest.rbc}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">RBC</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{ctest.rbc}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.5 - 5.2 g/dl</td> -->
           </tr>
-          {% endif %}
-
-          {% if ctest.wbc %}
+          {% endif %} {% if ctest.wbc %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">WBC</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{ctest.wbc}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">WBC</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{ctest.wbc}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">30 - 130 U/L</td> -->
           </tr>
-          {% endif %}
-
-          {% if ctest.epithelial_cells %}
+          {% endif %} {% if ctest.epithelial_cells %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Epithelial Cells</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{ctest.epithelial_cells}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Epithelial Cells</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{ctest.epithelial_cells}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 55 IU/L</td> -->
           </tr>
-          {% endif %}
-          
-          {% if ctest.abnormality %}
+          {% endif %} {% if ctest.abnormality %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Abnormality</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{ctest.abnormality}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Abnormality</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{ctest.abnormality}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
           </tr>
           {% endif %}
-          
         </tbody>
       </table>
     </div>
-
   </div>
-  <div style="display: flex;justify-content: space-between; width: 100%;position: absolute; bottom: 0;" >
+  {% if ctest.dr %}
+  <div style="display: flex; justify-content: space-between; width: 100%; position: relative; bottom: 0; display: flex; justify-content: space-between; width: 100%; position: relative; bottom: 0; flex-direction: column; align-items: flex-end">
+    {% if ctest.dr == 'santoshkumar' %}<img height="100px" src="/media/img/drsantosh1.png" />
+    <br />
+    <h6>Dr. Santosh Kumar Sharma</h6>
+    {% endif %} {% if ctest.dr == 'knyadav' %}<img height="100px" src="/media/img/drkn1.png" />
+    <br />
+    <p>Dr. K. N. Yadav</p>
+    {% endif %}
+  </div>
+  {% endif %}
+  <div style="display: flex; justify-content: space-between; width: 100%">
     <div>Checked By ..............</div>
     <div>Signature ..................................................</div>
   </div>
-
 </div>
-
 
 <div class="container-fluid">
   <!-- Page Heading -->
@@ -197,84 +164,77 @@
     {% csrf_token %}
 
     <div class="row">
-        <!-- Left Column (Patient Details) -->
-        <div class="col-md-4 mb-3">
-            <label for="regid">Reg No.:</label>
-            <input type="text" class="form-control" id="regid"  value="{{ctest.reg_no.regid}}" disabled  name="regid" required />
+      <!-- Left Column (Patient Details) -->
+      <div class="col-md-4 mb-3">
+        <label for="regid">Reg No.:</label>
+        <input type="text" class="form-control" id="regid" value="{{ctest.reg_no.regid}}" disabled name="regid" required />
+      </div>
 
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="bill_no">Bill No.:</label>
+        <input type="text" class="form-control" id="bill_no" name="bill_no" disabled />
+      </div>
 
-        <div class="col-md-4 mb-3">
-            <label for="bill_no">Bill No.:</label>
-            <input type="text" class="form-control" id="bill_no"  name="bill_no"  disabled  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="labno">Lab No :</label>
+        <input type="text" id="labno" class="form-control" disabled name="labno" />
+      </div>
 
-        <div class="col-md-4 mb-3" >
-            <label for="labno">Lab No :</label>
-            <input type="text" id="labno" class="form-control"  disabled name="labno" />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="patient_name">Patient Name :</label>
+        <input type="text" class="form-control" id="patient_name" name="patient_name" disabled />
+      </div>
 
-        <div class="col-md-4 mb-3">
-            <label for="patient_name">Patient Name :</label>
-            <input type="text" class="form-control" id="patient_name" name="patient_name" disabled  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="department">Department:</label>
+        <input type="text" class="form-control" id="department" name="department" disabled />
+      </div>
 
-
-        <div class="col-md-4 mb-3">
-            <label for="department">Department:</label>
-            <input type="text" class="form-control" id="department"  name="department"  disabled  />
-        </div>
-
-
-
-        <div class="col-md-4 mb-3" >
-            <label for="doctor">Refer By :</label>
-            <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
+      <div class="col-md-4 mb-3">
+        <label for="doctor">Refer By :</label>
+        <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
             <option>Select Doctor</option>
             </select> -->
-            <input type="text" class="form-control" id="doctor" name="doctor" disabled   />
-
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <label for="volume">Volume :</label>
-            <input type="text" class="form-control" id="volume" value="{{ctest.volume}}" name="volume"   />
-        </div>
-
-        <div class="col-md-4 mb-3">
-          <label for="consistency">Consistency:</label>
-          <input type="text" class="form-control" id="consistency" value="{{ctest.consistency}}" name="consistency"  />
+        <input type="text" class="form-control" id="doctor" name="doctor" disabled />
       </div>
-  
+
       <div class="col-md-4 mb-3">
-          <label for="colour">Colour:</label>
-          <input type="text" class="form-control" id="colour" value="{{ctest.colour}}" name="colour"  />
+        <label for="volume">Volume :</label>
+        <input type="text" class="form-control" id="volume" value="{{ctest.volume}}" name="volume" />
       </div>
-<!--   
+
+      <div class="col-md-4 mb-3">
+        <label for="consistency">Consistency:</label>
+        <input type="text" class="form-control" id="consistency" value="{{ctest.consistency}}" name="consistency" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="colour">Colour:</label>
+        <input type="text" class="form-control" id="colour" value="{{ctest.colour}}" name="colour" />
+      </div>
+      <!--   
       <div class="col-md-4 mb-3">
           <label for="abestinenece">Abestinenece:</label>
           <input type="text" class="form-control" id="abestinenece" value="{{ctest.abestinenece}}" name="abestinenece"  />
       </div>
    -->
-              
+
       <div class="col-md-4 mb-3">
         <label for="method_collection">Mode of collection:</label>
-        <input type="text" class="form-control" id="method_collection" value="{{ctest.method_collection}}" name="method_collection"  />
+        <input type="text" class="form-control" id="method_collection" value="{{ctest.method_collection}}" name="method_collection" />
       </div>
 
       <div class="col-md-4 mb-3">
-          <label for="abestinenece">Time of collection:</label>
-          <input type="text" class="form-control" id="abestinenece" value="{{ctest.abestinenece}}" name="abestinenece"  />
+        <label for="abestinenece">Time of collection:</label>
+        <input type="text" class="form-control" id="abestinenece" value="{{ctest.abestinenece}}" name="abestinenece" />
       </div>
-  
 
-              
-          <div class="col-md-4 mb-3">
-              <label for="time_exam">Time of examination:</label>
-              <input type="text" class="form-control" id="time_exam" value="{{ctest.time_exam}}" name="time_exam"  />
-          </div>
+      <div class="col-md-4 mb-3">
+        <label for="time_exam">Time of examination:</label>
+        <input type="text" class="form-control" id="time_exam" value="{{ctest.time_exam}}" name="time_exam" />
+      </div>
 
-        <!-- <div class="col-md-4 mb-3">
+      <!-- <div class="col-md-4 mb-3">
               <label for="time_exam">Time Exam:</label>
               <input type="text" class="form-control" id="time_exam" value="{{ctest.time_exam}}" name="time_exam"  />
           </div>
@@ -285,61 +245,57 @@
             <input type="text" class="form-control" id="method_collection" value="{{ctest.method_collection}}" name="method_collection"  />
         </div> -->
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="total_count">Total Count:</label>
-          <input type="text" class="form-control" id="total_count" value="{{ctest.total_count}}" name="total_count"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="total_count">Total Count:</label>
+        <input type="text" class="form-control" id="total_count" value="{{ctest.total_count}}" name="total_count" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="active">Active:</label>
-          <input type="text" class="form-control" id="active" value="{{ctest.active}}" name="active"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="active">Active:</label>
+        <input type="text" class="form-control" id="active" value="{{ctest.active}}" name="active" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="sluggish">Sluggish:</label>
-          <input type="text" class="form-control" id="sluggish" value="{{ctest.sluggish}}" name="sluggish"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="sluggish">Sluggish:</label>
+        <input type="text" class="form-control" id="sluggish" value="{{ctest.sluggish}}" name="sluggish" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="non_matliz">Non Motile:</label>
-          <input type="text" class="form-control" id="non_matliz" value="{{ctest.non_matliz}}" name="non_matliz"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="non_matliz">Non Motile:</label>
+        <input type="text" class="form-control" id="non_matliz" value="{{ctest.non_matliz}}" name="non_matliz" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="rbc">RBC:</label>
-          <input type="text" class="form-control" id="rbc" value="{{ctest.rbc}}" name="rbc"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="rbc">RBC:</label>
+        <input type="text" class="form-control" id="rbc" value="{{ctest.rbc}}" name="rbc" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="wbc">WBC:</label>
-          <input type="text" class="form-control" id="wbc" value="{{ctest.wbc}}" name="wbc"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="wbc">WBC:</label>
+        <input type="text" class="form-control" id="wbc" value="{{ctest.wbc}}" name="wbc" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="epithelial_cells">Epithelial Cells:</label>
-          <input type="text" class="form-control" id="epithelial_cells" value="{{ctest.epithelial_cells}}" name="epithelial_cells"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="epithelial_cells">Epithelial Cells:</label>
+        <input type="text" class="form-control" id="epithelial_cells" value="{{ctest.epithelial_cells}}" name="epithelial_cells" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="abnormality">Abnormality:</label>
-          <input type="text" class="form-control" id="abnormality" value="{{ctest.abnormality}}" name="abnormality"  />
-        </div>
-
+      <div class="col-md-4 mb-3">
+        <label for="abnormality">Abnormality:</label>
+        <input type="text" class="form-control" id="abnormality" value="{{ctest.abnormality}}" name="abnormality" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="dr">Doctor Signature :</label>
+        <select type="text" id="dr" class="form-control" name="dr">
+          <option value="">Select Doctor</option>
+          <option {% if ctest.dr == 'santoshkumar' %}selected{% endif %}  value="santoshkumar">Dr. Santosh Kumar Sharma</option>
+          <option {% if ctest.dr == 'knyadav' %}selected{% endif %} value="knyadav">Dr. K. N. Yadav</option>
+        </select>
+      </div>
     </div>
 
-
-
     <button type="submit" class="btn btn-primary">Save</button>
-    <a href="#;" id="printButton" style=" display: none;" class="btn btn-primary">Print</a>
-
+    <a href="#;" id="printButton" style="display: none" class="btn btn-primary">Print</a>
   </form>
 </div>
 
@@ -353,26 +309,26 @@
   });
 </script>
 <script>
-$(document).ready(function () {
+  $(document).ready(function () {
     // Function to handle printing
     $("#printButton").click(function () {
-        // Show the hidden print content
-        $("#printContent").show();
+      // Show the hidden print content
+      $("#printContent").show();
 
-        // Print only the content inside the printContent div
-        var printContents = $("#printContent").html();
-        var originalContents = $("body").html();
-        $("body").empty().html(printContents);
+      // Print only the content inside the printContent div
+      var printContents = $("#printContent").html();
+      var originalContents = $("body").html();
+      $("body").empty().html(printContents);
 
-        // Trigger the print dialog
-        window.print();
+      // Trigger the print dialog
+      window.print();
 
-        // Restore the original page content
-        $("#printContent").hide();
-        $("body").html(originalContents);
-        $("#printContent").hide();
+      // Restore the original page content
+      $("#printContent").hide();
+      $("body").html(originalContents);
+      $("#printContent").hide();
     });
-});
+  });
 </script>
 <script>
   // Function to handle form submission
@@ -428,7 +384,7 @@ $(document).ready(function () {
 
 <script>
   $(document).ready(function () {
-    var regid = {{ ctest.reg_no.regid }};
+    var regid = {{ ctest.patient.bill_no }};
     if (regid) {
     $.ajax({
         url: '{% url "fetch_patient_data_details" %}',
@@ -467,6 +423,5 @@ $(document).ready(function () {
     }
   });
 </script>
-
 
 {% endblock %}

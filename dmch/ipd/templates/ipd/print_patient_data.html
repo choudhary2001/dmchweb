@@ -1,0 +1,141 @@
+{% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+
+  {% endfor %} {% endif %}
+
+  <div class="card py-2" style="display: flex; flex-direction: row; justify-content: space-between; padding-left: 5px; padding-right: 5px">
+    <form action="{% url 'show_ipd_patients_report_print' %}" method="get" style="display: flex; flex-wrap: wrap; gap: 10px">
+      <div style="flex: 1">
+        <input type="date" id="start_date" class="form-control mb-2 mb-md-0" name="start_date" />
+      </div>
+      <div style="">
+        <span>-</span>
+      </div>
+      <div style="flex: 1">
+        <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
+      </div>
+      <div style="flex: 3">
+        <select name="department" class="form-control mb-2 mb-md-0">
+          <option value="All">Select Department</option>
+          <option value="All">All</option>
+          {% for d in departments %}
+          <option value="{{d.department_id}}">{{d.name}}</option>
+          {% endfor %}
+          <!-- <option value="MOPD">MOPD</option>
+          <option value="EOPD">EOPD</option>
+          <option value="ChildEOPD">ChildEOPD</option> -->
+        </select>
+      </div>
+      <!-- <div style="flex: 2">
+        <select name="user_id" class="form-control mb-2 mb-md-0">
+          <option value="All"  >Select Staff</option>
+          <option value="All">All</option>
+          {% for d in registration_users %}
+          <option value="{{d.id}}">{{d.first_name}} {{d.last_name}}</option>
+          {% endfor %}
+        </select>
+      </div> -->
+      <div style="flex: 1">
+        <button class="btn btn-primary w-100" type="submit">Filter</button>
+      </div>
+      <div style="flex: 1">
+        <a href="#;" class="btn btn-primary" id="printButton">Print</a>
+      </div>
+      <div style="flex: 3">
+        <a href="#;" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4" id="printablecontent">
+    <div class="card-header py-3" style="display: flex; flex-direction: column; align-items: center">
+      <div><h2>Darbhanga Medical College and Hospital</h2></div>
+      <div><h3>Patient Report</h3></div>
+      {% if start_date_str != None %}
+      <div><h3>{{start_date_str}}{% if end_date_str != None %}{% if end_date_str != 'None' %} - {{end_date_str}}{% endif %}{% endif %}</h3></div>
+      {% endif %}
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" id="" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>Reg No.</th>
+              <th>Doctor Reg No.</th>
+              <th>Department</th>
+              <th>Patient Name</th>
+              <th>Age</th>
+              <th>Gender</th>
+              <th>Guardian</th>
+              <th>Address</th>
+              <th>Disease</th>
+              <th>Admit Date</th>
+              <th>Discharge Date</th>
+              <th>Death</th>
+              <th>Lama</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for d in patients %}
+            <tr>
+              <td>{{d.regno}}</td>
+              <td>{{d.dr_reg_no}}</td>
+              <td>{{d.department.name}}</td>
+              <td>{{d.name}}</td>
+              <td>{% if d.year %}{{d.year}}Y{% endif %} {% if d.month %}{{d.month}}M{% endif %} {% if d.days %}{{d.days}}D{% endif %}</td>
+              <td>{{d.gender}}</td>
+              <td>{{d.guardiannametitle}} {{d.guardianname}}</td>
+              <td>{{d.address}}, {{d.district}}, {{d.policest}}, {{d.pincode}}</td>
+              <td>{{d.disease}}</td>
+              <td>{{d.appointment_date}}</td>
+              <td>{% if d.discharge_date %}{{d.discharge_date}}{% endif %}</td>
+              <td>{% if d.death %}{{d.death}}{% endif %}</td>
+              <td>{% if d.lama %}{{d.lama}}{% endif %}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block script %}
+<script>
+  //   document.getElementById("printButton").addEventListener("click", function () {
+  //     var content = document.getElementById("printablecontent").innerHTML;
+  //     var printWindow = window.open("", "", "height=600,width=800");
+  //     printWindow.document.write("<html><head><title>Print</title></head><body>");
+  //     printWindow.document.write(content);
+  //     printWindow.document.write("</body></html>");
+  //     printWindow.document.close();
+  //     printWindow.print();
+  //   });
+  $(document).ready(function () {
+    // Function to handle printing
+    $("#printButton").click(function () {
+      // Show the hidden print content
+      // Print only the content inside the printContent div
+      var printContents = $("#printablecontent").html();
+      var originalContents = $("body").html();
+      $("body").empty().html(printContents);
+
+      // Trigger the print dialog
+      window.print();
+      $("body").html(originalContents);
+    });
+  });
+  function exportToExcel() {
+    var location = "data:application/vnd.ms-excel;base64,";
+    var excelTemplate = "<html> " + "<head> " + '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/> ' + "</head> " + "<body> " + document.getElementById("printablecontent").innerHTML + "</body> " + "</html>";
+    window.location.href = location + window.btoa(excelTemplate);
+  }
+</script>
+{% endblock %}

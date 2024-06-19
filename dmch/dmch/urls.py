@@ -19,6 +19,14 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.static import serve 
+from django.contrib import sitemaps
+from django.contrib.sitemaps.views import sitemap
+from django.urls import path
+from counter.sitemaps import StaticViewSitemap
+
+sitemaps = {
+    'static': StaticViewSitemap,
+}
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +40,8 @@ urlpatterns = [
     path('ipd/', include('ipd.urls')),
     path('blood-bank/', include('blood_bank.urls')),
     path('record-room/', include('record_room.urls')),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+
 
 
 ]

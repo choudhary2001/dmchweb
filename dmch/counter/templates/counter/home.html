@@ -6,13 +6,15 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>DMCH Darbhanga</title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
+  <title>DMCH Darbhanga Medical College and Hospital - Shwastik Tech Solutions</title>
+
+  <meta name="description" content="DMCH Darbhanga Medical College and Hospital provides online pathology report services and hospital management in Darbhanga. Get your DMCH report online today.">
+
+  <meta name="keywords" content="DMCH Darbhanga, Darbhanga Medical College and Hospital, DMCH report online, DMCH pathology report, Darbhanga hospital, hospital management">
+
 
   <!-- Favicons -->
-  <link href="{% static 'img/favicon..png' %}" rel="icon">
-  <link href="{% static 'img/apple-touch-icon..png' %}" rel="apple-touch-icon">
+  <link rel="shortcut icon" type="image/x-icon" href="/media/img/dmc-logo.webp" />
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
@@ -30,13 +32,6 @@
   <!-- Template Main CSS File -->
   <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
-  <!-- =======================================================
-  * Template Name: DMCH
-  * Template URL: https://bootstrapmade.com/DMCH-free-medical-bootstrap-theme/
-  * Updated: Mar 17 2024 with Bootstrap v5.3.3
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
 
 <body>
@@ -61,7 +56,7 @@
   <header id="header" class="fixed-top">
     <div class="container d-flex align-items-center">
 
-      <h1 class="logo me-auto"><a href="/">DMCH</a></h1>
+      <h1 class="logo me-auto"><a href="/"> <img src="/media/img/dmc-logo.webp" /> DMCH</a></h1>
       <!-- Uncomment below if you prefer to use an image logo -->
       <!-- <a href="/" class="logo me-auto"><img src="{% static 'img/logo..png' %}" alt="" class="img-fluid"></a>-->
 
@@ -104,7 +99,7 @@
   <!-- ======= Hero Section ======= -->
   <section id="hero" class="d-flex align-items-center">
     <div class="container">
-      <h1>Welcome to DMCH</h1>
+      <h1>DMCH</h1>
       <h2>Enter your mobile no. and find your report.</h2>
       <form action="{% url 'find_user_report' %}" method="post">
         {% csrf_token %}
@@ -877,7 +872,7 @@
         <div class="row">
 
           <div class="col-lg-3 col-md-6 footer-contact">
-            <h3>DMCH</h3>
+            <h3>Darbhanga Medical College and Hospital</h3>
             <p>
               Darbhanga<br>
               Bihar<br>

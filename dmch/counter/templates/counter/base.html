@@ -6,10 +6,13 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
+    <title>DMCH Darbhanga Medical College and Hospital - Shwastik Tech Solutions</title>
 
-    <title>DMCH - Dashboard</title>
+    <meta name="description" content="DMCH Darbhanga Medical College and Hospital provides online pathology report services and hospital management in Darbhanga. Get your DMCH report online today." />
+
+    <meta name="keywords" content="DMCH Darbhanga, Darbhanga Medical College and Hospital, DMCH report online, DMCH pathology report, Darbhanga hospital, hospital management" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/media/img/dmc-logo.webp" />
 
     <!-- Custom fonts for this template-->
     <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css" />
@@ -103,7 +106,7 @@
 
         <!-- Divider -->
         <hr class="sidebar-divider my-0" />
-        {% if request.user.is_superuser %}
+        {% if request.user.is_superuser or request.user.is_staff %}
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
           <a class="nav-link" href="{% url 'departments' %}">
@@ -125,7 +128,7 @@
           >
         </li>
 
-        {% endif %} {% if request.session.user_role == 'Registration' or request.session.user_role == 'Admin' %}
+        {% endif %} {% if request.session.user_role == 'Registration' or request.session.user_role == 'Admin' or request.session.user_role == 'Staff' %}
         <hr class="sidebar-divider" />
         <div class="sidebar-heading">Patient</div>
 
@@ -149,7 +152,7 @@
             <span>Patient Report</span></a
           >
         </li>
-        {% if request.user.is_superuser %}
+        {% if request.user.is_superuser or request.user.is_staff %}
         <li class="nav-item active">
           <a class="nav-link" href="{% url 'show_patients_report_userwise' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -241,7 +244,7 @@
           >
         </li>
 
-        {% endif %} {% if request.session.user_role == 'Pathology' or request.session.user_role == 'Admin' %}
+        {% endif %} {% if request.session.user_role == 'Pathology' or request.session.user_role == 'Admin' or request.session.user_role == 'Staff' %}
         <hr class="sidebar-divider" />
 
         <!-- Heading -->
@@ -426,7 +429,7 @@
         </li>
         {% elif request.session.user_role == 'MCH& GY MED' %}
         <li class="nav-item active">
-          <a class="nav-link" href="{% url 'get_consumption_and_remaining_quantity' %}">
+          <a class="nav-link" href="{% url 'get_consumption_and_remaining_quantityyy_data' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Item Wise Consumption</span></a
           >
@@ -440,7 +443,7 @@
         </li>
         {% else %}
         <li class="nav-item active">
-          <a class="nav-link" href="{% url 'get_consumption_and_remaining_quantityy' %}">
+          <a class="nav-link" href="{% url 'get_consumption_and_remaining_quantityyy' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Item Wise Consumption</span></a
           >
@@ -454,7 +457,7 @@
           >
         </li>
 
-        {% endif %} {% if request.user.is_superuser %}
+        {% endif %} {% if request.user.is_superuser or request.user.is_staff %}
 
         <hr class="sidebar-divider" />
 
@@ -520,7 +523,7 @@
           >
         </li>
 
-        {% endif %} {% if request.session.user_role == 'Radiology' or request.session.user_role == 'Admin' %}
+        {% endif %} {% if request.session.user_role == 'Radiology' or request.session.user_role == 'Admin' or request.session.user_role == 'Staff' %}
         <hr class="sidebar-divider" />
 
         <!-- Heading -->
@@ -569,7 +572,7 @@
           >
         </li>
 
-        {% endif %} {% if request.session.user_role == 'Cardiology' or request.session.user_role == 'Admin' %}
+        {% endif %} {% if request.session.user_role == 'Cardiology' or request.session.user_role == 'Admin' or request.session.user_role == 'Staff' %}
         <hr class="sidebar-divider" />
 
         <!-- Heading -->
@@ -604,7 +607,7 @@
           >
         </li>
 
-        {% endif %} {% if request.session.user_role == 'IPD' or request.session.user_role == 'Admin' %}
+        {% endif %} {% if request.session.user_role == 'IPD' or request.session.user_role == 'Admin' or request.session.user_role == 'Staff' %}
         <hr class="sidebar-divider" />
         <!-- Heading -->
         <div class="sidebar-heading">I. P. D.</div>
@@ -652,7 +655,7 @@
           >
         </li>
 
-        {% endif %} {% if request.session.user_role == 'Blood Bank' or request.session.user_role == 'Admin' %}
+        {% endif %} {% if request.session.user_role == 'Blood Bank' or request.session.user_role == 'Admin' or request.session.user_role == 'Staff' %}
         <hr class="sidebar-divider" />
         <!-- Heading -->
         <div class="sidebar-heading">Blood Bank</div>
@@ -700,7 +703,7 @@
           >
         </li>
 
-        {% endif %} {% if request.session.user_role == 'Record Room' or request.session.user_role == 'Admin' %}
+        {% endif %} {% if request.session.user_role == 'Record Room' or request.session.user_role == 'Admin' or request.session.user_role == 'Staff' %}
         <hr class="sidebar-divider" />
         <!-- Heading -->
         <div class="sidebar-heading">Record Room</div>

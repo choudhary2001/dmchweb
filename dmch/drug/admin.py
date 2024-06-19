@@ -4,7 +4,7 @@ from .models import *
 
 
 class ProductSupplyAdmin(admin.ModelAdmin):
-    list_display = ('user', 'productdetails_id', 'product_name', 'product_type', 'department', 'mfg_name', 'batch_no','stock_quantity', 'quantity', 'mfg_date', 'exp_date',  )
+    list_display = ('user', 'productdetails_id', 'product_name', 'product_type', 'department', 'mfg_name', 'batch_no','stock_quantity', 'quantity', 'mfg_date', 'exp_date', 'supply_date' )
     list_filter = ('user', 'productdetails_id', 'product_name', 'product_type', 'department', )
     search_fields = ( 'productdetails_id', 'product_name', 'product_type')
 
@@ -15,7 +15,7 @@ class SupplyAdmin(admin.ModelAdmin):
     search_fields = ('supply_id', 'indent',   'de','remarks', 'order_date', 'created_at'  )
 
 class ProductPurchaseAdmin(admin.ModelAdmin):
-    list_display = ('user', 'productdetails_id', 'product_name', 'product_type', 'department', 'mfg_name', 'batch_no','stock_quantity', 'quantity', 'mfg_date', 'exp_date',  )
+    list_display = ('user', 'productdetails_id', 'product_name', 'product_type', 'department', 'mfg_name', 'batch_no','stock_quantity', 'quantity', 'mfg_date', 'exp_date', 'created_at' )
     list_filter = ('user', 'productdetails_id', 'product_name', 'product_type', 'department', )
     search_fields = ( 'productdetails_id', 'product_name', 'product_type')
 

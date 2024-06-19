@@ -20,10 +20,10 @@
 
   {% endfor %} {% endif %}
   <marquee behavior="scroll" direction="left">
-    <a href="{% url 'expired_medicine' %}" style="color: red;">
-      <ul style="list-style: none; display: flex;" >
+    <a href="{% url 'expired_medicine' %}" style="color: red">
+      <ul style="list-style: none; display: flex">
         {% for product in expiring_products %}
-          <li style="color: red;" >{{ product.product_name }} ({{ product.batch_no }} {{ product.exp_date }}) , </li>
+        <li style="color: red">{{ product.product_name }} ({{ product.batch_no }} {{ product.exp_date }}) ,</li>
         {% endfor %}
       </ul>
     </a>
@@ -51,8 +51,8 @@
           <input type="text" class="form-control" id="indent" name="indent" />
         </div>
       </div>
-       <!-- Right Column (Order Details) -->
-       <div class="col-md-4 mb-3">
+      <!-- Right Column (Order Details) -->
+      <div class="col-md-4 mb-3">
         <div class="form-group">
           <label for="date">Date:</label>
           <input type="date" class="form-control" name="order_date" required />
@@ -91,13 +91,13 @@
 
         <!-- Middle Column (Product Details) -->
         <div class="col-md-4 mb-3">
-            <div class="form-group">
-                <label for="batchno">Batch No.:</label>
-                <select class="form-control" name="batchno_1" required>
-                <option>Select Batch No.</option>
-                </select>
-            </div>
-            </div>
+          <div class="form-group">
+            <label for="batchno">Batch No.:</label>
+            <select class="form-control" name="batchno_1" required>
+              <option>Select Batch No.</option>
+            </select>
+          </div>
+        </div>
 
         <div class="col-md-4 mb-3">
           <div class="form-group">
@@ -106,24 +106,20 @@
           </div>
         </div>
 
-        <div class="col-md-4 mb-3" style="display: none;">
+        <div class="col-md-4 mb-3" style="display: none">
           <div class="form-group">
             <label for="product_type_id_column_1">Product:</label>
             <input type="text" class="form-control" name="product_type_id_column_1" />
           </div>
         </div>
 
-
-
-          
-
-          <!-- Middle Column (Product Details) -->
-          <div class="col-md-4 mb-3">
-            <div class="form-group">
-              <label for="suppliar_1">Supplier Name:</label>
-              <input type="text" class="form-control" name="suppliar_1" disabled required />
-            </div>
+        <!-- Middle Column (Product Details) -->
+        <div class="col-md-4 mb-3">
+          <div class="form-group">
+            <label for="suppliar_1">Supplier Name:</label>
+            <input type="text" class="form-control" name="suppliar_1" disabled required />
           </div>
+        </div>
 
         <!-- Right Column (Order Details) -->
         <div class="col-md-4 mb-3">
@@ -153,8 +149,6 @@
             <input type="number" class="form-control" name="stock_quantity_1" disabled required />
           </div>
         </div>
-
-       
       </div>
     </div>
 
@@ -251,9 +245,7 @@
           </div>
         `;
 
-    
-
-        var mfgColumn = document.createElement("div");
+    var mfgColumn = document.createElement("div");
     mfgColumn.className = "col-md-4 mb-3";
     mfgColumn.innerHTML = `
           <div class="form-group">
@@ -261,8 +253,6 @@
             <input type="text" class="form-control" name="mfgname_${productCount}" disabled required />
           </div>
         `;
-
-
 
     var suppliarColumn = document.createElement("div");
     suppliarColumn.className = "col-md-4 mb-3";
@@ -309,7 +299,6 @@
           </div>
         `;
 
-
     var product_type_id_column = document.createElement("div");
     product_type_id_column.className = "col-md-4 mb-3";
     product_type_id_column.innerHTML = `
@@ -352,76 +341,73 @@
   });
 </script>
 
-
-
 <script>
-    $(document).ready(function () {
-      // Event delegation for product type select elements
-      $("#productFields").on("change", "select[name^='product_type']", function () {
-        var productType = $(this).val();
-        var container = $(this).closest(".product-row");
-        var productNameSelect = container.find("select[name^='product_name']");
-  
-        $.ajax({
-          url: '{% url "get_product_names_by_type_purchases" %}',
-          type: "GET",
-          data: { product_type: productType },
-          success: function (data) {
-            console.log(data)
-            productNameSelect.empty();
+  $(document).ready(function () {
+    // Event delegation for product type select elements
+    $("#productFields").on("change", "select[name^='product_type']", function () {
+      var productType = $(this).val();
+      var container = $(this).closest(".product-row");
+      var productNameSelect = container.find("select[name^='product_name']");
 
-            productNameSelect.append('<option value="">Select Product Name</option>');
-            $.each(data.products, function (index, product) {
-              productNameSelect.append('<option value="' + product.product_type_id_ + '">' + product.name + "</option>");
-            });
-          },
-        });
-      });
-  
-      // Event delegation for product name select elements
-      $("#productFields").on("change", "select[name^='product_name']", function () {
-        var productTypeId = $(this).val();
-        var container = $(this).closest(".product-row");
-        var batchNoSelect = container.find("select[name^='batchno']");
-  
-        $.ajax({
-          url: '{% url "get_batches_by_product" %}',
-          type: "GET",
-          data: { product_type_id: productTypeId },
-          success: function (data) {
-            batchNoSelect.empty();
-            batchNoSelect.append('<option value="">Select Batch No.</option>');
-            $.each(data.batches, function (index, batch) {
-              batchNoSelect.append('<option value="' + batch.batch_no + '">' + batch.batch_no + "</option>");
-            });
-          },
-        });
-      });
-  
-      // Event delegation for batch number select elements
-      $("#productFields").on("change", "select[name^='batchno']", function () {
-        var batchNo = $(this).val();
-        var container = $(this).closest(".product-row");
-  
-        $.ajax({
-          url: '{% url "get_product_detailss" %}',
-          type: "GET",
-          data: { batch_no: batchNo },
-          success: function (data) {
-            console.log(data)
-            var product_type_id_column_Input = container.find("input[name^='product_type_id_column']");
-            var product = data.product;
-            product_type_id_column_Input.val(product.productdetails_id);
-            container.find("input[name^='mfgname']").val(product.mfg_name);
-            container.find("input[name^='suppliar']").val(product.supplier_name);
-            container.find("input[name^='mfgdate']").val(product.mfg_date);
-            container.find("input[name^='expdate']").val(product.exp_date);
-            container.find("input[name^='stock_quantity']").val(product.stock_quantity);
-          },
-        });
+      $.ajax({
+        url: '{% url "get_product_names_by_type_purchases" %}',
+        type: "GET",
+        data: { product_type: productType },
+        success: function (data) {
+          console.log(data);
+          productNameSelect.empty();
+
+          productNameSelect.append('<option value="">Select Product Name</option>');
+          $.each(data.products, function (index, product) {
+            productNameSelect.append('<option value="' + product.product_type_id_ + '">' + product.name + "</option>");
+          });
+        },
       });
     });
-  </script>
-  
+
+    // Event delegation for product name select elements
+    $("#productFields").on("change", "select[name^='product_name']", function () {
+      var productTypeId = $(this).val();
+      var container = $(this).closest(".product-row");
+      var batchNoSelect = container.find("select[name^='batchno']");
+
+      $.ajax({
+        url: '{% url "get_batches_by_product" %}',
+        type: "GET",
+        data: { product_type_id: productTypeId },
+        success: function (data) {
+          batchNoSelect.empty();
+          batchNoSelect.append('<option value="">Select Batch No.</option>');
+          $.each(data.batches, function (index, batch) {
+            batchNoSelect.append('<option value="' + batch.productdetails_id + '">' + batch.batch_no + "</option>");
+          });
+        },
+      });
+    });
+
+    // Event delegation for batch number select elements
+    $("#productFields").on("change", "select[name^='batchno']", function () {
+      var batchNo = $(this).val();
+      var container = $(this).closest(".product-row");
+
+      $.ajax({
+        url: '{% url "get_product_detailss" %}',
+        type: "GET",
+        data: { batch_no: batchNo },
+        success: function (data) {
+          console.log(data);
+          var product_type_id_column_Input = container.find("input[name^='product_type_id_column']");
+          var product = data.product;
+          product_type_id_column_Input.val(product.productdetails_id);
+          container.find("input[name^='mfgname']").val(product.mfg_name);
+          container.find("input[name^='suppliar']").val(product.supplier_name);
+          container.find("input[name^='mfgdate']").val(product.mfg_date);
+          container.find("input[name^='expdate']").val(product.exp_date);
+          container.find("input[name^='stock_quantity']").val(product.stock_quantity);
+        },
+      });
+    });
+  });
+</script>
 
 {% endblock %}

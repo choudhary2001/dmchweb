@@ -50,7 +50,7 @@ def signin(request):
         if user is not None and user.is_active:
             # User is authenticated, log them in
             login(request, user)
-            if user.is_superuser == False:
+            if user.is_superuser == False and user.is_staff == False:
                 d = DrugDepartment.objects.filter(name = p.user_role).first()
                 sd = StoreDepartment.objects.filter(name = p.user_role).first()
                 if p:
@@ -83,9 +83,11 @@ def signin(request):
                     request.session['user_role_store'] = "Store"
                     return redirect('/store/add-products/')
                 return redirect('add_patient')
-            # messages.success(request, "You have successfully signed in.")
-            request.session['user_role'] = 'Admin'
-            
+            elif user.is_staff == True and user.is_superuser == False:
+                request.session['user_role'] = 'Staff'
+            else:
+                request.session['user_role'] = 'Admin'
+                
             return redirect('departments')  # Redirect to dashboard or any other page
         else:
             # Authentication failed
@@ -334,7 +336,7 @@ def get_doctors_by_department(request):
 
 @login_required
 def show_patients(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Registration':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Registration':
 
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
@@ -354,7 +356,7 @@ def show_patients(request):
             end_date = None
         
         # Filter patients based on the provided date range
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.is_staff:
             patients = Patient.objects.filter(de=None).order_by('-appointment_date')
         else:
             patients = Patient.objects.filter(user = request.user, de = None).order_by('-appointment_date')
@@ -436,7 +438,7 @@ def show_patients(request):
 
 @login_required
 def show_patients_data(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Registration' or request.session['user_role'] == 'IPD':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Registration' or request.session['user_role'] == 'IPD':
         # Your existing code here
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -458,7 +460,7 @@ def show_patients_data(request):
             end_date = None
 
         # Filter patients based on the provided date range
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.is_staff:
             # patients = Patient.objects.filter(de=None).order_by('-appointment_date')
             unique_departments = Profile.objects.exclude(main_department__isnull=True).values_list('main_department', flat=True).distinct()
 
@@ -612,7 +614,7 @@ def show_patients_data(request):
 
 # @login_required
 def show_patients_report(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Registration':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Registration':
 
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -640,7 +642,7 @@ def show_patients_report(request):
             end_date = None
         
         # Filter patients based on the provided date range
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.is_staff:
             # patients = Patient.objects.filter(de=None).order_by('-appointment_date')
             # unique_departments = Profile.objects.values_list('main_department', flat=True).distinct()
             unique_departments = Profile.objects.exclude(main_department__isnull=True).values_list('main_department', flat=True).distinct()
@@ -774,7 +776,7 @@ def show_patients_report(request):
 
 @login_required
 def show_patients_report_userwise(request):
-    if request.user.is_superuser:
+    if request.user.is_superuser or request.user.is_staff :
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
         department_id = request.GET.get('department')
@@ -799,7 +801,7 @@ def show_patients_report_userwise(request):
             end_date = None
         
         # Filter patients based on the provided date range and user
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.is_staff:
             users = User.objects.all()
             
         else:
@@ -819,7 +821,10 @@ def show_patients_report_userwise(request):
                         patients = Patient.objects.filter(user=user, de = None).order_by('-appointment_date')
 
                         if start_date and end_date:
-                            patients = patients.filter(appointment_date__range=(start_date, end_date))
+                            start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+                            end_datetimee = timezone.make_aware(end_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+                            end_datetimee += timedelta(days=1)
+                            patients = patients.filter(appointment_date__range=(start_datetime, end_datetimee))
                         elif start_date:
                             next_day = start_date + timedelta(days=1)
                             start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
@@ -889,7 +894,7 @@ def show_patients_report_userwise(request):
 
 @login_required
 def update_patients(request, pk):
-    if request.user.is_superuser or request.session['user_role'] == 'Registration':
+    if request.user.is_superuser or request.user.is_staff or  request.session['user_role'] == 'Registration':
 
         paitient_type = request.GET.get('visit', None)
         if paitient_type:
@@ -980,7 +985,7 @@ def dashboard(request):
 
 @login_required
 def departments(request):
-    if request.user.is_superuser:
+    if request.user.is_superuser or request.user.is_staff:
         if request.method == "POST":
             department = request.POST['department']
             room_no = request.POST.get('room_no', None)
@@ -1033,7 +1038,7 @@ def departments_delete(request, department_id):
 
 @login_required
 def doctors(request):
-    if request.user.is_superuser:
+    if request.user.is_staff or request.user.is_superuser:
         if request.method == "POST":
             doctor = request.POST['doctor']
             department = request.POST['department']
@@ -1092,7 +1097,7 @@ def doctors_delete(request, doctor_id):
     
 @login_required
 def dataentryoperator(request):
-    if request.user.is_superuser:
+    if request.user.is_staff or request.user.is_superuser:
         if request.method == "POST":
             first_name = request.POST['first_name']
             last_name = request.POST['last_name']
@@ -1184,7 +1189,7 @@ def dataentryoperator_delete(request, pk):
 
 
 def location_wise_report(request):
-    if request.user.is_superuser:
+    if request.user.is_staff or request.user.is_superuser:
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
         department_id = request.GET.get('department')
@@ -1278,7 +1283,7 @@ def location_wise_report(request):
 
 @login_required
 def department_wise_report(request):
-    if request.user.is_superuser:
+    if request.user.is_staff or request.user.is_superuser:
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
         department_id = request.GET.get('department')
@@ -1318,7 +1323,7 @@ def department_wise_report(request):
                     end_datetimee = timezone.make_aware(end_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
                     end_datetimee += timedelta(days=1)
 
-                    patients_in_department = patients_in_department.filter(appointment_date__range=(start_datetime, end_datetimee))
+                    patients_in_department = patients_in_department.filter(appointment_date__range=(start_date, end_date))
                 elif start_date:
                     start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
                     end_datetimee = timezone.make_aware(end_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
@@ -1358,14 +1363,14 @@ def department_wise_report(request):
                         total_patient_amount_date = 0
                         next_date = current_date + timedelta(days=1)
                         patients_on_date = patients_in_department.filter(appointment_date__date=current_date)
-                                        # Calculate statistics
+                        # Calculate statistics
                         red_card_total_date = patients_on_date.filter(redcard=True, redcardtype='Red Card').count()
                         rb_case_total_date = patients_on_date.filter(redcard=True, redcardtype='RB Case').count()
                         unknown_total_date = patients_on_date.filter(visittype='Unknown').count()
                         free_total_date = patients_on_date.filter(visittype='Free').count()
                         revisit_total_date = patients_on_date.filter(revisit='Revisit').count()
                         total_date = patients_on_date.count()
-                        non_price_date = red_card_total + rb_case_total_date + unknown_total_date + revisit_total_date
+                        non_price_date = red_card_total_date + rb_case_total_date + unknown_total_date + revisit_total_date
                         total_patient_count_non_price_date += non_price_date
                         total_amount_date = (total_date * 5) - (non_price_date * 5)
                         total_patient_count_date += total_date
@@ -1410,7 +1415,7 @@ def department_wise_report(request):
 
 @login_required
 def show_patients_data_ipd(request):
-    if request.user.is_superuser or request.session['user_role'] == 'Registration' or request.session['user_role'] == 'IPD':
+    if request.user.is_superuser or request.user.is_staff or request.session['user_role'] == 'Registration' or request.session['user_role'] == 'IPD':
         # Your existing code here
         start_date_str = request.GET.get('start_date')
         end_date_str = request.GET.get('end_date')
@@ -1561,7 +1566,7 @@ def show_patients_data_ipd(request):
 
 @login_required
 def show_patients_ipd(request):
-    if request.user.is_superuser or request.session['user_role'] == 'IPD':
+    if request.user.is_superuser or  request.user.is_staff or request.session['user_role'] == 'IPD':
 
         start_date_str = request.GET.get('start_date', None)
         end_date_str = request.GET.get('end_date', None)
@@ -1659,17 +1664,38 @@ def find_user_report_data(request):
     patients = Patient.objects.filter(mobno=mobile).all()
     print(patients)
     test_reports = []
+    cbc_reports = []
+    cbc_reports_data = []
+    urine_reports = []
+    stool_reports = []
+    ctest_reports = []
+    serology_reports = []
+
     for patient in patients:
         print(Patient_registration.objects.filter(reg_no = patient).all())
         pr = Patient_registration.objects.filter(reg_no = patient).all()
         for p in pr:
-            print(Test_report.objects.filter(patient=p).all())
             test_reports.extend(Test_report.objects.filter(patient=p).all())
+            cbc_reports.extend(CBCReport.objects.filter(patient=p).all())
+            cbc_reports_data.extend(Cbc_test.objects.filter(patient=p).all())
+            urine_reports.extend(Urine_test.objects.filter(patient=p).all())
+            stool_reports.extend(Stool_test.objects.filter(patient=p).all())
+            ctest_reports.extend(Ctest_report.objects.filter(patient=p).all())
+            serology_reports.extend(Serology_test.objects.filter(patient=p).all())
+
             print(test_reports)
     context = {
         'test_reports': test_reports,
+        'cbc_reports': cbc_reports,
+        'cbc_reports_data' :cbc_reports_data,
+        'urine_reports': urine_reports,
+        'stool_reports': stool_reports,
+        'ctest_reports': ctest_reports,
+        'serology_reports': serology_reports,
         'patients' : patients
+
     }
+
     return render(request, 'counter/test_report.html', context=context)
 
 
@@ -1681,15 +1707,35 @@ def find_user_all_report_data(request):
     patients = Patient.objects.filter(mobno=mobile).all()
     print(patients)
     test_reports = []
+    cbc_reports = []
+    cbc_reports_data = []
+    urine_reports = []
+    stool_reports = []
+    ctest_reports = []
+    serology_reports = []
+
     for patient in patients:
         print(Patient_registration.objects.filter(reg_no = patient).all())
         pr = Patient_registration.objects.filter(reg_no = patient).all()
         for p in pr:
-            print(Test_report.objects.filter(patient=p).all())
             test_reports.extend(Test_report.objects.filter(patient=p).all())
+            cbc_reports.extend(CBCReport.objects.filter(patient=p).all())
+            cbc_reports_data.extend(Cbc_test.objects.filter(patient=p).all())
+            urine_reports.extend(Urine_test.objects.filter(patient=p).all())
+            stool_reports.extend(Stool_test.objects.filter(patient=p).all())
+            ctest_reports.extend(Ctest_report.objects.filter(patient=p).all())
+            serology_reports.extend(Serology_test.objects.filter(patient=p).all())
+
             print(test_reports)
     context = {
         'test_reports': test_reports,
+        'cbc_reports': cbc_reports,
+        'cbc_reports_data':cbc_reports_data,
+        'urine_reports': urine_reports,
+        'stool_reports': stool_reports,
+        'ctest_reports': ctest_reports,
+        'serology_reports': serology_reports,
         'patients' : patients
+
     }
     return render(request, 'counter/all_data.html', context=context)

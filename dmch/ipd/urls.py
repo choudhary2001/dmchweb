@@ -23,6 +23,7 @@ urlpatterns = [
 
     # path('opd-patients/', views.OPDPatientListCreateView.as_view(), name='opd-patient-list-create'),
     path('show-patients-report/', views.show_ipd_patients_report, name="show_ipd_patients_report"),
+    path('show-patients-report/print/', views.show_ipd_patients_report_print, name="show_ipd_patients_report_print"),
 
     path('show-patients/', views.fetch_ipd_patient_data, name="fetch_ipd_patient_data"),
     path('discharge-patient-data/', views.fetch_ipd_decharge_patient_data, name="fetch_ipd_decharge_patient_data"),

@@ -15,6 +15,14 @@ admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Department)
 admin.site.register(Doctor)
 
+class UserLogAdmin(admin.ModelAdmin):
+    list_display = ('user', 'operation', 'post_data', 'timestamp', 'device_type')
+    list_filter = ('user', 'operation', 'timestamp')
+    search_fields = ('user', 'operation', 'timestamp')
+
+
+admin.site.register(UserLog, UserLogAdmin)
+
 # Customize the site header
 admin.site.site_header = 'DMCH DARBHANGA'
 

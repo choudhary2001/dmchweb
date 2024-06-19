@@ -117,12 +117,22 @@ class Test_report(models.Model):
     anticcp = models.CharField(max_length = 20, blank = True, null = True)
 
     other = models.CharField(max_length = 250, blank = True, null = True)
+    dr = models.CharField(max_length = 250, blank = True, null = True)
     created_at = models.DateTimeField(auto_now_add = True)
 
     def save(self, *args, **kwargs):
         if not self.test_report_id:
             self.test_report_id = str(uuid.uuid4().int)[:8]
         super(Test_report, self).save(*args, **kwargs)
+
+class CBCReport(models.Model):
+    user = models.ForeignKey(User, on_delete = models.SET_NULL,  blank = True, null = True)
+    test_report_id = models.CharField(max_length=8, unique=True, editable=False, default="")
+    reg_no = models.ForeignKey(Patient, on_delete = models.SET_NULL, blank = True, null =True)
+    patient = models.ForeignKey(Patient_registration, on_delete = models.SET_NULL, blank = True, null =True)
+    no = models.CharField(max_length = 200, blank = True, null = True)
+    document = models.FileField(upload_to='cbc/')
+    created_at = models.DateTimeField(auto_now_add = True)
 
 
 class Urine_test(models.Model):
@@ -149,6 +159,8 @@ class Urine_test(models.Model):
     epitheilal_cell = models.CharField(max_length = 200, blank = True, null = True)
     casts = models.CharField(max_length = 200, blank = True, null = True)
     crystas = models.CharField(max_length = 200, blank = True, null = True)
+    dr = models.CharField(max_length = 250, blank = True, null = True)
+
     others = models.CharField(max_length = 200, blank = True, null = True)
     created_at = models.DateTimeField(auto_now_add = True)
 
@@ -180,6 +192,8 @@ class Stool_test(models.Model):
     wbc = models.CharField(max_length = 200, blank = True, null = True)
     rbc = models.CharField(max_length = 200, blank = True, null = True)
     others = models.CharField(max_length = 200, blank = True, null = True)
+    dr = models.CharField(max_length = 250, blank = True, null = True)
+
     created_at = models.DateTimeField(auto_now_add = True)
 
     def save(self, *args, **kwargs):
@@ -208,6 +222,8 @@ class Ctest_report(models.Model):
     wbc = models.CharField(max_length = 200, blank = True, null = True)
     epithelial_cells = models.CharField(max_length = 200, blank = True, null = True)
     abnormality = models.CharField(max_length = 200, blank = True, null = True)
+    dr = models.CharField(max_length = 250, blank = True, null = True)
+
     created_at = models.DateTimeField(auto_now_add = True)
 
     def save(self, *args, **kwargs):
@@ -221,33 +237,35 @@ class Cbc_test(models.Model):
     cbctest_id = models.CharField(max_length=8, unique=True, editable=False, default="")
     reg_no = models.ForeignKey(Patient, on_delete = models.SET_NULL, blank = True, null =True)
     patient = models.ForeignKey(Patient_registration, on_delete = models.SET_NULL, blank = True, null =True)
-    rbc = models.CharField(max_length = 200, blank = True, null = True)
-    hgb = models.CharField(max_length = 200, blank = True, null = True)
-    hct = models.CharField(max_length = 200, blank = True, null = True)
-    mcv = models.CharField(max_length = 200, blank = True, null = True)
-    mch = models.CharField(max_length = 200, blank = True, null = True)
-    mchc = models.CharField(max_length = 200, blank = True, null = True)
-    rdw_sd = models.CharField(max_length = 200, blank = True, null = True)
-    rdw_cv = models.CharField(max_length = 200, blank = True, null = True)
     wbc = models.CharField(max_length = 200, blank = True, null = True)
     neut = models.CharField(max_length = 200, blank = True, null = True)
     lymph = models.CharField(max_length = 200, blank = True, null = True)
     mono = models.CharField(max_length = 200, blank = True, null = True)
     eo = models.CharField(max_length = 200, blank = True, null = True)
     baso = models.CharField(max_length = 200, blank = True, null = True)
+    rbc = models.CharField(max_length = 200, blank = True, null = True)
+    hgb = models.CharField(max_length = 200, blank = True, null = True)
+    hct = models.CharField(max_length = 200, blank = True, null = True)
+    mcv = models.CharField(max_length = 200, blank = True, null = True)
+    mch = models.CharField(max_length = 200, blank = True, null = True)
+    mchc = models.CharField(max_length = 200, blank = True, null = True)
+    rdw_cv = models.CharField(max_length = 200, blank = True, null = True)
+    rdw_sd = models.CharField(max_length = 200, blank = True, null = True)
     plt = models.CharField(max_length = 200, blank = True, null = True)
-    pdw = models.CharField(max_length = 200, blank = True, null = True)
     mpv = models.CharField(max_length = 200, blank = True, null = True)
-    p_lcr = models.CharField(max_length = 200, blank = True, null = True)
-    pct = models.CharField(max_length = 200, blank = True, null = True)
+    pdw = models.CharField(max_length = 200, blank = True, null = True)
     ret = models.CharField(max_length = 200, blank = True, null = True)
-    irf = models.CharField(max_length = 200, blank = True, null = True)
+    pct = models.CharField(max_length = 200, blank = True, null = True)
+    p_lcr = models.CharField(max_length = 200, blank = True, null = True)
     lfr = models.CharField(max_length = 200, blank = True, null = True)
+    irf = models.CharField(max_length = 200, blank = True, null = True)
     mfr = models.CharField(max_length = 200, blank = True, null = True)
     hfr = models.CharField(max_length = 200, blank = True, null = True)
     wbc_ip_message = models.CharField(max_length = 200, blank = True, null = True)
     rcb_rft_ip_message = models.CharField(max_length = 200, blank = True, null = True)
     plt_ip_message = models.CharField(max_length = 200, blank = True, null = True)
+    dr = models.CharField(max_length = 250, blank = True, null = True)
+
     created_at = models.DateTimeField(auto_now_add = True)
     
 
@@ -266,6 +284,8 @@ class Serology_test(models.Model):
     hiv = models.CharField(max_length = 200, blank = True, null = True)
     hcv = models.CharField(max_length = 200, blank = True, null = True)
     hbsag = models.CharField(max_length = 200, blank = True, null = True)
+    dr = models.CharField(max_length = 250, blank = True, null = True)
+
     created_at = models.DateTimeField(auto_now_add = True)
 
     def save(self, *args, **kwargs):

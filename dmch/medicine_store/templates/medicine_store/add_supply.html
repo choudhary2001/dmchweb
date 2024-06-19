@@ -13,14 +13,14 @@
     padding: 0;
     font-size: 12px;
   }
-  .exp_date{
+  .exp_date {
     padding: 0 !important;
     max-width: 14% !important;
   }
-  .quantity_div{
+  .quantity_div {
     padding: 0 !important;
   }
-  .cross_div{
+  .cross_div {
     padding: 0 !important;
     max-width: 25px !important;
   }
@@ -44,11 +44,11 @@
       <div class="col-md-4 mb-3">
         <div class="form-group">
           <label for="date">Received From:</label>
-          <input type="text" class="form-control"  name="remarks"  />
+          <input type="text" class="form-control" name="remarks" />
         </div>
       </div>
       <!-- Right Column (Order Details) -->
-      <div class="col-md-4 ">
+      <div class="col-md-4">
         <div class="form-group">
           <label for="date">Date:</label>
           <input type="date" class="form-control" name="order_date" value="{% if request.session.stock_date %}{{request.session.stock_date}}{% endif %}" required />
@@ -88,7 +88,7 @@
         <div class="col-md-2 exp_date">
           <div class="form-group">
             <label for="mfgname">Mfg. By:</label>
-            <input type="text" class="form-control" name="mfgname_1"  />
+            <input type="text" class="form-control" name="mfgname_1" />
           </div>
         </div>
 
@@ -103,7 +103,7 @@
         <div class="col-md-2 exp_date">
           <div class="form-group">
             <label for="batchno">Batch No.:</label>
-            <input type="text" class="form-control" name="batchno_1"  />
+            <input type="text" class="form-control" name="batchno_1" />
           </div>
         </div>
 
@@ -111,13 +111,13 @@
         <div class="col-md-2 exp_date">
           <div class="form-group">
             <label for="mfgdate">Mfg Date:</label>
-            <input type="date" class="form-control" name="mfgdate_1"  />
+            <input type="date" class="form-control" name="mfgdate_1" />
           </div>
         </div>
         <div class="col-md-2 exp_date">
           <div class="form-group">
             <label for="expdate">Exp. Date:</label>
-            <input type="date" class="form-control" name="expdate_1"  />
+            <input type="date" class="form-control" name="expdate_1" />
           </div>
         </div>
 
@@ -128,14 +128,8 @@
             <input type="number" class="form-control" name="quantity_1" required />
           </div>
         </div>
-
-
-      
-   
-
-
+      </div>
     </div>
-  </div>
     <input type="hidden" id="productCount" name="product_count" value="1" />
 
     <!-- <div class="text-center mt-3">
@@ -172,30 +166,29 @@
 </script>
 
 <script>
-
-$("#orderForm").on("keydown", function (event) {
-
-if (event.keyCode === 13) { // Check if Enter key is pressed
-    event.preventDefault(); // Prevent the default behavior of the Enter key
-
-}
-});
+  $("#orderForm").on("keydown", function (event) {
+    if (event.keyCode === 13) {
+      // Check if Enter key is pressed
+      event.preventDefault(); // Prevent the default behavior of the Enter key
+    }
+  });
 
   // Function to add product fields dynamically
   // document.getElementById("addProductField").addEventListener("click", function () {
-    $("#productFields").on("keyup", "input[name^='quantity']", function (event) {
-    if (event.keyCode === 13) { // Check if Enter key is pressed
+  $("#productFields").on("keyup", "input[name^='quantity']", function (event) {
+    if (event.keyCode === 13) {
+      // Check if Enter key is pressed
       event.preventDefault();
-    var productCount = parseInt($("#productCount").val());
-    productCount++;
-    $("#productCount").val(productCount);
-    var productFields = document.getElementById("productFields");
-    var productRow = document.createElement("div");
-    productRow.className = "row product-row";
+      var productCount = parseInt($("#productCount").val());
+      productCount++;
+      $("#productCount").val(productCount);
+      var productFields = document.getElementById("productFields");
+      var productRow = document.createElement("div");
+      productRow.className = "row product-row";
 
-    var middleColumn = document.createElement("div");
-    middleColumn.className = "col-md-2 exp_date";
-    middleColumn.innerHTML = `
+      var middleColumn = document.createElement("div");
+      middleColumn.className = "col-md-2 exp_date";
+      middleColumn.innerHTML = `
           <div class="form-group">
             <label for="product_type_${productCount}" id="product_type_${productCount}" name="product_type">Product Type:</label>
             <select class="form-control" name="product_type_${productCount}" required>
@@ -207,9 +200,9 @@ if (event.keyCode === 13) { // Check if Enter key is pressed
           </div>
         `;
 
-    var rightColumn = document.createElement("div");
-    rightColumn.className = "col-md-2 exp_date";
-    rightColumn.innerHTML = `
+      var rightColumn = document.createElement("div");
+      rightColumn.className = "col-md-2 exp_date";
+      rightColumn.innerHTML = `
           <div class="form-group">
             <label for="product_name_${productCount}" id="product_name_${productCount}" name="product_name">Product Name:</label>
             <select class="form-control" name="product_name_${productCount}" required>
@@ -221,74 +214,72 @@ if (event.keyCode === 13) { // Check if Enter key is pressed
           </div>
         `;
 
-    var mfgColumn = document.createElement("div");
-    mfgColumn.className = "col-md-2 exp_date";
-    mfgColumn.innerHTML = `
+      var mfgColumn = document.createElement("div");
+      mfgColumn.className = "col-md-2 exp_date";
+      mfgColumn.innerHTML = `
           <div class="form-group">
             <label for="mfgname">Mfg. By:</label>
             <input type="text" class="form-control" name="mfgname_${productCount}"  />
           </div>
         `;
 
-    var batchColumn = document.createElement("div");
-    batchColumn.className = "col-md-2 exp_date";
-    batchColumn.innerHTML = `
+      var batchColumn = document.createElement("div");
+      batchColumn.className = "col-md-2 exp_date";
+      batchColumn.innerHTML = `
           <div class="form-group">
             <label for="batchno">Batch No.:</label>
             <input type="text" class="form-control" name="batchno_${productCount}"  />
           </div>
         `;
 
-    var mfgDateColumn = document.createElement("div");
-    mfgDateColumn.className = "col-md-2 exp_date";
-    mfgDateColumn.innerHTML = `
+      var mfgDateColumn = document.createElement("div");
+      mfgDateColumn.className = "col-md-2 exp_date";
+      mfgDateColumn.innerHTML = `
           <div class="form-group">
             <label for="batchno">Mfg Date.:</label>
             <input type="date" class="form-control" name="mfgdate_${productCount}"  />
           </div>
         `;
 
-    var expDatecolumn = document.createElement("div");
-    expDatecolumn.className = "col-md-2 exp_date";
-    expDatecolumn.innerHTML = `
+      var expDatecolumn = document.createElement("div");
+      expDatecolumn.className = "col-md-2 exp_date";
+      expDatecolumn.innerHTML = `
           <div class="form-group">
             <label for="batchno">Exp Date.:</label>
             <input type="date" class="form-control" name="expdate_${productCount}"  />
           </div>
         `;
 
-    var quantityColumn = document.createElement("div");
-    quantityColumn.className = "col-md-1 quantity_div";
-    quantityColumn.innerHTML = `
+      var quantityColumn = document.createElement("div");
+      quantityColumn.className = "col-md-1 quantity_div";
+      quantityColumn.innerHTML = `
         <div class="form-group">
           <label for="quantity">Quantity:</label>
           <input type="number" class="form-control" name="quantity_${productCount}" required />
         </div>
       `;
 
-
-
-    var removeButton = document.createElement("div");
-    removeButton.className = "col-md-1 cross_div";
-    removeButton.innerHTML = `
+      var removeButton = document.createElement("div");
+      removeButton.className = "col-md-1 cross_div";
+      removeButton.innerHTML = `
       <div class="form-group">
           <label for="">&nbsp;</label>
           <button type="button" class="btn btn-danger remove-product">x</button>
       </div>
     `;
 
-    productRow.appendChild(middleColumn);
-    productRow.appendChild(rightColumn);
-    productRow.appendChild(mfgColumn);
-    productRow.appendChild(batchColumn);
-    productRow.appendChild(mfgDateColumn);
-    productRow.appendChild(mfgDateColumn);
-    productRow.appendChild(expDatecolumn);
-    productRow.appendChild(quantityColumn);
-    productRow.appendChild(removeButton);
+      productRow.appendChild(middleColumn);
+      productRow.appendChild(rightColumn);
+      productRow.appendChild(mfgColumn);
+      productRow.appendChild(batchColumn);
+      productRow.appendChild(mfgDateColumn);
+      productRow.appendChild(mfgDateColumn);
+      productRow.appendChild(expDatecolumn);
+      productRow.appendChild(quantityColumn);
+      productRow.appendChild(removeButton);
 
-    productFields.appendChild(productRow);
-      }
+      productFields.appendChild(productRow);
+    }
   });
 
   // Function to remove product fields

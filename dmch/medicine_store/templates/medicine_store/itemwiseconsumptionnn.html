@@ -15,7 +15,6 @@
   <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
   {% if messages %} {% for message in messages %}
   <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
-
   {% endfor %} {% endif %}
   <div style="display: flex"></div>
   <!-- DataTales Example -->
@@ -35,16 +34,6 @@
         <div class="form-group">
           <input type="search" class="form-control" id="searchInput" placeholder="Search..." />
         </div>
-
-        <!-- <div style="flex: 3">
-          <select name="department" class="form-control mb-2 mb-md-0">
-            <option>Select Department</option>
-            <option value="All">All</option>
-            {% for d in departments %}
-            <option value="{{d.department_id}}">{{d.name}}</option>
-            {% endfor %}
-          </select>
-        </div> -->
 
         <div style="flex: 1">
           <button class="btn btn-primary w-100" type="submit">Filter</button>
@@ -76,6 +65,7 @@
         <table class="table table-bordered" width="100%" id="tablee" cellspacing="0">
           <thead>
             <tr>
+              <th>Serial No</th>
               <th>Medicine Name</th>
               <th>Opening</th>
               <th>Purchase</th>
@@ -84,18 +74,9 @@
             </tr>
           </thead>
           <tbody>
-            <!-- {% for order in supply %}
-            <tr>
-              <td>{{ order.product_name }}</td>
-              <td>{% if order.total_quantity == None %}0{% else %}{{ order.total_quantity }}{% endif %}</td>
-              <td>{% if order.till_remaining == None %}0{% else %}{{ order.till_remaining }}{% endif %}</td>
-              <td>{% if order.till_end == None %}0{% else %}{{ order.till_end }}{% endif %}</td>
-
-          
-            </tr>
-            {% endfor %} -->
             {% for product_name, quantities in product_quantities.items %}
             <tr>
+              <td>{{ forloop.counter }}</td>
               <td>{{ product_name }}</td>
               <td>{{ quantities.opening }}</td>
               <td>{{ quantities.purchase1 }}</td>
@@ -146,8 +127,8 @@
       for (i = 1; i < rows.length - 1; i++) {
         shouldSwitch = false;
         // Get the two product names to compare
-        x = rows[i].getElementsByTagName("td")[0]; // Product Name column index
-        y = rows[i + 1].getElementsByTagName("td")[0]; // Product Name column index
+        x = rows[i].getElementsByTagName("td")[1]; // Product Name column index
+        y = rows[i + 1].getElementsByTagName("td")[1]; // Product Name column index
         // Check if the two rows should switch places based on alphabetical order
         if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
           // If so, mark as a switch and break the loop
@@ -161,7 +142,18 @@
         switching = true;
       }
     }
+    // Update serial numbers after sorting
+    updateSerialNumbers();
   }
+
+  function updateSerialNumbers() {
+    var table = document.getElementById("tablee");
+    var rows = table.rows;
+    for (var i = 1; i < rows.length; i++) {
+      rows[i].getElementsByTagName("td")[0].innerHTML = i; // Serial No column index
+    }
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     sortTableByProductName();
   });

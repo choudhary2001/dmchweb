@@ -35,7 +35,7 @@
         <div style="flex: 1">
           <a href="#;" onclick="printTable()" class="btn btn-primary" id="printButton">Print</a>
         </div>
-         <!-- <div style="flex: 2">
+        <!-- <div style="flex: 2">
           <a href="#;" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</a>
         </div> -->
       </form>
@@ -81,8 +81,8 @@
               <td>{{d.sdepartment.name}}</td>
               <td>{{d.product_name}}</td>
               <td>{{d.company_name}}</td>
-              <td>{{d.quantity}} {{d.quantity_typeq}}</td>
-              <td>{{d.stock_quantity}} {{d.quantity_typeq}}</td>
+              <td>{{d.quantity}} {% if d.quantity_type %}{{d.quantity_type}}{% endif %}</td>
+              <td>{{d.stock_quantity}} {% if d.quantity_type %}{{d.quantity_type}}{% endif %}</td>
               <td>{{d.bill_no}}</td>
               <td>{{d.chalan_no}}</td>
               <td>{{d.bill_date}}</td>
@@ -90,7 +90,6 @@
               <td>{{d.sp_order_no}}</td>
               <td>{{d.sp_order_date}}</td>
               <td>{{d.received_date}}</td>
-              
             </tr>
             {% endfor %}
           </tbody>
@@ -98,11 +97,9 @@
       </div>
     </div>
   </div>
-
 </div>
 
-{% endblock %} 
-{% block script %}
+{% endblock %} {% block script %}
 <script>
   // Function to print the table
   function printTable() {

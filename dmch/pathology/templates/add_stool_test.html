@@ -23,141 +23,137 @@
     {% csrf_token %}
 
     <div class="row">
-        <!-- Left Column (Patient Details) -->
-        <div class="col-md-4 mb-3">
-            <label for="regid">Reg No.:</label>
-            <input type="text" class="form-control" id="regid" name="regid" required />
-
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <label for="bill_no">Bill No.:</label>
-            <input type="text" class="form-control" id="bill_no" value="" name="bill_no"  disabled  required />
-        </div>
-
-        <div class="col-md-4 mb-3" >
-            <label for="labno">Lab No :</label>
-            <input type="text" id="labno" class="form-control"  disabled name="labno" />
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <label for="patient_name">Patient Name :</label>
-            <input type="text" class="form-control" id="patient_name" name="patient_name" disabled  />
-        </div>
-
-
-        <div class="col-md-4 mb-3">
-            <label for="department">Department:</label>
-            <input type="text" class="form-control" id="department" value="" name="department"  disabled  />
-        </div>
-
-
-
-        <div class="col-md-4 mb-3" >
-            <label for="doctor">Refer By :</label>
-            <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
-            <option>Select Doctor</option>
-            </select> -->
-            <input type="text" class="form-control" id="doctor" value="" name="doctor" disabled   />
-
-        </div>
-      
-
-
-        <div class="col-md-4 mb-3">
-          <label for="colour">Colour:</label>
-          <input type="text" class="form-control" id="colour" value="{{stool.colour}}" name="colour"   />
+      <!-- Left Column (Patient Details) -->
+      <div class="col-md-4 mb-3">
+        <label for="bill_no">Bill No.:</label>
+        <input type="text" class="form-control" id="bill_no" value="" name="bill_no" required />
       </div>
 
       <div class="col-md-4 mb-3">
-          <label for="odour">Odour :</label>
-          <input type="text" class="form-control" id="odour" value="{{stool.odour}}" name="odour"   />
+        <label for="regid">Reg No.:</label>
+        <input type="text" class="form-control" id="regid" name="regid" disabled required />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="labno">Lab No :</label>
+        <input type="text" id="labno" class="form-control" disabled name="labno" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="patient_name">Patient Name :</label>
+        <input type="text" class="form-control" id="patient_name" name="patient_name" disabled />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="department">Department:</label>
+        <input type="text" class="form-control" id="department" value="" name="department" disabled />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="doctor">Refer By :</label>
+        <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
+            <option>Select Doctor</option>
+            </select> -->
+        <input type="text" class="form-control" id="doctor" value="" name="doctor" disabled />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="colour">Colour:</label>
+        <!-- <input type="text" class="form-control" id="colour" value="{{stool.colour}}" name="colour" /> -->
+        <select type="text" id="colour" class="form-control" name="colour">
+          <option value="">Select Colour</option>
+          <option value="Brown">Brown</option>
+          <option value="Yellowish">Yellowish</option>
+          <option value="Blackish">Blackish</option>
+          <option value="Redish">Redish</option>
+        </select>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="odour">Odour :</label>
+        <input type="text" class="form-control" id="odour" value="{{stool.odour}}" name="odour" />
       </div>
 
       <div class="col-md-4 mb-3">
         <label for="consistency">Consistency:</label>
-        <input type="text" class="form-control" id="consistency" value="{{stool.consistency}}" name="consistency"  />
-    </div>
+        <input type="text" class="form-control" id="consistency" value="{{stool.consistency}}" name="consistency" />
+      </div>
 
-    <div class="col-md-4 mb-3">
+      <div class="col-md-4 mb-3">
         <label for="ocalt_blood">Ocalt Blood:</label>
-        <input type="text" class="form-control" id="ocalt_blood" value="{{stool.ocalt_blood}}" name="ocalt_blood"  />
-    </div>
-
-      
-      <div class="col-md-4 mb-3">
-          <label for="reducing_sugar">Reducing Sugar:</label>
-          <input type="text" class="form-control" id="reducing_sugar" value="{{stool.reducing_sugar}}" name="reducing_sugar"  />
+        <input type="text" class="form-control" id="ocalt_blood" value="{{stool.ocalt_blood}}" name="ocalt_blood" />
       </div>
 
-            
       <div class="col-md-4 mb-3">
-          <label for="chemical_reaction">Chemical Reaction:</label>
-          <input type="text" class="form-control" id="chemical_reaction" value="{{stool.chemical_reaction}}" name="chemical_reaction"  />
+        <label for="reducing_sugar">Reducing Sugar:</label>
+        <input type="text" class="form-control" id="reducing_sugar" value="{{stool.reducing_sugar}}" name="reducing_sugar" />
       </div>
 
-          
       <div class="col-md-4 mb-3">
-          <label for="ova_roundword">Ova Roundword:</label>
-          <input type="text" class="form-control" id="ova_roundword" value="{{stool.ova_roundword}}" name="ova_roundword"  />
+        <label for="chemical_reaction">Chemical Reaction:</label>
+        <input type="text" class="form-control" id="chemical_reaction" value="{{stool.chemical_reaction}}" name="chemical_reaction" />
       </div>
 
-        
+      <div class="col-md-4 mb-3">
+        <label for="ova_roundword">Ova Roundword:</label>
+        <input type="text" class="form-control" id="ova_roundword" value="{{stool.ova_roundword}}" name="ova_roundword" />
+      </div>
+
       <div class="col-md-4 mb-3">
         <label for="ova_hookworm">Ova Hookworm:</label>
-        <input type="text" class="form-control" id="ova_hookworm" value="{{stool.ova_hookworm}}" name="ova_hookworm"  />
+        <input type="text" class="form-control" id="ova_hookworm" value="{{stool.ova_hookworm}}" name="ova_hookworm" />
       </div>
 
-        
       <div class="col-md-4 mb-3">
         <label for="ova_threadworm">Ova Threadworm:</label>
-        <input type="text" class="form-control" id="ova_threadworm" value="{{stool.ova_threadworm}}" name="ova_threadworm"  />
+        <input type="text" class="form-control" id="ova_threadworm" value="{{stool.ova_threadworm}}" name="ova_threadworm" />
       </div>
 
       <div class="col-md-4 mb-3">
         <label for="ova_tenia">Ova Tenia:</label>
-        <input type="text" class="form-control" id="ova_tenia" value="{{stool.ova_tenia}}" name="ova_tenia"  />
+        <input type="text" class="form-control" id="ova_tenia" value="{{stool.ova_tenia}}" name="ova_tenia" />
       </div>
 
-        
       <div class="col-md-4 mb-3">
         <label for="rbc">Ova Tt:</label>
-        <input type="text" class="form-control" id="ova_tt" value="{{stool.ova_tt}}" name="ova_tt"  />
+        <input type="text" class="form-control" id="ova_tt" value="{{stool.ova_tt}}" name="ova_tt" />
       </div>
 
-        
       <div class="col-md-4 mb-3">
         <label for="wbc">Eh Cyst:</label>
-        <input type="text" class="form-control" id="eh_cyst" value="{{stool.eh_cyst}}" name="eh_cyst"  />
+        <input type="text" class="form-control" id="eh_cyst" value="{{stool.eh_cyst}}" name="eh_cyst" />
       </div>
 
-        
       <div class="col-md-4 mb-3">
         <label for="ecoli_cyst">Ecoli Cyst:</label>
-        <input type="text" class="form-control" id="ecoli_cyst" value="{{stool.ecoli_cyst}}" name="ecoli_cyst"  />
+        <input type="text" class="form-control" id="ecoli_cyst" value="{{stool.ecoli_cyst}}" name="ecoli_cyst" />
       </div>
 
       <div class="col-md-4 mb-3">
         <label for="girida_lamba_cyst">Girida Lamba Cyst:</label>
-        <input type="text" class="form-control" id="girida_lamba_cyst" value="{{stool.girida_lamba_cyst}}" name="girida_lamba_cyst"  />
+        <input type="text" class="form-control" id="girida_lamba_cyst" value="{{stool.girida_lamba_cyst}}" name="girida_lamba_cyst" />
       </div>
       <div class="col-md-4 mb-3">
         <label for="wbc">WBC:</label>
-        <input type="text" class="form-control" id="wbc" value="{{stool.wbc}}" name="wbc"  />
+        <input type="text" class="form-control" id="wbc" value="{{stool.wbc}}" name="wbc" />
       </div>
       <div class="col-md-4 mb-3">
-          <label for="rbc">RBC:</label>
-          <input type="text" class="form-control" id="rbc" value="{{stool.rbc}}" name="rbc"  />
-        </div>
+        <label for="rbc">RBC:</label>
+        <input type="text" class="form-control" id="rbc" value="{{stool.rbc}}" name="rbc" />
+      </div>
       <div class="col-md-4 mb-3">
         <label for="others">Others:</label>
-        <input type="text" class="form-control" id="others" value="{{stool.others}}" name="others"  />
+        <input type="text" class="form-control" id="others" value="{{stool.others}}" name="others" />
       </div>
-
-
+      <div class="col-md-4 mb-3">
+        <label for="dr">Doctor Signature :</label>
+        <select type="text" id="dr" class="form-control" name="dr">
+          <option value="">Select Doctor</option>
+          <option value="santoshkumar">Dr. Santosh Kumar Sharma</option>
+          <option value="knyadav">Dr. K. N. Yadav</option>
+        </select>
+      </div>
     </div>
-
-
 
     <button type="submit" class="btn btn-primary">Save</button>
   </form>
@@ -165,108 +161,58 @@
 
 <!-- End of Main Content -->
 {% endblock %} {% block script %}
-<script></script>
-<script>
-
-
-  // Function to handle form submission
-  function handleFormSubmission(event) {
-    event.preventDefault(); // Prevent default form submission
-
-    // Your additional logic for form validation or processing goes here
-
-    // Select all input fields in the form
-    const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
-
-    // Flag to keep track of form validity
-    let isValid = true;
-
-    // Loop through each input field
-    inputs.forEach(function (input) {
-      // Check if the input field is  and does not have a value
-      if (input.hasAttribute("required") && !input.value.trim()) {
-        // If a  field is empty, set isValid to false
-        isValid = false;
-        // Highlight the empty field (you can customize this part)
-        input.style.border = "1px solid red";
-      } else {
-        // Remove any previous highlighting
-        input.style.border = "";
-      }
-    });
-
-    // If the form is valid, submit it
-    if (isValid) {
-      document.getextementById("patientForm").submit();
-    } else {
-      // If the form is invalid, display an alert (you can customize this part)
-      //   alert("Please fill out all  fields.");
-    }
-  }
-
-  // Function to handle keyboard shortcuts
-  function handleShortcut(event) {
-    // if (event.ctrlKey && event.key === "s") {
-    if (event.key === "F2") {
-      // Ctrl + S pressed, trigger form submission
-      handleFormSubmission(event);
-    }
-  }
-
-  // Attach event listener for form submission
-  document.getextementById("patientForm").addEventListener("submit", handleFormSubmission);
-
-  // Attach event listener for keyboard shortcuts
-  document.addEventListener("keydown", handleShortcut);
-</script>
-
 <script>
   $(document).ready(function () {
-    $("#regid").on("input", function () {
-      var regid = $(this).val();
-      if (regid) {
-        $.ajax({
-          url: '{% url "fetch_patient_data_details" %}',
-          type: "GET",
-          data: {
-            regid: regid,
-          },
-          success: function (data) {
-            if (data.stool_report && data.stool_report.available) {
+    $("#bill_no").on("keypress", function (e) {
+      if (e.which === 13) {
+        var regid = $(this).val();
+        e.preventDefault();
+        if (regid) {
+          $.ajax({
+            url: '{% url "fetch_patient_data_details" %}',
+            type: "GET",
+            data: {
+              regid: regid,
+            },
+            success: function (data) {
+              console.log(data);
+              // Update input fields with fetched data
+              $("#patient_name").val(data.name);
+              $("#regid").val(data.regid);
+              $("#bill_no").val(data.bill_no);
+              $("#labno").val(data.lab_no);
+              $("#department").val(data.department);
+              $("#doctor").val(data.referby);
+              $("#patient_name").val(data.name);
+              if (data.stool_report && data.stool_report.available) {
                 // Redirect to another page
                 window.location.href = `/pathology/update_stool_test/${data.stool_report.id}/`;
-            }
-            // Update input fields with fetched data
-            $("#patient_name").val(data.name);
-            $("#bill_no").val(data.bill_no);
-            $("#labno").val(data.lab_no);
-            $("#department").val(data.department);
-            $("#doctor").val(data.referby);
-            $("#patient_name").val(data.name);
-          },
-          error: function (xhr, status, error) {
-            console.error(xhr.responseText);
-            // Handle error if necessary
-            $("#patient_name").val('');
-            $("#bill_no").val('');
-            $("#labno").val('');
-            $("#department").val('');
-            $("#doctor").val('');
-            $("#patient_name").val('');
-          },
-        });
-      } else {
-        // Clear input fields when regid is empty
-        $("#patient_name").val('');
-        $("#bill_no").val('');
-        $("#labno").val('');
-        $("#department").val('');
-        $("#doctor").val('');
-        $("#patient_name").val('');
+              }
+            },
+            error: function (xhr, status, error) {
+              console.error(xhr.responseText);
+              // Handle error if necessary
+              $("#patient_name").val("");
+              $("#regid").val("");
+              $("#bill_no").val("");
+              $("#labno").val("");
+              $("#department").val("");
+              $("#doctor").val("");
+              $("#patient_name").val("");
+            },
+          });
+        } else {
+          // Clear input fields when regid is empty
+          $("#patient_name").val("");
+          $("#bill_no").val("");
+          $("#regid").val("");
+          $("#labno").val("");
+          $("#department").val("");
+          $("#doctor").val("");
+          $("#patient_name").val("");
+        }
       }
     });
   });
 </script>
-
-
 {% endblock %}

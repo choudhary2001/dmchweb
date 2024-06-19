@@ -14,8 +14,7 @@
   }
 </style>
 
-<div class="" id="printContent" style="width: 100%; margin-top: -10px; display: none;">
-
+<div class="" id="printContent" style="width: 100%; margin-top: -10px; display: none">
   <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.8rem">
     <h2>DEPARTMENT OF CLINICAL PATHOLOGY</h2>
     <h4>DARBHANGA MEDICAL COLLEGE & HOSPITAL</h4>
@@ -24,13 +23,13 @@
   </div>
   <hr />
   <div style="display: flex; justify-content: space-between">
-    <div style="display: flex; justify-content: space-between; width: 100%;">
-      <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+    <div style="display: flex; justify-content: space-between; width: 100%">
+      <div style="font-family: sans-serif; color: black; font-size: 1.3rem; margin-bottom: 0.4rem !important">
         <p>Patient Name : <strong>{% if stool.reg_no.name %}{{stool.reg_no.name}}{% endif %} </strong></p>
         <p>Refd By. : <strong>{% if stool.patient.referby.name %}{{stool.patient.referby.name}}{% endif %}</strong></p>
         <p>Bill No. : <strong>{% if stool.patient.bill_no %}{{stool.patient.bill_no}}{% endif %}</strong></p>
       </div>
-      <div style="font-family: sans-serif; color: black; font-size: 1.3rem;  margin-bottom: 0.4rem !important;">
+      <div style="font-family: sans-serif; color: black; font-size: 1.3rem; margin-bottom: 0.4rem !important">
         <p>Date : <strong>{% if stool.created_at %}{{stool.created_at}}{% endif %}</strong></p>
         <p>Reg No. : <strong>{% if stool.reg_no %}{% if stool.reg_no.de == 'Pathology' %}{{stool.reg_no.regnoid}}{% else %}{{stool.reg_no.regid}}{% endif %}{% endif %}</strong></p>
         <p>Lab No. : <strong>{% if stool.patient.lab_no %}{{stool.patient.lab_no}}{% endif %}</strong></p>
@@ -39,9 +38,8 @@
   </div>
   <hr />
   <div>
-
     <div class="table-responsive">
-      <table class="table table-bordered"  width="100%" cellspacing="0">
+      <table class="table table-bordered" width="100%" cellspacing="0">
         <thead>
           <tr>
             <th>Test</th>
@@ -50,166 +48,129 @@
           </tr>
         </thead>
         <tbody>
- 
           {% if stool.colour %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Colour</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.colour}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Colour</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{stool.colour}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 150 mg/dl</td> -->
           </tr>
-          {% endif %}
-
-          {% if stool.odour %}
+          {% endif %} {% if stool.odour %}
           <tr>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Odour</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.odour}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Odour</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{stool.odour}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">70 - 150 mg/dl</td> -->
           </tr>
-          {% endif %}
-
-          {% if stool.consistency %}
+          {% endif %} {% if stool.consistency %}
           <tr>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Consistency </td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.consistency}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Consistency</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{stool.consistency}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">15 - 45 mg/dl</td> -->
           </tr>
-          {% endif %}
-
-          {% if stool.ocalt_blood %}
+          {% endif %} {% if stool.ocalt_blood %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Ocalt Blood</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.ocalt_blood}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Ocalt Blood</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{stool.ocalt_blood}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">07 - 1.5 mg/dl</td> -->
           </tr>
-          {% endif %}
-
-          {% if stool.reducing_sugar %}
+          {% endif %} {% if stool.reducing_sugar %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Reducing Sugar</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.reducing_sugar}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Reducing Sugar</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{stool.reducing_sugar}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.5 - 7.2 mg/dl</td> -->
           </tr>
-          {% endif %}
-
-          {% if stool.chemical_reaction %}
+          {% endif %} {% if stool.chemical_reaction %}
           <tr>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Chemical Reaction</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.chemical_reaction}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Chemical Reaction</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{stool.chemical_reaction}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 1.2 mg/dl</td> -->
           </tr>
-          {% endif %}
-          
-          {% if stool.ova_roundword %}
+          {% endif %} {% if stool.ova_roundword %}
           <tr>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">OVA Round Word</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.ova_roundword}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">OVA Round Word</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{stool.ova_roundword}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 35 IU/L</td> -->
           </tr>
-          {% endif %}
-
-          {% if stool.ova_hookworm %}
+          {% endif %} {% if stool.ova_hookworm %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">OVA Hook Kworm</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.ova_hookworm}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">OVA Hook Kworm</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{stool.ova_hookworm}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0.0 - 45 IU/L</td> -->
           </tr>
-          {% endif %}
-
-          {% if stool.ova_threadworm %}
+          {% endif %} {% if stool.ova_threadworm %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">OVA Thread Worm</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.ova_threadworm}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">OVA Thread Worm</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{stool.ova_threadworm}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">6.4 - 8.3 g/dl</td> -->
           </tr>
-          {% endif %}
-
-          {% if stool.ova_tenia %}
+          {% endif %} {% if stool.ova_tenia %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">OVA Tenia</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.ova_tenia}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">OVA Tenia</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{stool.ova_tenia}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">3.5 - 5.2 g/dl</td> -->
           </tr>
-          {% endif %}
-
-          {% if stool.ova_tt %}
+          {% endif %} {% if stool.ova_tt %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">OVA TT</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.ova_tt}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">OVA TT</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{stool.ova_tt}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">30 - 130 U/L</td> -->
           </tr>
-          {% endif %}
-
-          {% if stool.eh_cyst %}
+          {% endif %} {% if stool.eh_cyst %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">EH Cyst </td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.eh_cyst}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">EH Cyst</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{stool.eh_cyst}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 55 IU/L</td> -->
           </tr>
-          {% endif %}
-          
-          {% if stool.ecoli_cyst %}
+          {% endif %} {% if stool.ecoli_cyst %}
           <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Ecoli Cyst</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.ecoli_cyst}}</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Ecoli Cyst</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{stool.ecoli_cyst}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
+          </tr>
+          {% endif %} {% if stool.girida_lamba_cyst %}
+          <tr>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Girida Lamba Cyst</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{stool.girida_lamba_cyst}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
+          </tr>
+          {% endif %} {% if stool.wbc %}
+          <tr>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">WBC</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{stool.wbc}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
+          </tr>
+          {% endif %} {% if stool.rbc %}
+          <tr>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">RBC</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{stool.rbc}}</td>
+            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
+          </tr>
+          {% endif %} {% if stool.others %}
+          <tr>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">Others</td>
+            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding: 3px">{{stool.others}}</td>
             <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
           </tr>
           {% endif %}
-          {% if stool.girida_lamba_cyst %}
-          <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Girida Lamba Cyst </td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.girida_lamba_cyst}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
-          </tr>
-          {% endif %}
-          {% if stool.wbc %}
-          <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">WBC </td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.wbc}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
-          </tr>
-          {% endif %}
-          {% if stool.rbc %}
-          <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">RBC</td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.rbc}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
-          </tr>
-          {% endif %}
-
-          {% if stool.others %}
-          <tr>
-            
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">Others </td>
-            <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">{{stool.others}}</td>
-            <!-- <td style="font-family: sans-serif; color: black; font-size: 1rem; padding:3px">0 - 80 U/L</td> -->
-          </tr>
-          {% endif %}
-
         </tbody>
       </table>
     </div>
-
   </div>
-  <div style="display: flex;justify-content: space-between; width: 100%;position: absolute; bottom: 0;" >
+  {% if stool.dr %}
+  <div style="display: flex; justify-content: space-between; width: 100%; position: relative; bottom: 0; display: flex; justify-content: space-between; width: 100%; position: relative; bottom: 0; flex-direction: column; align-items: flex-end">
+    {% if stool.dr == 'santoshkumar' %}<img height="100px" src="/media/img/drsantosh1.png" />
+    <br />
+    <h6>Dr. Santosh Kumar Sharma</h6>
+    {% endif %} {% if stool.dr == 'knyadav' %}<img height="100px" src="/media/img/drkn1.png" />
+    <br />
+    <p>Dr. K. N. Yadav</p>
+    {% endif %}
+  </div>
+  {% endif %}
+  <div style="display: flex; justify-content: space-between; width: 100%">
     <div>Checked By ..............</div>
     <div>Signature ..................................................</div>
   </div>
-
-
 </div>
-
 
 <div class="container-fluid">
   <!-- Page Heading -->
@@ -221,264 +182,264 @@
     {% csrf_token %}
 
     <div class="row">
-        <!-- Left Column (Patient Details) -->
-        <div class="col-md-4 mb-3">
-            <label for="regid">Reg No.:</label>
-            <input type="text" class="form-control" id="regid"  value="{{stool.reg_no.regid}}" disabled  name="regid"  />
+      <!-- Left Column (Patient Details) -->
+      <div class="col-md-4 mb-3">
+        <label for="regid">Reg No.:</label>
+        <input type="text" class="form-control" id="regid" value="{{stool.reg_no.regid}}" disabled name="regid" />
+      </div>
 
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="bill_no">Bill No.:</label>
+        <input type="text" class="form-control" id="bill_no" name="bill_no" disabled />
+      </div>
 
-        <div class="col-md-4 mb-3">
-            <label for="bill_no">Bill No.:</label>
-            <input type="text" class="form-control" id="bill_no"  name="bill_no"  disabled  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="labno">Lab No :</label>
+        <input type="text" id="labno" class="form-control" disabled name="labno" />
+      </div>
 
-        <div class="col-md-4 mb-3" >
-            <label for="labno">Lab No :</label>
-            <input type="text" id="labno" class="form-control"  disabled name="labno" />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="patient_name">Patient Name :</label>
+        <input type="text" class="form-control" id="patient_name" name="patient_name" disabled />
+      </div>
 
-        <div class="col-md-4 mb-3">
-            <label for="patient_name">Patient Name :</label>
-            <input type="text" class="form-control" id="patient_name" name="patient_name" disabled  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="department">Department:</label>
+        <input type="text" class="form-control" id="department" name="department" disabled />
+      </div>
 
-
-        <div class="col-md-4 mb-3">
-            <label for="department">Department:</label>
-            <input type="text" class="form-control" id="department"  name="department"  disabled  />
-        </div>
-
-
-
-        <div class="col-md-4 mb-3" >
-            <label for="doctor">Refer By :</label>
-            <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
+      <div class="col-md-4 mb-3">
+        <label for="doctor">Refer By :</label>
+        <!-- <select type="text" id="doctor" class="form-control" name="doctor" >
             <option>Select Doctor</option>
             </select> -->
-            <input type="text" class="form-control" id="doctor"  name="doctor" disabled   />
-        </div>
-            
-
-        <div class="col-md-4 mb-3">
-            <label for="colour">Colour:</label>
-            <input type="text" class="form-control" id="colour" value="{{stool.colour}}" name="colour"   />
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <label for="odour">Odour :</label>
-            <input type="text" class="form-control" id="odour" value="{{stool.odour}}" name="odour"   />
-        </div>
-
-        <div class="col-md-4 mb-3">
-          <label for="consistency">Consistency:</label>
-          <input type="text" class="form-control" id="consistency" value="{{stool.consistency}}" name="consistency"  />
+        <input type="text" class="form-control" id="doctor" name="doctor" disabled />
       </div>
-  
+
       <div class="col-md-4 mb-3">
-          <label for="ocalt_blood">Ocalt Blood:</label>
-          <input type="text" class="form-control" id="ocalt_blood" value="{{stool.ocalt_blood}}" name="ocalt_blood"  />
+        <label for="colour">Colour:</label>
+        <!-- <input type="text" class="form-control" id="colour" value="{{stool.colour}}" name="colour" /> -->
+        <select type="text" id="colour" class="form-control" name="colour">
+          <option value="">Select Colour</option>
+          <option {% if stool.colour == 'Brown' %}selected{% endif %} value="Brown">Brown</option>
+          <option {% if stool.colour == 'Yellowish' %}selected{% endif %} value="Yellowish">Yellowish</option>
+          <option {% if stool.colour == 'Blackish' %}selected{% endif %} value="Blackish">Blackish</option>
+          <option {% if stool.colour == 'Redish' %}selected{% endif %} value="Redish">Redish</option>
+        </select>
       </div>
-        
-        <div class="col-md-4 mb-3">
-            <label for="reducing_sugar">Reducing Sugar:</label>
-            <input type="text" class="form-control" id="reducing_sugar" value="{{stool.reducing_sugar}}" name="reducing_sugar"  />
-        </div>
 
-              
-        <div class="col-md-4 mb-3">
-            <label for="chemical_reaction">Chemical Reaction:</label>
-            <input type="text" class="form-control" id="chemical_reaction" value="{{stool.chemical_reaction}}" name="chemical_reaction"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="odour">Odour :</label>
+        <input type="text" class="form-control" id="odour" value="{{stool.odour}}" name="odour" />
+      </div>
 
-            
-        <div class="col-md-4 mb-3">
-            <label for="ova_roundword">Ova Roundword:</label>
-            <input type="text" class="form-control" id="ova_roundword" value="{{stool.ova_roundword}}" name="ova_roundword"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="consistency">Consistency:</label>
+        <input type="text" class="form-control" id="consistency" value="{{stool.consistency}}" name="consistency" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="ova_hookworm">Ova Hookworm:</label>
-          <input type="text" class="form-control" id="ova_hookworm" value="{{stool.ova_hookworm}}" name="ova_hookworm"  />
-        </div>
-          
-        <div class="col-md-4 mb-3">
-          <label for="ova_threadworm">Ova Threadworm:</label>
-          <input type="text" class="form-control" id="ova_threadworm" value="{{stool.ova_threadworm}}" name="ova_threadworm"  />
-        </div>
-          
-        <div class="col-md-4 mb-3">
-          <label for="ova_tenia">Ova Tenia:</label>
-          <input type="text" class="form-control" id="ova_tenia" value="{{stool.ova_tenia}}" name="ova_tenia"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="ocalt_blood">Ocalt Blood:</label>
+        <input type="text" class="form-control" id="ocalt_blood" value="{{stool.ocalt_blood}}" name="ocalt_blood" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="rbc">Ova Tt:</label>
-          <input type="text" class="form-control" id="ova_tt" value="{{stool.ova_tt}}" name="ova_tt"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="reducing_sugar">Reducing Sugar:</label>
+        <input type="text" class="form-control" id="reducing_sugar" value="{{stool.reducing_sugar}}" name="reducing_sugar" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="wbc">Eh Cyst:</label>
-          <input type="text" class="form-control" id="eh_cyst" value="{{stool.eh_cyst}}" name="eh_cyst"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="chemical_reaction">Chemical Reaction:</label>
+        <input type="text" class="form-control" id="chemical_reaction" value="{{stool.chemical_reaction}}" name="chemical_reaction" />
+      </div>
 
-          
-        <div class="col-md-4 mb-3">
-          <label for="ecoli_cyst">Ecoli Cyst:</label>
-          <input type="text" class="form-control" id="ecoli_cyst" value="{{stool.ecoli_cyst}}" name="ecoli_cyst"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="ova_roundword">Ova Roundword:</label>
+        <input type="text" class="form-control" id="ova_roundword" value="{{stool.ova_roundword}}" name="ova_roundword" />
+      </div>
 
-        <div class="col-md-4 mb-3">
-          <label for="girida_lamba_cyst">Girida Lamba Cyst:</label>
-          <input type="text" class="form-control" id="girida_lamba_cyst" value="{{stool.girida_lamba_cyst}}" name="girida_lamba_cyst"  />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="wbc">WBC:</label>
-          <input type="text" class="form-control" id="wbc" value="{{stool.wbc}}" name="wbc"  />
-        </div>
-        <div class="col-md-4 mb-3">
-            <label for="rbc">RBC:</label>
-            <input type="text" class="form-control" id="rbc" value="{{stool.rbc}}" name="rbc"  />
-          </div>
-        <div class="col-md-4 mb-3">
-          <label for="others">Others:</label>
-          <input type="text" class="form-control" id="others" value="{{stool.others}}" name="others"  />
-        </div>
+      <div class="col-md-4 mb-3">
+        <label for="ova_hookworm">Ova Hookworm:</label>
+        <input type="text" class="form-control" id="ova_hookworm" value="{{stool.ova_hookworm}}" name="ova_hookworm" />
+      </div>
 
+      <div class="col-md-4 mb-3">
+        <label for="ova_threadworm">Ova Threadworm:</label>
+        <input type="text" class="form-control" id="ova_threadworm" value="{{stool.ova_threadworm}}" name="ova_threadworm" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="ova_tenia">Ova Tenia:</label>
+        <input type="text" class="form-control" id="ova_tenia" value="{{stool.ova_tenia}}" name="ova_tenia" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="rbc">Ova Tt:</label>
+        <input type="text" class="form-control" id="ova_tt" value="{{stool.ova_tt}}" name="ova_tt" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="wbc">Eh Cyst:</label>
+        <input type="text" class="form-control" id="eh_cyst" value="{{stool.eh_cyst}}" name="eh_cyst" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="ecoli_cyst">Ecoli Cyst:</label>
+        <input type="text" class="form-control" id="ecoli_cyst" value="{{stool.ecoli_cyst}}" name="ecoli_cyst" />
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="girida_lamba_cyst">Girida Lamba Cyst:</label>
+        <input type="text" class="form-control" id="girida_lamba_cyst" value="{{stool.girida_lamba_cyst}}" name="girida_lamba_cyst" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="wbc">WBC:</label>
+        <input type="text" class="form-control" id="wbc" value="{{stool.wbc}}" name="wbc" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="rbc">RBC:</label>
+        <input type="text" class="form-control" id="rbc" value="{{stool.rbc}}" name="rbc" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="others">Others:</label>
+        <input type="text" class="form-control" id="others" value="{{stool.others}}" name="others" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="dr">Doctor Signature :</label>
+        <select type="text" id="dr" class="form-control" name="dr">
+          <option value="">Select Doctor</option>
+          <option {% if stool.dr == 'santoshkumar' %}selected{% endif %}  value="santoshkumar">Dr. Santosh Kumar Sharma</option>
+          <option {% if stool.dr == 'knyadav' %}selected{% endif %} value="knyadav">Dr. K. N. Yadav</option>
+        </select>
+      </div>
     </div>
 
-
-
     <button type="submit" class="btn btn-primary">Save</button>
-    <a href="#;" id="printButton" style=" display: none;" class="btn btn-primary">Print</a>
-
+    <a href="#;" id="printButton" style="display: none" class="btn btn-primary">Print</a>
   </form>
 </div>
 
 <!-- End of Main Content -->
 {% endblock %} {% block script %}
-  <script>
-    // Function to handle showing the print button after page load
-    document.addEventListener("DOMContentLoaded", function () {
-      // Show the print button
-      document.getElementById("printButton").style.display = "inline-block";
+<script>
+  // Function to handle showing the print button after page load
+  document.addEventListener("DOMContentLoaded", function () {
+    // Show the print button
+    document.getElementById("printButton").style.display = "inline-block";
+  });
+</script>
+<script>
+  $(document).ready(function () {
+    // Function to handle printing
+    $("#printButton").click(function () {
+      // Show the hidden print content
+      $("#printContent").show();
+
+      // Print only the content inside the printContent div
+      var printContents = $("#printContent").html();
+      var originalContents = $("body").html();
+      $("body").empty().html(printContents);
+
+      // Trigger the print dialog
+      window.print();
+
+      // Restore the original page content
+      $("#printContent").hide();
+      $("body").html(originalContents);
+      $("#printContent").hide();
     });
-  </script>
-  <script>
-    $(document).ready(function () {
-      // Function to handle printing
-      $("#printButton").click(function () {
-          // Show the hidden print content
-          $("#printContent").show();
+  });
+</script>
+<script>
+  // Function to handle form submission
+  function handleFormSubmission(event) {
+    event.preventDefault(); // Prevent default form submission
 
-          // Print only the content inside the printContent div
-          var printContents = $("#printContent").html();
-          var originalContents = $("body").html();
-          $("body").empty().html(printContents);
+    // Your additional logic for form validation or processing goes here
 
-          // Trigger the print dialog
-          window.print();
+    // Select all input fields in the form
+    const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
 
-          // Restore the original page content
-          $("#printContent").hide();
-          $("body").html(originalContents);
-          $("#printContent").hide();
-      });
-    });
-  </script>
-  <script>
-    // Function to handle form submission
-    function handleFormSubmission(event) {
-      event.preventDefault(); // Prevent default form submission
+    // Flag to keep track of form validity
+    let isValid = true;
 
-      // Your additional logic for form validation or processing goes here
-
-      // Select all input fields in the form
-      const inputs = document.querySelectorAll("#patientForm input, #patientForm select, #patientForm textarea");
-
-      // Flag to keep track of form validity
-      let isValid = true;
-
-      // Loop through each input field
-      inputs.forEach(function (input) {
-        // Check if the input field is  and does not have a value
-        if (input.hasAttribute("required") && !input.value.trim()) {
-          // If a  field is empty, set isValid to false
-          isValid = false;
-          // Highlight the empty field (you can customize this part)
-          input.style.border = "1px solid red";
-        } else {
-          // Remove any previous highlighting
-          input.style.border = "";
-        }
-      });
-
-      // If the form is valid, submit it
-      if (isValid) {
-        document.getextementById("patientForm").submit();
+    // Loop through each input field
+    inputs.forEach(function (input) {
+      // Check if the input field is  and does not have a value
+      if (input.hasAttribute("required") && !input.value.trim()) {
+        // If a  field is empty, set isValid to false
+        isValid = false;
+        // Highlight the empty field (you can customize this part)
+        input.style.border = "1px solid red";
       } else {
-        // If the form is invalid, display an alert (you can customize this part)
-        //   alert("Please fill out all  fields.");
-      }
-    }
-
-    // Function to handle keyboard shortcuts
-    function handleShortcut(event) {
-      // if (event.ctrlKey && event.key === "s") {
-      if (event.key === "F2") {
-        // Ctrl + S pressed, trigger form submission
-        handleFormSubmission(event);
-      }
-    }
-
-    // Attach event listener for form submission
-    document.getextementById("patientForm").addEventListener("submit", handleFormSubmission);
-
-    // Attach event listener for keyboard shortcuts
-    document.addEventListener("keydown", handleShortcut);
-  </script>
-  <script>
-    $(document).ready(function () {
-      var regid = {{ stool.reg_no.regid }};
-      if (regid) {
-      $.ajax({
-          url: '{% url "fetch_patient_data_details" %}',
-          type: "GET",
-          data: {
-          regid: regid,
-          },
-          success: function (data) {
-          // Update input fields with fetched data
-          $("#patient_name").val(data.name);
-          $("#bill_no").val(data.bill_no);
-          $("#labno").val(data.lab_no);
-          $("#department").val(data.department);
-          $("#doctor").val(data.referby);
-          $("#patient_name").val(data.name);
-          },
-          error: function (xhr, status, error) {
-          console.error(xhr.responseText);
-          // Handle error if necessary
-          $("#patient_name").val('');
-          $("#bill_no").val('');
-          $("#labno").val('');
-          $("#department").val('');
-          $("#doctor").val('');
-          $("#patient_name").val('');
-          },
-      });
-      } else {
-          // Clear input fields when regid is empty
-          $("#patient_name").val('');
-          $("#bill_no").val('');
-          $("#labno").val('');
-          $("#department").val('');
-          $("#doctor").val('');
-          $("#patient_name").val('');
+        // Remove any previous highlighting
+        input.style.border = "";
       }
     });
-  </script>
+
+    // If the form is valid, submit it
+    if (isValid) {
+      document.getextementById("patientForm").submit();
+    } else {
+      // If the form is invalid, display an alert (you can customize this part)
+      //   alert("Please fill out all  fields.");
+    }
+  }
+
+  // Function to handle keyboard shortcuts
+  function handleShortcut(event) {
+    // if (event.ctrlKey && event.key === "s") {
+    if (event.key === "F2") {
+      // Ctrl + S pressed, trigger form submission
+      handleFormSubmission(event);
+    }
+  }
+
+  // Attach event listener for form submission
+  document.getextementById("patientForm").addEventListener("submit", handleFormSubmission);
+
+  // Attach event listener for keyboard shortcuts
+  document.addEventListener("keydown", handleShortcut);
+</script>
+<script>
+  $(document).ready(function () {
+    var regid = {{ stool.patient.bill_no }};
+    if (regid) {
+    $.ajax({
+        url: '{% url "fetch_patient_data_details" %}',
+        type: "GET",
+        data: {
+        regid: regid,
+        },
+        success: function (data) {
+        // Update input fields with fetched data
+        $("#patient_name").val(data.name);
+        $("#bill_no").val(data.bill_no);
+        $("#labno").val(data.lab_no);
+        $("#department").val(data.department);
+        $("#doctor").val(data.referby);
+        $("#patient_name").val(data.name);
+        },
+        error: function (xhr, status, error) {
+        console.error(xhr.responseText);
+        // Handle error if necessary
+        $("#patient_name").val('');
+        $("#bill_no").val('');
+        $("#labno").val('');
+        $("#department").val('');
+        $("#doctor").val('');
+        $("#patient_name").val('');
+        },
+    });
+    } else {
+        // Clear input fields when regid is empty
+        $("#patient_name").val('');
+        $("#bill_no").val('');
+        $("#labno").val('');
+        $("#department").val('');
+        $("#doctor").val('');
+        $("#patient_name").val('');
+    }
+  });
+</script>
 {% endblock %}

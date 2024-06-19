@@ -16,7 +16,7 @@
     <style></style>
   </head>
   <body>
-    <div class="" id="printContent" style="width: 100%; margin-top: -10px; height: 842px">
+    <div class="" id="printContent" style="width: 100%; margin-top: -10px">
       <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black">
         <h1 style="margin: 2px">DEPARTMENT OF CLINICAL PATHOLOGY</h1>
         <h4 style="margin: 2px">DARBHANGA MEDICAL COLLEGE & HOSPITAL</h4>
@@ -39,7 +39,7 @@
         </div>
       </div>
       <hr />
-      <div style="height: 700px">
+      <div style="">
         <div class="table-responsive">
           <table class="table" width="100%" cellspacing="0">
             <thead>
@@ -329,7 +329,17 @@
           </table>
         </div>
       </div>
-
+      {% if test_report.dr %}
+      <div style="display: flex; justify-content: space-between; width: 100%; position: relative; bottom: 0; display: flex; justify-content: space-between; width: 100%; position: relative; bottom: 0; flex-direction: column; align-items: flex-end">
+        {% if test_report.dr == 'santoshkumar' %}<img height="100px" src="/media/img/drsantosh1.png" />
+        <br />
+        <p>Dr. Santosh Kumar Sharma</p>
+        {% endif %} {% if test_report.dr == 'knyadav' %}<img height="100px" src="/media/img/drkn1.png" />
+        <br />
+        <p>Dr. K. N. Yadav</p>
+        {% endif %}
+      </div>
+      {% endif %}
       <div style="display: flex; justify-content: space-between; width: 100%">
         <div>Checked By ..............</div>
         <div>Signature ..................................................</div>

@@ -99,3 +99,16 @@ class Patient(models.Model):
     def __str__(self):
         return f"{self.name} - {self.regno}"
 
+
+
+class UserLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    database_name = models.CharField(max_length=255)
+    operation = models.CharField(max_length=255)
+    post_data = models.TextField(null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    ip_address = models.CharField(blank = True, null = True)
+    device_type = models.CharField(max_length=255, blank = True, null = True)
+
+    def __str__(self):
+        return f'{self.user} - {self.operation} at {self.timestamp}'
