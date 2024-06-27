@@ -112,3 +112,13 @@ class UserLog(models.Model):
 
     def __str__(self):
         return f'{self.user} - {self.operation} at {self.timestamp}'
+
+
+class Reports(models.Model):
+    user = models.ForeignKey(User, on_delete = models.SET_NULL, blank = True, null = True)
+    title = models.CharField(max_length = 255, blank = True, null = True)
+    document = models.FileField(upload_to='reportsdocuments/')
+    created_at = models.DateTimeField(auto_now_add = True)
+
+    def __str__(self):
+        return self.title

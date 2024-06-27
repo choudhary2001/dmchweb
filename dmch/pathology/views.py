@@ -1043,7 +1043,12 @@ def create_test_report_view_data(request):
         else:
             end_date = None
 
-        tr = Test_report.objects.all().order_by('-created_at')
+        if request.user.is_superuser or request.user.is_staff:
+            tr = Test_report.objects.all().order_by('-created_at')
+        else:
+            tr = Test_report.objects.filter(user = request.user).order_by('-created_at')
+
+        # tr = Test_report.objects.all().order_by('-created_at')
 
         search_query = request.GET.get('searchValue')
 
@@ -1258,6 +1263,16 @@ def update_test_report(request, pk):
         logout(request)
         return redirect('signin') 
 
+
+@login_required
+def print_test_report_data(request, pk):
+    if request.user.is_superuser or request.session['user_role'] == 'Pathology':
+        test_report_obj = get_object_or_404(Test_report, pk=pk)
+        cbc_report = CBCReport.objects.filter(test_report_id = test_report_obj.test_report_id).first()
+        return render(request, 'print_report_test_report.html', {"test_report" : test_report_obj, 'cbc_report': cbc_report})
+    else:
+        logout(request)
+        return redirect('signin') 
 
 @login_required
 def delete_test_report(request, pk):

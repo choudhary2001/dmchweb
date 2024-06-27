@@ -7,11 +7,11 @@ urlpatterns = [
 
     path('add-departments/', views.departments, name="radiology_departments"),
     path('update-departments/<int:department_id>', views.departments_update, name="radiology_departments_update"),
-    path('delete-departments/<int:department_id>', views.departments_delete, name="radiology_departments_delete"),
+    # path('delete-departments/<int:department_id>', views.departments_delete, name="radiology_departments_delete"),
 
     path('add-doctors/', views.doctors, name="radiology_doctors"),
     path('update-doctors/<int:doctor_id>', views.doctors_update, name="radiology_doctors_update"),
-    path('delete-doctors/<int:doctor_id>', views.doctors_delete, name="radiology_doctors_delete"),
+    # path('delete-doctors/<int:doctor_id>', views.doctors_delete, name="radiology_doctors_delete"),
 
     path('get-doctors-by-department/',views.get_doctors_by_department,name='radiology_get_doctors_by_department'),
     path('get-investigation-by-department/',views.get_investigation_by_department,name='get_investigation_by_department'),

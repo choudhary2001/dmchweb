@@ -103,6 +103,20 @@
           </div> -->
           <div class="sidebar-brand mx-3" style="height: auto !important">DMCH</div>
         </a>
+        <hr class="sidebar-divider my-0" />
+
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'add__report' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Add Reports</span></a
+          >
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'show__report' %}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Show Reports</span></a
+          >
+        </li>
 
         <!-- Divider -->
         <hr class="sidebar-divider my-0" />
@@ -477,7 +491,7 @@
         <hr class="sidebar-divider" />
 
         <!-- Heading -->
-        <div class="sidebar-heading">Store</div>
+        <div class="sidebar-heading">{{request.session.user_role}}</div>
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">

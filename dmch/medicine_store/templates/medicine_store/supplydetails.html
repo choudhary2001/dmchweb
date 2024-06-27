@@ -45,9 +45,6 @@
         <div style="flex: 1">
           <a href="{% url 'supply_details_user_view_print_data' %}" class="btn btn-primary w-100">Print</a>
         </div>
-        <!-- <div style="flex: 3">
-          <button class="btn btn-primary w-100" id="exportButton">Export to Excel</button>
-        </div> -->
       </form>
     </div>
     <div class="card-body" id="printablecontent">
@@ -64,7 +61,7 @@
               <th>Exp Date</th>
               <th>Quantity</th>
               <th>Stock</th>
-              <th>Supply Time</th>
+              <th>Stock Time</th>
               <th>Created On Date/Time</th>
               <th>Action</th>
             </tr>
@@ -89,6 +86,27 @@
 
 <script>
   $(document).ready(function () {
+    // Function to save filter state to localStorage
+    function saveFilterState() {
+      localStorage.setItem("start_date", $("#start_date").val());
+      localStorage.setItem("end_date", $("#end_date").val());
+      localStorage.setItem("searchInput", $("#searchInput").val());
+      localStorage.setItem("searchpInput", $("#searchpInput").val());
+      localStorage.setItem("page_length", table.page.len());
+      localStorage.setItem("page_number", table.page());
+    }
+
+    // Function to load filter state from localStorage
+    function loadFilterState() {
+      $("#start_date").val(localStorage.getItem("start_date"));
+      $("#end_date").val(localStorage.getItem("end_date"));
+      $("#searchInput").val(localStorage.getItem("searchInput"));
+      $("#searchpInput").val(localStorage.getItem("searchpInput"));
+    }
+
+    // Load filter state when the page loads
+    loadFilterState();
+
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
       var searchValue = $("#searchInput").val().toLowerCase();
       if (!searchValue) {
@@ -132,46 +150,42 @@
       ],
       paging: true, // Enable pagination
       searching: true, // Enable search feature
-      lengthChange: true, // Disable page length change
+      lengthChange: true, // Enable page length change
+      pageLength: localStorage.getItem("page_length") ? parseInt(localStorage.getItem("page_length")) : 10, // Set initial page length
+      displayStart: localStorage.getItem("page_number") ? parseInt(localStorage.getItem("page_number")) * parseInt(localStorage.getItem("page_length")) : 0, // Set initial page number
     });
 
     $("#searchInput").on("keyup", function () {
       table.draw();
+      saveFilterState();
     });
 
     $("#searchpInput").on("keyup", function () {
       table.draw();
+      saveFilterState();
     });
 
     $("#filterForm").on("submit", function (e) {
       e.preventDefault();
       table.draw();
+      saveFilterState();
     });
 
     $("#product_name").select2();
+
+    table.on("length.dt", function (e, settings, len) {
+      localStorage.setItem("page_length", len);
+    });
+
+    table.on("page.dt", function () {
+      saveFilterState();
+    });
+
+    // Save filter state when navigating away from the page
+    window.onbeforeunload = saveFilterState;
   });
 </script>
-<!-- dom: "Bfrtip", // Position of the feature elements -->
 
-<!-- buttons: [
-"copy",
-{
-  extend: "excelHtml5",
-  text: "Export to Excel",
-  className: "btn btn-primary",
-  title: "Data export",
-  exportOptions: {
-    columns: ":visible",
-    modifier: {
-      search: "applied",
-      order: "applied",
-      page: "all", // Export all data
-    },
-  },
-},
-"pdf",
-"print",
-], -->
 <script>
   function printTable() {
     var printContents = $("#printablecontent").html();

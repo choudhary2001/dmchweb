@@ -1,8 +1,6 @@
 {% extends 'counter/base.html' %} {% block css %} {% endblock %} {% block content %}
 <!-- Begin Page Content -->
 <div class="container-fluid">
-  <!-- Page Heading -->
-  <!-- <h1 class="h3 mb-2 text-gray-800">Staff</h1> -->
   {% if messages %} {% for message in messages %}
   <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
   {% endfor %} {% endif %}
@@ -20,24 +18,12 @@
         <div style="flex: 1">
           <input type="date" id="end_date" class="form-control mb-2 mb-md-0" name="end_date" />
         </div>
-        <!-- <div style="flex: 3">
-          <select name="department" class="form-control mb-2 mb-md-0">
-            <option>Select Department</option>
-            <option value="All">All</option>
-            {% for d in departments %}
-            <option value="{{d.department_id}}">{{d.name}}</option>
-            {% endfor %}
-          </select>
-        </div> -->
         <div style="flex: 1">
           <button class="btn btn-primary w-100" type="submit">Filter</button>
         </div>
         <div style="flex: 1">
-          <a href="#;" onclick="printTable()" class="btn btn-primary" id="printButton">Print</a>
+          <a href="#" onclick="printTable()" class="btn btn-primary" id="printButton">Print</a>
         </div>
-        <!-- <div style="flex: 2">
-          <a href="#;" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</a>
-        </div> -->
       </form>
     </div>
     <div class="card-body" id="printablecontent">
@@ -54,7 +40,6 @@
               <th>Quantity</th>
             </tr>
           </thead>
-
           <tbody>
             {% for d in products %}
             <tr>
@@ -68,7 +53,6 @@
     </div>
   </div>
 </div>
-
 {% endblock %} {% block script %}
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -83,24 +67,25 @@
 
     rows.forEach(row => {
       const productName = row.cells[0].textContent.trim();
-      const productQuantity = parseInt(row.cells[1].textContent.trim(), 10);
+      const quantityText = row.cells[1].textContent.trim();
+      const [productQuantity, quantityType] = quantityText.split(" ", 2);
 
-      if (productData[productName]) {
-        productData[productName] += productQuantity;
-      } else {
-        productData[productName] = productQuantity;
+      if (!productData[productName]) {
+        productData[productName] = { quantity: 0, type: quantityType };
       }
+
+      productData[productName].quantity += parseInt(productQuantity, 10);
     });
 
     const newTableBody = document.createElement("tbody");
 
-    for (const [name, quantity] of Object.entries(productData)) {
+    for (const [name, data] of Object.entries(productData)) {
       const newRow = document.createElement("tr");
       const nameCell = document.createElement("td");
       const quantityCell = document.createElement("td");
 
       nameCell.textContent = name;
-      quantityCell.textContent = quantity;
+      quantityCell.textContent = `${data.quantity} ${data.type}`;
 
       newRow.appendChild(nameCell);
       newRow.appendChild(quantityCell);
@@ -109,17 +94,14 @@
 
     table.replaceChild(newTableBody, table.querySelector("tbody"));
   }
+
   // Function to print the table
   function printTable() {
-    // Show the hidden print content
-    // Print only the content inside the printContent div
-    var printContents = $("#printablecontent").html();
-    var originalContents = $("body").html();
-    $("body").empty().html(printContents);
-
-    // Trigger the print dialog
+    const printContents = document.getElementById("printablecontent").innerHTML;
+    const originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
     window.print();
-    $("body").html(originalContents);
+    document.body.innerHTML = originalContents;
   }
 </script>
 {% endblock %}

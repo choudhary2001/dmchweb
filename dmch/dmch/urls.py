@@ -29,7 +29,7 @@ sitemaps = {
 }
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('securepanel/', admin.site.urls),
     path('', include('counter.urls')),
     path('drug/', include('drug.urls')),
     path('pathology/', include('pathology.urls')),

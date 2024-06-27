@@ -1,5 +1,5 @@
 from django.contrib import admin
-
+from rangefilter.filters import DateRangeFilter, DateTimeRangeFilter
 from .models import *
 
 class MedicineConsumptionAdmin(admin.ModelAdmin):
@@ -9,8 +9,8 @@ class MedicineConsumptionAdmin(admin.ModelAdmin):
 
 
 class MedicineAdmin(admin.ModelAdmin):
-    list_display = ( 'departpment', 'medicine_id', 'product',  'created_at')
-    list_filter = ( 'departpment', 'medicine_id', 'product')
+    list_display = ( 'medicine_id','departpment',  'product',  'created_at')
+    list_filter = ( 'medicine_id', 'departpment',  'product', ('created_at', DateRangeFilter))
     search_fields = ( 'medicine_id',)
 
 

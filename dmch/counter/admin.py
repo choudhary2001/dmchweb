@@ -14,6 +14,7 @@ admin.site.register(Profile, ProfileAdmin)
 
 admin.site.register(Department)
 admin.site.register(Doctor)
+admin.site.register(Reports)
 
 class UserLogAdmin(admin.ModelAdmin):
     list_display = ('user', 'operation', 'post_data', 'timestamp', 'device_type')

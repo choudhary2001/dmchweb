@@ -35,5 +35,8 @@ urlpatterns = [
     path('report', views.find_user_report_data, name='find_user_report_data'),
     path('alldata', views.find_user_all_report_data, name='find_user_all_report_data'),
 
+    path('add-reports/', views.add__report, name='add__report'),
+    path('show-reports/', views.show__report, name='show__report'),
+
 
 ]

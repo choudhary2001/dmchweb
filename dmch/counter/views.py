@@ -1323,7 +1323,7 @@ def department_wise_report(request):
                     end_datetimee = timezone.make_aware(end_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
                     end_datetimee += timedelta(days=1)
 
-                    patients_in_department = patients_in_department.filter(appointment_date__range=(start_date, end_date))
+                    patients_in_department = patients_in_department.filter(appointment_date__range=(start_date, end_datetimee))
                 elif start_date:
                     start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
                     end_datetimee = timezone.make_aware(end_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
@@ -1467,6 +1467,7 @@ def show_patients_data_ipd(request):
             patients = patients.filter(
                 Q(name__icontains=search_query) |
                 Q(regid__icontains=search_query) |
+                Q(guardianname__icontains=search_query) |
                 Q(address__icontains=search_query) |
                 Q(doctor__name__icontains=search_query) |
                 Q(department__name__icontains=search_query) |
@@ -1531,10 +1532,16 @@ def show_patients_data_ipd(request):
                 patient_revisit = 'Re Visit'
             else : 
                 patient_revisit = ''
+
+            if patient.guardianname:
+                guardianname = f"{patient.guardiannametitle} {patient.guardianname}"
+            else:
+                guardianname = ''
             
             patients_data.append({
                 'regid': patient.regid,
                 'name': patient.name,
+                'guardianname': guardianname,
                 'address': patient.address,
                 'doctor': patient_doctor,
                 'department': patient_department,
@@ -1739,3 +1746,73 @@ def find_user_all_report_data(request):
 
     }
     return render(request, 'counter/all_data.html', context=context)
+
+
+
+@login_required
+def add__report(request):
+    if request.user:
+        # Get the current time in UTC
+        current_time_utc = timezone.now()
+
+        # Get the Kolkata timezone
+        kolkata_timezone = pytz.timezone('Asia/Kolkata')
+
+        # Convert the current time to Kolkata timezone
+        current_time_kolkata = current_time_utc.astimezone(kolkata_timezone)
+        print(current_time_kolkata)
+
+        if request.method == 'POST':
+            print(request.POST)
+            title = request.POST.get('title')
+            document = request.FILES.get('document')
+            
+            patient = Reports.objects.create(
+                user = request.user,
+                title=title,
+                document=document
+            )
+
+            messages.success(request, 'Added Successfully.')
+            return redirect('/add-reports/')
+        context = {
+            'title' : "Upload Reports",
+            'current_time_kolkata' : current_time_kolkata
+        }
+        return render(request, 'counter/add_reports.html', context=context) 
+    else:
+        logout(request)
+        return redirect('signin') 
+
+
+@login_required
+def show__report(request):
+    if request.user:
+        start_date_str = request.GET.get('start_date', None)
+        end_date_str = request.GET.get('end_date', None)
+
+        start_date = current_time_kolkata.strptime(start_date_str, '%Y-%m-%d') if start_date_str else None
+        end_date = current_time_kolkata.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1) if end_date_str else None
+
+        r = Reports.objects.all().order_by('-created_at')
+        if start_date and end_date:
+            r = r.filter(created_at__range=(start_date, end_date))
+        elif start_date:
+            # If only start date is provided, include all records for that day
+            next_day = start_date + timedelta(days=1)
+            start_datetime = timezone.make_aware(start_date, timezone.get_current_timezone()).replace(hour=0, minute=0, second=0)
+            end_datetime = start_datetime + timedelta(days=1)
+
+            r = r.filter(created_at__gte=start_date, created_at__lt=end_datetime)
+            print(r)
+
+        context = {
+            'title' : f"Show Reports : {len(r)}",
+            'current_time_kolkata' : current_time_kolkata,
+            'report' : r,
+        }
+        return render(request, 'counter/reports.html', context=context)       
+    else:
+        logout(request)
+        return redirect('signin') 
+

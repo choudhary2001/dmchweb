@@ -26,18 +26,7 @@
   tr {
     border: none !important;
   }
-</style>
-<div class="container-fluid">
-  <!-- Page Heading -->
-  {% if messages %} {% for message in messages %}
-  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
-
-  {% endfor %} {% endif %}
-
-  <div class="" id="printContent" style="width: 100%; margin-top: -10px; display: none">
-    <style>
-      /* Loader CSS */
-      .loader {
+  .loader {
         border: 16px solid #f3f3f3;
         border-radius: 50%;
         border-top: 16px solid #3498db;
@@ -52,6 +41,7 @@
         margin-top: -60px;
         z-index: 9999;
       }
+      /* Loader CSS */
 
       @keyframes spin {
         0% {
@@ -61,6 +51,17 @@
           transform: rotate(360deg);
         }
       }
+
+</style>
+<div class="container-fluid">
+  <!-- Page Heading -->
+  {% if messages %} {% for message in messages %}
+  <p {% if message.tags %} class="{{ message.tags }}" {% endif %} style="width: 90%; font-size: 1rem">{{ message }}</p>
+
+  {% endfor %} {% endif %}
+
+  <div class="" id="printContentt" style="width: 100%; display: none;  height: 100%;">
+    <style>
 
       /* Footer CSS */
       @page {
@@ -82,7 +83,7 @@
         }
       }
     </style>
-    <div class="imgcontainer" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.3rem">
+    <div class="" style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: sans-serif; color: black; font-size: 1.3rem;">
       <h1>DEPARTMENT OF CLINICAL PATHOLOGY</h1>
       <h4>DARBHANGA MEDICAL COLLEGE & HOSPITAL</h4>
       <h6>LAHERIASARAI, DARBHANGA (BIHAR)</h6>
@@ -691,7 +692,7 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Save</button>
-    <a href="#;" id="printButton" style="display: none" class="btn btn-primary">Print</a>
+    <a href="/pathology/create_test_report_view/print/{{test_report.pk}}/" id=""  class="btn btn-primary">Print</a>
   </form>
 </div>
 
@@ -731,10 +732,10 @@
     // Function to handle printing
     $("#printButton").click(function () {
       // Show the hidden print content
-      $("#printContent").show();
+      $("#printContentt").show();
 
       // Print only the content inside the printContent div
-      var printContents = $("#printContent").html();
+      var printContents = $("#printContentt").html();
       var originalContents = $("body").html();
       $("body").empty().html(printContents);
 
@@ -742,9 +743,9 @@
       window.print();
 
       // Restore the original page content
-      $("#printContent").hide();
+      $("#printContentt").hide();
       $("body").html(originalContents);
-      $("#printContent").hide();
+      $("#printContentt").hide();
     });
   });
 </script>
